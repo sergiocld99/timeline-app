@@ -1,9 +1,10 @@
-import React from "react";
 import axios from "axios";
+import { useState } from "react";
+import { backendBaseUrl } from "../constants";
 import './LocationForm.scss';
 
 const LocationForm = () => {
-  const [formData, setFormData] = React.useState({
+  const [formData, setFormData] = useState({
     name: "",
     latitude: "",
     longitude: "",
@@ -14,7 +15,7 @@ const LocationForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    axios.post('http://localhost:3000/api/locations', formData).then(response => {
+    axios.post(`${backendBaseUrl}/locations`, formData).then(response => {
       alert("Location added successfully!");
       setFormData({
         name: "",

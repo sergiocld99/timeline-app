@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import LocationForm from './components/LocationForm'
+import LocationTable from './components/LocationTable'
 import './App.css'
 
 function App() {
@@ -8,6 +9,7 @@ function App() {
   return (
     <div className='App'>
       <LocationForm />
+      <LocationTable />
     </div>
   )
 }
