@@ -3,7 +3,7 @@ import { useState } from "react";
 import { backendBaseUrl } from "../constants";
 import './LocationForm.scss';
 
-const LocationForm = () => {
+const LocationForm = ({ onLocationAdded }) => {
   const [formData, setFormData] = useState({
     name: "",
     latitude: "",
@@ -24,6 +24,7 @@ const LocationForm = () => {
         zipcode: "",
         notes: "",
       });
+      onLocationAdded();
     }).catch(error => {
       console.error("There was an error adding the location!", error);
       alert("Failed to add location. Please try again.");

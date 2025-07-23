@@ -1,21 +1,6 @@
-import axios from "axios";
-import { useState, useEffect } from "react";
-import { backendBaseUrl } from "../constants";
 import './LocationTable.scss';
 
-const LocationTable = () => {
-  const [locations, setLocations] = useState([]);
-
-  useEffect(() => {
-    axios.get(`${backendBaseUrl}/locations`)
-      .then(response => {
-        setLocations(response.data);
-      })
-      .catch(error => {
-        console.error("There was an error fetching the locations!", error);
-      });
-  }, []);
-
+const LocationTable = ({ locations }) => {
   return (
     <div className="location-table container">
       <h2>Locations</h2>
