@@ -1,15 +1,19 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { HashRouter as Router, Route, Routes, Navigate } from 'react-router-dom'
 import './index.css'
-import App from './App.jsx'
+
+import LocationsPage from './pages/LocationsPage.jsx'
+import TravelsPage from './pages/TravelsPage.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter>
+    <Router>
       <Routes>
-        <Route path="/" element={<App />} />
+        <Route path="/" element={<Navigate to={"/locations"} />} />
+        <Route path="/locations" element={<LocationsPage />} />
+        <Route path="/travels" element={<TravelsPage />} />
       </Routes>
-    </BrowserRouter>
+    </Router>
   </StrictMode>,
 )
