@@ -39,23 +39,23 @@ const LocationForm = ({ onLocationAdded }) => {
   }
 
   return (
-    <div className="location-form container">
+    <div className="page-form location-form container">
       <h2>Add Location</h2>
       <form onSubmit={handleSubmit}>
         <label htmlFor="name">Name:</label>
-        <input type="text" name="name" value={formData.name} onChange={handleChange} required />
+        <input type="text" id="name" name="name" autoComplete="location" value={formData.name} onChange={handleChange} required />
 
         <label htmlFor="latitude">Latitude:</label>
-        <input type="number" name="latitude" value={formData.latitude} onChange={handleChange} required />
+        <input type="number" id="latitude" name="latitude" autoComplete="latitude" value={formData.latitude} onChange={handleChange} required />
 
         <label htmlFor="longitude">Longitude:</label>
-        <input type="number" name="longitude" value={formData.longitude} onChange={handleChange} required />
+        <input type="number" id="longitude" name="longitude" autoComplete="longitude" value={formData.longitude} onChange={handleChange} required />
 
         <label htmlFor="zipcode">Zipcode:</label>
-        <input type="text" name="zipcode" value={formData.zipcode} onChange={handleChange} />
+        <input type="text" id="zipcode" name="zipcode" value={formData.zipcode} onChange={handleChange} />
 
         <label htmlFor="notes">Notes:</label>
-        <textarea name="notes" value={formData.notes} onChange={handleChange} />
+        <textarea id="notes" name="notes" value={formData.notes} onChange={handleChange} />
 
         <button type="submit">Save</button>
       </form>
