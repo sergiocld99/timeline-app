@@ -1,0 +1,19 @@
+.page-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+
+  th, td {
+    padding: 0.6rem;
+    border: 1px solid #213547;
+    text-align: left;
+  }
+
+  th {
+    background-color: #272147;
+  }
+
+  tr:nth-child(even) {
+    background-color: #272147;
+  }
+}

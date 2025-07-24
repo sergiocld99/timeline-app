@@ -2,7 +2,7 @@ import './LocationTable.scss';
 
 const LocationTable = ({ locations }) => {
   return (
-    <div className="location-table container">
+    <div className="page-table location-table container">
       <h2>Locations</h2>
       <table>
         <thead>
