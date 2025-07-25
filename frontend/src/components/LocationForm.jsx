@@ -12,11 +12,18 @@ const LocationForm = ({ onLocationAdded }) => {
     notes: "",
   });
 
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
     axios.post(`${backendBaseUrl}/locations`, formData).then(response => {
-      alert("Location added successfully!");
+      alert(`Location "${response.data.name}" added successfully!`);
       setFormData({
         name: "",
         latitude: "",
@@ -28,13 +35,6 @@ const LocationForm = ({ onLocationAdded }) => {
     }).catch(error => {
       console.error("There was an error adding the location!", error);
       alert("Failed to add location. Please try again.");
-    });
-  }
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
     });
   }
 

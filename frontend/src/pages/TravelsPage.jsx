@@ -1,11 +1,15 @@
 import Header from "../components/Header"
+import TravelForm from "../components/TravelForm"
+import useTravels from "../hooks/useTravels"
 
 const TravelsPage = () => {
+  const { travels, refetch } = useTravels()
+
   return (
     <>
       <Header />
       <main className="page-container">
-        <h2>Travels (Coming soon!)</h2>
+        <TravelForm onTravelAdded={refetch} />
       </main>
     </>
   )
