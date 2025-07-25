@@ -96,6 +96,35 @@ const TravelForm = ({ onTravelAdded }) => {
           onChange={handleChange}
           required
         />
+
+        <label htmlFor="modeOfTransport">Mode of Transport</label>
+        <select
+          id="modeOfTransport"
+          name="modeOfTransport"
+          value={formData.modeOfTransport}
+          onChange={handleChange}
+          required
+        >
+          <option value="car">🚘 Car</option>
+          <option value="bus">🚍 Bus</option>
+          <option value="train">🚉 Train</option>
+          <option value="subway">🚇 Subway</option>
+          <option value="walking">🚶🏽 Walking</option>
+          <option value="other">Other</option>
+        </select>
+
+        <label htmlFor="distance">Distance (km)</label>
+        <input
+          type="number"
+          id="distance"
+          name="distance"
+          value={formData.distance}
+          onChange={handleChange}
+          required
+          min="0"
+          step="0.1"
+        />
+
         <button type="submit">Create</button>
       </form>
     </div>

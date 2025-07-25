@@ -5,7 +5,7 @@ const router = e.Router();
 
 router.get('/', (req, res) => {
   // Fetch all travels with populated origin and destination (Location) fields
-  Travel.find().populate('origin destination').then(travels => {
+  Travel.find().populate('origin destination').sort({ startTime: -1 }).then(travels => {
     res.json(travels);
   }).catch(err => {
     res.status(500).json({ message: 'Error fetching travels', error: err.message });
