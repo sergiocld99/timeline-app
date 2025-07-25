@@ -16,7 +16,7 @@ const LocationTable = ({ locations }) => {
         </thead>
         <tbody>
           {locations.map(location => (
-            <tr key={location.id}>
+            <tr key={location._id}>
               <td>{location.name}</td>
               <td>{location.latitude.toFixed(4)}</td>
               <td>{location.longitude.toFixed(4)}</td>
