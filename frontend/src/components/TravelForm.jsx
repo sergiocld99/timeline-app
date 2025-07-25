@@ -26,7 +26,7 @@ const TravelForm = ({ onTravelAdded }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios.post(`${backendBaseUrl}/travels`, formData).then(response => {
-      alert(`Travel from "${response.data.origin}" added successfully!`);
+      alert("Travel added successfully!");
       setFormData({
         origin: "",
         destination: "",
@@ -38,13 +38,13 @@ const TravelForm = ({ onTravelAdded }) => {
       onTravelAdded();
       refetch();
     }).catch(error => {
-      console.error("There was an error adding the travel!", error);
+      console.error("There was an error adding the travel!", error, formData);
       alert("Failed to add travel. Please try again.");
     });
   };
 
   const renderLocation = (location) => (
-    <option key={location.id} value={location.name}>
+    <option key={location._id} value={location._id}>
       {location.zipcode} - {location.name}
     </option>
   );
