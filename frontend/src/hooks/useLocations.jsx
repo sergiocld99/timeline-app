@@ -1,10 +1,8 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
+import { backendBaseUrl } from "../constants"
 import axios from "axios"
 
-import { backendBaseUrl } from "../constants"
-import { sortLocationsByZipcode } from "../utils/sorter"
-
-const useSortedLocations = () => {
+const useLocations = () => {
   const [locations, setLocations] = useState([])
   const [error, setError] = useState(null)
 
@@ -18,9 +16,7 @@ const useSortedLocations = () => {
     fetchLocations()
   }, [])
 
-  const sortedLocations = useMemo(() => sortLocationsByZipcode(locations), [locations]);
-
-  return { sortedLocations, error, refetch: fetchLocations }
+  return { locations, error, refetch: fetchLocations }
 }
 
-export default useSortedLocations;
+export default useLocations;

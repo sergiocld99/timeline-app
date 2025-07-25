@@ -4,7 +4,7 @@ import Location from "../models/Location.js";
 const router = e.Router();
 
 router.get('/', (req, res) => {
-  Location.find().then(locations => {
+  Location.find().sort({ zipcode: 1, name: 1 }).then(locations => {
     res.json(locations);
   }).catch(err => {
     res.status(500).json({ message: 'Error fetching locations', error: err.message });
