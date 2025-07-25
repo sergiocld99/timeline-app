@@ -28,11 +28,10 @@ const TravelForm = ({ onTravelAdded }) => {
     axios.post(`${backendBaseUrl}/travels`, formData).then(response => {
       alert("Travel added successfully!");
       setFormData({
-        origin: "",
-        destination: "",
-        startTime: "",
-        endTime: "",
-        modeOfTransport: "car",
+        ...formData,
+        origin: formData.destination,
+        destination: formData.origin,
+        startTime: formData.endTime,
         distance: "",
       });
       onTravelAdded();
