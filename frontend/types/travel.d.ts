@@ -1,4 +1,4 @@
-type Location = {
+export type Location = {
   _id: string
   name: string
   latitude: number
