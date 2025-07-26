@@ -1,11 +1,16 @@
-import { useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import axios from "axios";
 
+import type { Location } from "../../types/travel";
 import useLocations from "../hooks/useLocations";
 import { backendBaseUrl } from "../constants";
 import './TravelForm.scss';
 
-const TravelForm = ({ onTravelAdded }) => {
+type Props = {
+  onTravelAdded: () => void;
+}
+
+const TravelForm = ({ onTravelAdded }: Props) => {
   const { locations, refetch } = useLocations();
   const [formData, setFormData] = useState({
     origin: "",
@@ -16,14 +21,14 @@ const TravelForm = ({ onTravelAdded }) => {
     distance: "",
   });
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     axios.post(`${backendBaseUrl}/travels`, formData).then(response => {
       alert("Travel added successfully!");
@@ -42,7 +47,7 @@ const TravelForm = ({ onTravelAdded }) => {
     });
   };
 
-  const renderLocation = (location) => (
+  const renderLocation = (location: Location) => (
     <option key={location._id} value={location._id}>
       {location.zipcode} - {location.name}
     </option>

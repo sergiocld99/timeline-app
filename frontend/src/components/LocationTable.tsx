@@ -1,6 +1,12 @@
+import type { Location } from '../../types/travel';
+
 import './LocationTable.scss';
 
-const LocationTable = ({ locations }) => {
+type Props = {
+  locations: Location[];
+}
+
+const LocationTable = ({ locations }: Props) => {
   return (
     <div className="page-table location-table container">
       <h2>Locations</h2>

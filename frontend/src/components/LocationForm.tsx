@@ -1,9 +1,15 @@
+import { ChangeEvent, FormEvent, useState } from "react";
 import axios from "axios";
-import { useState } from "react";
+
+import type { Location } from "../../types/travel";
 import { backendBaseUrl } from "../constants";
 import './LocationForm.scss';
 
-const LocationForm = ({ onLocationAdded }) => {
+type Props = {
+  onLocationAdded: () => void;
+}
+
+const LocationForm = ({ onLocationAdded }: Props) => {
   const [formData, setFormData] = useState({
     name: "",
     latitude: "",
@@ -12,17 +18,17 @@ const LocationForm = ({ onLocationAdded }) => {
     notes: "",
   });
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    axios.post(`${backendBaseUrl}/locations`, formData).then(response => {
+    axios.post<Location>(`${backendBaseUrl}/locations`, formData).then(response => {
       alert(`Location "${response.data.name}" added successfully!`);
       setFormData({
         name: "",
