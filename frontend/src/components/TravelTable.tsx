@@ -1,12 +1,18 @@
+import type { Travel } from '../../types/travel';
+
 import './TravelTable.scss';
 
-const getHoursAndMinutes = (totalMinutes) => {
+type Props = {
+  travels: Travel[];
+}
+
+const getHoursAndMinutes = (totalMinutes: number) => {
   const hours = Math.floor(totalMinutes / 60);
   const minutes = totalMinutes % 60;
   return `${hours}h ${minutes}m`;
 }
 
-const TravelTable = ({ travels }) => {
+const TravelTable = ({ travels }: Props) => {
   const totalMinutes = travels.reduce((total, travel) => total + travel.duration, 0);
   const totalDistance = travels.reduce((total, travel) => total + travel.distance, 0);
 
@@ -39,7 +45,7 @@ const TravelTable = ({ travels }) => {
         <tfoot>
           <tr>
             <td>Total</td>
-            <td colSpan="2"></td>
+            <td colSpan={2}></td>
             <td>{totalDistance.toFixed(0)} km</td>
             <td>{getHoursAndMinutes(totalMinutes)}</td>
             <td>{(totalDistance / (totalMinutes / 60)).toFixed(1)} km/h</td>
