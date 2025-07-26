@@ -3,10 +3,10 @@ import { createRoot } from 'react-dom/client'
 import { HashRouter as Router, Route, Routes, Navigate } from 'react-router-dom'
 import './index.css'
 
-import LocationsPage from './pages/LocationsPage.jsx'
-import TravelsPage from './pages/TravelsPage.jsx'
+import LocationsPage from './pages/LocationsPage'
+import TravelsPage from './pages/TravelsPage'
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Router>
       <Routes>
