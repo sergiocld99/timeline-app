@@ -16,8 +16,17 @@ const calculateDuration = (startTime, endTime) => {
 };
 
 router.get('/', (req, res) => {
+  let dateFrom
+
+  if (req.query.dateFrom) {
+    dateFrom = new Date(req.query.dateFrom);
+  } else {
+    dateFrom = new Date(Date.now());
+    dateFrom.setMonth(dateFrom.getMonth() - 1);
+  }
+
   // Fetch all travels with populated origin and destination (Location) fields
-  Travel.find().populate('origin destination').sort({ startTime: -1 }).then(travels => {
+  Travel.find({ startTime: { $gte: dateFrom } }).populate('origin destination').sort({ startTime: -1 }).then(travels => {
     travels = travels.map(t => ({
       ...t.toObject(),
       shortDate: buildShortDate(t.startTime),

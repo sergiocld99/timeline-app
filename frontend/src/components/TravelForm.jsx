@@ -10,8 +10,8 @@ const TravelForm = ({ onTravelAdded }) => {
   const [formData, setFormData] = useState({
     origin: "",
     destination: "",
-    startTime: "",
-    endTime: "",
+    startTime: new Date().toISOString().slice(0, 16), // Format to YYYY-MM-DDTHH:mm
+    endTime: new Date().toISOString().slice(0, 16), // Format to YYYY-MM-DDTHH:mm
     modeOfTransport: "car",
     distance: "",
   });
