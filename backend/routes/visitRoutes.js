@@ -1,11 +1,8 @@
 import e from 'express';
-import { calculateVisitsForDate } from '../services/visitService.js';
+import { calculateVisitsController } from '../controller/visitController.js';
 
 const router = e.Router();
 
-router.get('/calculate/:date', async (req, res) => {
-  const visits = await calculateVisitsForDate(req.params.date);
-  res.json(visits);
-})
+router.get('/calculate/:date', calculateVisitsController);
 
 export default router;
