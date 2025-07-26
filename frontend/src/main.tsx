@@ -5,6 +5,7 @@ import './index.css'
 
 import LocationsPage from './pages/LocationsPage'
 import TravelsPage from './pages/TravelsPage'
+import VisitsPage from './pages/VisitsPage'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -13,6 +14,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/" element={<Navigate to={"/locations"} />} />
         <Route path="/locations" element={<LocationsPage />} />
         <Route path="/travels" element={<TravelsPage />} />
+        <Route path="/visits" element={<VisitsPage />} />
       </Routes>
     </Router>
   </StrictMode>,

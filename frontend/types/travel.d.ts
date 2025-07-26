@@ -19,3 +19,12 @@ export type Travel = {
   duration: number
   speed: number
 }
+
+export type Visit = {
+  _id: string
+  date: string
+  location: Location
+  arrivalTime: string
+  departureTime: string
+  durationMinutes: number
+}
