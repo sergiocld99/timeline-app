@@ -1,7 +1,15 @@
 import Visit from "../models/Visit.js";
 import { calculateVisitsForDate } from "../services/visitService.js";
 
-export const calculateVisitsController = async (req, res) => {
+export const getAllVisits = (req, res) => {
+  Visit.find().sort({ arrivalTime: -1 }).populate('location').then(visits => {
+    res.json(visits);
+  }).catch(err => {
+    res.status(500).json({ message: 'Error fetching visits', error: err.message });
+  });
+}
+
+export const calculateVisitsController = (req, res) => {
   const { date } = req.params;
   const { persist } = req.query;
 
