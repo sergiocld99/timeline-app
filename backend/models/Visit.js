@@ -8,6 +8,8 @@ const VisitSchema = new mongoose.Schema({
     durationMinutes: { type: Number, required: true },
 });
 
+VisitSchema.index({ date: 1, location: 1, arrivalTime: 1 }, { unique: true });
+
 const Visit = mongoose.model('Visit', VisitSchema);
 
 export default Visit;

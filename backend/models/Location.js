@@ -8,6 +8,8 @@ const LocationSchema = new mongoose.Schema({
     zipcode: { type: String },
 });
 
+LocationSchema.index({ name: 1, latitude: 1 }, { unique: true });
+
 const Location = mongoose.model('Location', LocationSchema);
 
 export default Location;

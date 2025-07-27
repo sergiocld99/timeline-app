@@ -9,6 +9,8 @@ const TravelSchema = new mongoose.Schema({
     distance: { type: Number, required: true }, // in kilometers
 });
 
+TravelSchema.index({ startTime: 1, origin: 1 }, { unique: true });
+
 const Travel = mongoose.model('Travel', TravelSchema);
 
 export default Travel;
