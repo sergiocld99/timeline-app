@@ -1,9 +1,9 @@
 import { ChangeEvent, FormEvent, useState } from "react";
-import axios from "axios";
 
-import type { Location, Travel } from "../../types/travel";
+import type { Location } from "../../types/travel";
 import useLocations from "../hooks/useLocations";
-import { backendBaseUrl } from "../constants";
+import VisitService from "../services/VisitService";
+import TravelService from "../services/TravelService";
 import './TravelForm.scss';
 
 type Props = {
@@ -30,8 +30,15 @@ const TravelForm = ({ onTravelAdded }: Props) => {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    axios.post<Travel>(`${backendBaseUrl}/travels`, formData).then(response => {
-      alert("Travel added successfully!");
+    TravelService.createTravel(formData).then(response => {
+      VisitService.persistIfNeeded(formData.startTime.split('T')[0]).then((persisted) => {
+        if (persisted) {
+          alert("Travel with visit added successfully!");
+        } else {
+          alert("Travel added successfully");
+        }
+      });
+
       setFormData({
         ...formData,
         origin: formData.destination,
