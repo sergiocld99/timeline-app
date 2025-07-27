@@ -1,15 +1,10 @@
 import type { Travel } from '../../types/travel';
+import { getHoursAndMinutes } from '../utils';
 
 import './TravelTable.scss';
 
 type Props = {
   travels: Travel[];
-}
-
-const getHoursAndMinutes = (totalMinutes: number) => {
-  const hours = Math.floor(totalMinutes / 60);
-  const minutes = totalMinutes % 60;
-  return `${hours}h ${minutes}m`;
 }
 
 const TravelTable = ({ travels }: Props) => {

@@ -1,6 +1,7 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 
 import type { Location } from "../../types/travel";
+import { getTimeFromCurrent } from "../utils";
 import useLocations from "../hooks/useLocations";
 import VisitService from "../services/VisitService";
 import TravelService from "../services/TravelService";
@@ -15,8 +16,8 @@ const TravelForm = ({ onTravelAdded }: Props) => {
   const [formData, setFormData] = useState({
     origin: "",
     destination: "",
-    startTime: new Date().toISOString().slice(0, 16), // Format to YYYY-MM-DDTHH:mm
-    endTime: new Date().toISOString().slice(0, 16), // Format to YYYY-MM-DDTHH:mm
+    startTime: getTimeFromCurrent(5),
+    endTime: getTimeFromCurrent(3),
     modeOfTransport: "car",
     distance: "",
   });
