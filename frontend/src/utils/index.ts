@@ -25,3 +25,7 @@ export const getTimeFromCurrent = (hoursBefore: number) => {
   date.setHours(date.getHours() - hoursBefore);
   return date.toISOString().slice(0, 16);
 }
+
+export const getFixedPercentage = (percentage: number) => {
+  return `${percentage.toFixed(percentage < 10 ? 1 : 0)}%`
+}

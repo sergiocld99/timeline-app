@@ -1,5 +1,5 @@
 import type { Visit } from '../../types/travel';
-import { extractDate, extractTime, getHoursAndMinutes } from '../utils';
+import { extractDate, extractTime, getFixedPercentage, getHoursAndMinutes } from '../utils';
 
 import './VisitTable.scss';
 
@@ -9,6 +9,17 @@ type Props = {
 
 const VisitTable = ({ visits }: Props) => {
   const totalMinutes = visits.reduce((sum, visit) => sum + visit.durationMinutes, 0);
+  const percentagesByColor = visits.reduce((sum, visit) => {
+    sum[visit.weight.color] += visit.weight.percentage;
+    return sum;
+  }, {
+    '🔴': 0,
+    '🟡': 0,
+    '🟢': 0
+  });
+
+  const totalLat = visits.reduce((sum, visit) => sum + visit.location.latitude * visit.weight.percentage, 0) / 100
+  const totalLong = visits.reduce((sum, visit) => sum + visit.location.longitude * visit.weight.percentage, 0) / 100
 
   return (
     <div className="page-table visit-table container">
@@ -16,11 +27,12 @@ const VisitTable = ({ visits }: Props) => {
       <table>
         <thead>
           <tr>
-            <th>Date</th>
+            <th className='date-th'>Date</th>
             <th>Location</th>
             <th>Arrival</th>
             <th>Departure</th>
             <th>Duration</th>
+            <th className='weight-th'>Weight</th>
           </tr>
         </thead>
         <tbody>
@@ -31,13 +43,20 @@ const VisitTable = ({ visits }: Props) => {
               <td>{extractTime(v.arrivalTime)}</td>
               <td>{extractTime(v.departureTime)}</td>
               <td>{getHoursAndMinutes(v.durationMinutes)}</td>
+              <td>{v.weight.color} {getFixedPercentage(v.weight.percentage)}</td>
             </tr>
           ))}
         </tbody>
         <tfoot>
           <tr>
-            <td colSpan={4}>Total</td>
+            <td>Total</td>
+            <td colSpan={3}>{totalLat.toFixed(4)}, {totalLong.toFixed(4)}</td>
             <td>{getHoursAndMinutes(totalMinutes)}</td>
+            <td>
+              {'🔴'} {getFixedPercentage(percentagesByColor['🔴'])} <br/>
+              {'🟡'} {getFixedPercentage(percentagesByColor['🟡'])} <br/>
+              {'🟢'} {getFixedPercentage(percentagesByColor['🟢'])} <br/>
+            </td>
           </tr>
         </tfoot>
       </table>

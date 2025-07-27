@@ -1,3 +1,5 @@
+import type { Weight } from "./commons"
+
 export type Location = {
   _id: string
   name: string
@@ -27,4 +29,5 @@ export type Visit = {
   arrivalTime: string
   departureTime: string
   durationMinutes: number
+  weight: Weight
 }
