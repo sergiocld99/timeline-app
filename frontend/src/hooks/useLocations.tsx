@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react"
-import axios from "axios"
 
 import type { Location } from "../../types/travel"
-import { backendBaseUrl } from "../constants"
+import LocationService from "../services/LocationService"
 
 const useLocations = () => {
   const [locations, setLocations] = useState<Location[]>([])
   const [error, setError] = useState(null)
 
   const fetchLocations = () => {
-    axios.get<Location[]>(`${backendBaseUrl}/locations`)
-      .then(response => setLocations(response.data))
+    LocationService.getAll()
+      .then(data => setLocations(data))
       .catch(error => setError(error))
   }
 

@@ -7,7 +7,7 @@ import { backendBaseUrl } from '../constants';
 const baseUrl = `${backendBaseUrl}/travels`;
 
 class TravelService {
-  static async createTravel(travelData: FormData) {
+  static async create(travelData: FormData) {
     try {
       const response = await axios.post<Travel>(baseUrl, travelData);
       return response.data;
@@ -17,7 +17,7 @@ class TravelService {
     }
   }
 
-  static async getTravels() {
+  static async getAll() {
     try {
       const response = await axios.get<Travel[]>(baseUrl);
       return response.data;

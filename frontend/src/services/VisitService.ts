@@ -1,4 +1,6 @@
 import axios from "axios";
+
+import type { Visit } from "../../types/travel";
 import { backendBaseUrl } from "../constants";
 
 const baseUrl = `${backendBaseUrl}/visits`;
@@ -6,6 +8,16 @@ const baseUrl = `${backendBaseUrl}/visits`;
 class VisitService {
   static getPersistentCalculatorUrl(date: string) {
     return `${baseUrl}/calculate/${date}?persist=true`;
+  }
+
+  static async getAll() {
+    try {
+      const response = await axios.get<Visit[]>(baseUrl);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching visits:", error);
+      throw error;
+    }
   }
 
   static async persistIfNeeded(date: string): Promise<boolean> {

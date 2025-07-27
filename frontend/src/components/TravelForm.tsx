@@ -31,7 +31,7 @@ const TravelForm = ({ onTravelAdded }: Props) => {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    TravelService.createTravel(formData).then(response => {
+    TravelService.create(formData).then(data => {
       VisitService.persistIfNeeded(formData.startTime.split('T')[0]).then((persisted) => {
         if (persisted) {
           alert("Travel with visit added successfully!");
