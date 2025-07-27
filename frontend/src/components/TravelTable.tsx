@@ -1,5 +1,6 @@
 import type { Travel } from '../../types/travel';
 import { getHoursAndMinutes } from '../utils';
+import { renderTotalWeightsCell, renderWeight } from '../utils/weight';
 
 import './TravelTable.scss';
 
@@ -23,6 +24,7 @@ const TravelTable = ({ travels }: Props) => {
             <th>Distance</th>
             <th>Duration</th>
             <th className='speed-th'>Speed</th>
+            <th className='weight-th'>Weight</th>
           </tr>
         </thead>
         <tbody>
@@ -34,6 +36,7 @@ const TravelTable = ({ travels }: Props) => {
               <td>{t.distance} km</td>
               <td>{t.duration} min</td>
               <td>{t.speed.toFixed(1)} km/h</td>
+              <td>{renderWeight(t)}</td>
             </tr>
           ))}
         </tbody>
@@ -44,6 +47,7 @@ const TravelTable = ({ travels }: Props) => {
             <td>{totalDistance.toFixed(0)} km</td>
             <td>{getHoursAndMinutes(totalMinutes)}</td>
             <td>{(totalDistance / (totalMinutes / 60)).toFixed(1)} km/h</td>
+            <td>{renderTotalWeightsCell(travels)}</td>
           </tr>
         </tfoot>
       </table>

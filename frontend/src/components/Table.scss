@@ -3,6 +3,8 @@
   height: fit-content;
   border-collapse: collapse;
   margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
 
   th, td {
     padding: 0.6rem;

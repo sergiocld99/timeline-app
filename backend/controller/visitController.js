@@ -1,44 +1,6 @@
 import Visit from "../models/Visit.js";
 import { calculateVisitsForDate } from "../services/visitService.js";
-import { getDateFrom } from "../utils/index.js";
-
-const isEven = (num) => num % 2 === 0
-
-const getMedian = (sortedArr) => {
-  const len = sortedArr.length
-
-  if (isEven(len)) {
-    return (sortedArr[len / 2 - 1] + sortedArr[len / 2]) / 2
-  }
-
-  return sortedArr[(len-1) / 2]
-}
-
-const withWeight = (visits, sortingField) => {
-  const len = visits.length
-  let values = []
-
-  if (len === 0) {
-    return visits
-  }
-
-  visits.forEach(v => values.push(v.get(sortingField)))
-  values = values.sort((a,b) => a-b)
-
-  const median = getMedian(values)
-  const sum = values.reduce((total, curr) => total + curr, 0)
-
-  return visits.map(v => {
-    const ratio = v.get(sortingField) / median
-
-    v.set('weight', {
-      color: ratio >= 2 ? '🔴' : ratio > 0.5 ? '🟡' : '🟢',
-      percentage: 100 * v.get(sortingField) / sum
-    }, { strict: false });
-
-    return v
-  })
-}
+import { getDateFrom, withWeight } from "../utils/index.js";
 
 export const getAllVisits = (req, res) => {
   const dateFrom = getDateFrom(req)

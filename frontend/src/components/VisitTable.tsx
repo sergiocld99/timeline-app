@@ -1,5 +1,6 @@
 import type { Visit } from '../../types/travel';
-import { extractDate, extractTime, getFixedPercentage, getHoursAndMinutes } from '../utils';
+import { extractDate, extractTime, getHoursAndMinutes } from '../utils';
+import { renderTotalWeightsCell, renderWeight } from '../utils/weight';
 
 import './VisitTable.scss';
 
@@ -9,15 +10,6 @@ type Props = {
 
 const VisitTable = ({ visits }: Props) => {
   const totalMinutes = visits.reduce((sum, visit) => sum + visit.durationMinutes, 0);
-  const percentagesByColor = visits.reduce((sum, visit) => {
-    sum[visit.weight.color] += visit.weight.percentage;
-    return sum;
-  }, {
-    '🔴': 0,
-    '🟡': 0,
-    '🟢': 0
-  });
-
   const totalLat = visits.reduce((sum, visit) => sum + visit.location.latitude * visit.weight.percentage, 0) / 100
   const totalLong = visits.reduce((sum, visit) => sum + visit.location.longitude * visit.weight.percentage, 0) / 100
 
@@ -43,7 +35,7 @@ const VisitTable = ({ visits }: Props) => {
               <td>{extractTime(v.arrivalTime)}</td>
               <td>{extractTime(v.departureTime)}</td>
               <td>{getHoursAndMinutes(v.durationMinutes)}</td>
-              <td>{v.weight.color} {getFixedPercentage(v.weight.percentage)}</td>
+              <td>{renderWeight(v)}</td>
             </tr>
           ))}
         </tbody>
@@ -52,11 +44,7 @@ const VisitTable = ({ visits }: Props) => {
             <td>Total</td>
             <td colSpan={3}>{totalLat.toFixed(4)}, {totalLong.toFixed(4)}</td>
             <td>{getHoursAndMinutes(totalMinutes)}</td>
-            <td>
-              {'🔴'} {getFixedPercentage(percentagesByColor['🔴'])} <br/>
-              {'🟡'} {getFixedPercentage(percentagesByColor['🟡'])} <br/>
-              {'🟢'} {getFixedPercentage(percentagesByColor['🟢'])} <br/>
-            </td>
+            <td>{renderTotalWeightsCell(visits)}</td>
           </tr>
         </tfoot>
       </table>

@@ -1,4 +1,4 @@
-import type { Weight } from "./commons"
+import type { Weight, Weighted } from "./commons"
 
 export type Location = {
   _id: string
@@ -9,7 +9,7 @@ export type Location = {
   notes: string
 }
 
-export type Travel = {
+export type Travel = Weighted & {
   _id: string
   startTime: string
   endTime: string
@@ -22,12 +22,11 @@ export type Travel = {
   speed: number
 }
 
-export type Visit = {
+export type Visit = Weighted & {
   _id: string
   date: string
   location: Location
   arrivalTime: string
   departureTime: string
   durationMinutes: number
-  weight: Weight
 }

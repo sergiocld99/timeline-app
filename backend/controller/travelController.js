@@ -1,5 +1,5 @@
 import Travel from "../models/Travel.js";
-import { getDateFrom } from "../utils/index.js";
+import { getDateFrom, withWeight } from "../utils/index.js";
 
 const buildShortDate = (date) => {
   let dateParts = date.toISOString().split('T')[0].split('-');
@@ -18,14 +18,17 @@ export const getAllTravels = (req, res) => {
 
   // Fetch all travels with populated origin and destination (Location) fields
   Travel.find({ startTime: { $gte: dateFrom } }).populate('origin destination').sort({ startTime: -1 }).then(travels => {
-    travels = travels.map(t => ({
-      ...t.toObject(),
-      shortDate: buildShortDate(t.startTime),
-      duration: calculateDuration(t.startTime, t.endTime),
-      speed: (t.distance / calculateDuration(t.startTime, t.endTime)) * 60 // speed in km/h
-    }));
+    travels = travels.map(t => {
+      const duration = calculateDuration(t.startTime, t.endTime)
 
-    res.json(travels);
+      t.set('shortDate', buildShortDate(t.startTime), { strict: false })
+      t.set('duration', duration, { strict: false })
+      t.set('speed', (t.distance / duration) * 60, { strict: false })
+
+      return t
+    })
+
+    res.json(withWeight(travels, 'duration'));
   }).catch(err => {
     res.status(500).json({ message: 'Error fetching travels', error: err.message });
   });
