@@ -1,4 +1,5 @@
 import Travel from "../models/Travel.js";
+import { getDateFrom } from "../utils/index.js";
 
 const buildShortDate = (date) => {
   let dateParts = date.toISOString().split('T')[0].split('-');
@@ -13,14 +14,7 @@ const calculateDuration = (startTime, endTime) => {
 };
 
 export const getAllTravels = (req, res) => {
-  let dateFrom
-
-  if (req.query.dateFrom) {
-    dateFrom = new Date(req.query.dateFrom);
-  } else {
-    dateFrom = new Date(Date.now());
-    dateFrom.setMonth(dateFrom.getMonth() - 1);
-  }
+  const dateFrom = getDateFrom(req)
 
   // Fetch all travels with populated origin and destination (Location) fields
   Travel.find({ startTime: { $gte: dateFrom } }).populate('origin destination').sort({ startTime: -1 }).then(travels => {

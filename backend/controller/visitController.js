@@ -1,18 +1,50 @@
 import Visit from "../models/Visit.js";
 import { calculateVisitsForDate } from "../services/visitService.js";
+import { getDateFrom } from "../utils/index.js";
 
-export const getAllVisits = (req, res) => {
-  let dateFrom
+const isEven = (num) => num % 2 === 0
 
-  if (req.query.dateFrom) {
-    dateFrom = new Date(req.query.dateFrom);
-  } else {
-    dateFrom = new Date(Date.now());
-    dateFrom.setMonth(dateFrom.getMonth() - 1);
+const getMedian = (sortedArr) => {
+  const len = sortedArr.length
+
+  if (isEven(len)) {
+    return (sortedArr[len / 2 - 1] + sortedArr[len / 2]) / 2
   }
 
+  return sortedArr[(len-1) / 2]
+}
+
+const withWeight = (visits, sortingField) => {
+  const len = visits.length
+  let values = []
+
+  if (len === 0) {
+    return visits
+  }
+
+  visits.forEach(v => values.push(v.get(sortingField)))
+  values = values.sort((a,b) => a-b)
+
+  const median = getMedian(values)
+  const sum = values.reduce((total, curr) => total + curr, 0)
+
+  return visits.map(v => {
+    const ratio = v.get(sortingField) / median
+
+    v.set('weight', {
+      color: ratio >= 2 ? '🔴' : ratio > 0.5 ? '🟡' : '🟢',
+      percentage: 100 * v.get(sortingField) / sum
+    }, { strict: false });
+
+    return v
+  })
+}
+
+export const getAllVisits = (req, res) => {
+  const dateFrom = getDateFrom(req)
+
   Visit.find({ date: { $gte: dateFrom } }).sort({ arrivalTime: -1 }).populate('location').then(visits => {
-    res.json(visits);
+    res.json(withWeight(visits, 'durationMinutes'));
   }).catch(err => {
     res.status(500).json({ message: 'Error fetching visits', error: err.message });
   });
