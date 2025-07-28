@@ -5,7 +5,7 @@ import TravelService from "../services/TravelService"
 
 const useTravels = () => {
   const [travels, setTravels] = useState<Travel[]>([])
-  const [error, setError] = useState(null)
+  const [error, setError] = useState<unknown>(null)
 
   const fetchTravels = () => {
     TravelService.getAll()

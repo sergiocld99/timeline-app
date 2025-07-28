@@ -5,7 +5,7 @@ import VisitService from "../services/VisitService"
 
 const useVisits = () => {
   const [visits, setVisits] = useState<Visit[]>([])
-  const [error, setError] = useState(null)
+  const [error, setError] = useState<unknown>(null)
 
   const fetchVisits = () => {
     VisitService.getAll()

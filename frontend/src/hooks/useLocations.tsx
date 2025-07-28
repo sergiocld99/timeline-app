@@ -5,7 +5,7 @@ import LocationService from "../services/LocationService"
 
 const useLocations = () => {
   const [locations, setLocations] = useState<Location[]>([])
-  const [error, setError] = useState(null)
+  const [error, setError] = useState<unknown>(null)
 
   const fetchLocations = () => {
     LocationService.getAll()

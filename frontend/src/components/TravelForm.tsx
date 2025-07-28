@@ -31,14 +31,13 @@ const TravelForm = ({ onTravelAdded }: Props) => {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    TravelService.create(formData).then(data => {
-      VisitService.persistIfNeeded(formData.startTime.split('T')[0]).then((persisted) => {
-        if (persisted) {
-          alert("Travel with visit added successfully!");
-        } else {
-          alert("Travel added successfully");
-        }
-      });
+    TravelService.create(formData).then(async () => {
+      const persisted = await VisitService.persistIfNeeded(formData.startTime.split('T')[0]);
+      if (persisted) {
+        alert("Travel with visit added successfully!");
+      } else {
+        alert("Travel added successfully");
+      }
 
       setFormData({
         ...formData,
