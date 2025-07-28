@@ -1,0 +1,11 @@
+@use './Table.scss';
+
+.visit-table {
+  .date-th {
+    min-width: 50px;
+  }
+  
+  .weight-th {
+    min-width: 80px;
+  }
+}
