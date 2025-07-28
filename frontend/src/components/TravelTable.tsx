@@ -11,6 +11,16 @@ type Props = {
 const TravelTable = ({ travels }: Props) => {
   const totalMinutes = travels.reduce((total, travel) => total + travel.duration, 0);
   const totalDistance = travels.reduce((total, travel) => total + travel.distance, 0);
+  
+  const totalLat = travels.reduce((total, travel) => {
+    const currentLat = (travel.origin.latitude + travel.destination.latitude) / 200
+    return total + currentLat * travel.weight.percentage
+  }, 0)
+
+  const totalLong = travels.reduce((total, travel) => {
+    const currentLong = (travel.origin.longitude + travel.destination.longitude) / 200
+    return total + currentLong * travel.weight.percentage
+  }, 0)
 
   return (
     <div className="page-table travel-table container">
@@ -43,7 +53,7 @@ const TravelTable = ({ travels }: Props) => {
         <tfoot>
           <tr>
             <td>Total</td>
-            <td colSpan={2}></td>
+            <td colSpan={2}>{totalLat.toFixed(4)}, {totalLong.toFixed(4)}</td>
             <td>{totalDistance.toFixed(0)} km</td>
             <td>{getHoursAndMinutes(totalMinutes)}</td>
             <td>{(totalDistance / (totalMinutes / 60)).toFixed(1)} km/h</td>
