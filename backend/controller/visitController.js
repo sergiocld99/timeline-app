@@ -12,38 +12,44 @@ export const getAllVisits = (req, res) => {
   });
 }
 
-export const calculateVisitsController = (req, res) => {
+export const calculateVisitsController = (req, res, next) => {
   const { date } = req.params;
-  const { persist } = req.query;
 
   calculateVisitsForDate(date).then(visits => {
     if (!visits || visits.length === 0) {
+      res.locals.visits = [];
       return res.status(404).json({ message: 'No visits found for the specified date' });
     }
 
-    if (persist === 'true') {
-      Visit.insertMany(visits).then(() => {
-        res.status(201).json({
-          visits,
-          persisted: true,
-          count: visits.length
-        });
-      }).catch(error => {
-        console.error("Error persisting visits:", error);
-        if (error.code === 11000) {
-          return res.status(409).json({ visits, persisted: false, error: error.message });
-        }
+    res.locals.visits = visits;
+    next();
+  }).catch(error => {
+    res.status(500).json({ error: error.message || "Failed to calculate visits"});
+  });
+}
 
-        return res.status(500).json({ error: "Failed to persist visits" });
-      });
-    } else {
-      res.status(200).json({
+export const persistIfNeeded = (req, res) => {
+  const { persist } = req.query;
+  const { visits } = res.locals;
+
+  if (persist === 'true') {
+    Visit.insertMany(visits).then(() => {
+      res.status(201).json({
         visits,
+        persisted: true,
         count: visits.length
       });
-    }
-  }).catch(error => {
-    console.error("Error calculating visits:", error);
-    res.status(500).json({ error: "Failed to calculate visits" });
-  });
+    }).catch(error => {
+      if (error.code === 11000) {
+        return res.status(409).json({ visits, persisted: false, error: error.message });
+      }
+
+      return res.status(500).json({ error: "Failed to persist visits" });
+    });
+  } else {
+    res.status(200).json({
+      visits,
+      count: visits.length
+    });
+  }
 }
