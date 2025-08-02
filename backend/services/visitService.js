@@ -14,7 +14,7 @@ const getTravelsStartedOn = async (date) => {
   return travels
 }
 
-const getMinutesBetween = (startTime, endTime) => {
+export const getMinutesBetween = (startTime, endTime) => {
   return Math.round((endTime - startTime) / 60000);
 }
 
@@ -46,5 +46,6 @@ export const calculateVisitsForDate = async (date) => {
     })
   }
 
-  return visits;
+  // reverse order (most recent first)
+  return visits.reverse();
 }

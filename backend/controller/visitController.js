@@ -1,5 +1,5 @@
 import Visit from "../models/Visit.js";
-import { calculateVisitsForDate } from "../services/visitService.js";
+import { calculateVisitsForDate, getMinutesBetween } from "../services/visitService.js";
 import { getDateFrom, withWeight } from "../utils/index.js";
 
 export const getAllVisits = (req, res) => {
@@ -52,4 +52,23 @@ export const persistIfNeeded = (req, res) => {
       count: visits.length
     });
   }
+}
+
+export const createVisit = (req, res) => {
+  const { date, arrivalTime, departureTime, location } = req.body;
+  const durationMinutes = getMinutesBetween(arrivalTime, departureTime);
+
+  const visit = new Visit({
+    date,
+    location,
+    arrivalTime,
+    departureTime,
+    durationMinutes
+  });
+
+  visit.save().then(savedVisit => {
+    res.status(201).json(savedVisit);
+  }).catch(err => {
+    res.status(400).json({ message: 'Error creating visit', error: err.message });
+  });
 }
