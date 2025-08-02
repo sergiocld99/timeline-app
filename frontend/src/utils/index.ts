@@ -29,3 +29,20 @@ export const getTimeFromCurrent = (hoursBefore: number) => {
 export const getFixedPercentage = (percentage: number) => {
   return `${percentage.toFixed(percentage < 10 ? 1 : 0)}%`
 }
+
+export const getEmojiForMode = (mode: string) => {
+  switch (mode) {
+    case 'car':
+      return '🚗';
+    case 'bus':
+      return '🚌';
+    case 'train':
+      return '🚆';
+    case 'subway':
+      return '🚇';
+    case 'walking':
+      return '🚶';
+    default:
+      return '🤔'
+  }
+}

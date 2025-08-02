@@ -1,5 +1,5 @@
 import type { Travel } from '../../types/travel';
-import { getHoursAndMinutes } from '../utils';
+import { getEmojiForMode, getHoursAndMinutes } from '../utils';
 import { renderTotalWeightsCell, renderWeight } from '../utils/weight';
 
 import './TravelTable.scss';
@@ -29,6 +29,7 @@ const TravelTable = ({ travels }: Props) => {
         <thead>
           <tr>
             <th className='date-th'>Date</th>
+            <th>M</th>
             <th>From</th>
             <th>To</th>
             <th>Distance</th>
@@ -41,6 +42,7 @@ const TravelTable = ({ travels }: Props) => {
           {travels.map(t => (
             <tr key={t._id}>
               <td>{t.shortDate}</td>
+              <td>{getEmojiForMode(t.modeOfTransport)}</td>
               <td>{t.origin.name}</td>
               <td>{t.destination.name}</td>
               <td>{t.distance} km</td>
@@ -53,7 +55,7 @@ const TravelTable = ({ travels }: Props) => {
         <tfoot>
           <tr>
             <td>Total</td>
-            <td colSpan={2}>{totalLat.toFixed(4)}, {totalLong.toFixed(4)}</td>
+            <td colSpan={3}>{totalLat.toFixed(4)}, {totalLong.toFixed(4)}</td>
             <td>{totalDistance.toFixed(0)} km</td>
             <td>{getHoursAndMinutes(totalMinutes)}</td>
             <td>{(totalDistance / (totalMinutes / 60)).toFixed(1)} km/h</td>
