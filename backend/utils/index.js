@@ -5,6 +5,7 @@ export const getDateFrom = (req, daysFallback = 30) => {
 
   let dateFrom = new Date(Date.now());
   dateFrom.setDate(dateFrom.getDate() - daysFallback)
+  dateFrom.setHours(0, 0, 0, 0);
 
   return dateFrom;
 }
