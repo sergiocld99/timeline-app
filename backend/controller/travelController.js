@@ -1,5 +1,5 @@
 import Travel from "../models/Travel.js";
-import { getDateFrom, withWeight } from "../utils/index.js";
+import { getDateFrom, getDateTo, withWeight } from "../utils/index.js";
 
 const buildShortDate = (date) => {
   let dateParts = date.toISOString().split('T')[0].split('-');
@@ -15,9 +15,11 @@ const calculateDuration = (startTime, endTime) => {
 
 export const getAllTravels = (req, res) => {
   const dateFrom = getDateFrom(req)
+  const dateTo = getDateTo(req)
 
   // Fetch all travels with populated origin and destination (Location) fields
-  Travel.find({ startTime: { $gte: dateFrom } }).populate('origin destination').sort({ startTime: -1 }).then(travels => {
+  Travel.find({ startTime: { $gte: dateFrom }, endTime: { $lte: dateTo } })
+  .populate('origin destination').sort({ startTime: -1 }).then(travels => {
     travels = travels.map(t => {
       const duration = calculateDuration(t.startTime, t.endTime)
 

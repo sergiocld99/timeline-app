@@ -17,9 +17,13 @@ class TravelService {
     }
   }
 
-  static async getAll() {
+  static async getAll(dateFrom?: string, dateTo?: string) {
+    const url = new URL(baseUrl)
+    if (dateFrom) url.searchParams.append("dateFrom", dateFrom)
+    if (dateTo) url.searchParams.append("dateTo", dateTo)
+
     try {
-      const response = await axios.get<Travel[]>(baseUrl);
+      const response = await axios.get<Travel[]>(url.toString());
       return response.data;
     } catch (error) {
       console.error("Error fetching travels:", error);

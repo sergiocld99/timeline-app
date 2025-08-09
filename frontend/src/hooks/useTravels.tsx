@@ -7,8 +7,8 @@ const useTravels = () => {
   const [travels, setTravels] = useState<Travel[]>([])
   const [error, setError] = useState<unknown>(null)
 
-  const fetchTravels = () => {
-    TravelService.getAll()
+  const fetchTravels = (dateFrom?: string, dateTo?: string) => {
+    TravelService.getAll(dateFrom, dateTo)
       .then(data => setTravels(data))
       .catch(error => setError(error))
   }

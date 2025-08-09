@@ -16,8 +16,8 @@ const TravelForm = ({ onTravelAdded }: Props) => {
   const [formData, setFormData] = useState({
     origin: "",
     destination: "",
-    startTime: getTimeFromCurrent(5),
-    endTime: getTimeFromCurrent(3),
+    startTime: getTimeFromCurrent(2),
+    endTime: getTimeFromCurrent(0),
     modeOfTransport: "car",
     distance: "",
   });
