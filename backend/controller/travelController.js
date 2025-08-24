@@ -75,3 +75,12 @@ export const updateTravel = (req, res) => {
     }
   );
 }
+
+export const deleteTravel = (req, res) => {
+  const { id } = req.params;
+  Travel.findByIdAndDelete(id).then(deletedTravel => {
+    res.status(200).json(deletedTravel);
+  }).catch(err => {
+    res.status(400).json({ message: 'Error deleting travel', error: err.message });
+  });
+}

@@ -73,3 +73,24 @@ export const createVisit = (req, res) => {
     res.status(400).json({ message: 'Error creating visit', error: err.message });
   });
 }
+
+export const updateVisit = (req, res) => {
+  const { id } = req.params;
+  const { date, arrivalTime, departureTime, location } = req.body;
+  const durationMinutes = getMinutesBetween(arrivalTime, departureTime);
+
+  Visit.findByIdAndUpdate(id, { date, arrivalTime, departureTime, durationMinutes, location }, { new: true }).then(updatedVisit => {
+    res.status(200).json(updatedVisit);
+  }).catch(err => {
+    res.status(400).json({ message: 'Error updating visit', error: err.message });
+  });
+}
+
+export const deleteVisit = (req, res) => {
+  const { id } = req.params;
+  Visit.findByIdAndDelete(id).then(deletedVisit => {
+    res.status(200).json(deletedVisit);
+  }).catch(err => {
+    res.status(400).json({ message: 'Error deleting visit', error: err.message });
+  });
+}
