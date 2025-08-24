@@ -35,11 +35,38 @@
     justify-content: center;
     
     button {
-      padding: 2px 6px;
-      border: none;
+      padding: 4px 8px;
+      border: 1px solid #ccc;
       border-radius: 4px;
       cursor: pointer;
       font-size: 12px;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        border-color: #666;
+        background-color: #f8f9fa;
+      }
+      
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      
+      &.save-btn {
+        border-color: #28a745;
+      }
+      
+      &.cancel-btn {
+        border-color: #dc3545;
+      }
+
+      &.edit-btn {
+        border-color: #ffc107;
+      }
+
+      &.delete-btn {
+        border-color: #dc3545;
+      }
     }
   }
 }

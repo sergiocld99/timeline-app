@@ -24,11 +24,22 @@ const useTravels = () => {
     }
   }
 
+  const deleteTravel = async (id: string) => {
+    try {
+      await TravelService.delete(id);
+      // Remove from local state immediately for better UX
+      setTravels(prevTravels => prevTravels.filter(travel => travel._id !== id));
+    } catch (error) {
+      setError(error);
+      throw error;
+    }
+  }
+
   useEffect(() => {
     fetchTravels()
   }, [])
 
-  return { travels, error, refetch: fetchTravels, updateTravel }
+  return { travels, error, refetch: fetchTravels, updateTravel, deleteTravel }
 }
 
 export default useTravels;

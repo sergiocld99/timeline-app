@@ -1,16 +1,18 @@
-import { useState } from "react";
-import toast from "react-hot-toast";
+import { useState } from 'react';
+import type { Travel } from '../../types/travel';
+import { getEmojiForMode, getHoursAndMinutes } from '../utils';
+import { renderTotalWeightsCell, renderWeight } from '../utils/weight';
+import toast from 'react-hot-toast';
 
-import { getEmojiForMode, getHoursAndMinutes } from "../utils";
-import { renderTotalWeightsCell, renderWeight } from "../utils/weight";
-import type { Travel } from "../../types/travel"
+import './TravelTable.scss';
 
 type Props = {
   travels: Travel[];
   onUpdate: (id: string, updates: Partial<Travel>) => Promise<void>;
+  onDelete: (id: string) => Promise<void>;
 }
 
-const TravelTableContent = ({ travels, onUpdate }: Props) => {
+const TravelTableContent = ({ travels, onUpdate, onDelete }: Props) => {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editValues, setEditValues] = useState<{ distance: string; duration: string }>({ distance: '', duration: '' })
   const [isSaving, setIsSaving] = useState(false)
@@ -73,6 +75,21 @@ const TravelTableContent = ({ travels, onUpdate }: Props) => {
     setEditValues(prev => ({ ...prev, [field]: value }));
   };
 
+  const handleDelete = async (travel: Travel) => {
+    if (!onDelete) return;
+
+    try {
+      setIsSaving(true);
+      await onDelete(travel._id);
+      toast.success('Travel deleted successfully!');
+    } catch (error) {
+      console.error('Error deleting travel:', error);
+      toast.error('Failed to delete travel');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const renderEditableCell = (travel: Travel, field: 'distance' | 'duration', step: number) => {
     if (editingId === travel._id) {
       return (
@@ -113,7 +130,25 @@ const TravelTableContent = ({ travels, onUpdate }: Props) => {
         </div>
       );
     }
-    return null;
+    
+    return (
+      <div className="action-buttons">
+        <button
+          onClick={() => { void handleEdit(travel); }}
+          className="edit-btn"
+          title="Edit travel"
+        >
+          ✏️
+        </button>
+        <button
+          onClick={() => { void handleDelete(travel); }}
+          className="delete-btn"
+          title="Delete travel"
+        >
+          🗑️
+        </button>
+      </div>
+    );
   };
 
   return (
