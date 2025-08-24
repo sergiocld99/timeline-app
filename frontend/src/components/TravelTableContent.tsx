@@ -1,7 +1,9 @@
 import { useState } from "react";
-import type { Travel } from "../../types/travel"
+import toast from "react-hot-toast";
+
 import { getEmojiForMode, getHoursAndMinutes } from "../utils";
 import { renderTotalWeightsCell, renderWeight } from "../utils/weight";
+import type { Travel } from "../../types/travel"
 
 type Props = {
   travels: Travel[];
@@ -42,8 +44,8 @@ const TravelTableContent = ({ travels, onUpdate }: Props) => {
       const distance = parseFloat(editValues.distance);
       const duration = parseFloat(editValues.duration);
 
-      if (isNaN(distance) || isNaN(duration) || distance < 0 || duration < 0) {
-        alert('Please enter valid positive numbers for distance and duration');
+      if (isNaN(distance) || isNaN(duration) || distance <= 0 || duration <= 0) {
+        toast.error('Please enter valid positive numbers for distance and duration');
         return;
       }
 
@@ -56,7 +58,7 @@ const TravelTableContent = ({ travels, onUpdate }: Props) => {
       setEditValues({ distance: '', duration: '' });
     } catch (error) {
       console.error('Error updating travel:', error);
-      alert('Failed to update travel');
+      toast.error('Failed to update travel');
     } finally {
       setIsSaving(false);
     }
@@ -71,12 +73,12 @@ const TravelTableContent = ({ travels, onUpdate }: Props) => {
     setEditValues(prev => ({ ...prev, [field]: value }));
   };
 
-  const renderEditableCell = (travel: Travel, field: 'distance' | 'duration') => {
+  const renderEditableCell = (travel: Travel, field: 'distance' | 'duration', step: number) => {
     if (editingId === travel._id) {
       return (
         <input
           type="number"
-          step="0.1"
+          step={step}
           min="0"
           value={editValues[field]}
           onChange={(e) => handleInputChange(field, e.target.value)}
@@ -136,8 +138,8 @@ const TravelTableContent = ({ travels, onUpdate }: Props) => {
             <td>{getEmojiForMode(t.modeOfTransport)}</td>
             <td>{t.origin.name}</td>
             <td>{t.destination.name}</td>
-            <td>{renderEditableCell(t, 'distance')}</td>
-            <td>{renderEditableCell(t, 'duration')}</td>
+            <td>{renderEditableCell(t, 'distance', 0.1)}</td>
+            <td>{renderEditableCell(t, 'duration', 1)}</td>
             <td>{t.speed.toFixed(1)} km/h</td>
             <td>{renderWeight(t)}</td>
             <td>{renderActionButtons(t)}</td>

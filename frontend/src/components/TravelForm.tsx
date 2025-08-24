@@ -1,4 +1,5 @@
 import { ChangeEvent, FormEvent, useState } from "react";
+import toast from "react-hot-toast";
 
 import type { Location } from "../../types/travel";
 import { getTimeFromCurrent } from "../utils";
@@ -34,9 +35,9 @@ const TravelForm = ({ onTravelAdded }: Props) => {
     TravelService.create(formData).then(async () => {
       const persisted = await VisitService.persistIfNeeded(formData.startTime.split('T')[0]);
       if (persisted) {
-        alert("Travel with visit added successfully!");
+        toast.success("Travel with visit added successfully!");
       } else {
-        alert("Travel added successfully");
+        toast.success("Travel added successfully");
       }
 
       setFormData({
@@ -50,7 +51,7 @@ const TravelForm = ({ onTravelAdded }: Props) => {
       refetch();
     }).catch(error => {
       console.error("There was an error adding the travel!", error, formData);
-      alert("Failed to add travel. Please try again.");
+      toast.error("Failed to add travel. Please try again.");
     });
   };
 
