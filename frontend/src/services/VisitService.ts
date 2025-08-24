@@ -10,9 +10,13 @@ class VisitService {
     return `${baseUrl}/calculate/${date}?persist=true`;
   }
 
-  static async getAll() {
+  static async getAll(dateFrom?: string, dateTo?: string) {
+    const url = new URL(baseUrl)
+    if (dateFrom) url.searchParams.append("dateFrom", dateFrom)
+    if (dateTo) url.searchParams.append("dateTo", dateTo)
+
     try {
-      const response = await axios.get<Visit[]>(baseUrl);
+      const response = await axios.get<Visit[]>(url.toString());
       return response.data;
     } catch (error) {
       console.error("Error fetching visits:", error);

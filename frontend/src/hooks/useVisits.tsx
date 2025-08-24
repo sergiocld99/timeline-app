@@ -7,8 +7,8 @@ const useVisits = () => {
   const [visits, setVisits] = useState<Visit[]>([])
   const [error, setError] = useState<unknown>(null)
 
-  const fetchVisits = () => {
-    VisitService.getAll()
+  const fetchVisits = (dateFrom?: string, dateTo?: string) => {
+    VisitService.getAll(dateFrom, dateTo)
       .then(data => setVisits(data))
       .catch(error => setError(error))
   }

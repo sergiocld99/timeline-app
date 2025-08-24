@@ -1,11 +1,12 @@
 import Visit from "../models/Visit.js";
 import { calculateVisitsForDate, getMinutesBetween } from "../services/visitService.js";
-import { getDateFrom, withWeight } from "../utils/index.js";
+import { getDateFrom, getDateTo, withWeight } from "../utils/index.js";
 
 export const getAllVisits = (req, res) => {
   const dateFrom = getDateFrom(req)
+  const dateTo = getDateTo(req)
 
-  Visit.find({ date: { $gte: dateFrom } }).sort({ arrivalTime: -1 }).populate('location').then(visits => {
+  Visit.find({ date: { $gte: dateFrom, $lte: dateTo } }).sort({ arrivalTime: -1 }).populate('location').then(visits => {
     res.json(withWeight(visits, 'durationMinutes'));
   }).catch(err => {
     res.status(500).json({ message: 'Error fetching visits', error: err.message });
