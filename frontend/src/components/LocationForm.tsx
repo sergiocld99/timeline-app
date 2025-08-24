@@ -1,4 +1,5 @@
 import { ChangeEvent, FormEvent, useState } from "react";
+import toast from "react-hot-toast";
 
 import './LocationForm.scss';
 import LocationService from "../services/LocationService";
@@ -27,7 +28,7 @@ const LocationForm = ({ onLocationAdded }: Props) => {
     e.preventDefault();
 
     LocationService.create(formData).then(data => {
-      alert(`Location "${data.name}" added successfully!`);
+      toast.success(`Location "${data.name}" added successfully!`);
       setFormData({
         name: "",
         latitude: "",
@@ -38,7 +39,7 @@ const LocationForm = ({ onLocationAdded }: Props) => {
       onLocationAdded();
     }).catch(error => {
       console.error("There was an error adding the location!", error);
-      alert("Failed to add location. Please try again.");
+      toast.error("Failed to add location. Please try again.");
     });
   }
 

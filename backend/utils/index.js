@@ -5,8 +5,22 @@ export const getDateFrom = (req, daysFallback = 30) => {
 
   let dateFrom = new Date(Date.now());
   dateFrom.setDate(dateFrom.getDate() - daysFallback)
+  dateFrom.setHours(0, 0, 0, 0);
 
   return dateFrom;
+}
+
+export const getDateTo = (req) => {
+  const { dateTo } = req.query
+
+  if (dateTo) {
+    return new Date(dateTo)
+  }
+
+  let result = new Date(Date.now())
+  result.setHours(23,59,59,0);
+
+  return result;
 }
 
 export const isEven = (num) => num % 2 === 0

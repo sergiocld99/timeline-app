@@ -1,21 +1,23 @@
 import type { Visit } from '../../types/travel';
 import { extractDate, extractTime, getHoursAndMinutes } from '../utils';
 import { renderTotalWeightsCell, renderWeight } from '../utils/weight';
+import DateRangeSelector from './DateRangeSelector';
 
 import './VisitTable.scss';
 
 type Props = {
   visits: Visit[];
+  onUpdateDateRange: (dateFrom: string, dateTo: string) => void;
 }
 
-const VisitTable = ({ visits }: Props) => {
+const VisitTable = ({ visits, onUpdateDateRange }: Props) => {
   const totalMinutes = visits.reduce((sum, visit) => sum + visit.durationMinutes, 0);
   const totalLat = visits.reduce((sum, visit) => sum + visit.location.latitude * visit.weight.percentage, 0) / 100
   const totalLong = visits.reduce((sum, visit) => sum + visit.location.longitude * visit.weight.percentage, 0) / 100
 
   return (
     <div className="page-table visit-table container">
-      <h2>Last 30 Days Visits</h2>
+      <DateRangeSelector onUpdate={onUpdateDateRange} />
       <table>
         <thead>
           <tr>
