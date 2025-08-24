@@ -30,6 +30,16 @@ class TravelService {
       throw error;
     }
   }
+
+  static async update(id: string, travelData: Partial<Travel>) {
+    try {
+      const response = await axios.put<Travel>(`${baseUrl}/${id}`, travelData);
+      return response.data;
+    } catch (error) {
+      console.error("Error updating travel:", error);
+      throw error;
+    }
+  }
 }
 
 export default TravelService;
