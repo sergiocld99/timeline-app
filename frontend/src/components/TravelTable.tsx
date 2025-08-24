@@ -1,9 +1,10 @@
-import { ChangeEvent, useState } from 'react';
+import { useState } from 'react';
 import type { Travel } from '../../types/travel';
-import { getEmojiForMode, getTodayEndTime, getHoursAndMinutes, getStartDateFromCurrent } from '../utils';
+import { getEmojiForMode, getHoursAndMinutes } from '../utils';
 import { renderTotalWeightsCell, renderWeight } from '../utils/weight';
 
 import './TravelTable.scss';
+import DateRangeSelector from './DateRangeSelector';
 
 type Props = {
   travels: Travel[];
@@ -12,8 +13,6 @@ type Props = {
 }
 
 const TravelTable = ({ travels, onUpdateDateRange, onUpdateTravel }: Props) => {
-  const [dateFrom, setDateFrom] = useState(getStartDateFromCurrent(30))
-  const [dateTo, setDateTo] = useState(getTodayEndTime())
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editValues, setEditValues] = useState<{ distance: string; duration: string }>({ distance: '', duration: '' })
   const [isSaving, setIsSaving] = useState(false)
@@ -30,14 +29,6 @@ const TravelTable = ({ travels, onUpdateDateRange, onUpdateTravel }: Props) => {
     const currentLong = (travel.origin.longitude + travel.destination.longitude) / 200
     return total + currentLong * travel.weight.percentage
   }, 0)
-
-  const handleChangeDateFrom = (e: ChangeEvent<HTMLInputElement>) => {
-    setDateFrom(e.target.value)
-  };
-
-  const handleChangeDateTo = (e: ChangeEvent<HTMLInputElement>) => {
-    setDateTo(e.target.value)
-  };
 
   const handleEdit = (travel: Travel) => {
     setEditingId(travel._id);
@@ -129,13 +120,7 @@ const TravelTable = ({ travels, onUpdateDateRange, onUpdateTravel }: Props) => {
 
   return (
     <div className="page-table travel-table container">
-      <div className="page-header">
-        <h2>From</h2>
-        <input type="datetime-local" name="date_from" id="date_from" onChange={handleChangeDateFrom} value={dateFrom} />
-        <h2>to</h2>
-        <input type="datetime-local" name="date_to" id="date_to" onChange={handleChangeDateTo} value={dateTo} />
-        <button type="button" onClick={() => onUpdateDateRange(dateFrom, dateTo)}>✅</button>
-      </div>
+      <DateRangeSelector onUpdate={onUpdateDateRange} />
       <table>
         <thead>
           <tr>
