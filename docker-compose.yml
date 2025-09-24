@@ -8,10 +8,10 @@ services:
     depends_on:
       - mongo
 
-  frontend:
-    build: ./frontend
+  frontend-v2:
+    build: ./frontend-v2
     ports:
-      - "5173:80"
+      - "3002:3002"
     depends_on:
       - backend
 

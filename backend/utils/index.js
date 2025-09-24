@@ -35,6 +35,13 @@ export const getMedian = (sortedArr) => {
   return sortedArr[(len-1) / 2]
 }
 
+const getColorByRatio = (ratio) => {
+  if (ratio >= 3) return '🔴'
+  if (ratio >= 2) return '🟠'
+  if (ratio > 0.5) return '🟡'
+  return '🟢'
+}
+
 export const withWeight = (sourceArr, sortingField) => {
   const len = sourceArr.length
   let values = []
@@ -53,7 +60,7 @@ export const withWeight = (sourceArr, sortingField) => {
     const ratio = v.get(sortingField) / median
 
     v.set('weight', {
-      color: ratio >= 2 ? '🔴' : ratio > 0.5 ? '🟡' : '🟢',
+      color: getColorByRatio(ratio),
       percentage: 100 * v.get(sortingField) / sum
     }, { strict: false });
 

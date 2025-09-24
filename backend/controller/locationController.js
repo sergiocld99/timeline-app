@@ -42,3 +42,19 @@ export const updateLocation = (req, res) => {
     }
   );
 }
+
+export const deleteLocation = (req, res) => {
+  const { id } = req.params;
+
+  Location.findByIdAndDelete(id)
+    .then(deletedLocation => {
+      if (!deletedLocation) {
+        return res.status(404).json({ message: 'Location not found' });
+      }
+      res.json({ message: 'Location deleted successfully' });
+    })
+    .catch(err => {
+      res.status(400).json({ message: 'Error deleting location', error: err.message });
+    }
+  );
+}
