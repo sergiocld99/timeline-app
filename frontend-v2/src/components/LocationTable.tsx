@@ -16,6 +16,14 @@ type Props = {
 };
 
 const LocationTable = ({ locations }: Props) => {
+  const columnHeaders = ['Name', 'Latitude', 'Longitude', 'Zipcode', 'Notes'];
+
+  const renderColumnHeaders = () => (
+    columnHeaders.map((header) => (
+      <TableHead key={header} className="text-gray-700 dark:text-gray-300">{header}</TableHead>
+    ))
+  );
+
   return (
     <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardHeader>
@@ -25,11 +33,7 @@ const LocationTable = ({ locations }: Props) => {
         <Table>
           <TableHeader>
             <TableRow className="border-gray-200 dark:border-gray-700">
-              <TableHead className="text-gray-700 dark:text-gray-300">Name</TableHead>
-              <TableHead className="text-gray-700 dark:text-gray-300">Latitude</TableHead>
-              <TableHead className="text-gray-700 dark:text-gray-300">Longitude</TableHead>
-              <TableHead className="text-gray-700 dark:text-gray-300">Zipcode</TableHead>
-              <TableHead className="text-gray-700 dark:text-gray-300">Notes</TableHead>
+              {renderColumnHeaders()}
             </TableRow>
           </TableHeader>
           <TableBody>

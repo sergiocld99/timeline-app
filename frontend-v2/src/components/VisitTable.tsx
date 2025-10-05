@@ -18,6 +18,14 @@ const VisitTable = ({ visitsData, onUpdateDateRange }: Props) => {
   const totalLat = visits.reduce((sum, visit) => sum + visit.location.latitude * visit.weight.percentage, 0) / 100;
   const totalLong = visits.reduce((sum, visit) => sum + visit.location.longitude * visit.weight.percentage, 0) / 100;
 
+  const columnHeaders = ['Date', 'Location', 'Arrival', 'Departure', 'Duration', 'Weight', 'Actions'];
+
+  const renderColumnHeaders = () => (
+    columnHeaders.map((header) => (
+      <TableHead key={header} className="text-gray-700 dark:text-gray-300">{header}</TableHead>
+    ))
+  );
+
   return (
     <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardHeader>
@@ -28,12 +36,7 @@ const VisitTable = ({ visitsData, onUpdateDateRange }: Props) => {
         <Table>
           <TableHeader>
             <TableRow className="border-gray-200 dark:border-gray-700">
-              <TableHead className="text-gray-700 dark:text-gray-300">Date</TableHead>
-              <TableHead className="text-gray-700 dark:text-gray-300">Location</TableHead>
-              <TableHead className="text-gray-700 dark:text-gray-300">Arrival</TableHead>
-              <TableHead className="text-gray-700 dark:text-gray-300">Departure</TableHead>
-              <TableHead className="text-gray-700 dark:text-gray-300">Duration</TableHead>
-              <TableHead className="text-gray-700 dark:text-gray-300">Weight</TableHead>
+              {renderColumnHeaders()}
             </TableRow>
           </TableHeader>
           <TableBody>

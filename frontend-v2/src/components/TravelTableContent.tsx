@@ -199,19 +199,19 @@ const TravelTableContent = ({ travels, onUpdate, onDelete }: Props) => {
     );
   };
 
+  const columnHeaders = ['Date', 'Mode', 'From', 'To', 'Distance', 'Duration', 'Speed', 'Weight', 'Actions'];
+
+  const renderColumnHeaders = () => (
+    columnHeaders.map((header) => (
+      <TableHead key={header} className="text-gray-700 dark:text-gray-300">{header}</TableHead>
+    ))
+  );
+
   return (
     <Table>
       <TableHeader>
         <TableRow className="border-gray-200 dark:border-gray-700">
-          <TableHead className="text-gray-700 dark:text-gray-300">Date</TableHead>
-          <TableHead className="text-gray-700 dark:text-gray-300">Mode</TableHead>
-          <TableHead className="text-gray-700 dark:text-gray-300">From</TableHead>
-          <TableHead className="text-gray-700 dark:text-gray-300">To</TableHead>
-          <TableHead className="text-gray-700 dark:text-gray-300">Distance</TableHead>
-          <TableHead className="text-gray-700 dark:text-gray-300">Duration</TableHead>
-          <TableHead className="text-gray-700 dark:text-gray-300">Speed</TableHead>
-          <TableHead className="text-gray-700 dark:text-gray-300">Weight</TableHead>
-          <TableHead className="text-gray-700 dark:text-gray-300">Actions</TableHead>
+          {renderColumnHeaders()}
         </TableRow>
       </TableHeader>
       <TableBody>
