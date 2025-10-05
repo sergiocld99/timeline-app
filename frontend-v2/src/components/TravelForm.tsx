@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { Location } from "@/types/travel";
+import { AutocompleteLocation } from "@/components/AutocompleteLocation";
 import { getTimeFromCurrent } from "@/utils";
 import useLocations from "@/hooks/useLocations";
 import VisitService from "@/services/VisitService";
@@ -26,6 +26,7 @@ const TravelForm = ({ onTravelAdded }: Props) => {
     endTime: getTimeFromCurrent(0),
     modeOfTransport: "car",
     distance: "",
+    price: ""
   });
 
   const handleChange = (name: string, value: string) => {
@@ -76,11 +77,6 @@ const TravelForm = ({ onTravelAdded }: Props) => {
     }
   };
 
-  const renderLocation = (location: Location) => (
-    <SelectItem key={location._id} value={location._id}>
-      {location.zipcode} - {location.name}
-    </SelectItem>
-  );
 
   return (
     <Card className="w-full max-w-4xl mx-auto bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
@@ -92,26 +88,22 @@ const TravelForm = ({ onTravelAdded }: Props) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label htmlFor="origin" className="text-gray-700 dark:text-gray-300">Origin</Label>
-              <Select value={formData.origin} onValueChange={(value) => handleChange("origin", value)}>
-                <SelectTrigger className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
-                  <SelectValue placeholder="Select Origin" />
-                </SelectTrigger>
-                <SelectContent>
-                  {locations.map((location) => renderLocation(location))}
-                </SelectContent>
-              </Select>
+              <AutocompleteLocation
+                locations={locations}
+                value={formData.origin}
+                onValueChange={(value) => handleChange("origin", value)}
+                placeholder="Select Origin"
+              />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="destination" className="text-gray-700 dark:text-gray-300">Destination</Label>
-              <Select value={formData.destination} onValueChange={(value) => handleChange("destination", value)}>
-                <SelectTrigger className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
-                  <SelectValue placeholder="Select Destination" />
-                </SelectTrigger>
-                <SelectContent>
-                  {locations.map((location) => renderLocation(location))}
-                </SelectContent>
-              </Select>
+              <AutocompleteLocation
+                locations={locations}
+                value={formData.destination}
+                onValueChange={(value) => handleChange("destination", value)}
+                placeholder="Select Destination"
+              />
             </div>
           </div>
 
@@ -143,16 +135,16 @@ const TravelForm = ({ onTravelAdded }: Props) => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="space-y-2">
               <Label htmlFor="modeOfTransport" className="text-gray-700 dark:text-gray-300">Mode of Transport</Label>
               <Select value={formData.modeOfTransport} onValueChange={(value) => handleChange("modeOfTransport", value)}>
-                <SelectTrigger className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
+                <SelectTrigger className="w-full bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="car">🚘 Car</SelectItem>
-                  <SelectItem value="taxi">🚕 Taxi</SelectItem>
+                  <SelectItem value="taxi">🚖 Taxi</SelectItem>
                   <SelectItem value="bus">🚍 Bus</SelectItem>
                   <SelectItem value="train">🚉 Train</SelectItem>
                   <SelectItem value="subway">🚇 Subway</SelectItem>
@@ -174,6 +166,20 @@ const TravelForm = ({ onTravelAdded }: Props) => {
                 required
                 min="0"
                 step="0.1"
+                className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="price" className="text-gray-700 dark:text-gray-300">Price (optional)</Label>
+              <Input
+                id="price"
+                name="price"
+                type="number"
+                value={formData.price}
+                onChange={(e) => handleChange("price", e.target.value)}
+                min="0"
+                step="0.01"
                 className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
               />
             </div>

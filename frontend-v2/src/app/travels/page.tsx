@@ -19,7 +19,7 @@ const TravelsPage = () => {
     return (
       <>
         <Header />
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main className="mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center text-red-600 dark:text-red-400">
             Error loading travels. Please try refreshing the page.
           </div>
@@ -31,7 +31,7 @@ const TravelsPage = () => {
   return (
     <>
       <Header />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
+      <main className="mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
         <div className="space-y-8">
           <TravelStats loading={loadingStats} stats={statsByMode} />
           <TravelTable 

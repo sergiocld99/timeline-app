@@ -37,7 +37,7 @@ export const getAllTravels = (req, res) => {
 }
 
 export const createTravel = (req, res) => {
-  const { startTime, endTime, origin, destination, modeOfTransport, distance } = req.body;
+  const { startTime, endTime, origin, destination, modeOfTransport, distance, price } = req.body;
 
   const travel = new Travel({
     startTime,
@@ -45,7 +45,8 @@ export const createTravel = (req, res) => {
     origin,
     destination,
     modeOfTransport,
-    distance
+    distance,
+    price
   });
 
   travel.save().then(savedTravel => {
