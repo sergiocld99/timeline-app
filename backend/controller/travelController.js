@@ -2,9 +2,10 @@ import Travel from "../models/Travel.js";
 import { getDateFrom, getDateTo, withWeight } from "../utils/index.js";
 
 const buildShortDate = (date) => {
-  let dateParts = date.toISOString().split('T')[0].split('-');
-  let timeParts = date.toISOString().split('T')[1].split(':');
-  return `${dateParts[2]}/${dateParts[1]} ${timeParts[0]}:${timeParts[1]}`; // DD/MM HH:mm format
+  const dateParts = date.toISOString().split('T')[0].split('-');
+  const timeParts = date.toISOString().split('T')[1].split(':');
+  const shortYear = dateParts[0].substring(2);
+  return `${dateParts[2]}/${dateParts[1]}/${shortYear} ${timeParts[0]}:${timeParts[1]}`; // DD/MM/YY HH:mm format
 };
 
 const calculateDuration = (startTime, endTime) => {

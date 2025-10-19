@@ -9,7 +9,10 @@ export const getHoursAndMinutes = (totalMinutes: number) => {
 }
 
 export const extractDate = (dateTime: string) => {
-  return dateTime.split('T')[0].substring(5);
+  const parts = dateTime.split('T')[0].split('-')
+  const shortYear = parts[0].substring(2);
+
+  return `${parts[2]}/${parts[1]}/${shortYear}`
 }
 
 export const extractTime = (dateTime: string) => {
