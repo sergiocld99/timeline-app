@@ -1,22 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getStartDateFromCurrent, getTodayEndTime } from "@/utils";
+import { useDateRange } from "@/contexts/DateRangeContext";
 import { Check } from "lucide-react";
 
-type Props = {
-  onUpdate: (dateFrom: string, dateTo: string) => void;
-  currentDateFrom?: string;
-  currentDateTo?: string;
-};
+const DateRangeSelector = () => {
+  const { dateFrom: contextDateFrom, dateTo: contextDateTo, updateDateRange } = useDateRange();
+  const [dateFrom, setDateFrom] = useState(contextDateFrom);
+  const [dateTo, setDateTo] = useState(contextDateTo);
 
-const DateRangeSelector = ({ onUpdate, currentDateFrom, currentDateTo }: Props) => {
-  const [dateFrom, setDateFrom] = useState(currentDateFrom ?? getStartDateFromCurrent(30));
-  const [dateTo, setDateTo] = useState(currentDateTo ?? getTodayEndTime());
+  // Sync local state with context when context changes
+  useEffect(() => {
+    setDateFrom(contextDateFrom);
+    setDateTo(contextDateTo);
+  }, [contextDateFrom, contextDateTo]);
 
   const handleChangeDateFrom = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDateFrom(e.target.value);
@@ -60,7 +61,7 @@ const DateRangeSelector = ({ onUpdate, currentDateFrom, currentDateTo }: Props) 
           <div className="pt-6">
             <Button 
               type="button" 
-              onClick={() => onUpdate(dateFrom, dateTo)}
+              onClick={() => updateDateRange(dateFrom, dateTo)}
               className="bg-green-600 hover:bg-green-700 text-white"
             >
               <Check className="h-4 w-4 mr-2" />

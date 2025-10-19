@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 import type { Travel, TravelsData } from "@/types/travel";
 import TravelService from "@/services/TravelService";
+import { useDateRange } from "@/contexts/DateRangeContext";
 
 const useTravels = () => {
+  const { dateFrom, dateTo } = useDateRange();
   const [travels, setTravels] = useState<TravelsData>({ travels: [] });
   const [error, setError] = useState<unknown>(null);
   const [loading, setLoading] = useState(true);
@@ -50,8 +52,8 @@ const useTravels = () => {
   };
 
   useEffect(() => {
-    fetchTravels();
-  }, []);
+    fetchTravels(dateFrom, dateTo);
+  }, [dateFrom, dateTo]);
 
   return { travels, error, loading, refetch: fetchTravels, updateTravel, deleteTravel };
 };

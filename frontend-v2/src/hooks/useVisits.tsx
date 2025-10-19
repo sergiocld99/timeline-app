@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 import type { VisitsData } from "@/types/travel";
 import VisitService from "@/services/VisitService";
+import { useDateRange } from "@/contexts/DateRangeContext";
 
 const useVisits = () => {
+  const { dateFrom, dateTo } = useDateRange();
   const [visits, setVisits] = useState<VisitsData>({ visits: [] });
   const [error, setError] = useState<unknown>(null);
   const [loading, setLoading] = useState(true);
@@ -32,8 +34,8 @@ const useVisits = () => {
   }
 
   useEffect(() => {
-    fetchVisits();
-  }, []);
+    fetchVisits(dateFrom, dateTo);
+  }, [dateFrom, dateTo]);
 
   return { visits, error, loading, refetch: fetchVisits, deleteVisit };
 };

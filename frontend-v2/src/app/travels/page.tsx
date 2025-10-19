@@ -7,13 +7,8 @@ import useStats from "@/hooks/useStats";
 import useTravels from "@/hooks/useTravels";
 
 const TravelsPage = () => {
-  const { travels, error, refetch, updateTravel, deleteTravel } = useTravels();
-  const { loading: loadingStats, statsByMode, refetch: refetchStats } = useStats();
-
-  const handleUpdateDateRange = (dateFrom: string, dateTo: string) => {
-    refetch(dateFrom, dateTo);
-    refetchStats(dateFrom, dateTo);
-  };
+  const { travels, error, updateTravel, deleteTravel } = useTravels();
+  const { loading: loadingStats, statsByMode } = useStats();
 
   if (error) {
     return (
@@ -36,7 +31,6 @@ const TravelsPage = () => {
           <TravelStats loading={loadingStats} stats={statsByMode} />
           <TravelTable 
               travelsData={travels}
-              onUpdateDateRange={handleUpdateDateRange}
               onUpdateTravel={updateTravel}
               onDeleteTravel={deleteTravel}
             />

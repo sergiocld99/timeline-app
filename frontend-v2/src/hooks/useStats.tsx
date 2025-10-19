@@ -1,8 +1,10 @@
 import StatsService from "@/services/StatsService";
 import { StatByMode } from "@/types/stats";
 import { useEffect, useState } from "react";
+import { useDateRange } from "@/contexts/DateRangeContext";
 
 const useStats = () => {
+  const { dateFrom, dateTo } = useDateRange();
   const [statsByMode, setStatsByMode] = useState<StatByMode[]>([]);
   const [error, setError] = useState<unknown>(null);
   const [loading, setLoading] = useState(true);
@@ -21,8 +23,8 @@ const useStats = () => {
   };
 
   useEffect(() => {
-    fetchByMode();
-  }, []);
+    fetchByMode(dateFrom, dateTo);
+  }, [dateFrom, dateTo]);
 
   return { statsByMode, error, loading, refetch: fetchByMode };
 }

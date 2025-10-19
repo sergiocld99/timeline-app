@@ -12,12 +12,11 @@ import { Trash2 } from 'lucide-react';
 
 type Props = {
   visitsData: VisitsData;
-  onUpdateDateRange: (dateFrom: string, dateTo: string) => void;
   onDelete: (id: string) => Promise<void>;
 };
 
-const VisitTable = ({ visitsData, onUpdateDateRange, onDelete }: Props) => {
-  const { visits, dateFrom, dateTo } = visitsData;
+const VisitTable = ({ visitsData, onDelete }: Props) => {
+  const { visits } = visitsData;
   const totalMinutes = visits.reduce((sum, visit) => sum + visit.durationMinutes, 0);
   const totalLat = visits.reduce((sum, visit) => sum + visit.location.latitude * visit.weight.percentage, 0) / 100;
   const totalLong = visits.reduce((sum, visit) => sum + visit.location.longitude * visit.weight.percentage, 0) / 100;
@@ -59,7 +58,7 @@ const VisitTable = ({ visitsData, onUpdateDateRange, onDelete }: Props) => {
         <CardTitle className="text-gray-900 dark:text-white">Visits</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        <DateRangeSelector onUpdate={onUpdateDateRange} currentDateFrom={dateFrom} currentDateTo={dateTo} />
+        <DateRangeSelector />
         <Table>
           <TableHeader>
             <TableRow className="border-gray-200 dark:border-gray-700">

@@ -5,11 +5,7 @@ import VisitTable from "@/components/VisitTable";
 import useVisits from "@/hooks/useVisits";
 
 const VisitsPage = () => {
-  const { visits, error, refetch, deleteVisit } = useVisits();
-
-  const handleUpdateDateRange = (dateFrom: string, dateTo: string) => {
-    refetch(dateFrom, dateTo);
-  };
+  const { visits, error, deleteVisit } = useVisits();
 
   if (error) {
     return (
@@ -31,7 +27,6 @@ const VisitsPage = () => {
         <div className="space-y-8">
           <VisitTable
             visitsData={visits}
-            onUpdateDateRange={handleUpdateDateRange}
             onDelete={deleteVisit}
           />
         </div>
