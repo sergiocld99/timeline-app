@@ -10,6 +10,19 @@ const Header = () => {
 
   const isActive = (path: string) => pathname === path;
 
+  const renderNavItem = (path: string, label: string) => {
+    return (
+      <Link href={path}>
+        <Button 
+          variant={isActive(path) ? "default" : "ghost"}
+          className={isActive(path) ? "bg-blue-600 text-white" : ""}
+        >
+          {label}
+        </Button>
+      </Link>
+    )
+  }
+
   return (
     <header className="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -17,38 +30,11 @@ const Header = () => {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Timeline App</h1>
           <div className="flex items-center space-x-4">
             <nav className="flex space-x-4">
-              <Link href="/creator">
-                <Button 
-                  variant={isActive("/creator") ? "default" : "ghost"}
-                  className={isActive("/creator") ? "bg-blue-600 text-white" : ""}
-                >
-                  Creator
-                </Button>
-              </Link>
-              <Link href="/locations">
-                <Button 
-                  variant={isActive("/locations") ? "default" : "ghost"}
-                  className={isActive("/locations") ? "bg-blue-600 text-white" : ""}
-                >
-                  Locations
-                </Button>
-              </Link>
-              <Link href="/travels">
-                <Button 
-                  variant={isActive("/travels") ? "default" : "ghost"}
-                  className={isActive("/travels") ? "bg-blue-600 text-white" : ""}
-                >
-                  Travels
-                </Button>
-              </Link>
-              <Link href="/visits">
-                <Button 
-                  variant={isActive("/visits") ? "default" : "ghost"}
-                  className={isActive("/visits") ? "bg-blue-600 text-white" : ""}
-                >
-                  Visits
-                </Button>
-              </Link>
+              {renderNavItem("/creator", "Creator")}
+              {renderNavItem("/crosses", "Crosses")}
+              {renderNavItem("/locations", "Locations")}
+              {renderNavItem("/travels", "Travels")}
+              {renderNavItem("/visits", "Visits")}
             </nav>
             <ThemeToggle />
           </div>
