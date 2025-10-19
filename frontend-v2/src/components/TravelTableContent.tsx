@@ -93,8 +93,6 @@ const TravelTableContent = ({ travels, onUpdate, onDelete }: Props) => {
   };
 
   const handleDelete = async (travel: Travel) => {
-    if (!onDelete) return;
-
     try {
       setIsSaving(true);
       await onDelete(travel._id);

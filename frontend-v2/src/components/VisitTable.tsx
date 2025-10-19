@@ -1,30 +1,57 @@
 "use client";
 
-import type { VisitsData } from '@/types/travel';
+import type { Visit, VisitsData } from '@/types/travel';
 import { extractDate, extractTime, getHoursAndMinutes } from '@/utils';
 import { renderTotalWeightsCell, renderWeight } from '@/utils/weight';
 import DateRangeSelector from './DateRangeSelector';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { toast } from 'sonner';
+import { Button } from './ui/button';
+import { Trash2 } from 'lucide-react';
 
 type Props = {
   visitsData: VisitsData;
   onUpdateDateRange: (dateFrom: string, dateTo: string) => void;
+  onDelete: (id: string) => Promise<void>;
 };
 
-const VisitTable = ({ visitsData, onUpdateDateRange }: Props) => {
+const VisitTable = ({ visitsData, onUpdateDateRange, onDelete }: Props) => {
   const { visits, dateFrom, dateTo } = visitsData;
   const totalMinutes = visits.reduce((sum, visit) => sum + visit.durationMinutes, 0);
   const totalLat = visits.reduce((sum, visit) => sum + visit.location.latitude * visit.weight.percentage, 0) / 100;
   const totalLong = visits.reduce((sum, visit) => sum + visit.location.longitude * visit.weight.percentage, 0) / 100;
-
   const columnHeaders = ['Date', 'Location', 'Arrival', 'Departure', 'Duration', 'Weight', 'Actions'];
+
+  const handleDelete = (visit: Visit) => {
+    onDelete(visit._id).then(() => {
+      toast.success('Visit deleted');
+    }).catch(() => {
+      toast.error('Failed to delete visit');
+    });
+  }
 
   const renderColumnHeaders = () => (
     columnHeaders.map((header) => (
       <TableHead key={header} className="text-gray-700 dark:text-gray-300">{header}</TableHead>
     ))
   );
+
+  const renderActionButtons = (visit: Visit) => {
+    return (
+      <div className="flex space-x-2">
+        <Button
+          onClick={() => { void handleDelete(visit); }}
+          size="sm"
+          variant="outline"
+          title="Delete travel"
+          className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      </div>
+    )
+  }
 
   return (
     <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
@@ -48,6 +75,7 @@ const VisitTable = ({ visitsData, onUpdateDateRange }: Props) => {
                 <TableCell className="text-gray-900 dark:text-white">{extractTime(v.departureTime)}</TableCell>
                 <TableCell className="text-gray-900 dark:text-white">{getHoursAndMinutes(v.durationMinutes)}</TableCell>
                 <TableCell className="text-gray-900 dark:text-white">{renderWeight(v)}</TableCell>
+                <TableCell>{renderActionButtons(v)}</TableCell>
               </TableRow>
             ))}
           </TableBody>

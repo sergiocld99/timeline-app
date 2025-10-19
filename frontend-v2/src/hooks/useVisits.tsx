@@ -22,11 +22,20 @@ const useVisits = () => {
     }
   };
 
+  const deleteVisit = async (id: string) => {
+    await VisitService.delete(id).then(() => {
+      setVisits((prev) => ({...prev, visits: prev.visits.filter(visit => visit._id !== id) }));
+    }).catch((error) => {
+      setError(error);
+      throw error;
+    });
+  }
+
   useEffect(() => {
     fetchVisits();
   }, []);
 
-  return { visits, error, loading, refetch: fetchVisits };
+  return { visits, error, loading, refetch: fetchVisits, deleteVisit };
 };
 
 export default useVisits;

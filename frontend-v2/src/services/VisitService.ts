@@ -33,6 +33,12 @@ class VisitService {
       return false;
     }
   }
+
+  static async delete(id: string) {
+    return axios.delete<Visit>(`${baseUrl}/${id}`)
+      .then((response) => response.data)
+      .catch((error) => { throw error });
+  }
 }
 
 export default VisitService;
