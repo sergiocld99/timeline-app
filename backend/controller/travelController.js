@@ -36,6 +36,29 @@ export const getAllTravels = (req, res) => {
   });
 }
 
+export const buildGraph = (req, res) => {
+  const dateFrom = getDateFrom(req)
+  const dateTo = getDateTo(req)
+  const weights = {}
+
+  Travel.find({ startTime: { $gte: dateFrom }, endTime: { $lte: dateTo } })
+  .populate('origin destination').sort({ startTime: -1 }).then(travels => {
+    travels.forEach(t => {
+      const duration = calculateDuration(t.startTime, t.endTime)
+      const A = t.origin.zipcode
+      const B = t.destination.zipcode
+
+      if (!weights[A]) { weights[A] = {} }
+      if (!weights[A][B]) { weights[A][B] = { count: 0, duration } }
+      weights[A][B].count++
+    })
+
+    res.json({ weights });
+  }).catch(err => {
+    res.status(500).json({ message: 'Error building graph', error: err.message });
+  });
+}
+
 export const createTravel = (req, res) => {
   const { startTime, endTime, origin, destination, modeOfTransport, distance, price } = req.body;
 
