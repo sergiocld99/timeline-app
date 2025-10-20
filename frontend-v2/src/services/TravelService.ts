@@ -17,16 +17,23 @@ class TravelService {
     }
   }
 
-  static async getAll(dateFrom?: string, dateTo?: string) {
-    const url = new URL(baseUrl)
+  static async getAll(dateFrom?: string, dateTo?: string, crossIds?: string[]) {
+    const correctBaseUrl = crossIds ? `${baseUrl}/v2` : baseUrl
+    const url = new URL(correctBaseUrl)
     if (dateFrom) url.searchParams.append("dateFrom", dateFrom)
     if (dateTo) url.searchParams.append("dateTo", dateTo)
 
     try {
-      const response = await axios.get<Travel[]>(url.toString());
+      let response;
+
+      if (crossIds) {
+        response = await axios.post<Travel[]>(url.toString(), { crossIds });
+      } else {
+        response = await axios.get<Travel[]>(url.toString());
+      }
+
       return response.data;
     } catch (error) {
-      console.error("Error fetching travels:", error);
       throw error;
     }
   }

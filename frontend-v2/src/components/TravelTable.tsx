@@ -7,11 +7,13 @@ import TravelTableContent from './TravelTableContent';
 
 type Props = {
   travelsData: TravelsData;
-  onUpdateTravel: (id: string, updates: Partial<Travel>) => Promise<Travel>;
-  onDeleteTravel: (id: string) => Promise<void>;
+  onUpdateTravel?: (id: string, updates: Partial<Travel>) => Promise<Travel>;
+  onDeleteTravel?: (id: string) => Promise<void>;
+  onAddCrosses?: (travelId: string) => Promise<void>;
+  onRemoveCrosses?: (travelId: string) => Promise<void>;
 };
 
-const TravelTable = ({ travelsData, onUpdateTravel, onDeleteTravel }: Props) => {
+const TravelTable = ({ travelsData, onUpdateTravel, onDeleteTravel, onAddCrosses, onRemoveCrosses }: Props) => {
   const { travels } = travelsData;
 
   return (
@@ -23,13 +25,15 @@ const TravelTable = ({ travelsData, onUpdateTravel, onDeleteTravel }: Props) => 
         <DateRangeSelector />
         {travels.length === 0 && (
           <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-            No travels found for the selected date range. Add your first travel above!
+            No travels found for the selected date range :/
           </div>
         )}
         <TravelTableContent 
           travels={travels} 
           onUpdate={onUpdateTravel} 
           onDelete={onDeleteTravel}
+          onAddCrosses={onAddCrosses}
+          onRemoveCrosses={onRemoveCrosses}
         />
       </CardContent>
     </Card>

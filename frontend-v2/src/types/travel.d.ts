@@ -1,4 +1,5 @@
 import type { Weighted } from "./commons"
+import { Cross } from "./cross"
 
 export type Location = {
   _id: string
@@ -20,6 +21,7 @@ export type Travel = Weighted & {
   shortDate: string
   duration: number
   speed: number
+  crosses: Cross[]
 }
 
 export type TravelsData = {

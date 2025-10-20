@@ -8,16 +8,18 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Edit3, Trash2, Save, X, Loader2 } from 'lucide-react';
+import { Edit3, Trash2, Save, X, Loader2, CircleMinus, CirclePlus } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 type Props = {
   travels: Travel[];
-  onUpdate: (id: string, updates: Partial<Travel>) => Promise<Travel>;
-  onDelete: (id: string) => Promise<void>;
+  onUpdate?: (id: string, updates: Partial<Travel>) => Promise<Travel>;
+  onDelete?: (id: string) => Promise<void>;
+  onAddCrosses?: (travelId: string) => Promise<void>;
+  onRemoveCrosses?: (travelId: string) => Promise<void>;
 };
 
-const TravelTableContent = ({ travels, onUpdate, onDelete }: Props) => {
+const TravelTableContent = ({ travels, onUpdate, onDelete, onAddCrosses, onRemoveCrosses }: Props) => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValues, setEditValues] = useState<TravelEditValues>({ distance: '', duration: '', modeOfTransport: '' });
   const [isSaving, setIsSaving] = useState(false);
@@ -93,6 +95,8 @@ const TravelTableContent = ({ travels, onUpdate, onDelete }: Props) => {
   };
 
   const handleDelete = async (travel: Travel) => {
+    if (!onDelete) return;
+
     try {
       setIsSaving(true);
       await onDelete(travel._id);
@@ -155,25 +159,7 @@ const TravelTableContent = ({ travels, onUpdate, onDelete }: Props) => {
     );
   };
 
-  const renderActionButtons = (travel: Travel) => {
-    if (editingId === travel._id) {
-      return (
-        <div className="flex space-x-2">
-          <Button
-            onClick={() => { void handleSave(travel); }}
-            size="sm"
-            disabled={isSaving}
-            className="bg-green-600 hover:bg-green-700"
-          >
-            {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-          </Button>
-          <Button onClick={handleCancel} size="sm" variant="outline" disabled={isSaving}>
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
-      );
-    }
-
+  const renderTravelsTabActionButtons = (travel: Travel) => {
     return (
       <div className="flex space-x-2">
         <Button
@@ -195,6 +181,55 @@ const TravelTableContent = ({ travels, onUpdate, onDelete }: Props) => {
         </Button>
       </div>
     );
+  }
+
+  const renderCrossesTabActionButtons = (travel: Travel) => {
+    return (
+      <div className="flex space-x-2">
+        <Button
+          onClick={() => { void onAddCrosses!(travel._id); }}
+          size="sm"
+          variant="outline"
+          title="Add crosses"
+        >
+          <CirclePlus className="h-4 w-4" />
+        </Button>
+        <Button
+          onClick={() => { void onRemoveCrosses!(travel._id); }}
+          size="sm"
+          variant="outline"
+          title="Remove crosses"
+        >
+          <CircleMinus className="h-4 w-4" />
+        </Button>
+      </div>
+    )
+  }
+
+  const renderActionButtons = (travel: Travel) => {
+    if (editingId === travel._id) {
+      return (
+        <div className="flex space-x-2">
+          <Button
+            onClick={() => { void handleSave(travel); }}
+            size="sm"
+            disabled={isSaving}
+            className="bg-green-600 hover:bg-green-700"
+          >
+            {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+          </Button>
+          <Button onClick={handleCancel} size="sm" variant="outline" disabled={isSaving}>
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+      );
+    }
+
+    if (onAddCrosses && onRemoveCrosses) {
+      return renderCrossesTabActionButtons(travel)
+    }
+
+    return renderTravelsTabActionButtons(travel)
   };
 
   const columnHeaders = ['Date', 'Mode', 'From', 'To', 'Distance', 'Duration', 'Speed', 'Weight', 'Actions'];

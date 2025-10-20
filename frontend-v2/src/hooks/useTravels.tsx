@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import type { Travel, TravelsData } from "@/types/travel";
 import TravelService from "@/services/TravelService";
 import { useDateRange } from "@/contexts/DateRangeContext";
@@ -11,18 +11,18 @@ const useTravels = () => {
   const [error, setError] = useState<unknown>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchTravels = async (dateFrom?: string, dateTo?: string) => {
-    try {
-      setLoading(true);
-      const data = await TravelService.getAll(dateFrom, dateTo);
-      setTravels({ travels: data, dateFrom, dateTo });
-      setError(null);
-    } catch (error) {
-      setError(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const refetch = useCallback((crossIdArr?: string[]) => {
+    setLoading(true);
+
+    TravelService.getAll(dateFrom, dateTo, crossIdArr).then(data => {
+      setTravels({ travels: data, dateFrom, dateTo })
+      setError(null)
+      setLoading(false)
+    }).catch(err => {
+      setError(err)
+      setLoading(false)
+    })
+  }, [dateFrom, dateTo]);
 
   const updateTravel = async (id: string, updates: Partial<Travel>) => {
     try {
@@ -52,10 +52,10 @@ const useTravels = () => {
   };
 
   useEffect(() => {
-    fetchTravels(dateFrom, dateTo);
-  }, [dateFrom, dateTo]);
+    refetch();
+  }, [dateFrom, dateTo, refetch]);
 
-  return { travels, error, loading, refetch: fetchTravels, updateTravel, deleteTravel };
+  return { travels, error, loading, refetch, updateTravel, deleteTravel };
 };
 
 export default useTravels;

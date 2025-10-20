@@ -10,13 +10,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox"
+import { CheckedState } from "@radix-ui/react-checkbox";
 
 type Props = {
   data: Cross[];
+  onCheckAnd: (checked: CheckedState, item: Cross) => void;
+  onCheckEdit: (checked: CheckedState, item: Cross) => void;
 };
 
-const CrossTable = ({ data }: Props) => {
-  const columnHeaders = ['Name', 'Latitude', 'Longitude'];
+const CrossTable = ({ data, onCheckAnd, onCheckEdit }: Props) => {
+  const columnHeaders = ['Name', 'Latitude', 'Longitude', 'OR', 'EDIT'];
 
   const renderColumnHeaders = () => (
     columnHeaders.map((header) => (
@@ -42,6 +46,12 @@ const CrossTable = ({ data }: Props) => {
                 <TableCell className="font-medium text-gray-900 dark:text-white">{item.name}</TableCell>
                 <TableCell className="text-gray-700 dark:text-gray-300">{item.latitude.toFixed(4)}</TableCell>
                 <TableCell className="text-gray-700 dark:text-gray-300">{item.longitude.toFixed(4)}</TableCell>
+                <TableCell>
+                  <Checkbox id={item._id} onCheckedChange={(checked) => onCheckAnd(checked, item)}/>
+                </TableCell>
+                <TableCell>
+                  <Checkbox id={item._id} onCheckedChange={(checked) => onCheckEdit(checked, item)}/>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
