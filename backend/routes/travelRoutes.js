@@ -9,5 +9,6 @@ router.put('/:id', updateTravel);
 router.delete('/:id', deleteTravel);
 
 router.get('/graph', buildGraph);
+router.post('/v2', getAllTravels)
 
 export default router;

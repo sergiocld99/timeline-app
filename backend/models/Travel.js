@@ -9,7 +9,8 @@ const TravelSchema = new mongoose.Schema({
     destination: { type: mongoose.Schema.Types.ObjectId, ref: 'Location', required: true },
     modeOfTransport: { type: String, enum: acceptedModesOfTransport, required: true },
     distance: { type: Number, required: true }, // in kilometers
-    price: { type: Number, required: false }
+    price: { type: Number, required: false },
+    crosses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Cross', required: false }]
 });
 
 TravelSchema.index({ startTime: 1, origin: 1 }, { unique: true });

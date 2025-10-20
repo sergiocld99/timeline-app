@@ -17,10 +17,14 @@ const calculateDuration = (startTime, endTime) => {
 export const getAllTravels = (req, res) => {
   const dateFrom = getDateFrom(req)
   const dateTo = getDateTo(req)
+  const crosses = req.body?.crossIds ?? []
 
   // Fetch all travels with populated origin and destination (Location) fields
-  Travel.find({ startTime: { $gte: dateFrom }, endTime: { $lte: dateTo } })
-  .populate('origin destination').sort({ startTime: -1 }).then(travels => {
+  Travel.find({ 
+    startTime: { $gte: dateFrom }, 
+    endTime: { $lte: dateTo },
+    ...(crosses.length > 0 && { crosses: { $in: crosses } })
+  }).populate('origin destination crosses').sort({ startTime: -1 }).then(travels => {
     travels = travels.map(t => {
       const duration = calculateDuration(t.startTime, t.endTime)
 
@@ -82,9 +86,9 @@ export const createTravel = (req, res) => {
 
 export const updateTravel = (req, res) => {
   const { id } = req.params;
-  const { startTime, endTime, origin, destination, modeOfTransport, distance } = req.body;
+  const { startTime, endTime, origin, destination, modeOfTransport, distance, crosses } = req.body;
 
-  Travel.findByIdAndUpdate(id, { startTime, endTime, origin, destination, modeOfTransport, distance }, { new: true })
+  Travel.findByIdAndUpdate(id, { startTime, endTime, origin, destination, modeOfTransport, distance, crosses }, { new: true })
     .populate('origin destination')
     .then(updatedTravel => {
       if (!updatedTravel) {
