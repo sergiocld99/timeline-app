@@ -17,11 +17,12 @@ class TravelService {
     }
   }
 
-  static async getAll(dateFrom?: string, dateTo?: string, crossIds?: string[]) {
+  static async getAll(dateFrom?: string, dateTo?: string, crossIds?: string[], sortingField?: string) {
     const correctBaseUrl = crossIds ? `${baseUrl}/v2` : baseUrl
     const url = new URL(correctBaseUrl)
-    if (dateFrom) url.searchParams.append("dateFrom", dateFrom)
-    if (dateTo) url.searchParams.append("dateTo", dateTo)
+    if (dateFrom) url.searchParams.append("dateFrom", dateFrom);
+    if (dateTo) url.searchParams.append("dateTo", dateTo);
+    if (sortingField) url.searchParams.append("sortingField", sortingField)
 
     try {
       let response;

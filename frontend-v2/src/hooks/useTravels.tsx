@@ -5,7 +5,7 @@ import type { Travel, TravelsData } from "@/types/travel";
 import TravelService from "@/services/TravelService";
 import { useDateRange } from "@/contexts/DateRangeContext";
 
-const useTravels = () => {
+const useTravels = (sortingField = 'duration') => {
   const { dateFrom, dateTo } = useDateRange();
   const [travels, setTravels] = useState<TravelsData>({ travels: [] });
   const [error, setError] = useState<unknown>(null);
@@ -14,7 +14,7 @@ const useTravels = () => {
   const refetch = useCallback((crossIdArr?: string[]) => {
     setLoading(true);
 
-    TravelService.getAll(dateFrom, dateTo, crossIdArr).then(data => {
+    TravelService.getAll(dateFrom, dateTo, crossIdArr, sortingField).then(data => {
       setTravels({ travels: data, dateFrom, dateTo })
       setError(null)
       setLoading(false)
@@ -22,7 +22,7 @@ const useTravels = () => {
       setError(err)
       setLoading(false)
     })
-  }, [dateFrom, dateTo]);
+  }, [dateFrom, dateTo, sortingField]);
 
   const updateTravel = async (id: string, updates: Partial<Travel>) => {
     try {

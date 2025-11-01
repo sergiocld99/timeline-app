@@ -18,6 +18,7 @@ export const getAllTravels = (req, res) => {
   const dateFrom = getDateFrom(req)
   const dateTo = getDateTo(req)
   const crosses = req.body?.crossIds ?? []
+  const { sortingField = 'duration' } = req.query
 
   // Fetch all travels with populated origin and destination (Location) fields
   Travel.find({ 
@@ -35,7 +36,7 @@ export const getAllTravels = (req, res) => {
       return t
     })
 
-    res.json(withWeight(travels, 'duration'));
+    res.json(withWeight(travels, sortingField));
   }).catch(err => {
     res.status(500).json({ message: 'Error fetching travels', error: err.message });
   });

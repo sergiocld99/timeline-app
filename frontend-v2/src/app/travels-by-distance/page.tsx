@@ -6,8 +6,8 @@ import TravelTable from "@/components/TravelTable";
 import useStats from "@/hooks/useStats";
 import useTravels from "@/hooks/useTravels";
 
-const TravelsPage = () => {
-  const { travels, updateTravel, deleteTravel } = useTravels();
+const TravelsByDistancePage = () => {
+  const { travels, updateTravel, deleteTravel } = useTravels('distance');
   const { loading: loadingStats, statsByMode } = useStats();
 
   return (
@@ -27,4 +27,4 @@ const TravelsPage = () => {
   );
 };
 
-export default TravelsPage;
+export default TravelsByDistancePage;

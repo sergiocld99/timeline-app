@@ -8,14 +8,14 @@ import { ThemeToggle } from "./ThemeToggle";
 const Header = () => {
   const pathname = usePathname();
 
-  const isActive = (path: string) => pathname === path;
+  const isActive = (path: string) => path === pathname
 
   const renderNavItem = (path: string, label: string) => {
     return (
       <Link href={path}>
         <Button 
           variant={isActive(path) ? "default" : "ghost"}
-          className={isActive(path) ? "bg-blue-600 text-white" : ""}
+          className={isActive(path) ? "!bg-blue-600 !text-white hover:!bg-blue-700" : ""}
         >
           {label}
         </Button>
@@ -33,7 +33,8 @@ const Header = () => {
               {renderNavItem("/creator", "Creator")}
               {renderNavItem("/crosses", "Crosses")}
               {renderNavItem("/locations", "Locations")}
-              {renderNavItem("/travels", "Travels")}
+              {renderNavItem("/travels", "Travels by Duration")}
+              {renderNavItem("/travels-by-distance", "Travels by Distance")}
               {renderNavItem("/visits", "Visits")}
             </nav>
             <ThemeToggle />
