@@ -8,7 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { toast } from 'sonner';
 import { Button } from './ui/button';
-import { Trash2 } from 'lucide-react';
+import { Eye, EyeOff, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 
 type Props = {
   visitsData: VisitsData;
@@ -17,9 +18,12 @@ type Props = {
 
 const VisitTable = ({ visitsData, onDelete }: Props) => {
   const { visits } = visitsData;
-  const totalMinutes = visits.reduce((sum, visit) => sum + visit.durationMinutes, 0);
-  const totalLat = visits.reduce((sum, visit) => sum + visit.location.latitude * visit.weight.percentage, 0) / 100;
-  const totalLong = visits.reduce((sum, visit) => sum + visit.location.longitude * visit.weight.percentage, 0) / 100;
+  const [ excludedVisits, setExcludedVisits ] = useState<string[]>([]);
+  const visibleVisits = visits.filter(visit => !excludedVisits.includes(visit._id));
+  const totalMinutes = visibleVisits.reduce((sum, visit) => sum + visit.durationMinutes, 0);
+  const totalPercentage = visibleVisits.reduce((sum, visit) => sum + visit.weight.percentage, 0);
+  const totalLat = visibleVisits.reduce((sum, visit) => sum + visit.location.latitude * visit.weight.percentage, 0) / totalPercentage;
+  const totalLong = visibleVisits.reduce((sum, visit) => sum + visit.location.longitude * visit.weight.percentage, 0) / totalPercentage;
   const columnHeaders = ['Date', 'Location', 'Arrival', 'Departure', 'Duration', 'Weight', 'Actions'];
 
   const handleDelete = (visit: Visit) => {
@@ -28,6 +32,12 @@ const VisitTable = ({ visitsData, onDelete }: Props) => {
     }).catch(() => {
       toast.error('Failed to delete visit');
     });
+  }
+
+  const handleToggleExclude = (visitId: string) => {
+    setExcludedVisits((prev) => 
+      prev.includes(visitId) ? prev.filter(id => id !== visitId) : [...prev, visitId]
+    );
   }
 
   const renderColumnHeaders = () => (
@@ -48,8 +58,27 @@ const VisitTable = ({ visitsData, onDelete }: Props) => {
         >
           <Trash2 className="h-4 w-4" />
         </Button>
+        <Button
+          onClick={() => { handleToggleExclude(visit._id); }}
+          size="sm"
+          variant="outline"
+          title="Exclude from weight calculation"
+          className='text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50 dark:hover:bg-yellow-900/20'
+        >
+          {
+            excludedVisits.includes(visit._id) ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />
+          }
+        </Button>
       </div>
     )
+  }
+
+  const getTableRowClassnames = (visit: Visit) => {
+    let classNames = 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700';
+    if (excludedVisits.includes(visit._id)) {
+      classNames += ' opacity-50';
+    }
+    return classNames;
   }
 
   return (
@@ -67,7 +96,7 @@ const VisitTable = ({ visitsData, onDelete }: Props) => {
           </TableHeader>
           <TableBody>
             {visits.map((v) => (
-              <TableRow key={v._id} className="border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
+              <TableRow key={v._id} className={getTableRowClassnames(v)}>
                 <TableCell className="text-gray-900 dark:text-white">{extractDate(v.date)}</TableCell>
                 <TableCell className="text-gray-900 dark:text-white">{v.location.name}</TableCell>
                 <TableCell className="text-gray-900 dark:text-white">{extractTime(v.arrivalTime)}</TableCell>
@@ -85,7 +114,7 @@ const VisitTable = ({ visitsData, onDelete }: Props) => {
                 {totalLat.toFixed(4)}, {totalLong.toFixed(4)}
               </TableCell>
               <TableCell className="font-medium text-gray-900 dark:text-white">{getHoursAndMinutes(totalMinutes)}</TableCell>
-              <TableCell className="text-gray-900 dark:text-white">{renderTotalWeightsCell(visits)}</TableCell>
+              <TableCell className="text-gray-900 dark:text-white">{renderTotalWeightsCell(visibleVisits)}</TableCell>
             </TableRow>
           </TableFooter>
         </Table>
