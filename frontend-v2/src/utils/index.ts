@@ -25,6 +25,11 @@ export const getArgentineCurrentTime = () => {
   return date;
 }
 
+export const convertToArgentineTime = (date: Date) => {
+  date.setHours(date.getHours() + 3)
+  return date;
+}
+
 export const convertToFormDate = (date: Date) => {
   return date.toISOString().slice(0, 16);
 }

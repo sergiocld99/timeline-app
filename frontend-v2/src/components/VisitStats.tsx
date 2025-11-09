@@ -5,7 +5,8 @@ import { Card, CardContent } from "./ui/card";
 import { ChartConfig, ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "./ui/chart";
 import { BarChart } from "recharts";
 import { Bar, CartesianGrid, XAxis } from "recharts";
-import { extractTime } from "@/utils";
+import { convertToArgentineTime, extractTime } from "@/utils";
+import { ChartSource } from "@/types/chart";
 
 type Props = {
   visitsData: VisitsData;
@@ -20,8 +21,6 @@ type HourPart = {
   hour: string;
   completitude: number;
 }
-
-type ChartSource = Record<string, Record<string, number>>
 
 const extractHourAndMinutesFromTime = (time: string): HourAndMinutes => {
   const [hour, minutes] = extractTime(time).split(':');
@@ -67,7 +66,7 @@ const calculateBestLocations = (visits: Visit[]) => {
   }, {} as Record<string, number>)
 
   const sortedLocations = Object.entries(topLocations).sort((a, b) => a[1] - b[1]).reverse()
-  return sortedLocations.map(loc => loc[0]).slice(0, 4)
+  return sortedLocations.map(loc => loc[0]).slice(0, 5)
 }
 
 const VisitStats = ({ visitsData }: Props) => {
@@ -83,9 +82,10 @@ const VisitStats = ({ visitsData }: Props) => {
   if (!topThreeLocations[1]) topThreeLocations[1] = ''
   if (!topThreeLocations[2]) topThreeLocations[2] = ''
   if (!topThreeLocations[3]) topThreeLocations[3] = ''
+  if (!topThreeLocations[4]) topThreeLocations[4] = ''
 
   const weightByDay = visits.reduce((acc, v) => {
-    const dayOfWeek = new Date(v.arrivalTime).getDay()
+    const dayOfWeek = convertToArgentineTime(new Date(v.arrivalTime)).getDay()
     const normalizedDay = chartDays[dayOfWeek]
     const chartLocation = topThreeLocations.includes(v.location.name) ? v.location.name : 'others';
 
@@ -95,6 +95,7 @@ const VisitStats = ({ visitsData }: Props) => {
         [topThreeLocations[1]]: 0,
         [topThreeLocations[2]]: 0,
         [topThreeLocations[3]]: 0,
+        [topThreeLocations[4]]: 0,
         others: 0
       }
     }
@@ -114,6 +115,7 @@ const VisitStats = ({ visitsData }: Props) => {
           [topThreeLocations[1]]: 0,
           [topThreeLocations[2]]: 0,
           [topThreeLocations[3]]: 0,
+          [topThreeLocations[4]]: 0,
           others: 0
         }
       }
@@ -129,6 +131,7 @@ const VisitStats = ({ visitsData }: Props) => {
     red: 0,
     orange: 0,
     yellow: 0,
+    green: 0,
     blue: 0,
     others: 0
   }) : ({
@@ -136,7 +139,8 @@ const VisitStats = ({ visitsData }: Props) => {
     red: roundChartValue(weightByHour[hour][topThreeLocations[0]] || 0),
     orange: roundChartValue(weightByHour[hour][topThreeLocations[1]] || 0),
     yellow: roundChartValue(weightByHour[hour][topThreeLocations[2]] || 0),
-    blue: roundChartValue(weightByHour[hour][topThreeLocations[3]] || 0),
+    green: roundChartValue(weightByHour[hour][topThreeLocations[3]] || 0),
+    blue: roundChartValue(weightByHour[hour][topThreeLocations[4]] || 0),
     others: roundChartValue(weightByHour[hour].others || 0)
   }));
 
@@ -145,6 +149,7 @@ const VisitStats = ({ visitsData }: Props) => {
     red: 0,
     orange: 0,
     yellow: 0,
+    green: 0,
     blue: 0,
     others: 0
   }) : ({
@@ -152,7 +157,8 @@ const VisitStats = ({ visitsData }: Props) => {
     red: roundChartValue(weightByDay[day][topThreeLocations[0]] || 0),
     orange: roundChartValue(weightByDay[day][topThreeLocations[1]] || 0),
     yellow: roundChartValue(weightByDay[day][topThreeLocations[2]] || 0),
-    blue: roundChartValue(weightByDay[day][topThreeLocations[3]] || 0),
+    green: roundChartValue(weightByDay[day][topThreeLocations[3]] || 0),
+    blue: roundChartValue(weightByDay[day][topThreeLocations[4]] || 0),
     others: roundChartValue(weightByDay[day].others || 0)
   }));
 
@@ -167,10 +173,14 @@ const VisitStats = ({ visitsData }: Props) => {
     },
     yellow: {
       label: topThreeLocations[2],
+      color: "var(--chart-6)",
+    },
+    green: {
+      label: topThreeLocations[3],
       color: "var(--chart-2)",
     },
     blue: {
-      label: topThreeLocations[3],
+      label: topThreeLocations[4],
       color: "var(--chart-4)",
     },
     others: {
@@ -208,6 +218,11 @@ const VisitStats = ({ visitsData }: Props) => {
               fill="var(--color-yellow)"
             />
             <Bar
+              dataKey="green"
+              stackId="a"
+              fill="var(--color-green)"
+            />
+            <Bar
               dataKey="blue"
               stackId="a"
               fill="var(--color-blue)"
@@ -242,6 +257,11 @@ const VisitStats = ({ visitsData }: Props) => {
               dataKey="yellow"
               stackId="a"
               fill="var(--color-yellow)"
+            />
+            <Bar
+              dataKey="green"
+              stackId="a"
+              fill="var(--color-green)"
             />
             <Bar
               dataKey="blue"

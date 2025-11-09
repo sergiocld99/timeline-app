@@ -1,0 +1,1 @@
+export type ChartSource = Record<string, Record<string, number>>
