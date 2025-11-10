@@ -33,8 +33,8 @@ const Header = () => {
               {renderNavItem("/creator", "Creator")}
               {renderNavItem("/crosses", "Crosses")}
               {renderNavItem("/locations", "Locations")}
-              {renderNavItem("/travels", "Travels by Duration")}
               {renderNavItem("/travels-by-distance", "Travels by Distance")}
+              {renderNavItem("/travels", "Travels by Duration")}
               {renderNavItem("/visits", "Visits")}
             </nav>
             <ThemeToggle />

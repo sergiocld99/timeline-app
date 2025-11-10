@@ -8,7 +8,6 @@ import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '
 import { BadgeQuestionMarkIcon, BusIcon, CarIcon, CarTaxiFrontIcon, PersonStandingIcon, ShipIcon, TrainIcon } from "lucide-react";
 
 type Props = {
-  loading: boolean
   stats: StatByMode[]
 }
 
@@ -101,7 +100,7 @@ const getLabel = (total: number, label: string) => {
   )
 }
 
-const TravelStats = ({ stats }: Props) => {
+const TravelPieStats = ({ stats }: Props) => {
   const chartData: StatByModeChartData[] = stats.map((stat) => ({
     ...stat,
     averageSpeed: Math.round(60 * stat.totalKm / stat.totalMinutes),
@@ -153,4 +152,4 @@ const TravelStats = ({ stats }: Props) => {
   )
 }
 
-export default TravelStats
+export default TravelPieStats
