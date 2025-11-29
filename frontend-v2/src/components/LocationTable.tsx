@@ -1,6 +1,6 @@
 "use client";
 
-import type { Location } from "@/types/travel";
+import type { Location, LocationEditValues } from "@/types/travel";
 import {
   Table,
   TableBody,
@@ -10,19 +10,89 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Edit3, Save, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useState } from "react";
+import { toast } from "sonner";
+import { Input } from "./ui/input";
 
 type Props = {
   locations: Location[];
+  updateFn: (id: string, updates: Partial<Location>) => Promise<Location>;
 };
 
-const LocationTable = ({ locations }: Props) => {
-  const columnHeaders = ['Name', 'Latitude', 'Longitude', 'Zipcode', 'Notes'];
+const columnHeaders = ['Name', 'Latitude', 'Longitude', 'Zipcode', 'Notes', 'Actions'];
+
+const LocationTable = ({ locations, updateFn }: Props) => {
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editValues, setEditValues] = useState<LocationEditValues>({ name: '' });
 
   const renderColumnHeaders = () => (
     columnHeaders.map((header) => (
       <TableHead key={header} className="text-gray-700 dark:text-gray-300">{header}</TableHead>
     ))
   );
+
+  const resetEditValues = () => {
+    setEditingId(null);
+    setEditValues({ name: '' })
+  }
+
+  const renderActionButtons = (location: Location) => {
+    if (editingId === location._id) {
+      return (
+        <div className="flex space-x-2">
+          <Button
+            onClick={() => {
+              updateFn(location._id, editValues)
+                .then(() => {
+                  toast.success('Location updated!')
+                  resetEditValues()
+                }).catch(() => toast.error('Failed to update location'))
+            }}
+            size="sm"
+            className="bg-green-600 hover:bg-green-700"
+          >
+            <Save className="h-4 w-4" />
+          </Button>
+          <Button onClick={resetEditValues} size="sm" variant="outline">
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+      );
+    }
+
+    return (
+      <div className="flex space-x-2">
+        <Button
+          onClick={() => {
+            setEditingId(location._id)
+            setEditValues({ name: location.name })
+          }}
+          size="sm"
+          variant="outline"
+          title="Edit travel"
+        >
+          <Edit3 className="h-4 w-4" />
+        </Button>
+      </div>
+    );
+  }
+
+  const renderEditableCell = (location: Location, field: 'name') => {
+    if (editingId === location._id) {
+      return (
+        <Input
+          type="text"
+          value={editValues[field]}
+          onChange={(e) => setEditValues(prev => ({ ...prev, [field]: e.target.value }))}
+          className="w-100 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+        />
+      );
+    }
+
+    return location[field]
+  }
 
   return (
     <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
@@ -37,13 +107,14 @@ const LocationTable = ({ locations }: Props) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {locations.map((location) => (
-              <TableRow key={location._id} className="border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
-                <TableCell className="font-medium text-gray-900 dark:text-white">{location.name}</TableCell>
-                <TableCell className="text-gray-700 dark:text-gray-300">{location.latitude.toFixed(4)}</TableCell>
-                <TableCell className="text-gray-700 dark:text-gray-300">{location.longitude.toFixed(4)}</TableCell>
-                <TableCell className="text-gray-700 dark:text-gray-300">{location.zipcode}</TableCell>
-                <TableCell className="max-w-xs truncate text-gray-700 dark:text-gray-300">{location.notes}</TableCell>
+            {locations.map((l) => (
+              <TableRow key={l._id} className="border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
+                <TableCell className="font-medium text-gray-900 dark:text-white">{renderEditableCell(l, 'name')}</TableCell>
+                <TableCell className="text-gray-700 dark:text-gray-300">{l.latitude.toFixed(4)}</TableCell>
+                <TableCell className="text-gray-700 dark:text-gray-300">{l.longitude.toFixed(4)}</TableCell>
+                <TableCell className="text-gray-700 dark:text-gray-300">{l.zipcode}</TableCell>
+                <TableCell className="text-gray-700 dark:text-gray-300">{l.notes}</TableCell>
+                <TableCell>{renderActionButtons(l)}</TableCell>
               </TableRow>
             ))}
           </TableBody>

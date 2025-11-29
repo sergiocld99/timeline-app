@@ -30,7 +30,7 @@ export const calculateVisitsForDate = async (date) => {
 
     const isSameLocation = currentTravel.destination._id.equals(nextTravel.origin._id);
     const isSameDay = currentTravel.endTime.toDateString() === nextTravel.startTime.toDateString();
-    const isCorrectOrder = currentTravel.endTime <= nextTravel.startTime;
+    const isCorrectOrder = currentTravel.endTime < nextTravel.startTime;  // strict "less" for visits >= 1 minute
 
     if (!isSameLocation || !isSameDay || !isCorrectOrder) {
       continue;

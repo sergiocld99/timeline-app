@@ -26,6 +26,16 @@ class LocationService {
       throw error;
     }
   }
+
+  static async update(id: string, data: Partial<Location>) {
+    try {
+      const response = await axios.put<Location>(`${baseUrl}/${id}`, data);
+      return response.data;
+    } catch (error) {
+      console.error("Error on update:", error);
+      throw error;
+    }
+  }
 }
 
 export default LocationService;

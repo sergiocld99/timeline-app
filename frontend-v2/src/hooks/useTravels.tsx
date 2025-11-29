@@ -15,7 +15,7 @@ const useTravels = (sortingField = 'duration') => {
     setLoading(true);
 
     TravelService.getAll(dateFrom, dateTo, crossIdArr, sortingField).then(data => {
-      setTravels({ travels: data, dateFrom, dateTo })
+      setTravels({ ...data, dateFrom, dateTo })
       setError(null)
       setLoading(false)
     }).catch(err => {

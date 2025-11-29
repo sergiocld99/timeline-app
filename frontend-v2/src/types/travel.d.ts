@@ -10,6 +10,10 @@ export type Location = {
   notes: string
 }
 
+export type LocationEditValues = {
+  name: string
+}
+
 export type Travel = Weighted & {
   _id: string
   startTime: string
@@ -24,8 +28,27 @@ export type Travel = Weighted & {
   crosses: Cross[]
 }
 
+export type TravelStats = {
+  count: number
+  totalDistance: number
+  totalHours: number
+  totalMinutes: number
+  totalPrice: number
+  averageLatitude: number
+  averageLongitude: number
+  averageSpeed: number
+  averageDistance: number
+  averageDuration: number
+  averagePrice: number
+  placesVisited: {
+    count: number,
+    zipcodes: string[]
+  }
+}
+
 export type TravelsData = {
   travels: Travel[]
+  stats?: TravelStats
   dateFrom?: string
   dateTo?: string
 }

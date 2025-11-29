@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from 'react';
-import type { Travel, TravelEditValues } from '@/types/travel';
-import { getEmojiForMode, getHoursAndMinutes } from '@/utils';
+import type { Travel, TravelEditValues, TravelsData } from '@/types/travel';
+import { extractDate, extractTime, getEmojiForMode, getHoursAndMinutes } from '@/utils';
 import { renderTotalWeightsCell, renderWeight } from '@/utils/weight';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -12,36 +12,21 @@ import { Edit3, Trash2, Save, X, Loader2, CircleMinus, CirclePlus } from 'lucide
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 type Props = {
-  travels: Travel[];
+  travelsData: TravelsData;
   onUpdate?: (id: string, updates: Partial<Travel>) => Promise<Travel>;
   onDelete?: (id: string) => Promise<void>;
   onAddCrosses?: (travelId: string) => Promise<void>;
   onRemoveCrosses?: (travelId: string) => Promise<void>;
 };
 
-const TravelTableContent = ({ travels, onUpdate, onDelete, onAddCrosses, onRemoveCrosses }: Props) => {
+const columnHeaders = ['Date', 'Mode', 'From', 'To', 'Start', 'Distance', 'Duration', 'Speed', 'Weight', 'Actions'];
+
+const TravelTableContent = ({ travelsData, onUpdate, onDelete, onAddCrosses, onRemoveCrosses }: Props) => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValues, setEditValues] = useState<TravelEditValues>({ distance: '', duration: '', modeOfTransport: '' });
   const [isSaving, setIsSaving] = useState(false);
-
-  const totalMinutes = travels.reduce((total, travel) => total + travel.duration, 0);
-  const totalDistance = travels.reduce((total, travel) => total + travel.distance, 0);
-
-  const totalLat = travels.reduce((total, travel) => {
-    const currentLat = (travel.origin.latitude + travel.destination.latitude) / 200;
-    return total + currentLat * travel.weight.percentage;
-  }, 0);
-
-  const totalLong = travels.reduce((total, travel) => {
-    const currentLong = (travel.origin.longitude + travel.destination.longitude) / 200;
-    return total + currentLong * travel.weight.percentage;
-  }, 0);
-
-  const placesVisited = travels.reduce((total, travel) => {
-    total.add(travel.origin._id);
-    total.add(travel.destination._id);
-    return total;
-  }, new Set<string>());
+  const { travels, stats } = travelsData
+  const { averageLatitude: totalLat, averageLongitude: totalLong, totalDistance = 0, totalMinutes = 0, placesVisited } = stats || {}
 
   const handleEdit = (travel: Travel) => {
     setEditingId(travel._id);
@@ -232,8 +217,6 @@ const TravelTableContent = ({ travels, onUpdate, onDelete, onAddCrosses, onRemov
     return renderTravelsTabActionButtons(travel)
   };
 
-  const columnHeaders = ['Date', 'Mode', 'From', 'To', 'Distance', 'Duration', 'Speed', 'Weight', 'Actions'];
-
   const renderColumnHeaders = () => (
     columnHeaders.map((header) => (
       <TableHead key={header} className="text-gray-700 dark:text-gray-300">{header}</TableHead>
@@ -248,12 +231,13 @@ const TravelTableContent = ({ travels, onUpdate, onDelete, onAddCrosses, onRemov
         </TableRow>
       </TableHeader>
       <TableBody>
-        {travels.map((t) => (
+        {travelsData.travels.map((t) => (
           <TableRow key={t._id} className="border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
-            <TableCell className="text-gray-900 dark:text-white">{t.shortDate}</TableCell>
+            <TableCell className="text-gray-900 dark:text-white">{extractDate(t.startTime)}</TableCell>
             <TableCell className="text-gray-900 dark:text-white">{renderEditableModeOfTransport(t)}</TableCell>
             <TableCell className="text-gray-900 dark:text-white">{t.origin.name}</TableCell>
             <TableCell className="text-gray-900 dark:text-white">{t.destination.name}</TableCell>
+            <TableCell className="text-gray-900 dark:text-white">{extractTime(t.startTime)}</TableCell>
             <TableCell className="text-gray-900 dark:text-white">{renderEditableCell(t, 'distance', 0.1)}</TableCell>
             <TableCell className="text-gray-900 dark:text-white">{renderEditableCell(t, 'duration', 1)}</TableCell>
             <TableCell className="text-gray-900 dark:text-white">{t.speed.toFixed(1)} km/h</TableCell>
@@ -266,10 +250,10 @@ const TravelTableContent = ({ travels, onUpdate, onDelete, onAddCrosses, onRemov
         <TableRow className="border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
           <TableCell className="font-medium text-gray-900 dark:text-white">Total</TableCell>
           <TableCell className="text-gray-900 dark:text-white" colSpan={2}>
-            {totalLat.toFixed(4)}, {totalLong.toFixed(4)}
+            {totalLat?.toFixed(4)}, {totalLong?.toFixed(4)}
           </TableCell>
-          <TableCell className="font-medium text-gray-900 dark:text-white">{placesVisited.size} places</TableCell>
-          <TableCell className="font-medium text-gray-900 dark:text-white">{totalDistance.toFixed(0)} km</TableCell>
+          <TableCell className="font-medium text-gray-900 dark:text-white" colSpan={2}>{placesVisited?.count} places</TableCell>
+          <TableCell className="font-medium text-gray-900 dark:text-white">{totalDistance?.toFixed(0)} km</TableCell>
           <TableCell className="font-medium text-gray-900 dark:text-white">{getHoursAndMinutes(totalMinutes)}</TableCell>
           <TableCell className="font-medium text-gray-900 dark:text-white">
             {totalMinutes === 0 ? 0 : (totalDistance / (totalMinutes / 60)).toFixed(1)} km/h

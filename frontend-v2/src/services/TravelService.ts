@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import type { FormData } from '@/types/commons';
-import type { Travel } from '@/types/travel';
+import type { Travel, TravelsData } from '@/types/travel';
 import { backendBaseUrl } from '@/constants';
 
 const baseUrl = `${backendBaseUrl}/travels`;
@@ -17,7 +17,7 @@ class TravelService {
     }
   }
 
-  static async getAll(dateFrom?: string, dateTo?: string, crossIds?: string[], sortingField?: string) {
+  static async getAll(dateFrom?: string, dateTo?: string, crossIds?: string[], sortingField?: string): Promise<TravelsData> {
     const correctBaseUrl = crossIds ? `${baseUrl}/v2` : baseUrl
     const url = new URL(correctBaseUrl)
     if (dateFrom) url.searchParams.append("dateFrom", dateFrom);
@@ -28,12 +28,20 @@ class TravelService {
       let response;
 
       if (crossIds) {
-        response = await axios.post<Travel[]>(url.toString(), { crossIds });
+        response = await axios.post<{ travels: Travel[], stats?: TravelsData['stats'] }>(url.toString(), { crossIds });
       } else {
-        response = await axios.get<Travel[]>(url.toString());
+        response = await axios.get<{ travels: Travel[], stats?: TravelsData['stats'] }>(url.toString());
       }
 
-      return response.data;
+      // Handle both old format (array) and new format (object with travels and stats)
+      if (Array.isArray(response.data)) {
+        return { travels: response.data };
+      }
+      
+      return {
+        travels: response.data.travels,
+        stats: response.data.stats
+      };
     } catch (error) {
       throw error;
     }

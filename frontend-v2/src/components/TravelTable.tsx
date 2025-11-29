@@ -29,7 +29,7 @@ const TravelTable = ({ travelsData, onUpdateTravel, onDeleteTravel, onAddCrosses
           </div>
         )}
         <TravelTableContent 
-          travels={travels} 
+          travelsData={travelsData} 
           onUpdate={onUpdateTravel} 
           onDelete={onDeleteTravel}
           onAddCrosses={onAddCrosses}

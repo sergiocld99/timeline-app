@@ -70,7 +70,7 @@ const getEachHourOfTravel = ({ startTime: start, endTime: end }: Travel): HourPa
  
 const buildHourlyChartData = (travels: Travel[], topModes: string[]): ChartData<"hour"> => {
   const weightByHour = travels.reduce((acc, t) => {
-    const chartMode = topModes.includes(t.modeOfTransport) ? t.modeOfTransport : 'other'
+    const chartMode = topModes.includes(t.modeOfTransport) ? t.modeOfTransport : 'others'
 
     getEachHourOfTravel(t).forEach(hour => {
       if (!acc[hour.hour]) {

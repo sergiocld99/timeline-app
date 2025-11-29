@@ -1,18 +1,6 @@
 import Travel from "../models/Travel.js";
 import { getDateFrom, getDateTo, withWeight } from "../utils/index.js";
-
-const buildShortDate = (date) => {
-  const dateParts = date.toISOString().split('T')[0].split('-');
-  const timeParts = date.toISOString().split('T')[1].split(':');
-  const shortYear = dateParts[0].substring(2);
-  return `${dateParts[2]}/${dateParts[1]}/${shortYear} ${timeParts[0]}:${timeParts[1]}`; // DD/MM/YY HH:mm format
-};
-
-const calculateDuration = (startTime, endTime) => {
-  const start = new Date(startTime);
-  const end = new Date(endTime);
-  return (end - start) / (1000 * 60); // duration in minutes
-};
+import { enrichTravels, enrichTravel, calculateTravelStats } from "../services/travelService.js";
 
 export const getAllTravels = (req, res) => {
   const dateFrom = getDateFrom(req)
@@ -26,17 +14,14 @@ export const getAllTravels = (req, res) => {
     endTime: { $lte: dateTo },
     ...(crosses.length > 0 && { crosses: { $in: crosses } })
   }).populate('origin destination crosses').sort({ startTime: -1 }).then(travels => {
-    travels = travels.map(t => {
-      const duration = calculateDuration(t.startTime, t.endTime)
-
-      t.set('shortDate', buildShortDate(t.startTime), { strict: false })
-      t.set('duration', duration, { strict: false })
-      t.set('speed', (t.distance / duration) * 60, { strict: false })
-
-      return t
-    })
-
-    res.json(withWeight(travels, sortingField));
+    const enrichedTravels = enrichTravels(travels);
+    const weightedTravels = withWeight(enrichedTravels, sortingField);
+    const stats = calculateTravelStats(weightedTravels);
+    
+    res.json({
+      travels: weightedTravels,
+      stats
+    });
   }).catch(err => {
     res.status(500).json({ message: 'Error fetching travels', error: err.message });
   });
@@ -49,8 +34,10 @@ export const buildGraph = (req, res) => {
 
   Travel.find({ startTime: { $gte: dateFrom }, endTime: { $lte: dateTo } })
   .populate('origin destination').sort({ startTime: -1 }).then(travels => {
-    travels.forEach(t => {
-      const duration = calculateDuration(t.startTime, t.endTime)
+    const enrichedTravels = enrichTravels(travels);
+    
+    enrichedTravels.forEach(t => {
+      const duration = t.get('duration');
       const A = t.origin.zipcode
       const B = t.destination.zipcode
 
@@ -95,10 +82,8 @@ export const updateTravel = (req, res) => {
       if (!updatedTravel) {
         return res.status(404).json({ message: 'Travel not found' });
       }
-      updatedTravel.shortDate = buildShortDate(updatedTravel.startTime);
-      updatedTravel.duration = calculateDuration(updatedTravel.startTime, updatedTravel.endTime);
-      updatedTravel.speed = (updatedTravel.distance / updatedTravel.duration) * 60; // speed in km/h
-      res.json(updatedTravel);
+      const enrichedTravel = enrichTravel(updatedTravel);
+      res.json(enrichedTravel);
     })
     .catch(err => {
       res.status(400).json({ message: 'Error updating travel', error: err.message });
