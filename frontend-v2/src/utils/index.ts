@@ -18,7 +18,7 @@ export const getHoursAndMinutes = (totalMinutes: number) => {
 
 export const extractDate = (dateTime: string) => {
   const date = new Date(dateTime)
-  const dayOfWeek = daysOfWeek[date.getDay()]
+  const dayOfWeek = daysOfWeek[convertToArgentineTime(date).getDay()]
 
   const parts = dateTime.split('T')[0].split('-')
   const shortYear = parts[0].substring(2);

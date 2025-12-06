@@ -2,6 +2,17 @@ import Travel from "../models/Travel.js";
 import { getDateFrom, getDateTo, withWeight } from "../utils/index.js";
 import { enrichTravels, enrichTravel, calculateTravelStats } from "../services/travelService.js";
 
+const escapeCsvValue = (value) => {
+  if (value === null || value === undefined) {
+    return '';
+  }
+
+  const stringValue = value instanceof Date ? value.toISOString() : String(value);
+  return /[",\n]/.test(stringValue)
+    ? `"${stringValue.replace(/"/g, '""')}"`
+    : stringValue;
+};
+
 export const getAllTravels = (req, res) => {
   const dateFrom = getDateFrom(req)
   const dateTo = getDateTo(req)
@@ -98,4 +109,64 @@ export const deleteTravel = (req, res) => {
   }).catch(err => {
     res.status(400).json({ message: 'Error deleting travel', error: err.message });
   });
+}
+
+export const exportTravelsCsv = async (req, res) => {
+  try {
+    const dateFrom = getDateFrom(req);
+    const dateTo = getDateTo(req);
+
+    const travels = await Travel.find({
+      startTime: { $gte: dateFrom },
+      endTime: { $lte: dateTo }
+    })
+      .populate('origin destination crosses')
+      .sort({ startTime: 1 });
+
+    const headerRow = [
+      'travelId',
+      'startTime',
+      'endTime',
+      'modeOfTransport',
+      'distanceKm',
+      'durationMinutes',
+      'price',
+      'originName',
+      'originZipcode',
+      'destinationName',
+      'destinationZipcode',
+    ];
+
+    const rows = travels.map(travel => {
+      const durationMinutes = Math.round((travel.endTime - travel.startTime) / 60000);
+
+      return [
+        travel._id,
+        travel.startTime,
+        travel.endTime,
+        travel.modeOfTransport,
+        travel.distance,
+        durationMinutes,
+        travel.price ?? '',
+        travel.origin?.name ?? '',
+        travel.origin?.zipcode ?? '',
+        travel.destination?.name ?? '',
+        travel.destination?.zipcode ?? '',
+      ];
+    });
+
+    const csvContent = [
+      headerRow.map(escapeCsvValue).join(','),
+      ...rows.map(row => row.map(escapeCsvValue).join(','))
+    ].join('\n');
+
+    const fromLabel = dateFrom.toISOString().split('T')[0];
+    const toLabel = dateTo.toISOString().split('T')[0];
+
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', `attachment; filename="travels_${fromLabel}_${toLabel}.csv"`);
+    res.status(200).send(csvContent);
+  } catch (error) {
+    res.status(500).json({ message: 'Error exporting travels', error: error.message });
+  }
 }

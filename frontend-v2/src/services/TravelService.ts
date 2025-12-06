@@ -66,6 +66,37 @@ class TravelService {
       throw error;
     }
   }
+
+  static async exportCsv(dateFrom?: string, dateTo?: string) {
+    try {
+      const url = new URL(`${baseUrl}/export/csv`);
+      if (dateFrom) url.searchParams.append("dateFrom", dateFrom);
+      if (dateTo) url.searchParams.append("dateTo", dateTo);
+
+      const response = await axios.get(url.toString(), {
+        responseType: 'blob',
+      });
+
+      // Create a blob URL and trigger download
+      const blob = new Blob([response.data], { type: 'text/csv' });
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      
+      // Generate filename from date range
+      const fromLabel = dateFrom ? dateFrom.split('T')[0] : 'all';
+      const toLabel = dateTo ? dateTo.split('T')[0] : 'all';
+      link.download = `travels_${fromLabel}_${toLabel}.csv`;
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(downloadUrl);
+    } catch (error) {
+      console.error("Error exporting CSV:", error);
+      throw error;
+    }
+  }
 }
 
 export default TravelService;

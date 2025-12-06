@@ -11,7 +11,8 @@ export type Location = {
 }
 
 export type LocationEditValues = {
-  name: string
+  name: string,
+  notes: string,
 }
 
 export type Travel = Weighted & {

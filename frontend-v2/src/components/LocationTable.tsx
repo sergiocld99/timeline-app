@@ -25,7 +25,7 @@ const columnHeaders = ['Name', 'Latitude', 'Longitude', 'Zipcode', 'Notes', 'Act
 
 const LocationTable = ({ locations, updateFn }: Props) => {
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editValues, setEditValues] = useState<LocationEditValues>({ name: '' });
+  const [editValues, setEditValues] = useState<LocationEditValues>({ name: '', notes: '' });
 
   const renderColumnHeaders = () => (
     columnHeaders.map((header) => (
@@ -35,7 +35,7 @@ const LocationTable = ({ locations, updateFn }: Props) => {
 
   const resetEditValues = () => {
     setEditingId(null);
-    setEditValues({ name: '' })
+    setEditValues({ name: '', notes: '' })
   }
 
   const renderActionButtons = (location: Location) => {
@@ -67,7 +67,7 @@ const LocationTable = ({ locations, updateFn }: Props) => {
         <Button
           onClick={() => {
             setEditingId(location._id)
-            setEditValues({ name: location.name })
+            setEditValues({ name: location.name, notes: location.notes })
           }}
           size="sm"
           variant="outline"
@@ -79,7 +79,7 @@ const LocationTable = ({ locations, updateFn }: Props) => {
     );
   }
 
-  const renderEditableCell = (location: Location, field: 'name') => {
+  const renderEditableCell = (location: Location, field: 'name' | 'notes') => {
     if (editingId === location._id) {
       return (
         <Input
@@ -113,7 +113,7 @@ const LocationTable = ({ locations, updateFn }: Props) => {
                 <TableCell className="text-gray-700 dark:text-gray-300">{l.latitude.toFixed(4)}</TableCell>
                 <TableCell className="text-gray-700 dark:text-gray-300">{l.longitude.toFixed(4)}</TableCell>
                 <TableCell className="text-gray-700 dark:text-gray-300">{l.zipcode}</TableCell>
-                <TableCell className="text-gray-700 dark:text-gray-300">{l.notes}</TableCell>
+                <TableCell className="text-gray-700 dark:text-gray-300">{renderEditableCell(l, 'notes')}</TableCell>
                 <TableCell>{renderActionButtons(l)}</TableCell>
               </TableRow>
             ))}

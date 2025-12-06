@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { Button } from './ui/button';
 import { Eye, EyeOff, Trash2 } from 'lucide-react';
 import { useState } from 'react';
+import { renderLocationWithZipcode } from './render/location';
 
 type Props = {
   visitsData: VisitsData;
@@ -98,7 +99,7 @@ const VisitTable = ({ visitsData, onDelete }: Props) => {
             {visits.map((v) => (
               <TableRow key={v._id} className={getTableRowClassnames(v)}>
                 <TableCell className="text-gray-900 dark:text-white">{extractDate(v.date)}</TableCell>
-                <TableCell className="text-gray-900 dark:text-white">{v.location.name}</TableCell>
+                <TableCell className="text-gray-900 dark:text-white">{renderLocationWithZipcode(v.location)}</TableCell>
                 <TableCell className="text-gray-900 dark:text-white">{extractTime(v.arrivalTime)}</TableCell>
                 <TableCell className="text-gray-900 dark:text-white">{extractTime(v.departureTime)}</TableCell>
                 <TableCell className="text-gray-900 dark:text-white">{getHoursAndMinutes(v.durationMinutes)}</TableCell>
