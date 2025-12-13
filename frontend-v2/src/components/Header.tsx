@@ -1,12 +1,24 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
+import { useUser } from "@/contexts/UserContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { User } from "lucide-react";
 
 const Header = () => {
   const pathname = usePathname();
+  const router = useRouter();
+  const { currentUser, users, setCurrentUser } = useUser();
 
   const isActive = (path: string) => path === pathname
 
@@ -23,6 +35,12 @@ const Header = () => {
     )
   }
 
+  const handleUserSelect = (user: typeof currentUser) => {
+    if (user) {
+      setCurrentUser(user);
+    }
+  }
+
   return (
     <header className="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -37,7 +55,41 @@ const Header = () => {
               {renderNavItem("/travels", "Travels by Duration")}
               {renderNavItem("/visits", "Visits")}
             </nav>
-            <ThemeToggle />
+            <div className="flex items-center space-x-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="flex items-center gap-2">
+                    <User className="h-5 w-5" />
+                    {currentUser ? (
+                      <span className="text-sm font-medium">{currentUser.name}</span>
+                    ) : (
+                      <span className="text-sm text-muted-foreground">Guest</span>
+                    )}
+                    <span className="sr-only">User menu</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>
+                    {currentUser ? `Logged in as ${currentUser.name}` : "Guest Mode"}
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {users.map((user) => (
+                    <DropdownMenuItem
+                      key={user.userId}
+                      onClick={() => handleUserSelect(user)}
+                      className={currentUser?.userId === user.userId ? "bg-accent" : ""}
+                    >
+                      #{user.userId} - {user.name}
+                    </DropdownMenuItem>
+                  ))}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => router.push("/profile")}>
+                    Manage Users
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <ThemeToggle />
+            </div>
           </div>
         </div>
       </div>

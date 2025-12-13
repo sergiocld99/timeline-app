@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { DateRangeProvider } from "@/contexts/DateRangeContext";
+import { UserProvider } from "@/contexts/UserContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,10 +37,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <DateRangeProvider>
-            {children}
-            <Toaster />
-          </DateRangeProvider>
+          <UserProvider>
+            <DateRangeProvider>
+              {children}
+              <Toaster />
+            </DateRangeProvider>
+          </UserProvider>
         </ThemeProvider>
       </body>
     </html>
