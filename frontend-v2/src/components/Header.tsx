@@ -18,7 +18,7 @@ import { User } from "lucide-react";
 const Header = () => {
   const pathname = usePathname();
   const router = useRouter();
-  const { currentUser, users, setCurrentUser } = useUser();
+  const { currentUser, users, setCurrentUser, loading } = useUser();
 
   const isActive = (path: string) => path === pathname
 
@@ -61,9 +61,9 @@ const Header = () => {
                   <Button variant="ghost" className="flex items-center gap-2">
                     <User className="h-5 w-5" />
                     {currentUser ? (
-                      <span className="text-sm font-medium">{currentUser.name}</span>
+                      <span className="text-sm font-medium text-green-300">{currentUser.name}</span>
                     ) : (
-                      <span className="text-sm text-muted-foreground">Guest</span>
+                      <span className="text-sm text-muted-foreground text-orange-300">{loading ? "" : "Guest"}</span>
                     )}
                     <span className="sr-only">User menu</span>
                   </Button>
