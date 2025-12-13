@@ -1,71 +1,16 @@
-import { ChartData, ChartSource, HourPart } from "@/types/chart"
+import { ChartData, ChartSource } from "@/types/chart"
 import { Travel, TravelsData } from "@/types/travel"
-import { buildChartConfig, extractHourAndMinutes, getChartHours, normalizeHour, useChartValue, useDefaultValues } from "@/utils/chart"
+import { buildChartConfig, getChartHours, useChartValue, useDefaultValues } from "@/utils/chart"
 import { Card, CardContent } from "./ui/card";
 import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "./ui/chart";
 import { BarChart } from "recharts";
 import { Bar, CartesianGrid, XAxis } from "recharts";
 import { convertToArgentineTime } from "@/utils";
 import { daysOfWeek } from "@/constants";
+import { calculateBestModes, getEachHourOfTravel } from "./analize/travel";
 
 type Props = {
   travelsData: TravelsData
-}
-
-const calculateBestModes = (travels: Travel[], quantity: number) => {
-  const topModes = travels.reduce((acc, t) => {
-    const key = t.modeOfTransport
-    if (!acc[key]) {
-      acc[key] = 0
-    }
-    acc[key] += t.duration
-    return acc
-  }, {} as Record<string, number>)
-
-  const sortedModes = Object.entries(topModes).sort((a, b) => a[1] - b[1]).reverse()
-  const result = sortedModes.map(loc => loc[0]).slice(0, quantity)
-
-  for (let i = 0; i < quantity; i++) {
-    if (!result[i]) result[i] = '';
-  }
-
-  return result;
-}
-
-const getEachHourOfTravel = ({ startTime: start, endTime: end }: Travel): HourPart[] => {
-  const startTime = extractHourAndMinutes(start);
-  const endTime = extractHourAndMinutes(end);
-
-  const hours: HourPart[] = [];
-
-  // Same day - short travel in same hour (< 60 min)
-  if (endTime.hour === startTime.hour) {
-    return [{ hour: normalizeHour(endTime.hour), totalMinutes: (endTime.minutes - startTime.minutes) }]
-  }
-
-  // Partial hours (start and end)
-  hours.push({ hour: normalizeHour(startTime.hour), totalMinutes: (60 - startTime.minutes) });
-  hours.push({ hour: normalizeHour(endTime.hour), totalMinutes: endTime.minutes });
-
-  // Full hours for travels in same day
-  if (endTime.hour > startTime.hour) {
-    for (let i = startTime.hour + 1; i < endTime.hour; i++) {
-      hours.push({ hour: normalizeHour(i), totalMinutes: 60 });
-    }
-
-    return hours
-  }
-
-  // Full hours for travels between 2 days
-  for (let i = startTime.hour + 1; i < 24; i++) {
-    hours.push({ hour: normalizeHour(i), totalMinutes: 60 });
-  }
-
-  for (let i = 0; i < endTime.hour; i++) {
-    hours.push({ hour: normalizeHour(i), totalMinutes: 60 });
-  }
-
-  return hours
 }
  
 const buildHourlyChartData = (travels: Travel[], topModes: string[]): ChartData<"hour"> => {
@@ -117,7 +62,7 @@ const TravelBarStats = ({ travelsData }: Props) => {
   const chartConfig = buildChartConfig(topModes)
 
   return (
-    <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+    <Card className="w-8/10 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardContent className="h-[300px] flex items-center justify-center">
         <ChartContainer config={chartConfig} className="min-h-[300px] max-h-[300px] max-w-3/5 min-w-3/5">
           <BarChart accessibilityLayer data={hourlyChartData}>

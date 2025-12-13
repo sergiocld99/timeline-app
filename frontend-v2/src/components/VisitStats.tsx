@@ -6,32 +6,13 @@ import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartToo
 import { BarChart } from "recharts";
 import { Bar, CartesianGrid, XAxis } from "recharts";
 import { convertToArgentineTime } from "@/utils";
-import { ChartData, ChartSource, HourPart } from "@/types/chart";
+import { ChartData, ChartSource } from "@/types/chart";
 import { daysOfWeek } from "@/constants";
-import { buildChartConfig, extractHourAndMinutes, getChartHours, normalizeHour, useChartValue, useDefaultValues } from "@/utils/chart";
+import { buildChartConfig, getChartHours, useChartValue, useDefaultValues } from "@/utils/chart";
+import { getEachHourOfVisit } from "./analize/visit";
 
 type Props = {
   visitsData: VisitsData;
-}
-
-const getEachHourOfVisit = ({ arrivalTime, departureTime }: Visit): HourPart[] => {
-  const startTime = extractHourAndMinutes(arrivalTime);
-  const endTime = extractHourAndMinutes(departureTime);
-
-  const hours: HourPart[] = [];
-
-  if (endTime.hour === startTime.hour) {
-    return [{ hour: normalizeHour(endTime.hour), totalMinutes: (endTime.minutes - startTime.minutes) }]
-  }
-
-  hours.push({ hour: normalizeHour(startTime.hour), totalMinutes: (60 - startTime.minutes) });
-  hours.push({ hour: normalizeHour(endTime.hour), totalMinutes: endTime.minutes });
-
-  for (let i = startTime.hour + 1; i < endTime.hour; i++) {
-    hours.push({ hour: normalizeHour(i), totalMinutes: 60 });
-  }
-
-  return hours;
 }
 
 const calculateBestLocations = (visits: Visit[], quantity: number) => {
@@ -103,7 +84,7 @@ const VisitStats = ({ visitsData }: Props) => {
   const chartConfig = buildChartConfig(topLocations)
 
   return (
-    <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+    <Card className="w-8/10 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardContent className="h-[300px] flex items-center justify-center">
         <ChartContainer config={chartConfig} className="min-h-[300px] max-h-[300px] max-w-3/5 min-w-3/5">
           <BarChart accessibilityLayer data={hourlyChartData}>

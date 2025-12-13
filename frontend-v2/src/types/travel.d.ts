@@ -69,8 +69,14 @@ export type Visit = Weighted & {
   durationMinutes: number
 }
 
+export type VisitsStats = {
+  averageLatitude: number
+  averageLongitude: number
+}
+
 export type VisitsData = {
   visits: Visit[]
+  stats?: VisitsStats
   dateFrom?: string
   dateTo?: string
 }
