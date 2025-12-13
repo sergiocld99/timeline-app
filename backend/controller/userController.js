@@ -1,4 +1,6 @@
 import User from "../models/User.js";
+import Travel from "../models/Travel.js";
+import Visit from "../models/Visit.js";
 
 export const getAllUsers = (req, res) => {
   User.find().sort({ userId: 1 }).then(users => {
@@ -71,5 +73,72 @@ export const deleteUser = (req, res) => {
   }).catch(err => {
     res.status(400).json({ message: 'Error deleting user', error: err.message });
   });
+}
+
+export const checkGuestData = async (req, res) => {
+  try {
+    // Check for documents where userId doesn't exist or is null
+    const travelCount = await Travel.countDocuments({ 
+      $or: [
+        { userId: { $exists: false } },
+        { userId: null }
+      ]
+    });
+    const visitCount = await Visit.countDocuments({ 
+      $or: [
+        { userId: { $exists: false } },
+        { userId: null }
+      ]
+    });
+    
+    res.json({
+      hasGuestData: travelCount > 0 || visitCount > 0,
+      travelCount,
+      visitCount
+    });
+  } catch (err) {
+    res.status(500).json({ message: 'Error checking guest data', error: err.message });
+  }
+}
+
+export const migrateGuestData = async (req, res) => {
+  const { userId } = req.params;
+  const userIdNum = parseInt(userId, 10);
+
+  if (!userIdNum) {
+    return res.status(400).json({ message: 'Valid userId is required' });
+  }
+
+  try {
+    // Update all travels without userId (where field doesn't exist or is null)
+    const travelResult = await Travel.updateMany(
+      { 
+        $or: [
+          { userId: { $exists: false } },
+          { userId: null }
+        ]
+      },
+      { $set: { userId: userIdNum } }
+    );
+
+    // Update all visits without userId (where field doesn't exist or is null)
+    const visitResult = await Visit.updateMany(
+      { 
+        $or: [
+          { userId: { $exists: false } },
+          { userId: null }
+        ]
+      },
+      { $set: { userId: userIdNum } }
+    );
+
+    res.json({
+      success: true,
+      travelsMigrated: travelResult.modifiedCount,
+      visitsMigrated: visitResult.modifiedCount
+    });
+  } catch (err) {
+    res.status(500).json({ message: 'Error migrating guest data', error: err.message });
+  }
 }
 
