@@ -11,6 +11,7 @@ import { Button } from './ui/button';
 import { Eye, EyeOff, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { renderLocationWithZipcode } from './render/location';
+import { renderPoint } from './render/coordinates';
 
 type Props = {
   visitsData: VisitsData;
@@ -111,9 +112,7 @@ const VisitTable = ({ visitsData, onDelete }: Props) => {
           <TableFooter>
             <TableRow className="border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
               <TableCell className="font-medium text-gray-900 dark:text-white">Total</TableCell>
-              <TableCell className="text-gray-900 dark:text-white" colSpan={3}>
-                {totalLat.toFixed(4)}, {totalLong.toFixed(4)}
-              </TableCell>
+              <TableCell className="text-gray-900 dark:text-white" colSpan={3}>{renderPoint(totalLat, totalLong)}</TableCell>
               <TableCell className="font-medium text-gray-900 dark:text-white">{getHoursAndMinutes(totalMinutes)}</TableCell>
               <TableCell className="text-gray-900 dark:text-white">{renderTotalWeightsCell(visibleVisits)}</TableCell>
             </TableRow>
