@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const VisitSchema = new mongoose.Schema({
+    userId: { type: Number, required: false },
     date: { type: Date, required: true },
     location: { type: mongoose.Schema.Types.ObjectId, ref: 'Location', required: true },
     arrivalTime: { type: Date, required: true },

@@ -1,6 +1,7 @@
 import Travel from "../models/Travel.js";
 import { getDateFrom, getDateTo, withWeight } from "../utils/index.js";
 import { enrichTravels, enrichTravel, calculateTravelStats } from "../services/travelService.js";
+import { useCorrectUser } from "../helpers/useCorrectUser.js";
 
 const escapeCsvValue = (value) => {
   if (value === null || value === undefined) {
@@ -17,10 +18,11 @@ export const getAllTravels = (req, res) => {
   const dateFrom = getDateFrom(req)
   const dateTo = getDateTo(req)
   const crosses = req.body?.crossIds ?? []
-  const { sortingField = 'duration' } = req.query
+  const { sortingField = 'duration', userId } = req.query
 
   // Fetch all travels with populated origin and destination (Location) fields
   Travel.find({ 
+    ...useCorrectUser(userId),
     startTime: { $gte: dateFrom }, 
     endTime: { $lte: dateTo },
     ...(crosses.length > 0 && { crosses: { $in: crosses } })
@@ -41,9 +43,10 @@ export const getAllTravels = (req, res) => {
 export const buildGraph = (req, res) => {
   const dateFrom = getDateFrom(req)
   const dateTo = getDateTo(req)
+  const { userId } = req.query
   const weights = {}
 
-  Travel.find({ startTime: { $gte: dateFrom }, endTime: { $lte: dateTo } })
+  Travel.find({ ...useCorrectUser(userId), startTime: { $gte: dateFrom }, endTime: { $lte: dateTo } })
   .populate('origin destination').sort({ startTime: -1 }).then(travels => {
     const enrichedTravels = enrichTravels(travels);
     
@@ -64,9 +67,10 @@ export const buildGraph = (req, res) => {
 }
 
 export const createTravel = (req, res) => {
-  const { startTime, endTime, origin, destination, modeOfTransport, distance, price } = req.body;
+  const { startTime, endTime, origin, destination, modeOfTransport, distance, price, userId } = req.body;
 
   const travel = new Travel({
+    ...useCorrectUser(userId),
     startTime,
     endTime,
     origin,
@@ -85,9 +89,13 @@ export const createTravel = (req, res) => {
 
 export const updateTravel = (req, res) => {
   const { id } = req.params;
-  const { startTime, endTime, origin, destination, modeOfTransport, distance, crosses } = req.body;
+  const { startTime, endTime, origin, destination, modeOfTransport, distance, crosses, userId } = req.body;
+  const updateData = { startTime, endTime, origin, destination, modeOfTransport, distance, crosses };
+  if (userId !== undefined) {
+    updateData.userId = parseInt(userId, 10);
+  }
 
-  Travel.findByIdAndUpdate(id, { startTime, endTime, origin, destination, modeOfTransport, distance, crosses }, { new: true })
+  Travel.findByIdAndUpdate(id, updateData, { new: true })
     .populate('origin destination')
     .then(updatedTravel => {
       if (!updatedTravel) {
@@ -115,8 +123,10 @@ export const exportTravelsCsv = async (req, res) => {
   try {
     const dateFrom = getDateFrom(req);
     const dateTo = getDateTo(req);
+    const { userId } = req.query;
 
     const travels = await Travel.find({
+      ...useCorrectUser(userId),
       startTime: { $gte: dateFrom },
       endTime: { $lte: dateTo }
     })

@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const acceptedModesOfTransport = ['car', 'taxi', 'bus', 'train', 'subway', 'ferry', 'walking', 'other'];
 
 const TravelSchema = new mongoose.Schema({
+    userId: { type: Number, required: false },
     startTime: { type: Date, required: true },
     endTime: { type: Date, required: true },
     origin: { type: mongoose.Schema.Types.ObjectId, ref: 'Location', required: true },
