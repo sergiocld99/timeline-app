@@ -7,7 +7,12 @@ import { backendBaseUrl } from '@/constants';
 const baseUrl = `${backendBaseUrl}/travels`;
 
 class TravelService {
-  static async create(travelData: FormData) {
+  static async create(formData: FormData, userId?: number) {
+    const travelData = {
+      ...formData,
+      userId
+    }
+
     try {
       const response = await axios.post<Travel>(baseUrl, travelData);
       return response.data;
@@ -17,12 +22,13 @@ class TravelService {
     }
   }
 
-  static async getAll(dateFrom?: string, dateTo?: string, crossIds?: string[], sortingField?: string): Promise<TravelsData> {
+  static async getAll(dateFrom?: string, dateTo?: string, crossIds?: string[], sortingField?: string, userId?: number): Promise<TravelsData> {
     const correctBaseUrl = crossIds ? `${baseUrl}/v2` : baseUrl
     const url = new URL(correctBaseUrl)
     if (dateFrom) url.searchParams.append("dateFrom", dateFrom);
     if (dateTo) url.searchParams.append("dateTo", dateTo);
     if (sortingField) url.searchParams.append("sortingField", sortingField)
+    if (userId) url.searchParams.append("userId", userId.toString())
 
     try {
       let response;
@@ -67,11 +73,12 @@ class TravelService {
     }
   }
 
-  static async exportCsv(dateFrom?: string, dateTo?: string) {
+  static async exportCsv(dateFrom?: string, dateTo?: string, userId?: number) {
     try {
       const url = new URL(`${baseUrl}/export/csv`);
       if (dateFrom) url.searchParams.append("dateFrom", dateFrom);
       if (dateTo) url.searchParams.append("dateTo", dateTo);
+      if (userId) url.searchParams.append("userId", userId.toString());
 
       const response = await axios.get(url.toString(), {
         responseType: 'blob',

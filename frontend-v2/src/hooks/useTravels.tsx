@@ -4,17 +4,20 @@ import { useEffect, useState, useCallback } from "react";
 import type { Travel, TravelsData } from "@/types/travel";
 import TravelService from "@/services/TravelService";
 import { useDateRange } from "@/contexts/DateRangeContext";
+import { useUser } from "@/contexts/UserContext";
 
 const useTravels = (sortingField = 'duration') => {
   const { dateFrom, dateTo } = useDateRange();
+  const { currentUser } = useUser();
   const [travels, setTravels] = useState<TravelsData>({ travels: [] });
   const [error, setError] = useState<unknown>(null);
   const [loading, setLoading] = useState(true);
 
   const refetch = useCallback((crossIdArr?: string[]) => {
     setLoading(true);
+    const userId = currentUser?.userId;
 
-    TravelService.getAll(dateFrom, dateTo, crossIdArr, sortingField).then(data => {
+    TravelService.getAll(dateFrom, dateTo, crossIdArr, sortingField, userId).then(data => {
       setTravels({ ...data, dateFrom, dateTo })
       setError(null)
       setLoading(false)
@@ -22,7 +25,7 @@ const useTravels = (sortingField = 'duration') => {
       setError(err)
       setLoading(false)
     })
-  }, [dateFrom, dateTo, sortingField]);
+  }, [dateFrom, dateTo, sortingField, currentUser]);
 
   const updateTravel = async (id: string, updates: Partial<Travel>) => {
     try {

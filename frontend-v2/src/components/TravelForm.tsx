@@ -12,6 +12,7 @@ import { getTimeFromCurrent } from "@/utils";
 import useLocations from "@/hooks/useLocations";
 import VisitService from "@/services/VisitService";
 import TravelService from "@/services/TravelService";
+import { useUser } from "@/contexts/UserContext";
 
 type Props = {
   onTravelAdded: () => void;
@@ -19,6 +20,7 @@ type Props = {
 
 const TravelForm = ({ onTravelAdded }: Props) => {
   const { locations, refetch } = useLocations();
+  const { currentUser } = useUser();
   const [formData, setFormData] = useState({
     origin: "",
     destination: "",
@@ -52,8 +54,9 @@ const TravelForm = ({ onTravelAdded }: Props) => {
         toast.error("Origin and destination cannot be the same.");
         return;
       }
-      await TravelService.create(formData);
-      const persisted = await VisitService.persistIfNeeded(formData.startTime.split('T')[0]);
+      const userId = currentUser?.userId;
+      await TravelService.create(formData, userId);
+      const persisted = await VisitService.persistIfNeeded(formData.startTime.split('T')[0], userId);
       
       if (persisted) {
         toast.success("Travel with visit added successfully!");

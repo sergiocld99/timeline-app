@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import type { Visit, VisitsData, VisitsStats } from "@/types/travel";
 import VisitService from "@/services/VisitService";
 import { useDateRange } from "@/contexts/DateRangeContext";
+import { useUser } from "@/contexts/UserContext";
 
 const calculateStats = (visits: Visit[]): VisitsStats => {
   const totalPercentage = 100
@@ -18,14 +19,16 @@ const calculateStats = (visits: Visit[]): VisitsStats => {
 
 const useVisits = () => {
   const { dateFrom, dateTo } = useDateRange();
+  const { currentUser } = useUser();
   const [visits, setVisits] = useState<VisitsData>({ visits: [] });
   const [error, setError] = useState<unknown>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchVisits = async (dateFrom?: string, dateTo?: string) => {
+  const fetchVisits = async (dateFrom?: string, dateTo?: string, userId?: number) => {
     try {
       setLoading(true);
-      const data = await VisitService.getAll(dateFrom, dateTo);
+      // const userId = currentUser?.userId || 1;
+      const data = await VisitService.getAll(dateFrom, dateTo, userId);
       setVisits({ visits: data, stats: calculateStats(data), dateFrom, dateTo });
       setError(null);
     } catch (error) {
@@ -45,8 +48,8 @@ const useVisits = () => {
   }
 
   useEffect(() => {
-    fetchVisits(dateFrom, dateTo);
-  }, [dateFrom, dateTo]);
+    fetchVisits(dateFrom, dateTo, currentUser?.userId);
+  }, [dateFrom, dateTo, currentUser]);
 
   return { visits, error, loading, refetch: fetchVisits, deleteVisit };
 };

@@ -1,18 +1,21 @@
 import StatsService from "@/services/StatsService";
 import { StatByMode } from "@/types/stats";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useDateRange } from "@/contexts/DateRangeContext";
+import { useUser } from "@/contexts/UserContext";
 
 const useStats = () => {
   const { dateFrom, dateTo } = useDateRange();
+  const { currentUser } = useUser();
   const [statsByMode, setStatsByMode] = useState<StatByMode[]>([]);
   const [error, setError] = useState<unknown>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchByMode = async (dateFrom?: string, dateTo?: string) => {
+  const fetchByMode = useCallback(async (dateFrom?: string, dateTo?: string) => {
     try {
       setLoading(true);
-      const data = await StatsService.getTravelStatsByMode(dateFrom, dateTo);
+      const userId = currentUser?.userId;
+      const data = await StatsService.getTravelStatsByMode(dateFrom, dateTo, userId);
       setStatsByMode(data);
       setError(null);
     } catch (error) {
@@ -20,11 +23,11 @@ const useStats = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentUser]);
 
   useEffect(() => {
     fetchByMode(dateFrom, dateTo);
-  }, [dateFrom, dateTo]);
+  }, [dateFrom, dateTo, fetchByMode]);
 
   return { statsByMode, error, loading, refetch: fetchByMode };
 }

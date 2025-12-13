@@ -6,14 +6,18 @@ import { backendBaseUrl } from "@/constants";
 const baseUrl = `${backendBaseUrl}/visits`;
 
 class VisitService {
-  static getPersistentCalculatorUrl(date: string) {
-    return `${baseUrl}/calculate/${date}?persist=true`;
+  static getPersistentCalculatorUrl(date: string, userId?: number) {
+    const url = new URL(`${baseUrl}/calculate/${date}`);
+    url.searchParams.append("persist", "true");
+    if (userId) url.searchParams.append("userId", userId.toString());
+    return url.toString();
   }
 
-  static async getAll(dateFrom?: string, dateTo?: string) {
+  static async getAll(dateFrom?: string, dateTo?: string, userId?: number) {
     const url = new URL(baseUrl)
     if (dateFrom) url.searchParams.append("dateFrom", dateFrom)
     if (dateTo) url.searchParams.append("dateTo", dateTo)
+    if (userId) url.searchParams.append("userId", userId.toString())
 
     try {
       const response = await axios.get<Visit[]>(url.toString());
@@ -24,9 +28,9 @@ class VisitService {
     }
   }
 
-  static async persistIfNeeded(date: string): Promise<boolean> {
+  static async persistIfNeeded(date: string, userId?: number): Promise<boolean> {
     try {
-      const response = await axios.get(this.getPersistentCalculatorUrl(date))
+      const response = await axios.get(this.getPersistentCalculatorUrl(date, userId))
       return response.status === 201;
     } catch (error) {
       console.error("Error calculating and persisting visit:", error);
