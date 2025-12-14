@@ -14,7 +14,11 @@ const TravelSchema = new mongoose.Schema({
     crosses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Cross', required: false }]
 });
 
-TravelSchema.index({ startTime: 1, origin: 1 }, { unique: true });
+// Unique constraint per user: same user cannot have duplicate startTime + origin
+// This allows different users to have travels with the same startTime + origin
+TravelSchema.index({ userId: 1, startTime: 1, origin: 1 }, { unique: true, sparse: true });
+// Keep a non-unique index on startTime + origin for query performance
+TravelSchema.index({ startTime: 1, origin: 1 });
 
 const Travel = mongoose.model('Travel', TravelSchema);
 

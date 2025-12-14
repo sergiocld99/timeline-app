@@ -18,7 +18,7 @@ export const getAllVisits = (req, res) => {
 export const calculateVisitsController = (req, res, next) => {
   const { date } = req.params;
   const { userId } = req.query;
-  const userIdNum = userId ?? parseInt(userId, 10);
+  const userIdNum = userId ? parseInt(userId, 10) : undefined;
 
   calculateVisitsForDate(date, userIdNum).then(visits => {
     if (!visits || visits.length === 0) {
