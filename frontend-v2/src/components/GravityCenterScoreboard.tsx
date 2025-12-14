@@ -2,18 +2,11 @@ import { TravelsData, Travel, VisitsData, Visit } from "@/types/travel"
 import { Card, CardContent } from "./ui/card"
 import useNearbyCenters from "@/hooks/useNearbyCenters"
 import { KnownCenter } from "@/types/center"
+import { shortcutName } from "@/utils/strings"
 
 type Props = {
   travelsData?: TravelsData
   visitsData?: VisitsData
-}
-
-const shortcutName = (name: string, maxLength: number) => {
-  if (name.length > maxLength) {
-    return name.slice(0, maxLength - 3) + "..."
-  }
-
-  return name
 }
 
 const renderNearbyCenter = (kc: KnownCenter, index: number, travels: Travel[], visits: Visit[]) => {

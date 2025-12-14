@@ -1,6 +1,7 @@
 import { ChartSource, HourAndMinutes } from "@/types/chart";
 import { extractTime } from "..";
 import { ChartConfig } from "@/components/ui/chart";
+import { abbreviateWords } from "../strings";
 
 export const normalizeHour = (hour: number) => {
   return hour.toString().padStart(2, '0');
@@ -59,23 +60,23 @@ export const useChartValue = (key: string, weightByField: ChartSource, topKeys: 
 export const buildChartConfig = (topKeys: string[]) => {
   const chartConfig = {
     red: {
-      label: topKeys[0],
+      label: abbreviateWords(topKeys[0]),
       color: "var(--chart-5)",
     },
     orange: {
-      label: topKeys[1],
+      label: abbreviateWords(topKeys[1]),
       color: "var(--chart-3)",
     },
     yellow: {
-      label: topKeys[2],
+      label: abbreviateWords(topKeys[2]),
       color: "var(--chart-6)",
     },
     green: {
-      label: topKeys[3],
+      label: abbreviateWords(topKeys[3]),
       color: "var(--chart-2)",
     },
     blue: {
-      label: topKeys[4],
+      label: abbreviateWords(topKeys[4]),
       color: "var(--chart-4)",
     },
     others: {
