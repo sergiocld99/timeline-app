@@ -1,6 +1,29 @@
-import { HourPart } from "@/types/chart"
-import type { Travel } from "@/types/travel"
+import { HourAndMinutes, HourPart } from "@/types/chart"
+import type { Travel, TravelWithFarthestPoint } from "@/types/travel"
 import { extractHourAndMinutes, normalizeHour } from "@/utils/chart"
+import { extractKeys, sortByDescendingValue } from "@/utils/kv"
+
+export const calculateBestLocations = (travels: TravelWithFarthestPoint[], quantity: number) => {
+  const topLocations = travels.reduce((acc, t) => {
+    const key1 = t.origin.name
+    const key2 = t.destination.name
+
+    if (t.farthestPoint) {
+      if (!acc[t.farthestPoint.name]) { acc[t.farthestPoint.name] = 0 }
+      acc[t.farthestPoint.name] += t.duration
+    } else {
+      if (!acc[key1]) { acc[key1] = 0 }
+      if (!acc[key2]) { acc[key2] = 0 }
+      acc[key1] += t.duration / 2
+      acc[key2] += t.duration / 2
+    }
+
+    return acc
+  }, {} as Record<string, number>)
+
+  const sortedLocations = sortByDescendingValue(topLocations)
+  return extractKeys(sortedLocations, quantity, true)
+}
 
 export const calculateBestModes = (travels: Travel[], quantity: number) => {
   const topModes = travels.reduce((acc, t) => {
@@ -12,20 +35,21 @@ export const calculateBestModes = (travels: Travel[], quantity: number) => {
     return acc
   }, {} as Record<string, number>)
 
-  const sortedModes = Object.entries(topModes).sort((a, b) => a[1] - b[1]).reverse()
-  const result = sortedModes.map(loc => loc[0]).slice(0, quantity)
-
-  for (let i = 0; i < quantity; i++) {
-    if (!result[i]) result[i] = '';
-  }
-
-  return result;
+  const sortedModes = sortByDescendingValue(topModes)
+  return extractKeys(sortedModes, quantity, true)
 }
 
-export const getEachHourOfTravel = ({ startTime: start, endTime: end }: Travel): HourPart[] => {
-  const startTime = extractHourAndMinutes(start);
-  const endTime = extractHourAndMinutes(end);
+// example 14:05 - 13:35 = 60 - 30 = 30
+const calculateHalfTime = (startTime: HourAndMinutes, duration: number, fraction: number): HourAndMinutes => {
+  const halfTimestamp = startTime.hour * 60 + startTime.minutes + duration * fraction
+  
+  return {
+    hour: Math.floor(halfTimestamp / 60) % 24,
+    minutes: Math.floor(halfTimestamp % 60)
+  }
+}
 
+export const getNormalizedEachHourOfTravel = (startTime: HourAndMinutes, endTime: HourAndMinutes): HourPart[] => {
   const hours: HourPart[] = [];
 
   // Same day - short travel in same hour (< 60 min)
@@ -56,4 +80,22 @@ export const getEachHourOfTravel = ({ startTime: start, endTime: end }: Travel):
   }
 
   return hours
+}
+
+export const getEachHourOfTravel = ({ startTime: start, endTime: end }: Travel): HourPart[] => {
+  const startTime = extractHourAndMinutes(start);
+  const endTime = extractHourAndMinutes(end);
+
+  return getNormalizedEachHourOfTravel(startTime, endTime)
+}
+
+export const getEachHourOfEachHalf = ({ startTime: start, endTime: end, duration}: Travel): HourPart[][] => {
+  const startTime = extractHourAndMinutes(start);
+  const endTime = extractHourAndMinutes(end);
+  const halfTime = calculateHalfTime(startTime, duration, 0.5)
+
+  const firstHalfHours = getNormalizedEachHourOfTravel(startTime, halfTime)
+  const secondHalfHours = getNormalizedEachHourOfTravel(halfTime, endTime)
+
+  return [firstHalfHours, secondHalfHours]
 }

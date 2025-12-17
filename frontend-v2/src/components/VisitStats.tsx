@@ -9,30 +9,10 @@ import { convertToArgentineTime } from "@/utils";
 import { ChartData, ChartSource } from "@/types/chart";
 import { daysOfWeek } from "@/constants";
 import { buildChartConfig, getChartHours, useChartValue, useDefaultValues } from "@/utils/chart";
-import { getEachHourOfVisit } from "./analize/visit";
+import { calculateBestLocations, getEachHourOfVisit } from "./analize/visit";
 
 type Props = {
   visitsData: VisitsData;
-}
-
-const calculateBestLocations = (visits: Visit[], quantity: number) => {
-  const topLocations = visits.reduce((acc, v) => {
-    const key = v.location.name
-    if (!acc[key]) {
-      acc[key] = 0
-    }
-    acc[key] += v.durationMinutes
-    return acc
-  }, {} as Record<string, number>)
-
-  const sortedLocations = Object.entries(topLocations).sort((a, b) => a[1] - b[1]).reverse()
-  const result = sortedLocations.map(loc => loc[0]).slice(0, quantity)
-
-  for (let i = 0; i < quantity; i++) {
-    if (!result[i]) result[i] = '';
-  }
-
-  return result;
 }
 
 const buildHourlyChartData = (visits: Visit[], topLocations: string[]): ChartData<"hour"> => {

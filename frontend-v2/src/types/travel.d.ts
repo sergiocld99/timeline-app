@@ -29,6 +29,10 @@ export type Travel = Weighted & {
   crosses: Cross[]
 }
 
+export type TravelWithFarthestPoint = Travel & {
+  farthestPoint?: Location
+}
+
 export type TravelStats = {
   count: number
   totalDistance: number

@@ -1,65 +1,43 @@
-import { ChartData, ChartSource } from "@/types/chart"
-import { Travel, TravelsData } from "@/types/travel"
-import { buildChartConfig, getChartHours, useChartValue, useDefaultValues } from "@/utils/chart"
+import { Location, Travel, TravelsData } from "@/types/travel"
+import { buildChartConfig } from "@/utils/chart"
 import { Card, CardContent } from "./ui/card";
 import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "./ui/chart";
 import { BarChart } from "recharts";
 import { Bar, CartesianGrid, XAxis } from "recharts";
-import { convertToArgentineTime } from "@/utils";
-import { daysOfWeek } from "@/constants";
-import { calculateBestModes, getEachHourOfTravel } from "./analize/travel";
+import { calculateBestLocations } from "./analize/travel";
+import { buildDailyChartData, buildHourlyChartData } from "./builders/travelBars";
 
 type Props = {
   travelsData: TravelsData
 }
- 
-const buildHourlyChartData = (travels: Travel[], topModes: string[]): ChartData<"hour"> => {
-  const weightByHour = travels.reduce((acc, t) => {
-    const chartMode = topModes.includes(t.modeOfTransport) ? t.modeOfTransport : 'others'
 
-    getEachHourOfTravel(t).forEach(hour => {
-      if (!acc[hour.hour]) {
-        acc[hour.hour] = useDefaultValues(topModes)
-      }
+const calculateHome = (travels: Travel[]) => {
+  if (travels.length > 10 && travels[0].destination.name === travels[travels.length - 1].origin.name) {
+    return travels[0].destination
+  }
 
-      acc[hour.hour][chartMode] += hour.totalMinutes
-    })
-    return acc;
-  }, {} as ChartSource)
-
-  return getChartHours().map(hour => ({
-    hour,
-    ...useChartValue(hour, weightByHour, topModes)
-  }));
+  return undefined
 }
 
-const buildDailyChartData = (travels: Travel[], topModes: string[]): ChartData<"day"> => {
-  const weightByDay = travels.reduce((acc, t) => {
-    const chartMode = topModes.includes(t.modeOfTransport) ? t.modeOfTransport : 'others';
-    const dayOfWeek = convertToArgentineTime(new Date(t.startTime)).getDay()
-    const normalizedDay = daysOfWeek[dayOfWeek]
+const chooseFarthestPoint = (p1: Location, p2: Location, home: Location) => {
+  const dist1 = Math.abs(p1.latitude - home.latitude) + Math.abs(p1.longitude - home.longitude)
+  const dist2 = Math.abs(p2.latitude - home.latitude) + Math.abs(p2.longitude - home.longitude)
 
-    if (!acc[normalizedDay]) {
-      acc[normalizedDay] = useDefaultValues(topModes)
-    }
-
-    acc[normalizedDay][chartMode] += t.duration
-    return acc;
-  }, {} as ChartSource)
-
-  return daysOfWeek.map(day => ({
-    day,
-    ...useChartValue(day, weightByDay, topModes)
-  }));
+  return dist1 > dist2 ? p1 : p2
 }
 
 const TravelBarStats = ({ travelsData }: Props) => {
   const { travels } = travelsData
+  const home = calculateHome(travels)
+  const relevantTravels = travels.map(t => ({
+    ...t,
+    farthestPoint: home && chooseFarthestPoint(t.origin, t.destination, home)
+  }))
 
-  const topModes = calculateBestModes(travels, 5)
-  const hourlyChartData = buildHourlyChartData(travels, topModes)
-  const dailyChartData = buildDailyChartData(travels, topModes)
-  const chartConfig = buildChartConfig(topModes)
+  const topKeys = calculateBestLocations(relevantTravels, 5)
+  const hourlyChartData = buildHourlyChartData(relevantTravels, topKeys)
+  const dailyChartData = buildDailyChartData(relevantTravels, topKeys)
+  const chartConfig = buildChartConfig(topKeys)
 
   return (
     <Card className="w-8/10 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
