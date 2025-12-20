@@ -9,3 +9,13 @@ export type Weight = {
 export type Weighted = {
   weight: Weight
 }
+
+export type AxiosErrorResponse = {
+  response?: {
+    status?: number;
+    data?: {
+      message?: string;
+      error?: string;
+    };
+  };
+};

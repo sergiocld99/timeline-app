@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, Table
 import { Edit3, Trash2, Save, X, Loader2, CircleMinus, CirclePlus } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { renderPointWithCopyBtn } from './render/coordinates';
+import type { AxiosErrorResponse } from '@/types/commons';
 
 type Props = {
   travelsData: TravelsData;
@@ -51,6 +52,13 @@ const TravelTableContent = ({ travelsData, onUpdate, onDelete, onAddCrosses, onR
         return;
       }
 
+      // Validar que la duración no exceda 24 horas (1440 minutos)
+      const maxDurationMinutes = 24 * 60; // 1440 minutos
+      if (duration > maxDurationMinutes) {
+        toast.error('Travel duration cannot exceed 24 hours (1440 minutes)');
+        return;
+      }
+
       await onUpdate(travel._id, {
         distance,
         endTime: new Date(new Date(travel.startTime).getTime() + duration * 60000).toISOString(),
@@ -61,7 +69,14 @@ const TravelTableContent = ({ travelsData, onUpdate, onDelete, onAddCrosses, onR
       setEditValues({ distance: '', duration: '', modeOfTransport: '' });
     } catch (error) {
       console.error('Error updating travel:', error);
-      toast.error('Failed to update travel');
+      
+      // Manejar error específico de duración excedida
+      const axiosError = error as AxiosErrorResponse;
+      if (axiosError.response?.status === 400 && axiosError.response?.data?.message?.includes('24 hours')) {
+        toast.error('Travel duration cannot exceed 24 hours');
+      } else {
+        toast.error('Failed to update travel');
+      }
     } finally {
       setIsSaving(false);
     }
