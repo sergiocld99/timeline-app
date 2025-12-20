@@ -7,6 +7,7 @@ import DateRangeSelector from './DateRangeSelector';
 import TravelTableContent from './TravelTableContent';
 import TravelService from '@/services/TravelService';
 import { useDateRange } from '@/contexts/DateRangeContext';
+import { useUser } from '@/contexts/UserContext';
 import { Download } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -21,10 +22,12 @@ type Props = {
 const TravelTable = ({ travelsData, onUpdateTravel, onDeleteTravel, onAddCrosses, onRemoveCrosses }: Props) => {
   const { travels } = travelsData;
   const { dateFrom, dateTo } = useDateRange();
+  const { currentUser } = useUser();
 
   const handleExportCsv = async () => {
     try {
-      await TravelService.exportCsv(dateFrom, dateTo);
+      const userId = currentUser?.userId;
+      await TravelService.exportCsv(dateFrom, dateTo, userId);
     } catch (error) {
       toast.error('Error exporting CSV:')
       console.error(error)

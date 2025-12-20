@@ -7,11 +7,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { AutocompleteLocation } from "@/components/AutocompleteLocation";
 import { getTimeFromCurrent } from "@/utils";
 import useLocations from "@/hooks/useLocations";
 import VisitService from "@/services/VisitService";
 import TravelService from "@/services/TravelService";
+import UserService from "@/services/UserService";
+import { useUser } from "@/contexts/UserContext";
 
 type Props = {
   onTravelAdded: () => void;
@@ -19,6 +22,7 @@ type Props = {
 
 const TravelForm = ({ onTravelAdded }: Props) => {
   const { locations, refetch } = useLocations();
+  const { currentUser } = useUser();
   const [formData, setFormData] = useState({
     origin: "",
     destination: "",
@@ -28,6 +32,7 @@ const TravelForm = ({ onTravelAdded }: Props) => {
     distance: "",
     price: ""
   });
+  const [createForAllUsers, setCreateForAllUsers] = useState(false);
 
   const handleChange = (name: string, value: string) => {
     setFormData({
@@ -52,13 +57,47 @@ const TravelForm = ({ onTravelAdded }: Props) => {
         toast.error("Origin and destination cannot be the same.");
         return;
       }
-      await TravelService.create(formData);
-      const persisted = await VisitService.persistIfNeeded(formData.startTime.split('T')[0]);
-      
-      if (persisted) {
-        toast.success("Travel with visit added successfully!");
+
+      if (createForAllUsers) {
+        // Obtener todos los usuarios
+        const users = await UserService.getAll();
+        
+        if (users.length === 0) {
+          toast.error("No users found.");
+          return;
+        }
+
+        // Crear viaje para cada usuario
+        let successCount = 0;
+        let errorCount = 0;
+        
+        for (const user of users) {
+          try {
+            await TravelService.create(formData, user.userId);
+            await VisitService.persistIfNeeded(formData.startTime.split('T')[0], user.userId);
+            successCount++;
+          } catch (error) {
+            console.error(`Error creating travel for user ${user.userId}:`, error);
+            errorCount++;
+          }
+        }
+
+        if (errorCount === 0) {
+          toast.success(`Travel created successfully for all ${successCount} users!`);
+        } else {
+          toast.warning(`Travel created for ${successCount} users, but ${errorCount} failed.`);
+        }
       } else {
-        toast.success("Travel added successfully");
+        // Crear viaje solo para el usuario actual
+        const userId = currentUser?.userId;
+        await TravelService.create(formData, userId);
+        const persisted = await VisitService.persistIfNeeded(formData.startTime.split('T')[0], userId);
+        
+        if (persisted) {
+          toast.success("Travel with visit added successfully!");
+        } else {
+          toast.success("Travel added successfully");
+        }
       }
 
       setFormData({
@@ -183,6 +222,20 @@ const TravelForm = ({ onTravelAdded }: Props) => {
                 className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
               />
             </div>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="createForAllUsers"
+              checked={createForAllUsers}
+              onCheckedChange={(checked) => setCreateForAllUsers(checked === true)}
+            />
+            <Label
+              htmlFor="createForAllUsers"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-700 dark:text-gray-300 cursor-pointer"
+            >
+              Create travel for all registered users
+            </Label>
           </div>
 
           <Button type="submit" className="w-full">

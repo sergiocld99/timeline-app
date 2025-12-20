@@ -1,3 +1,4 @@
+import { useCorrectUser } from "../helpers/useCorrectUser.js";
 import Visit from "../models/Visit.js";
 import { calculateVisitsForDate, getMinutesBetween } from "../services/visitService.js";
 import { getDateFrom, getDateTo, withWeight } from "../utils/index.js";
@@ -5,8 +6,9 @@ import { getDateFrom, getDateTo, withWeight } from "../utils/index.js";
 export const getAllVisits = (req, res) => {
   const dateFrom = getDateFrom(req)
   const dateTo = getDateTo(req)
+  const { userId } = req.query
 
-  Visit.find({ date: { $gte: dateFrom, $lte: dateTo } }).sort({ arrivalTime: -1 }).populate('location').then(visits => {
+  Visit.find({ ...useCorrectUser(userId), date: { $gte: dateFrom, $lte: dateTo } }).sort({ arrivalTime: -1 }).populate('location').then(visits => {
     res.json(withWeight(visits, 'durationMinutes'));
   }).catch(err => {
     res.status(500).json({ message: 'Error fetching visits', error: err.message });
@@ -15,8 +17,10 @@ export const getAllVisits = (req, res) => {
 
 export const calculateVisitsController = (req, res, next) => {
   const { date } = req.params;
+  const { userId } = req.query;
+  const userIdNum = userId ? parseInt(userId, 10) : undefined;
 
-  calculateVisitsForDate(date).then(visits => {
+  calculateVisitsForDate(date, userIdNum).then(visits => {
     if (!visits || visits.length === 0) {
       res.locals.visits = [];
       return res.status(404).json({ message: 'No visits found for the specified date' });
@@ -56,10 +60,11 @@ export const persistIfNeeded = (req, res) => {
 }
 
 export const createVisit = (req, res) => {
-  const { date, arrivalTime, departureTime, location } = req.body;
+  const { date, arrivalTime, departureTime, location, userId } = req.body;
   const durationMinutes = getMinutesBetween(arrivalTime, departureTime);
 
   const visit = new Visit({
+    ...useCorrectUser(userId),
     date,
     location,
     arrivalTime,
@@ -76,10 +81,14 @@ export const createVisit = (req, res) => {
 
 export const updateVisit = (req, res) => {
   const { id } = req.params;
-  const { date, arrivalTime, departureTime, location } = req.body;
+  const { date, arrivalTime, departureTime, location, userId } = req.body;
   const durationMinutes = getMinutesBetween(arrivalTime, departureTime);
+  const updateData = { date, arrivalTime, departureTime, durationMinutes, location };
+  if (userId !== undefined) {
+    updateData.userId = parseInt(userId, 10);
+  }
 
-  Visit.findByIdAndUpdate(id, { date, arrivalTime, departureTime, durationMinutes, location }, { new: true }).then(updatedVisit => {
+  Visit.findByIdAndUpdate(id, updateData, { new: true }).then(updatedVisit => {
     res.status(200).json(updatedVisit);
   }).catch(err => {
     res.status(400).json({ message: 'Error updating visit', error: err.message });

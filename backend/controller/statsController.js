@@ -1,3 +1,4 @@
+import { useCorrectUser } from "../helpers/useCorrectUser.js"
 import Travel from "../models/Travel.js"
 import Visit from "../models/Visit.js"
 import { getDateFrom, getDateTo } from "../utils/index.js"
@@ -5,9 +6,10 @@ import { getDateFrom, getDateTo } from "../utils/index.js"
 export const getTopVisitedLocations = (req, res) => {
   const dateFrom = getDateFrom(req)
   const limit = Number(req.query.limit || 10)
+  const { userId } = req.query
 
   Visit.aggregate([
-    { $match: { date: { $gte: dateFrom } } },
+    { $match: { ...useCorrectUser(userId), date: { $gte: dateFrom } } },
     { $group: { _id: '$location', totalMinutes: { $sum: '$durationMinutes' }, count: { $sum: 1 } } },
     { $sort: { totalMinutes: -1 } },
     { $limit: limit },
@@ -24,9 +26,10 @@ export const getTopVisitedLocations = (req, res) => {
 export const getTravelStatsByMode = (req, res) => {
   const dateFrom = getDateFrom(req)
   const dateTo = getDateTo(req)
+  const { userId } = req.query
 
   Travel.aggregate([
-    { $match: { startTime: { $gte: dateFrom }, endTime: { $lte: dateTo } } },
+    { $match: { ...useCorrectUser(userId), startTime: { $gte: dateFrom }, endTime: { $lte: dateTo } } },
     { $group: { 
       _id: '$modeOfTransport', 
       totalMinutes: { $sum: { $divide: [ { $subtract: ['$endTime', '$startTime'] }, 1000 * 60 ] } },

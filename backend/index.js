@@ -8,6 +8,7 @@ import visitRoutes from "./routes/visitRoutes.js";
 import statsRoutes from "./routes/statsRouter.js"
 import crossRoutes from "./routes/crossRoutes.js"
 import knownCenterRoutes from "./routes/knownCenterRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 import connectToDatabase from "./config/database.js";
 
 dotenv.config();
@@ -24,6 +25,7 @@ app.use('/api/visits', visitRoutes);
 app.use('/api/stats', statsRoutes)
 app.use('/api/crosses', crossRoutes)
 app.use('/api/known-centers', knownCenterRoutes);
+app.use('/api/users', userRoutes);
 connectToDatabase();
 
 app.listen(PORT, () => {

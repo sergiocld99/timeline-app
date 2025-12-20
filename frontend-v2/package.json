@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "clean:install": "rm -rf node_modules && npm i"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
@@ -22,10 +23,10 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "lucide-react": "^0.542.0",
-    "next": "15.5.2",
+    "next": "^15.5.9",
     "next-themes": "^0.4.6",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
     "react-hook-form": "^7.62.0",
     "react-hot-toast": "^2.6.0",
     "recharts": "^2.15.4",

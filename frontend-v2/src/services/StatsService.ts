@@ -6,10 +6,11 @@ import { StatByMode } from "@/types/stats";
 const baseUrl = `${backendBaseUrl}/stats`;
 
 class StatsService {
-  static async getTravelStatsByMode(dateFrom?: string, dateTo?: string) {
+  static async getTravelStatsByMode(dateFrom?: string, dateTo?: string, userId?: number) {
     const url = new URL(`${baseUrl}/travels/by-mode`);
     if (dateFrom) url.searchParams.append("dateFrom", dateFrom)
     if (dateTo) url.searchParams.append("dateTo", dateTo)
+    if (userId) url.searchParams.append("userId", userId.toString())
 
     try {
       const response = await axios.get<StatByMode[]>(url.toString());

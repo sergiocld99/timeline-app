@@ -1,6 +1,7 @@
+import { useCorrectUser } from "../helpers/useCorrectUser.js";
 import Travel from "../models/Travel.js";
 
-const getTravelsStartedOn = async (date) => {
+const getTravelsStartedOn = async (date, userId) => {
   const startOfDay = new Date(date);
   startOfDay.setHours(0, 0, 0, 0);
 
@@ -8,8 +9,9 @@ const getTravelsStartedOn = async (date) => {
   endOfDay.setHours(23, 59, 59, 999);
 
   const travels = await Travel.find({
+    ...useCorrectUser(userId),
     startTime: { $gte: startOfDay, $lte: endOfDay }
-  }).sort({ startTime: 1 });
+  }).populate('origin destination').sort({ startTime: 1 });
 
   return travels
 }
@@ -20,8 +22,11 @@ export const getMinutesBetween = (startTime, endTime) => {
   return Math.round((end - start) / 60000);
 }
 
-export const calculateVisitsForDate = async (date) => {
-  const travels = await getTravelsStartedOn(date);
+/** 
+ * @param userId undefined or an already parsed number
+ * */
+export const calculateVisitsForDate = async (date, userId) => {
+  const travels = await getTravelsStartedOn(date, userId);
   const visits = [];
 
   for (let i=0; i<travels.length-1; i++) {
@@ -40,6 +45,7 @@ export const calculateVisitsForDate = async (date) => {
     const departureTime = nextTravel.startTime;
 
     visits.push({
+      userId,
       date: currentTravel.endTime.toDateString(),
       location: currentTravel.destination._id,
       arrivalTime,

@@ -11,6 +11,7 @@ import { Button } from './ui/button';
 import { Eye, EyeOff, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { renderLocationWithZipcode } from './render/location';
+import { renderPointWithCopyBtn } from './render/coordinates';
 
 type Props = {
   visitsData: VisitsData;
@@ -19,7 +20,7 @@ type Props = {
 
 const VisitTable = ({ visitsData, onDelete }: Props) => {
   const { visits } = visitsData;
-  const [ excludedVisits, setExcludedVisits ] = useState<string[]>([]);
+  const [excludedVisits, setExcludedVisits] = useState<string[]>([]);
   const visibleVisits = visits.filter(visit => !excludedVisits.includes(visit._id));
   const totalMinutes = visibleVisits.reduce((sum, visit) => sum + visit.durationMinutes, 0);
   const totalPercentage = visibleVisits.reduce((sum, visit) => sum + visit.weight.percentage, 0);
@@ -36,7 +37,7 @@ const VisitTable = ({ visitsData, onDelete }: Props) => {
   }
 
   const handleToggleExclude = (visitId: string) => {
-    setExcludedVisits((prev) => 
+    setExcludedVisits((prev) =>
       prev.includes(visitId) ? prev.filter(id => id !== visitId) : [...prev, visitId]
     );
   }
@@ -111,9 +112,7 @@ const VisitTable = ({ visitsData, onDelete }: Props) => {
           <TableFooter>
             <TableRow className="border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
               <TableCell className="font-medium text-gray-900 dark:text-white">Total</TableCell>
-              <TableCell className="text-gray-900 dark:text-white" colSpan={3}>
-                {totalLat.toFixed(4)}, {totalLong.toFixed(4)}
-              </TableCell>
+              <TableCell className="text-gray-900 dark:text-white" colSpan={3}>{renderPointWithCopyBtn(totalLat, totalLong)}</TableCell>
               <TableCell className="font-medium text-gray-900 dark:text-white">{getHoursAndMinutes(totalMinutes)}</TableCell>
               <TableCell className="text-gray-900 dark:text-white">{renderTotalWeightsCell(visibleVisits)}</TableCell>
             </TableRow>

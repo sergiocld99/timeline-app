@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Edit3, Trash2, Save, X, Loader2, CircleMinus, CirclePlus } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { renderPointWithCopyBtn } from './render/coordinates';
 
 type Props = {
   travelsData: TravelsData;
@@ -249,10 +250,8 @@ const TravelTableContent = ({ travelsData, onUpdate, onDelete, onAddCrosses, onR
       <TableFooter>
         <TableRow className="border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
           <TableCell className="font-medium text-gray-900 dark:text-white">Total</TableCell>
-          <TableCell className="text-gray-900 dark:text-white" colSpan={2}>
-            {totalLat?.toFixed(4)}, {totalLong?.toFixed(4)}
-          </TableCell>
-          <TableCell className="font-medium text-gray-900 dark:text-white" colSpan={2}>{placesVisited?.count} places</TableCell>
+          <TableCell className="text-gray-900 dark:text-white" colSpan={2}>{renderPointWithCopyBtn(totalLat, totalLong)}</TableCell>
+          <TableCell className="font-medium text-gray-900 dark:text-white" colSpan={2}>{placesVisited?.count || 0} places</TableCell>
           <TableCell className="font-medium text-gray-900 dark:text-white">{totalDistance?.toFixed(0)} km</TableCell>
           <TableCell className="font-medium text-gray-900 dark:text-white">{getHoursAndMinutes(totalMinutes)}</TableCell>
           <TableCell className="font-medium text-gray-900 dark:text-white">
