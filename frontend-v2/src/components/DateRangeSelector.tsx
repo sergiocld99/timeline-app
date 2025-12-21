@@ -6,6 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useDateRange } from "@/contexts/DateRangeContext";
 import ApplyButton from "./buttons/ApplyButton";
+import PreviousWeekBtn from "./buttons/PreviousWeekBtn";
+import NextWeekBtn from "./buttons/NextWeekBtn";
+import { convertToArgentineTime, convertToFormDate } from "@/utils";
 
 const DateRangeSelector = () => {
   const { dateFrom: contextDateFrom, dateTo: contextDateTo, updateDateRange } = useDateRange();
@@ -26,6 +29,24 @@ const DateRangeSelector = () => {
     setDateTo(e.target.value);
   };
 
+  const handleClickMoveWeek = (dayDiff = -7 | 7) => {
+    const targetFrom = new Date(contextDateFrom)
+    const targetTo = new Date(contextDateTo)
+
+    targetFrom.setDate(targetFrom.getDate() + dayDiff)
+    targetFrom.setHours(targetFrom.getHours() - 3)
+
+    targetTo.setDate(targetTo.getDate() + dayDiff)
+    targetTo.setHours(targetTo.getHours() - 3)
+
+    const dateFromStr = convertToFormDate(targetFrom)
+    const dateToStr = convertToFormDate(targetTo)
+
+    setDateFrom(dateFromStr)
+    setDateTo(dateToStr)
+    updateDateRange(dateFromStr, dateToStr)
+  }
+
   return (
     <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardHeader>
@@ -33,6 +54,10 @@ const DateRangeSelector = () => {
       </CardHeader>
       <CardContent>
         <div className="flex flex-col sm:flex-row items-center gap-4">
+          <div className="pt-6">
+            <PreviousWeekBtn handleClick={() => handleClickMoveWeek(-7)} />
+          </div>
+
           <div className="space-y-2 flex-1">
             <Label htmlFor="date_from" className="text-gray-700 dark:text-gray-300">From</Label>
             <Input
@@ -44,7 +69,7 @@ const DateRangeSelector = () => {
               className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
             />
           </div>
-          
+
           <div className="space-y-2 flex-1">
             <Label htmlFor="date_to" className="text-gray-700 dark:text-gray-300">To</Label>
             <Input
@@ -56,7 +81,11 @@ const DateRangeSelector = () => {
               className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
             />
           </div>
-          
+
+          <div className="pt-6">
+            <NextWeekBtn handleClick={() => handleClickMoveWeek(+7)} />
+          </div>
+
           <div className="pt-6">
             <ApplyButton handleClick={() => updateDateRange(dateFrom, dateTo)} />
           </div>
