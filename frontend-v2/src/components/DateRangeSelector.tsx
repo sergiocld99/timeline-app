@@ -9,6 +9,8 @@ import ApplyButton from "./buttons/ApplyButton";
 import PreviousWeekBtn from "./buttons/PreviousWeekBtn";
 import NextWeekBtn from "./buttons/NextWeekBtn";
 import { convertToArgentineTime, convertToFormDate } from "@/utils";
+import NextMonthBtn from "./buttons/NextMonthBtn";
+import PreviousMonthBtn from "./buttons/PreviousMonthBtn";
 
 const DateRangeSelector = () => {
   const { dateFrom: contextDateFrom, dateTo: contextDateTo, updateDateRange } = useDateRange();
@@ -29,7 +31,7 @@ const DateRangeSelector = () => {
     setDateTo(e.target.value);
   };
 
-  const handleClickMoveWeek = (dayDiff = -7 | 7) => {
+  const handleDayMovement = (dayDiff = -7 | 7) => {
     const targetFrom = new Date(contextDateFrom)
     const targetTo = new Date(contextDateTo)
 
@@ -54,8 +56,9 @@ const DateRangeSelector = () => {
       </CardHeader>
       <CardContent>
         <div className="flex flex-col sm:flex-row items-center gap-4">
-          <div className="pt-6">
-            <PreviousWeekBtn handleClick={() => handleClickMoveWeek(-7)} />
+          <div className="pt-6 flex-row space-x-2">
+            <PreviousMonthBtn handleClick={() => handleDayMovement(-30)} />
+            <PreviousWeekBtn handleClick={() => handleDayMovement(-7)} />
           </div>
 
           <div className="space-y-2 flex-1">
@@ -82,8 +85,9 @@ const DateRangeSelector = () => {
             />
           </div>
 
-          <div className="pt-6">
-            <NextWeekBtn handleClick={() => handleClickMoveWeek(+7)} />
+          <div className="pt-6 flex-row space-x-2">
+            <NextWeekBtn handleClick={() => handleDayMovement(+7)} />
+            <NextMonthBtn handleClick={() => handleDayMovement(+30)} />
           </div>
 
           <div className="pt-6">
