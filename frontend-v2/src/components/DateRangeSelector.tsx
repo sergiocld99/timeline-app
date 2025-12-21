@@ -1,12 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useDateRange } from "@/contexts/DateRangeContext";
-import { Check } from "lucide-react";
+import ApplyButton from "./buttons/ApplyButton";
 
 const DateRangeSelector = () => {
   const { dateFrom: contextDateFrom, dateTo: contextDateTo, updateDateRange } = useDateRange();
@@ -59,14 +58,7 @@ const DateRangeSelector = () => {
           </div>
           
           <div className="pt-6">
-            <Button 
-              type="button" 
-              onClick={() => updateDateRange(dateFrom, dateTo)}
-              className="bg-green-600 hover:bg-green-700 text-white"
-            >
-              <Check className="h-4 w-4 mr-2" />
-              Apply
-            </Button>
+            <ApplyButton handleClick={() => updateDateRange(dateFrom, dateTo)} />
           </div>
         </div>
       </CardContent>

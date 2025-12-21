@@ -23,7 +23,7 @@ export const renderPointWithCopyBtn = (latitude?: number, longitude?: number) =>
   return (
     <div className="flex items-center gap-2">
       <span>{renderPoint(latitude, longitude)}</span>
-      {latitude && longitude && (<CopyButton handleCopy={() => handleCopyCoordinates(latitude, longitude)} />)}
+      {latitude && longitude && (<CopyButton handleClick={() => handleCopyCoordinates(latitude, longitude)} />)}
     </div>
   )
 }

@@ -1,11 +1,8 @@
 import { MapIcon } from "lucide-react"
 import { Button } from "../ui/button"
+import { ButtonProps } from "@/types/props"
 
-type Props = {
-  handleClick: () => void
-}
-
-const MapButton = ({ handleClick }: Props) => {
+const MapButton = ({ handleClick }: ButtonProps) => {
   return (
     <Button
       onClick={handleClick}

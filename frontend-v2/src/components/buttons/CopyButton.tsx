@@ -1,14 +1,11 @@
 import { Copy } from "lucide-react"
 import { Button } from "../ui/button"
+import { ButtonProps } from "@/types/props"
 
-type Props = {
-  handleCopy: () => void
-}
-
-const CopyButton = ({handleCopy}: Props) => {
+const CopyButton = ({handleClick}: ButtonProps) => {
   return (
     <Button
-      onClick={handleCopy}
+      onClick={handleClick}
       size="sm"
       variant="outline"
       title="Copy coordinates"

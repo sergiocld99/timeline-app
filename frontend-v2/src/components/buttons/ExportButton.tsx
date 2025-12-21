@@ -1,11 +1,8 @@
 import { Download } from "lucide-react"
 import { Button } from "../ui/button"
+import { ButtonProps } from "@/types/props"
 
-type Props = {
-  handleClick: () => void
-}
-
-const ExportButton = ({ handleClick }: Props) => {
+const ExportButton = ({ handleClick }: ButtonProps) => {
   return (
     <Button
       onClick={handleClick}
