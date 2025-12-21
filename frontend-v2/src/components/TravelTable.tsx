@@ -2,14 +2,13 @@
 
 import type { Travel, TravelsData } from '@/types/travel';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import DateRangeSelector from './DateRangeSelector';
 import TravelTableContent from './TravelTableContent';
 import TravelService from '@/services/TravelService';
 import { useDateRange } from '@/contexts/DateRangeContext';
 import { useUser } from '@/contexts/UserContext';
-import { Download } from 'lucide-react';
 import { toast } from 'sonner';
+import ExportButton from './buttons/ExportButton';
 
 type Props = {
   travelsData: TravelsData;
@@ -38,15 +37,7 @@ const TravelTable = ({ travelsData, onUpdateTravel, onDeleteTravel, onAddCrosses
     <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-gray-900 dark:text-white">Travels</CardTitle>
-        <Button
-          onClick={handleExportCsv}
-          variant="outline"
-          size="sm"
-          className="gap-2"
-        >
-          <Download className="h-4 w-4" />
-          Export
-        </Button>
+        <ExportButton handleClick={handleExportCsv} />
       </CardHeader>
       <CardContent className="space-y-6">
         <DateRangeSelector />
