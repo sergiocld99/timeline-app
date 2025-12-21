@@ -21,19 +21,13 @@ const DEFAULT_LAT = -34.6037031
 const DEFAULT_LNG = -58.3816211
 
 const getZoomByDistance = (km: number) => {
-  if (km > 50) {
-    return 9
-  }
-
-  if (km > 15) {
-    return 10
-  }
-
-  if (km > 10) {
-    return 11
-  }
-
-  return 12
+  if (km > 140) return 7
+  if (km > 100) return 8
+  if (km > 50) return 9
+  if (km > 15) return 10
+  if (km > 7.5) return 11
+  if (km > 3.5) return 12
+  return 13
 }
 
 const ChangeMapView = ({ center, zoom }: { center: Center, zoom: number }) => {
@@ -70,6 +64,8 @@ const TravelMap = ({ travelsData }: Props) => {
       const centerLat = (lat1 + lat2) / 2
       const centerLng = (lng1 + lng2) / 2
       const distanceKm = calculateDistanceKm(lat1, lat2, lng1, lng2)
+
+      console.log('Distance Frequent vs Center: ', distanceKm)
 
       setMapCenter([centerLat, centerLng])
       setZoom(getZoomByDistance(distanceKm))
