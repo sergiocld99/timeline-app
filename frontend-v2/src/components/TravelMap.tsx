@@ -11,6 +11,7 @@ import { Center } from "@/types/map";
 import { getUniqueLocations } from "./analize/travel";
 import { renderLocationMarkers } from "./render/map";
 import { calculateDistanceKm } from "@/utils/units/km";
+import { getZoomByDistance } from "./adjust/zoom";
 
 type Props = {
   travelsData: TravelsData;
@@ -19,16 +20,6 @@ type Props = {
 const DEFAULT_ZOOM = 9
 const DEFAULT_LAT = -34.6037031
 const DEFAULT_LNG = -58.3816211
-
-const getZoomByDistance = (km: number) => {
-  if (km > 140) return 7
-  if (km > 100) return 8
-  if (km > 50) return 9
-  if (km > 15) return 10
-  if (km > 7.5) return 11
-  if (km > 3.5) return 12
-  return 13
-}
 
 const ChangeMapView = ({ center, zoom }: { center: Center, zoom: number }) => {
   const map = useMap(); // Access the map instance
