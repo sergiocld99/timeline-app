@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import type { TravelsData } from "@/types/travel";
+import type { Travel, TravelStats } from "@/types/travel";
 import { defaultMarker } from "./map/icons";
 import useNearbyCenters from "@/hooks/useNearbyCenters";
 import { Center } from "@/types/map";
@@ -14,7 +14,8 @@ import { calculateDistanceKm } from "@/utils/units/km";
 import { getZoomByDistance } from "./adjust/zoom";
 
 type Props = {
-  travelsData: TravelsData;
+  travels: Travel[];
+  stats?: TravelStats;
 };
 
 const DEFAULT_ZOOM = 9
@@ -31,14 +32,12 @@ const ChangeMapView = ({ center, zoom }: { center: Center, zoom: number }) => {
   return null;
 }
 
-const TravelMap = ({ travelsData }: Props) => {
-  const { travels } = travelsData;
-
+const TravelMap = ({ travels, stats }: Props) => {
   const [mapCenter, setMapCenter] = useState<[number, number]>([DEFAULT_LAT, DEFAULT_LNG])
   const [zoom, setZoom] = useState(DEFAULT_ZOOM)
 
-  const { averageLatitude, averageLongitude } = travelsData.stats || {}
-  const nearbyRadius = travels.length < 1 ? undefined : (travelsData!.stats!.averageDistance * 2)
+  const { averageLatitude, averageLongitude } = stats || {}
+  const nearbyRadius = travels.length < 1 ? undefined : (stats!.averageDistance * 2)
 
   const { nearbyCenters } = useNearbyCenters({ latitude: averageLatitude, longitude: averageLongitude, radiusKm: nearbyRadius })
 

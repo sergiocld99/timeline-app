@@ -1,11 +1,12 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import GravityCenterScoreboard from "@/components/GravityCenterScoreboard";
 import Header from "@/components/Header";
 import TravelBarStats from "@/components/TravelBarStats";
 import TravelTable from "@/components/TravelTable";
 import useTravels from "@/hooks/useTravels";
+import { useEffect, useState } from "react";
+import { Travel } from "@/types/travel";
 
 // Importar el mapa dinámicamente para evitar problemas de SSR con Leaflet
 const TravelMap = dynamic(() => import("@/components/TravelMap"), {
@@ -18,7 +19,26 @@ const TravelMap = dynamic(() => import("@/components/TravelMap"), {
 });
 
 const TravelsPage = () => {
-  const { travels, updateTravel, deleteTravel } = useTravels();
+  const { travels: travelsData, updateTravel, deleteTravel } = useTravels();
+  const { travels, stats } = travelsData
+
+  const [filteredTravels, setFilteredTravels] = useState<Travel[]>(travels)
+  const [isFiltered, setIsFiltered] = useState(false)
+
+  const onFilterLocation = (loc?: string) => {
+    if (loc) {
+      setFilteredTravels(travels.filter(t => t.origin.name === loc || t.destination.name === loc))
+      setIsFiltered(true)
+    } else {
+      setFilteredTravels(travels)
+      setIsFiltered(false)
+    }
+  }
+
+  useEffect(() => {
+    setFilteredTravels(travels)
+    setIsFiltered(false)
+  }, [travels])
 
   return (
     <>
@@ -26,14 +46,17 @@ const TravelsPage = () => {
       <main className="mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
         <div className="space-y-8">
           <div className="flex gap-8">
-            <TravelMap travelsData={travels} />
-            <TravelBarStats travelsData={travels} />
+            <TravelMap travels={filteredTravels} stats={stats} />
+            <TravelBarStats travels={filteredTravels} onFilterLocation={onFilterLocation} />
             {/* <GravityCenterScoreboard travelsData={travels} /> */}
           </div>
           <TravelTable
-            travelsData={travels}
+            travels={filteredTravels}
+            stats={stats}
             onUpdateTravel={updateTravel}
             onDeleteTravel={deleteTravel}
+            onRemoveFilter={() => onFilterLocation(undefined)}
+            isFiltered={isFiltered}
           />
         </div>
       </main>
