@@ -10,19 +10,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AutocompleteLocation } from "@/components/AutocompleteLocation";
 import { getTimeFromCurrent } from "@/utils";
-import useLocations from "@/hooks/useLocations";
 import VisitService from "@/services/VisitService";
 import TravelService from "@/services/TravelService";
 import UserService from "@/services/UserService";
 import { useUser } from "@/contexts/UserContext";
 import type { AxiosErrorResponse } from "@/types/commons";
+import { Location } from "@/types/travel";
 
 type Props = {
-  onTravelAdded: () => void;
+  locations: Location[]
 };
 
-const TravelForm = ({ onTravelAdded }: Props) => {
-  const { locations, refetch } = useLocations();
+const TravelForm = ({ locations }: Props) => {
   const { currentUser } = useUser();
   const [formData, setFormData] = useState({
     origin: "",
@@ -125,9 +124,6 @@ const TravelForm = ({ onTravelAdded }: Props) => {
         startTime: formData.endTime,
         distance: "",
       });
-      
-      onTravelAdded();
-      refetch();
     } catch (error) {
       console.error("There was an error adding the travel!", error, formData);
       
