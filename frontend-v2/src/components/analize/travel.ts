@@ -1,7 +1,10 @@
+import { KnownCenter } from "@/types/center"
 import { HourAndMinutes, HourPart } from "@/types/chart"
-import type { Travel, TravelWithFarthestPoint } from "@/types/travel"
+import { MapLocation } from "@/types/map"
+import type { Location, Travel, TravelWithFarthestPoint } from "@/types/travel"
 import { extractHourAndMinutes, normalizeHour } from "@/utils/chart"
 import { extractKeys, sortByDescendingValue } from "@/utils/kv"
+import { getLocationKey } from "./location"
 
 export const calculateBestLocations = (travels: TravelWithFarthestPoint[], quantity: number) => {
   const topLocations = travels.reduce((acc, t) => {
@@ -98,4 +101,84 @@ export const getEachHourOfEachHalf = ({ startTime: start, endTime: end, duration
   const secondHalfHours = getNormalizedEachHourOfTravel(halfTime, endTime)
 
   return [firstHalfHours, secondHalfHours]
+}
+
+const initializeMapLocation = (location: Location, date: string): MapLocation => {
+  return (
+    {
+      name: location.name,
+      lat: location.latitude,
+      lng: location.longitude,
+      frecuency: 0,
+      lastDate: date,
+      isFrequent: false,
+      type: 'travel'
+    }
+  )
+}
+
+export const getUniqueLocations = (travels: Travel[], nearbyCenters: KnownCenter[]) => {
+  const locationMap = new Map<string, MapLocation>();
+
+  travels.forEach((travel) => {
+    // Origin
+    if (travel.origin?.latitude && travel.origin?.longitude) {
+      const key = getLocationKey(travel.origin.latitude, travel.origin.longitude);
+
+      if (!locationMap.has(key)) {
+        locationMap.set(key, initializeMapLocation(travel.origin, travel.shortDate));
+      }
+
+      locationMap.get(key)!.frecuency += 1
+    }
+
+    // Destination
+    if (travel.destination?.latitude && travel.destination?.longitude) {
+      const key = getLocationKey(travel.destination.latitude, travel.destination.longitude)
+
+      if (!locationMap.has(key)) {
+        locationMap.set(key, initializeMapLocation(travel.destination, travel.shortDate));
+      }
+
+      locationMap.get(key)!.frecuency += 1
+    }
+  });
+
+  nearbyCenters.forEach((nc => {
+    const key = getLocationKey(nc.latitude, nc.longitude)
+
+    if (!locationMap.has(key)) {
+      locationMap.set(key, {
+        name: nc.name,
+        lat: nc.latitude,
+        lng: nc.longitude,
+        frecuency: 0,
+        distanceAwayFromAvg: nc.distanceKm,
+        type: 'nearby'
+      })
+    } else {
+      const mappedLocation = locationMap.get(key)!
+
+      mappedLocation.type = 'visited-nearby'
+      mappedLocation.distanceAwayFromAvg = nc.distanceKm
+    }
+  }))
+
+  const arr = Array.from(locationMap.values())
+
+  // apply most frequent
+  if (arr && arr.length > 0) {
+    const mostFrequent = arr.reduce((max, act) => max.frecuency > act.frecuency ? max : act)
+    const relevantFrecuency = mostFrequent.frecuency / 2
+
+    arr.map(l => {
+      if (l.frecuency > relevantFrecuency) {
+        l.isFrequent = true
+      }
+  
+      return l
+    })
+  }
+
+  return arr;
 }

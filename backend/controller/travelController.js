@@ -69,6 +69,19 @@ export const buildGraph = (req, res) => {
 export const createTravel = (req, res) => {
   const { startTime, endTime, origin, destination, modeOfTransport, distance, price, userId } = req.body;
 
+  // Validar que la duración del viaje no exceda 24 horas
+  const start = new Date(startTime);
+  const end = new Date(endTime);
+  const durationMs = end - start;
+  const oneDayMs = 24 * 60 * 60 * 1000; // 24 horas en milisegundos
+
+  if (durationMs > oneDayMs) {
+    return res.status(400).json({ 
+      message: 'Travel duration cannot exceed 24 hours', 
+      error: 'The travel duration exceeds the maximum allowed time of 1 day' 
+    });
+  }
+
   const travel = new Travel({
     ...useCorrectUser(userId),
     startTime,
@@ -90,6 +103,22 @@ export const createTravel = (req, res) => {
 export const updateTravel = (req, res) => {
   const { id } = req.params;
   const { startTime, endTime, origin, destination, modeOfTransport, distance, crosses, userId } = req.body;
+  
+  // Validar que la duración del viaje no exceda 24 horas si se están actualizando los tiempos
+  if (startTime && endTime) {
+    const start = new Date(startTime);
+    const end = new Date(endTime);
+    const durationMs = end - start;
+    const oneDayMs = 24 * 60 * 60 * 1000; // 24 horas en milisegundos
+
+    if (durationMs > oneDayMs) {
+      return res.status(400).json({ 
+        message: 'Travel duration cannot exceed 24 hours', 
+        error: 'The travel duration exceeds the maximum allowed time of 1 day' 
+      });
+    }
+  }
+
   const updateData = { startTime, endTime, origin, destination, modeOfTransport, distance, crosses };
   if (userId !== undefined) {
     updateData.userId = parseInt(userId, 10);

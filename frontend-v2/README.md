@@ -1,21 +1,22 @@
 # Timeline App Frontend v2
 
-A modern Next.js frontend for the Timeline App, built with:
+A modern Next.js frontend for tracking travels, visits, and locations with interactive maps.
+
+## Tech Stack
 
 - **Next.js 15** with App Router
+- **React 19** with TypeScript
 - **Tailwind CSS v4** for styling
-- **shadcn/ui** for beautiful, accessible components
-- **TypeScript** for type safety
-- **React 19** with latest features
+- **shadcn/ui** for UI components
+- **Leaflet** for interactive maps
 
 ## Features
 
-- 🗺️ **Locations Management** - Add and view locations with coordinates
-- 🚗 **Travels Management** - Track your journeys between locations
+- 🗺️ **Interactive Maps** - Visualize travels with origin and destination markers
+- 🚗 **Travels Management** - Track journeys between locations
 - 🏠 **Visits Management** - Record visits to different places
-- 📱 **Responsive Design** - Mobile-first approach with Tailwind CSS
-- 🎨 **Modern UI** - Beautiful components with shadcn/ui
-- ⚡ **Fast Performance** - Built with Next.js optimization features
+- 📍 **Locations Management** - Manage locations with coordinates
+- 📱 **Responsive Design** - Mobile-first approach
 
 ## Getting Started
 

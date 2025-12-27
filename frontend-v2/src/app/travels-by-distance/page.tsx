@@ -7,8 +7,10 @@ import useStats from "@/hooks/useStats";
 import useTravels from "@/hooks/useTravels";
 
 const TravelsByDistancePage = () => {
-  const { travels, updateTravel, deleteTravel } = useTravels('distance');
+  const { travels: travelsData, updateTravel, deleteTravel } = useTravels('distance');
   const { statsByMode } = useStats();
+
+  const { travels, stats } = travelsData
 
   return (
     <>
@@ -17,7 +19,8 @@ const TravelsByDistancePage = () => {
         <div className="space-y-8">
           <TravelPieStats stats={statsByMode} />
           <TravelTable
-            travelsData={travels}
+            travels={travels}
+            stats={stats}
             onUpdateTravel={updateTravel}
             onDeleteTravel={deleteTravel}
           />

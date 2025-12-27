@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import type { Travel, TravelEditValues, TravelsData } from '@/types/travel';
+import type { Travel, TravelEditValues, TravelStats } from '@/types/travel';
 import { extractDate, extractTime, getEmojiForMode, getHoursAndMinutes } from '@/utils';
 import { renderTotalWeightsCell, renderWeight } from '@/utils/weight';
 import { toast } from 'sonner';
@@ -11,9 +11,11 @@ import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, Table
 import { Edit3, Trash2, Save, X, Loader2, CircleMinus, CirclePlus } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { renderPointWithCopyBtn } from './render/coordinates';
+import type { AxiosErrorResponse } from '@/types/commons';
 
 type Props = {
-  travelsData: TravelsData;
+  travels: Travel[];
+  stats?: TravelStats;
   onUpdate?: (id: string, updates: Partial<Travel>) => Promise<Travel>;
   onDelete?: (id: string) => Promise<void>;
   onAddCrosses?: (travelId: string) => Promise<void>;
@@ -22,11 +24,10 @@ type Props = {
 
 const columnHeaders = ['Date', 'Mode', 'From', 'To', 'Start', 'Distance', 'Duration', 'Speed', 'Weight', 'Actions'];
 
-const TravelTableContent = ({ travelsData, onUpdate, onDelete, onAddCrosses, onRemoveCrosses }: Props) => {
+const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, onRemoveCrosses }: Props) => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValues, setEditValues] = useState<TravelEditValues>({ distance: '', duration: '', modeOfTransport: '' });
   const [isSaving, setIsSaving] = useState(false);
-  const { travels, stats } = travelsData
   const { averageLatitude: totalLat, averageLongitude: totalLong, totalDistance = 0, totalMinutes = 0, placesVisited } = stats || {}
 
   const handleEdit = (travel: Travel) => {
@@ -51,6 +52,13 @@ const TravelTableContent = ({ travelsData, onUpdate, onDelete, onAddCrosses, onR
         return;
       }
 
+      // Validar que la duración no exceda 24 horas (1440 minutos)
+      const maxDurationMinutes = 24 * 60; // 1440 minutos
+      if (duration > maxDurationMinutes) {
+        toast.error('Travel duration cannot exceed 24 hours (1440 minutes)');
+        return;
+      }
+
       await onUpdate(travel._id, {
         distance,
         endTime: new Date(new Date(travel.startTime).getTime() + duration * 60000).toISOString(),
@@ -61,7 +69,14 @@ const TravelTableContent = ({ travelsData, onUpdate, onDelete, onAddCrosses, onR
       setEditValues({ distance: '', duration: '', modeOfTransport: '' });
     } catch (error) {
       console.error('Error updating travel:', error);
-      toast.error('Failed to update travel');
+      
+      // Manejar error específico de duración excedida
+      const axiosError = error as AxiosErrorResponse;
+      if (axiosError.response?.status === 400 && axiosError.response?.data?.message?.includes('24 hours')) {
+        toast.error('Travel duration cannot exceed 24 hours');
+      } else {
+        toast.error('Failed to update travel');
+      }
     } finally {
       setIsSaving(false);
     }
@@ -232,7 +247,7 @@ const TravelTableContent = ({ travelsData, onUpdate, onDelete, onAddCrosses, onR
         </TableRow>
       </TableHeader>
       <TableBody>
-        {travelsData.travels.map((t) => (
+        {travels.map((t) => (
           <TableRow key={t._id} className="border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
             <TableCell className="text-gray-900 dark:text-white">{extractDate(t.startTime)}</TableCell>
             <TableCell className="text-gray-900 dark:text-white">{renderEditableModeOfTransport(t)}</TableCell>

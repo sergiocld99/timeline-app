@@ -23,7 +23,7 @@ export const calculateVisitsController = (req, res, next) => {
   calculateVisitsForDate(date, userIdNum).then(visits => {
     if (!visits || visits.length === 0) {
       res.locals.visits = [];
-      return res.status(404).json({ message: 'No visits found for the specified date' });
+      return res.status(204).json({ message: 'No visits found for the specified date' });
     }
 
     res.locals.visits = visits;

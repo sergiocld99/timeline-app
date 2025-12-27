@@ -1,26 +1,28 @@
 "use client";
 
-import type { Travel, TravelsData } from '@/types/travel';
+import type { Travel, TravelStats } from '@/types/travel';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import DateRangeSelector from './DateRangeSelector';
 import TravelTableContent from './TravelTableContent';
 import TravelService from '@/services/TravelService';
 import { useDateRange } from '@/contexts/DateRangeContext';
 import { useUser } from '@/contexts/UserContext';
-import { Download } from 'lucide-react';
 import { toast } from 'sonner';
+import ExportButton from './buttons/ExportButton';
+import RemoveFilterBtn from './buttons/RemoveFilterBtn';
 
 type Props = {
-  travelsData: TravelsData;
+  travels: Travel[];
+  stats?: TravelStats;
   onUpdateTravel?: (id: string, updates: Partial<Travel>) => Promise<Travel>;
   onDeleteTravel?: (id: string) => Promise<void>;
   onAddCrosses?: (travelId: string) => Promise<void>;
   onRemoveCrosses?: (travelId: string) => Promise<void>;
+  onRemoveFilter?: () => void;
+  isFiltered?: boolean
 };
 
-const TravelTable = ({ travelsData, onUpdateTravel, onDeleteTravel, onAddCrosses, onRemoveCrosses }: Props) => {
-  const { travels } = travelsData;
+const TravelTable = ({ travels, stats, onUpdateTravel, onDeleteTravel, onAddCrosses, onRemoveCrosses, onRemoveFilter, isFiltered }: Props) => {
   const { dateFrom, dateTo } = useDateRange();
   const { currentUser } = useUser();
 
@@ -38,15 +40,8 @@ const TravelTable = ({ travelsData, onUpdateTravel, onDeleteTravel, onAddCrosses
     <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-gray-900 dark:text-white">Travels</CardTitle>
-        <Button
-          onClick={handleExportCsv}
-          variant="outline"
-          size="sm"
-          className="gap-2"
-        >
-          <Download className="h-4 w-4" />
-          Export
-        </Button>
+        {isFiltered && onRemoveFilter && <RemoveFilterBtn handleClick={onRemoveFilter} />}
+        <ExportButton handleClick={handleExportCsv} />
       </CardHeader>
       <CardContent className="space-y-6">
         <DateRangeSelector />
@@ -56,7 +51,8 @@ const TravelTable = ({ travelsData, onUpdateTravel, onDeleteTravel, onAddCrosses
           </div>
         )}
         <TravelTableContent 
-          travelsData={travelsData} 
+          travels={travels}
+          stats={stats}
           onUpdate={onUpdateTravel} 
           onDelete={onDeleteTravel}
           onAddCrosses={onAddCrosses}

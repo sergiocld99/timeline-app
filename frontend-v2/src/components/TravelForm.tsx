@@ -10,18 +10,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AutocompleteLocation } from "@/components/AutocompleteLocation";
 import { getTimeFromCurrent } from "@/utils";
-import useLocations from "@/hooks/useLocations";
 import VisitService from "@/services/VisitService";
 import TravelService from "@/services/TravelService";
 import UserService from "@/services/UserService";
 import { useUser } from "@/contexts/UserContext";
+import type { AxiosErrorResponse } from "@/types/commons";
+import { Location } from "@/types/travel";
 
 type Props = {
-  onTravelAdded: () => void;
+  locations: Location[]
 };
 
-const TravelForm = ({ onTravelAdded }: Props) => {
-  const { locations, refetch } = useLocations();
+const TravelForm = ({ locations }: Props) => {
   const { currentUser } = useUser();
   const [formData, setFormData] = useState({
     origin: "",
@@ -57,6 +57,17 @@ const TravelForm = ({ onTravelAdded }: Props) => {
         toast.error("Origin and destination cannot be the same.");
         return;
       }
+      
+      // Validar que la duración no exceda 24 horas
+      const start = new Date(formData.startTime);
+      const end = new Date(formData.endTime);
+      const durationMs = end.getTime() - start.getTime();
+      const oneDayMs = 24 * 60 * 60 * 1000; // 24 horas en milisegundos
+      
+      if (durationMs > oneDayMs) {
+        toast.error("Travel duration cannot exceed 24 hours.");
+        return;
+      }
 
       if (createForAllUsers) {
         // Obtener todos los usuarios
@@ -78,6 +89,12 @@ const TravelForm = ({ onTravelAdded }: Props) => {
             successCount++;
           } catch (error) {
             console.error(`Error creating travel for user ${user.userId}:`, error);
+            // Si es el error de duración, no continuar con los demás usuarios
+            const axiosError = error as AxiosErrorResponse;
+            if (axiosError.response?.status === 400 && axiosError.response?.data?.message?.includes('24 hours')) {
+              toast.error("Travel duration cannot exceed 24 hours. Operation cancelled.");
+              return;
+            }
             errorCount++;
           }
         }
@@ -103,16 +120,20 @@ const TravelForm = ({ onTravelAdded }: Props) => {
       setFormData({
         ...formData,
         origin: formData.destination,
-        destination: formData.origin,
+        destination: "",
         startTime: formData.endTime,
         distance: "",
       });
-      
-      onTravelAdded();
-      refetch();
     } catch (error) {
       console.error("There was an error adding the travel!", error, formData);
-      toast.error("Failed to add travel. Please try again.");
+      
+      // Manejar error específico de duración excedida
+      const axiosError = error as AxiosErrorResponse;
+      if (axiosError.response?.status === 400 && axiosError.response?.data?.message?.includes('24 hours')) {
+        toast.error("Travel duration cannot exceed 24 hours.");
+      } else {
+        toast.error("Failed to add travel. Please try again.");
+      }
     }
   };
 

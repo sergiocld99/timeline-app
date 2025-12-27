@@ -14,9 +14,11 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 const CrossesPage = () => {
   const { crosses, refetch } = useCrosses();
-  const { travels, refetch: refetchTravels } = useTravels();
+  const { travels: travelsData, refetch: refetchTravels } = useTravels();
   const [ andCrosses, setAndCrosses ] = useState<Cross[]>([]);
   const [ editCrosses, setEditCrosses ] = useState<Cross[]>([])
+
+  const { travels, stats } = travelsData
 
   const updateSet = (checked: CheckedState, item: Cross, setFn: Dispatch<SetStateAction<Cross[]>>) => {
     if (checked === true) { setFn(prev => [...prev, item]) } 
@@ -36,7 +38,7 @@ const CrossesPage = () => {
   }
 
   const onAddCrosses = async (travelId: string) => {
-    const currentTravelCrosses = travels.travels.find(t => t._id === travelId)?.crosses ?? []
+    const currentTravelCrosses = travels.find(t => t._id === travelId)?.crosses ?? []
     const crosses = [...currentTravelCrosses, ...editCrosses]
 
     if (currentTravelCrosses.length === crosses.length) {
@@ -51,7 +53,7 @@ const CrossesPage = () => {
 
   const onRemoveCrosses = async (travelId: string) => {
     const crossIdsToRemove = editCrosses.map(c => c._id)
-    const currentTravelCrosses = travels.travels.find(t => t._id === travelId)?.crosses ?? []
+    const currentTravelCrosses = travels.find(t => t._id === travelId)?.crosses ?? []
     const crosses = currentTravelCrosses.filter(c => !crossIdsToRemove.includes(c._id))
 
     if (currentTravelCrosses.length === crosses.length) {
@@ -79,7 +81,8 @@ const CrossesPage = () => {
         </div>
         <div className="py-8 space-y-8">
           <TravelTable
-            travelsData={travels}
+            travels={travels}
+            stats={stats}
             onAddCrosses={onAddCrosses}
             onRemoveCrosses={onRemoveCrosses}
           />
