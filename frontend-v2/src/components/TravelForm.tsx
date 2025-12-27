@@ -120,7 +120,7 @@ const TravelForm = ({ locations }: Props) => {
       setFormData({
         ...formData,
         origin: formData.destination,
-        destination: formData.origin,
+        destination: "",
         startTime: formData.endTime,
         distance: "",
       });
