@@ -1,12 +1,11 @@
 "use client";
 
 import Header from "@/components/Header";
-import LocationForm from "@/components/LocationForm";
 import LocationTable from "@/components/LocationTable";
 import useLocations from "@/hooks/useLocations";
 
 const LocationsPage = () => {
-  const { locations, error, refetch, update } = useLocations();
+  const { locations, error, update } = useLocations();
 
   if (error) {
     return (
