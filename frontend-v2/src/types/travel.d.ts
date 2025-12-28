@@ -12,6 +12,8 @@ export type Location = {
 
 export type LocationEditValues = {
   name: string,
+  latitude: number,
+  longitude: number,
   notes: string,
 }
 
