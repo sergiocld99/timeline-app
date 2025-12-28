@@ -6,6 +6,7 @@ import {
   updateTravel
 } from "../controller/travelController.js";
 import { buildGraph, exportTravelsCsv, findTravels } from "../controller/travelExtras.js";
+import { updateVisitIfNeeded } from "../controller/visitController.js";
 
 const router = e.Router();
 
@@ -16,7 +17,7 @@ router.get('/export/csv', exportTravelsCsv);
 router.get('/find', findTravels)
 
 router.post('/', createTravel);
-router.put('/:id', updateTravel);
+router.put('/:id', updateTravel, updateVisitIfNeeded);
 router.delete('/:id', deleteTravel);
 
 

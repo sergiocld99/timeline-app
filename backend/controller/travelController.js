@@ -63,7 +63,7 @@ export const createTravel = (req, res) => {
   });
 }
 
-export const updateTravel = (req, res) => {
+export const updateTravel = (req, res, next) => {
   const { id } = req.params;
   const { startTime, endTime, origin, destination, modeOfTransport, distance, crosses, userId } = req.body;
   
@@ -93,11 +93,12 @@ export const updateTravel = (req, res) => {
       if (!updatedTravel) {
         return res.status(404).json({ message: 'Travel not found' });
       }
-      const enrichedTravel = enrichTravel(updatedTravel);
-      res.json(enrichedTravel);
+      
+      res.locals.enrichedTravel = enrichTravel(updatedTravel);
+      next()
     })
     .catch(err => {
-      res.status(400).json({ message: 'Error updating travel', error: err.message });
+      return res.status(400).json({ message: 'Error updating travel', error: err.message });
     }
   );
 }
