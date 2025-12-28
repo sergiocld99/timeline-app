@@ -11,6 +11,30 @@ const calculateDuration = (startTime, endTime) => {
   return (end - start) / (1000 * 60); // duration in minutes
 };
 
+export const enrichDuration = (travel) => {
+  const duration = calculateDuration(travel.startTime, travel.endTime);
+
+  travel.set('duration', duration, { strict: false });
+
+  return travel
+}
+
+export const getOverallSpeed = (travels) => {
+  let sumOfDurationMin = 0
+  let sumOfDistanceKm = 0
+
+  travels.forEach(t => {
+    const duration = calculateDuration(t.startTime, t.endTime);
+
+    sumOfDurationMin += duration
+    sumOfDistanceKm += t.distance
+  })
+
+  const speedKmh = (sumOfDistanceKm / sumOfDurationMin) * 60
+
+  return [sumOfDistanceKm, sumOfDurationMin, travels.length === 0 ? 0 : speedKmh]
+}
+
 /**
  * Enriches travel documents with calculated fields
  * @param {Array} travels - Array of travel documents

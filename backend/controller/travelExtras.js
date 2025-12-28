@@ -1,7 +1,7 @@
 import { useCorrectUser } from "../helpers/useCorrectUser.js"
 import Travel from "../models/Travel.js"
 import Location from "../models/Location.js"
-import { enrichTravels } from "../services/travelService.js"
+import { enrichDuration, enrichTravels, getOverallSpeed } from "../services/travelService.js"
 import { getDateFrom, getDateTo } from "../utils/index.js"
 
 const escapeCsvValue = (value) => {
@@ -66,8 +66,10 @@ export const findTravels = async (req, res) => {
     ...useCorrectUser(userId), 
     origin: { $in: originIds },
     destination: { $in: destIds }
-  }).populate('origin destination').sort({startTime: -1}).then(travels => {
-    res.json({ count: travels.length, travels })
+  }).sort({startTime: -1}).then(travels => {
+    const speedData = getOverallSpeed(travels)
+
+    res.json({ count: travels.length, speed: speedData[2], sumKm: speedData[0], sumMin: speedData[1], travels })
   }).catch(err => {
     res.status(500).json({ message: 'Error finding travels', error: err.message });
   })
