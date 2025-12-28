@@ -12,6 +12,7 @@ import { Edit3, Trash2, Save, X, Loader2, CircleMinus, CirclePlus } from 'lucide
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { renderPointWithCopyBtn } from './render/coordinates';
 import type { AxiosErrorResponse } from '@/types/commons';
+import useLocations from '@/hooks/useLocations';
 
 type Props = {
   travels: Travel[];
@@ -26,16 +27,25 @@ const columnHeaders = ['Date', 'Mode', 'From', 'To', 'Start', 'Distance', 'Durat
 
 const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, onRemoveCrosses }: Props) => {
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editValues, setEditValues] = useState<TravelEditValues>({ distance: '', duration: '', modeOfTransport: '' });
+  const [editValues, setEditValues] = useState<TravelEditValues>({ distance: '', duration: '', modeOfTransport: '', origin: '', destination: '' });
   const [isSaving, setIsSaving] = useState(false);
+  const { locations } = useLocations()
+
   const { averageLatitude: totalLat, averageLongitude: totalLong, totalDistance = 0, totalMinutes = 0, placesVisited } = stats || {}
+
+  const resetEdition = () => {
+    setEditingId(null);
+    setEditValues({ distance: '', duration: '', modeOfTransport: '', origin: '', destination: '' });
+  }
 
   const handleEdit = (travel: Travel) => {
     setEditingId(travel._id);
     setEditValues({
       distance: travel.distance.toString(),
       duration: travel.duration.toString(),
-      modeOfTransport: travel.modeOfTransport
+      modeOfTransport: travel.modeOfTransport,
+      origin: travel.origin.name,
+      destination: travel.destination.name
     });
   };
 
@@ -62,14 +72,15 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
       await onUpdate(travel._id, {
         distance,
         endTime: new Date(new Date(travel.startTime).getTime() + duration * 60000).toISOString(),
-        modeOfTransport: editValues.modeOfTransport
+        modeOfTransport: editValues.modeOfTransport,
+        origin: locations.find(l => l.name === editValues.origin),
+        destination: locations.find(l => l.name === editValues.destination)
       });
 
-      setEditingId(null);
-      setEditValues({ distance: '', duration: '', modeOfTransport: '' });
+      resetEdition()
     } catch (error) {
       console.error('Error updating travel:', error);
-      
+
       // Manejar error específico de duración excedida
       const axiosError = error as AxiosErrorResponse;
       if (axiosError.response?.status === 400 && axiosError.response?.data?.message?.includes('24 hours')) {
@@ -83,16 +94,11 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
   };
 
   const handleCancel = () => {
-    setEditingId(null);
-    setEditValues({ distance: '', duration: '', modeOfTransport: '' });
+    resetEdition()
   };
 
-  const handleInputChange = (field: 'distance' | 'duration', value: string) => {
+  const handleInputChange = (field: 'distance' | 'duration' | 'modeOfTransport' | 'origin' | 'destination', value: string) => {
     setEditValues(prev => ({ ...prev, [field]: value }));
-  };
-
-  const handleModeOfTransportChange = (value: string) => {
-    setEditValues(prev => ({ ...prev, modeOfTransport: value }));
   };
 
   const handleDelete = async (travel: Travel) => {
@@ -135,10 +141,37 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
     );
   };
 
+  const renderEditableLocation = (travel: Travel, field: 'origin' | 'destination') => {
+    if (editingId === travel._id) {
+      const eligibleLocations = locations.filter(l => l.zipcode === travel[field].zipcode)
+
+      if (eligibleLocations.length < 2) {
+        return (
+          <span className="text-gray-900 dark:text-white">{travel[field].name}</span>
+        )
+      }
+
+      return (
+        <Select value={editValues[field]} onValueChange={(value) => handleInputChange(field, value)}>
+          <SelectTrigger className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {eligibleLocations.map(l => (<SelectItem key={`origin-${l.name}`} value={l.name}>{l.name}</SelectItem>))}
+          </SelectContent>
+        </Select>
+      )
+    }
+
+    return (
+      <span className="text-gray-900 dark:text-white">{travel[field].name}</span>
+    )
+  }
+
   const renderEditableModeOfTransport = (travel: Travel) => {
     if (editingId === travel._id) {
       return (
-        <Select value={editValues.modeOfTransport} onValueChange={(value) => handleModeOfTransportChange(value)}>
+        <Select value={editValues.modeOfTransport} onValueChange={(value) => handleInputChange('modeOfTransport', value)}>
           <SelectTrigger className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
             <SelectValue />
           </SelectTrigger>
@@ -251,8 +284,8 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
           <TableRow key={t._id} className="border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
             <TableCell className="text-gray-900 dark:text-white">{extractDate(t.startTime)}</TableCell>
             <TableCell className="text-gray-900 dark:text-white">{renderEditableModeOfTransport(t)}</TableCell>
-            <TableCell className="text-gray-900 dark:text-white">{t.origin.name}</TableCell>
-            <TableCell className="text-gray-900 dark:text-white">{t.destination.name}</TableCell>
+            <TableCell className="text-gray-900 dark:text-white">{renderEditableLocation(t, 'origin')}</TableCell>
+            <TableCell className="text-gray-900 dark:text-white">{renderEditableLocation(t, 'destination')}</TableCell>
             <TableCell className="text-gray-900 dark:text-white">{extractTime(t.startTime)}</TableCell>
             <TableCell className="text-gray-900 dark:text-white">{renderEditableCell(t, 'distance', 0.1)}</TableCell>
             <TableCell className="text-gray-900 dark:text-white">{renderEditableCell(t, 'duration', 1)}</TableCell>
