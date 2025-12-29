@@ -9,10 +9,17 @@ import { buildDailyChartData, buildHourlyChartData } from "./builders/travelBars
 
 type Props = {
   travels: Travel[],
-  onFilterLocation: (loc?: string) => void
+  onFilterLocation: (loc?: string) => void,
+  options?: {
+    field: 'origin' | 'destination'
+  }
 }
 
-const calculateHome = (travels: Travel[]) => {
+const calculateHome = (travels: Travel[], options: Props["options"]) => {
+  if (travels.length > 0 && options?.field) {
+    return travels[0][options.field]
+  }
+
   if (travels.length > 10 && travels[0].destination.name === travels[travels.length - 1].origin.name) {
     return travels[0].destination
   }
@@ -34,8 +41,8 @@ const enrichWithFarthestPoint = (t: Travel, home?: Location) => {
   }
 }
 
-const TravelBarStats = ({ travels, onFilterLocation }: Props) => {
-  const home = calculateHome(travels)
+const TravelBarStats = ({ travels, onFilterLocation, options }: Props) => {
+  const home = calculateHome(travels, options)
   const relevantTravels = travels.map(t => enrichWithFarthestPoint(t, home))
 
   const topKeys = calculateBestLocations(relevantTravels, 5)

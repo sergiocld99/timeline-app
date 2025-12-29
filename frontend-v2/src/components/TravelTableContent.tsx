@@ -263,7 +263,11 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
       return renderCrossesTabActionButtons(travel)
     }
 
-    return renderTravelsTabActionButtons(travel)
+    if (onUpdate && onDelete) {
+      return renderTravelsTabActionButtons(travel)
+    }
+
+    return <></>
   };
 
   const renderColumnHeaders = () => (

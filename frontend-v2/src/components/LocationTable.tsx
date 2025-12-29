@@ -10,12 +10,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Edit3, Save, X } from 'lucide-react';
+import { Save, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from "react";
 import { toast } from "sonner";
 import { Input } from "./ui/input";
 import { roundDecimals } from "@/utils/numbers";
+import EditAction from "./buttons/EditAction";
+import Link from "next/link";
+import DeparturesAction from "./buttons/DeparturesAction";
+import ArrivalsAction from "./buttons/ArrivalsAction";
 
 type Props = {
   locations: Location[];
@@ -65,22 +69,21 @@ const LocationTable = ({ locations, updateFn }: Props) => {
 
     return (
       <div className="flex space-x-2">
-        <Button
-          onClick={() => {
-            setEditingId(location._id)
-            setEditValues({ 
-              name: location.name, 
-              latitude: roundDecimals(location.latitude, 4), 
-              longitude: roundDecimals(location.longitude, 4), 
-              notes: location.notes 
-            })
-          }}
-          size="sm"
-          variant="outline"
-          title="Edit travel"
-        >
-          <Edit3 className="h-4 w-4" />
-        </Button>
+        <EditAction handleClick={() => {
+          setEditingId(location._id)
+          setEditValues({
+            name: location.name,
+            latitude: roundDecimals(location.latitude, 4),
+            longitude: roundDecimals(location.longitude, 4),
+            notes: location.notes
+          })
+        }} />
+        <Link href={`/travels/from/${location._id}`} >
+          <DeparturesAction size="sm" />
+        </Link>
+        <Link href={`/travels/to/${location._id}`} >
+          <ArrivalsAction size="sm" />
+        </Link>
       </div>
     );
   }
