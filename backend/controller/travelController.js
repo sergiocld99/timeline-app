@@ -7,14 +7,16 @@ export const getAllTravels = (req, res) => {
   const dateFrom = getDateFrom(req)
   const dateTo = getDateTo(req)
   const crosses = req.body?.crossIds ?? []
-  const { sortingField = 'duration', userId } = req.query
+  const { sortingField = 'duration', userId, locFrom, locTo } = req.query
 
   // Fetch all travels with populated origin and destination (Location) fields
   Travel.find({ 
     ...useCorrectUser(userId),
     startTime: { $gte: dateFrom }, 
     endTime: { $lte: dateTo },
-    ...(crosses.length > 0 && { crosses: { $in: crosses } })
+    ...(crosses.length > 0 && { crosses: { $in: crosses } }),
+    ...(locFrom && { origin: locFrom }),
+    ...(locTo && { destination: locTo })
   }).populate('origin destination crosses').sort({ startTime: -1 }).then(travels => {
     const enrichedTravels = enrichTravels(travels);
     const weightedTravels = withWeight(enrichedTravels, sortingField);

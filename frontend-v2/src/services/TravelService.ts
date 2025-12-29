@@ -6,6 +6,16 @@ import { backendBaseUrl } from '@/constants';
 
 const baseUrl = `${backendBaseUrl}/travels`;
 
+type FetchCustomParams = {
+  dateFrom?: string,
+  dateTo?: string,
+  crossIds?: string[],
+  sortingField?: string,
+  locFrom?: string,
+  locTo?: string,
+  userId?: number
+}
+
 class TravelService {
   static async create(formData: FormData, userId?: number) {
     const travelData = {
@@ -22,13 +32,15 @@ class TravelService {
     }
   }
 
-  static async getAll(dateFrom?: string, dateTo?: string, crossIds?: string[], sortingField?: string, userId?: number): Promise<TravelsData> {
+  static async getAll({ dateFrom, dateTo, crossIds, sortingField, userId, locFrom, locTo }: FetchCustomParams): Promise<TravelsData> {
     const correctBaseUrl = crossIds ? `${baseUrl}/v2` : baseUrl
     const url = new URL(correctBaseUrl)
     if (dateFrom) url.searchParams.append("dateFrom", dateFrom);
     if (dateTo) url.searchParams.append("dateTo", dateTo);
-    if (sortingField) url.searchParams.append("sortingField", sortingField)
-    if (userId) url.searchParams.append("userId", userId.toString())
+    if (sortingField) url.searchParams.append("sortingField", sortingField);
+    if (userId) url.searchParams.append("userId", userId.toString());
+    if (locFrom) url.searchParams.append("locFrom", locFrom);
+    if (locTo) url.searchParams.append("locTo", locTo);
 
     try {
       let response;
