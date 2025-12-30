@@ -1,7 +1,8 @@
+"use client";
+
 import ArrivalsAction from "@/components/buttons/ArrivalsAction"
 import BackAction from "@/components/buttons/BackAction"
 import DeparturesAction from "@/components/buttons/DeparturesAction"
-import Header from "@/components/Header"
 import TravelBarStats from "@/components/TravelBarStats"
 import TravelTable from "@/components/TravelTable"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -25,9 +26,7 @@ const LocationCommonViewer = ({ locationId, action }: Props) => {
   const travelField = action === 'from' ? 'origin' : 'destination'
 
   return (
-    <>
-      <Header />
-      <main className="mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
+    <main className="mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
         <div className="space-y-8">
           <div className="flex gap-8">
             <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
@@ -57,8 +56,6 @@ const LocationCommonViewer = ({ locationId, action }: Props) => {
           <TravelTable travels={travels} stats={stats} />
         </div>
       </main>
-
-    </>
   )
 }
 

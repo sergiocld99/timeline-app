@@ -1,20 +1,21 @@
-"use client"
-
-import { Usable, use } from "react"
-import LocationCommonViewer from "../../commonViewer"
+import Header from "@/components/Header";
+import LocationViewerPageClient from "@/components/pages/LocationViewerPageClient";
 
 type Props = {
-  params: Usable<{
-    locationId: string,
-  }>
-}
+  params: Promise<{
+    locationId: string;
+  }>;
+};
 
-const LocationViewerPage = ({ params }: Props) => {
-  const { locationId } = use(params)
+const LocationViewerPage = async ({ params }: Props) => {
+  const { locationId } = await params;
 
   return (
-    <LocationCommonViewer locationId={locationId} action="to" />
-  )
-}
+    <>
+      <Header />
+      <LocationViewerPageClient locationId={locationId} action="to" />
+    </>
+  );
+};
 
-export default LocationViewerPage
+export default LocationViewerPage;
