@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useState, useCallback } from "react";
 import type { Travel, TravelsData } from "@/types/travel";
 import TravelService from "@/services/TravelService";

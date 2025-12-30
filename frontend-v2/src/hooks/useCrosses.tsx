@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import type { Cross } from "@/types/cross";
 import CrossService from "@/services/CrossService";
