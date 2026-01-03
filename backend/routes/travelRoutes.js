@@ -1,22 +1,24 @@
 import e from "express";
 import {
-  buildGraph,
   createTravel,
   deleteTravel,
-  exportTravelsCsv,
   getAllTravels,
   updateTravel
 } from "../controller/travelController.js";
+import { buildGraph, exportTravelsCsv, findTravels } from "../controller/travelExtras.js";
+import { updateVisitIfNeeded } from "../controller/visitController.js";
 
 const router = e.Router();
 
 router.get('/', getAllTravels);
+router.post('/v2', getAllTravels)
+router.get('/graph', buildGraph);
+router.get('/export/csv', exportTravelsCsv);
+router.get('/find', findTravels)
+
 router.post('/', createTravel);
-router.put('/:id', updateTravel);
+router.put('/:id', updateTravel, updateVisitIfNeeded);
 router.delete('/:id', deleteTravel);
 
-router.get('/graph', buildGraph);
-router.post('/v2', getAllTravels)
-router.get('/export/csv', exportTravelsCsv);
 
 export default router;

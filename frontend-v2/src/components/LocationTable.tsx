@@ -10,11 +10,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Edit3, Save, X } from 'lucide-react';
+import { Save, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from "react";
 import { toast } from "sonner";
 import { Input } from "./ui/input";
+import { roundDecimals } from "@/utils/numbers";
+import EditAction from "./buttons/EditAction";
+import Link from "next/link";
+import DeparturesAction from "./buttons/DeparturesAction";
+import ArrivalsAction from "./buttons/ArrivalsAction";
 
 type Props = {
   locations: Location[];
@@ -25,7 +30,7 @@ const columnHeaders = ['Name', 'Latitude', 'Longitude', 'Zipcode', 'Notes', 'Act
 
 const LocationTable = ({ locations, updateFn }: Props) => {
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editValues, setEditValues] = useState<LocationEditValues>({ name: '', notes: '' });
+  const [editValues, setEditValues] = useState<LocationEditValues>({ name: '', latitude: 0, longitude: 0, notes: '' });
 
   const renderColumnHeaders = () => (
     columnHeaders.map((header) => (
@@ -35,7 +40,7 @@ const LocationTable = ({ locations, updateFn }: Props) => {
 
   const resetEditValues = () => {
     setEditingId(null);
-    setEditValues({ name: '', notes: '' })
+    setEditValues({ name: '', latitude: 0, longitude: 0, notes: '' })
   }
 
   const renderActionButtons = (location: Location) => {
@@ -64,17 +69,21 @@ const LocationTable = ({ locations, updateFn }: Props) => {
 
     return (
       <div className="flex space-x-2">
-        <Button
-          onClick={() => {
-            setEditingId(location._id)
-            setEditValues({ name: location.name, notes: location.notes })
-          }}
-          size="sm"
-          variant="outline"
-          title="Edit travel"
-        >
-          <Edit3 className="h-4 w-4" />
-        </Button>
+        <EditAction handleClick={() => {
+          setEditingId(location._id)
+          setEditValues({
+            name: location.name,
+            latitude: roundDecimals(location.latitude, 4),
+            longitude: roundDecimals(location.longitude, 4),
+            notes: location.notes
+          })
+        }} />
+        <Link href={`/travels/from/${location._id}`} >
+          <DeparturesAction size="sm" />
+        </Link>
+        <Link href={`/travels/to/${location._id}`} >
+          <ArrivalsAction size="sm" />
+        </Link>
       </div>
     );
   }
@@ -86,12 +95,27 @@ const LocationTable = ({ locations, updateFn }: Props) => {
           type="text"
           value={editValues[field]}
           onChange={(e) => setEditValues(prev => ({ ...prev, [field]: e.target.value }))}
-          className="w-100 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+          className="w-80 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
         />
       );
     }
 
     return location[field]
+  }
+
+  const renderEditableCoordinate = (location: Location, field: 'latitude' | 'longitude') => {
+    if (editingId === location._id) {
+      return (
+        <Input
+          type="number"
+          value={editValues[field]}
+          onChange={(e) => setEditValues(prev => ({ ...prev, [field]: e.target.value }))}
+          className="w-30 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+        />
+      );
+    }
+
+    return location[field]?.toFixed(4)
   }
 
   return (
@@ -110,8 +134,8 @@ const LocationTable = ({ locations, updateFn }: Props) => {
             {locations.map((l) => (
               <TableRow key={l._id} className="border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
                 <TableCell className="font-medium text-gray-900 dark:text-white">{renderEditableCell(l, 'name')}</TableCell>
-                <TableCell className="text-gray-700 dark:text-gray-300">{l.latitude.toFixed(4)}</TableCell>
-                <TableCell className="text-gray-700 dark:text-gray-300">{l.longitude.toFixed(4)}</TableCell>
+                <TableCell className="text-gray-700 dark:text-gray-300">{renderEditableCoordinate(l, 'latitude')}</TableCell>
+                <TableCell className="text-gray-700 dark:text-gray-300">{renderEditableCoordinate(l, 'longitude')}</TableCell>
                 <TableCell className="text-gray-700 dark:text-gray-300">{l.zipcode}</TableCell>
                 <TableCell className="text-gray-700 dark:text-gray-300">{renderEditableCell(l, 'notes')}</TableCell>
                 <TableCell>{renderActionButtons(l)}</TableCell>

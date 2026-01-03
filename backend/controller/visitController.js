@@ -33,6 +33,33 @@ export const calculateVisitsController = (req, res, next) => {
   });
 }
 
+export const updateVisitIfNeeded = async (req, res) => {
+  const { origin } = req.body
+  const { enrichedTravel } = res.locals
+  const { startTime, userId } = enrichedTravel
+
+  // Only update if origin is explicit in request body
+  if (!origin) {
+    return res.json(enrichedTravel)
+  }
+
+  const filter = { departureTime: startTime, userId }
+  const update = { location: origin }
+
+  try {
+    // Find just by User and End Time of visit -> Update location
+    const v = await Visit.findOneAndUpdate(filter, update, { new: true })
+
+    if (!v) {
+      console.log('No visits found for ', filter)
+    }
+  } catch (err) {
+    console.error('Error when updating visit after travel update: ', err.message)
+  }
+
+  return res.json(enrichedTravel)
+}
+
 export const persistIfNeeded = (req, res) => {
   const { persist } = req.query;
   const { visits } = res.locals;

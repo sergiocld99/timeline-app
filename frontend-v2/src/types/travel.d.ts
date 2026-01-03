@@ -12,6 +12,8 @@ export type Location = {
 
 export type LocationEditValues = {
   name: string,
+  latitude: number,
+  longitude: number,
   notes: string,
 }
 
@@ -62,6 +64,8 @@ export type TravelEditValues = {
   distance: string;
   duration: string;
   modeOfTransport: string;
+  origin: string;
+  destination: string;
 }
 
 export type Visit = Weighted & {

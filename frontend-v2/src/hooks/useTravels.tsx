@@ -1,23 +1,21 @@
-"use client";
-
 import { useEffect, useState, useCallback } from "react";
 import type { Travel, TravelsData } from "@/types/travel";
 import TravelService from "@/services/TravelService";
 import { useDateRange } from "@/contexts/DateRangeContext";
 import { useUser } from "@/contexts/UserContext";
 
-const useTravels = (sortingField = 'duration') => {
+const useTravels = (sortingField = 'duration', locFrom = '', locTo = '') => {
   const { dateFrom, dateTo } = useDateRange();
   const { currentUser } = useUser();
   const [travels, setTravels] = useState<TravelsData>({ travels: [] });
   const [error, setError] = useState<unknown>(null);
   const [loading, setLoading] = useState(true);
 
-  const refetch = useCallback((crossIdArr?: string[]) => {
+  const refetch = useCallback((crossIds?: string[]) => {
     setLoading(true);
     const userId = currentUser?.userId;
 
-    TravelService.getAll(dateFrom, dateTo, crossIdArr, sortingField, userId).then(data => {
+    TravelService.getAll({dateFrom, dateTo, crossIds, sortingField, userId, locFrom, locTo}).then(data => {
       setTravels({ ...data, dateFrom, dateTo })
       setError(null)
       setLoading(false)
@@ -25,7 +23,7 @@ const useTravels = (sortingField = 'duration') => {
       setError(err)
       setLoading(false)
     })
-  }, [dateFrom, dateTo, sortingField, currentUser]);
+  }, [dateFrom, dateTo, sortingField, currentUser, locFrom, locTo]);
 
   const updateTravel = async (id: string, updates: Partial<Travel>) => {
     try {

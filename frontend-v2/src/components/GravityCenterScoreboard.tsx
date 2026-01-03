@@ -1,3 +1,5 @@
+"use client"
+
 import { TravelsData, Travel, VisitsData, Visit } from "@/types/travel"
 import { Card, CardContent } from "./ui/card"
 import useNearbyCenters from "@/hooks/useNearbyCenters"
