@@ -2,17 +2,17 @@
 
 import { useState } from 'react';
 import type { Travel, TravelEditValues, TravelStats } from '@/types/travel';
-import { extractDate, extractTime, getEmojiForMode, getHoursAndMinutes } from '@/utils';
-import { renderTotalWeightsCell, renderWeight } from '@/utils/weight';
+import { extractDate, extractTime, getEmojiForMode } from '@/utils';
+import { renderWeight } from '@/utils/weight';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Edit3, Trash2, Save, X, Loader2, CircleMinus, CirclePlus } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { renderPointWithCopyBtn } from './render/coordinates';
 import type { AxiosErrorResponse } from '@/types/commons';
 import useLocations from '@/hooks/useLocations';
+import TravelTableFooter from './TravelTableFooter';
 
 type Props = {
   travels: Travel[];
@@ -30,8 +30,6 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
   const [editValues, setEditValues] = useState<TravelEditValues>({ distance: '', duration: '', modeOfTransport: '', origin: '', destination: '' });
   const [isSaving, setIsSaving] = useState(false);
   const { locations } = useLocations()
-
-  const { averageLatitude: totalLat, averageLongitude: totalLong, totalDistance = 0, totalMinutes = 0, placesVisited } = stats || {}
 
   const resetEdition = () => {
     setEditingId(null);
@@ -299,20 +297,7 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
           </TableRow>
         ))}
       </TableBody>
-      <TableFooter>
-        <TableRow className="border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-          <TableCell className="font-medium text-gray-900 dark:text-white">Total</TableCell>
-          <TableCell className="text-gray-900 dark:text-white" colSpan={2}>{renderPointWithCopyBtn(totalLat, totalLong)}</TableCell>
-          <TableCell className="font-medium text-gray-900 dark:text-white" colSpan={2}>{placesVisited?.count || 0} places</TableCell>
-          <TableCell className="font-medium text-gray-900 dark:text-white">{totalDistance?.toFixed(0)} km</TableCell>
-          <TableCell className="font-medium text-gray-900 dark:text-white">{getHoursAndMinutes(totalMinutes)}</TableCell>
-          <TableCell className="font-medium text-gray-900 dark:text-white">
-            {totalMinutes === 0 ? 0 : (totalDistance / (totalMinutes / 60)).toFixed(1)} km/h
-          </TableCell>
-          <TableCell className="text-gray-900 dark:text-white">{renderTotalWeightsCell(travels)}</TableCell>
-          <TableCell></TableCell>
-        </TableRow>
-      </TableFooter>
+      <TravelTableFooter travels={travels} stats={stats} />
     </Table>
   );
 };
