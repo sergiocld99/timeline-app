@@ -10,12 +10,14 @@ type Props = {
 }
 
 const recalculateStats = (travels: Travel[]): Partial<TravelStats> => {
-  const sumLat1 = travels.reduce((sum, act) => act.origin.latitude + sum, 0)
-  const sumLat2 = travels.reduce((sum, act) => act.destination.latitude + sum, 0)
+  const sumLat1 = travels.reduce((sum, act) => act.origin.latitude * act.weight.percentage + sum, 0)
+  const sumLat2 = travels.reduce((sum, act) => act.destination.latitude * act.weight.percentage + sum, 0)
 
-  const sumLng1 = travels.reduce((sum, act) => act.origin.longitude + sum, 0)
-  const sumLng2 = travels.reduce((sum, act) => act.destination.longitude + sum, 0)
+  const sumLng1 = travels.reduce((sum, act) => act.origin.longitude * act.weight.percentage + sum, 0)
+  const sumLng2 = travels.reduce((sum, act) => act.destination.longitude * act.weight.percentage + sum, 0)
 
+  const sumWeight = travels.reduce((sum, act) => act.weight.percentage + sum, 0)
+ 
   const setOfVisits = new Set()
 
   travels.forEach(t => {
@@ -25,8 +27,8 @@ const recalculateStats = (travels: Travel[]): Partial<TravelStats> => {
 
   return {
     count: travels.length,
-    averageLatitude: (sumLat1 + sumLat2) / (travels.length * 2),
-    averageLongitude: (sumLng1 + sumLng2) / (travels.length * 2),
+    averageLatitude: (sumLat1 + sumLat2) / (sumWeight * 2),
+    averageLongitude: (sumLng1 + sumLng2) / (sumWeight * 2),
     totalDistance: travels.reduce((sum, act) => act.distance + sum, 0),
     totalMinutes: travels.reduce((sum ,act) => act.duration + sum, 0),
     placesVisited: { count: setOfVisits.size }
