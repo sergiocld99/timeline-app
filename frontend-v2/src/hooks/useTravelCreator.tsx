@@ -8,7 +8,7 @@ import { getTimeFromCurrent } from "@/utils";
 import { useState } from "react";
 import { toast } from "sonner";
 
-type FormData = {
+type TravelFormData = {
   origin: string;
   destination: string;
   startTime: string;
@@ -18,18 +18,13 @@ type FormData = {
   price: string;
 }
 
-const validateFields = (formData: FormData) => {
+const validateFields = (formData: TravelFormData): boolean => {
   if (formData.startTime === formData.endTime) {
-    toast.error("Start time and end time cannot be the same.");
-    return;
+    throw new Error("Start time and end time cannot be the same.");
   }
-  if (new Date(formData.startTime) > new Date(formData.endTime)) {
-    toast.error("Start time cannot be after end time.");
-    return;
-  }
+
   if (formData.origin === formData.destination) {
-    toast.error("Origin and destination cannot be the same.");
-    return;
+    throw new Error("Origin and destination cannot be the same.");
   }
 
   const start = new Date(formData.startTime);
@@ -38,12 +33,17 @@ const validateFields = (formData: FormData) => {
   const oneDayMs = 24 * 60 * 60 * 1000;
 
   if (durationMs > oneDayMs) {
-    toast.error("Travel duration cannot exceed 24 hours.");
-    return;
+    throw new Error("Travel duration cannot exceed 24 hours.");
   }
+
+  if (durationMs < 0) {
+    throw new Error("Start time cannot be after end time.");
+  }
+
+  return true;
 }
 
-const performCreationForAllUsers = async (formData: FormData) => {
+const performCreationForAllUsers = async (formData: TravelFormData) => {
   const users = await UserService.getAll();
 
   if (users.length === 0) {
@@ -77,7 +77,7 @@ const performCreationForAllUsers = async (formData: FormData) => {
   }
 }
 
-const performCreationForCurrentUser = async (formData: FormData, currentUser: User | null) => {
+const performCreationForCurrentUser = async (formData: TravelFormData, currentUser: User | null) => {
   const userId = currentUser?.userId;
   await TravelService.create(formData, userId);
   const persisted = await VisitService.persistIfNeeded(formData.startTime.split('T')[0], userId);
@@ -89,12 +89,19 @@ const performCreationForCurrentUser = async (formData: FormData, currentUser: Us
   }
 }
 
+const getSameDayEndTime = (startTime: string, endTime: string) => {
+  const datePart = startTime.split('T')[0]
+  const endTimeHourPart = endTime.split('T')[1]
+
+  return datePart.concat('T').concat(endTimeHourPart)
+}
+
 const useTravelCreator = () => {
   const { currentUser } = useUser();
   const [createForAllUsers, setCreateForAllUsers] = useState<boolean>(false);
   const [isSameDay, setIsSameDay] = useState<boolean>(true);
 
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<TravelFormData>({
     origin: "",
     destination: "",
     startTime: getTimeFromCurrent(2),
@@ -104,21 +111,30 @@ const useTravelCreator = () => {
     price: ""
   });
 
-  const handleChange = (name: keyof FormData, value: string) => {
-    if (isSameDay && name === 'startTime') {
-      try {
-        const datePart = value.split('T')[0]
-        const endTimeHourPart = formData.endTime.split('T')[1]
-        
-        setFormData({
-          ...formData,
-          startTime: value,
-          endTime: datePart.concat('T').concat(endTimeHourPart)
-        })
+  const handleChange = (name: keyof TravelFormData, value: string) => {
+    if (isSameDay) {
+      if (name === 'startTime') {
+        // startTime can be edited, so endTime needs to be updated too
+        try {
+          const endTime = getSameDayEndTime(value, formData.endTime)
 
-        return
-      } catch (err) {
-        console.error(err)
+          setFormData({
+            ...formData,
+            startTime: value,
+            endTime
+          })
+
+          return
+        } catch (err) {
+          console.error(err)
+        }
+      }
+
+      if (name === 'endTime') {
+        const datePart = formData.startTime.split('T')[0]
+        
+        // Keep original format for backend (datetime-local)
+        value = datePart.concat('T').concat(value)
       }
     }
 
@@ -130,7 +146,15 @@ const useTravelCreator = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    validateFields(formData)
+
+    try {
+      validateFields(formData)
+    } catch (error) {
+      const err = error as Error
+
+      toast.error(err.message, { style: { background: 'red' } })
+      return;
+    }
 
     try {
       if (createForAllUsers) {
@@ -157,12 +181,25 @@ const useTravelCreator = () => {
     }
   }
 
+  const handleSameDayCheck = (newStatus: boolean) => {
+    if (isSameDay) {
+      const endTime = getSameDayEndTime(formData.startTime, formData.endTime)
+
+      setFormData({
+        ...formData,
+        endTime
+      })
+    }
+
+    setIsSameDay(newStatus)
+  }
+
   return {
     createForAllUsers,
     isSameDay,
     formData,
     setCreateForAllUsers,
-    setIsSameDay,
+    setIsSameDay: handleSameDayCheck,
     handleChange,
     handleSubmit,
   }
