@@ -2,6 +2,7 @@ import type { KnownCenter } from "@/types/center"
 import type { HourAndMinutes, HourPart } from "@/types/chart"
 import type { MapLocation } from "@/types/map"
 import type { Location, Travel, TravelWithFarthestPoint } from "@/types/travel"
+
 import { extractHourAndMinutes, normalizeHour } from "@/utils/chart"
 import { extractKeys, sortByDescendingValue } from "@/utils/kv"
 
@@ -125,43 +126,48 @@ export const getUniqueLocations = (travels: Travel[], nearbyCenters: KnownCenter
     // Origin
     if (travel.origin?.latitude && travel.origin?.longitude) {
       const key = getLocationKey(travel.origin.latitude, travel.origin.longitude);
+      let loc = locationMap.get(key)
 
-      if (!locationMap.has(key)) {
-        locationMap.set(key, initializeMapLocation(travel.origin, travel.shortDate));
+      if (!loc) {
+        loc = initializeMapLocation(travel.origin, travel.shortDate)
+        locationMap.set(key, loc)
       }
 
-      locationMap.get(key)!.frecuency += 1
+      loc.frecuency += 1
     }
 
     // Destination
     if (travel.destination?.latitude && travel.destination?.longitude) {
       const key = getLocationKey(travel.destination.latitude, travel.destination.longitude)
+      let loc = locationMap.get(key)
 
-      if (!locationMap.has(key)) {
-        locationMap.set(key, initializeMapLocation(travel.destination, travel.shortDate));
+      if (!loc) {
+        loc = initializeMapLocation(travel.destination, travel.shortDate)
+        locationMap.set(key, loc)
       }
 
-      locationMap.get(key)!.frecuency += 1
+      loc.frecuency += 1
     }
   });
 
   nearbyCenters.forEach((nc => {
     const key = getLocationKey(nc.latitude, nc.longitude)
+    let loc = locationMap.get(key)
 
-    if (!locationMap.has(key)) {
-      locationMap.set(key, {
+    if (!loc) {
+      loc = {
         name: nc.name,
         lat: nc.latitude,
         lng: nc.longitude,
         frecuency: 0,
         distanceAwayFromAvg: nc.distanceKm,
         type: 'nearby'
-      })
-    } else {
-      const mappedLocation = locationMap.get(key)!
+      }
 
-      mappedLocation.type = 'visited-nearby'
-      mappedLocation.distanceAwayFromAvg = nc.distanceKm
+      locationMap.set(key, loc)
+    } else {
+      loc.type = 'visited-nearby'
+      loc.distanceAwayFromAvg = nc.distanceKm
     }
   }))
 

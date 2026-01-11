@@ -1,8 +1,9 @@
 "use client"
 
-import useNearbyCenters from "@/hooks/useNearbyCenters"
 import type { KnownCenter } from "@/types/center"
 import type { Travel, TravelsData, Visit,VisitsData } from "@/types/travel"
+
+import useNearbyCenters from "@/hooks/useNearbyCenters"
 import { shortcutName } from "@/utils/strings"
 
 import { Card, CardContent } from "./ui/card"

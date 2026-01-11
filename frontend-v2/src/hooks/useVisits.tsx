@@ -1,9 +1,10 @@
+import type { Visit, VisitsData, VisitsStats } from "@/types/travel";
+
 import { useEffect, useState } from "react";
 
 import { useDateRange } from "@/contexts/DateRangeContext";
 import { useUser } from "@/contexts/UserContext";
 import VisitService from "@/services/VisitService";
-import type { Visit, VisitsData, VisitsStats } from "@/types/travel";
 
 const calculateStats = (visits: Visit[]): VisitsStats => {
   const totalPercentage = 100

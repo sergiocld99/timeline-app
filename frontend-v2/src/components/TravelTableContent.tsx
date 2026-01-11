@@ -1,5 +1,8 @@
 "use client";
 
+import type { AxiosErrorResponse } from '@/types/commons';
+import type { Travel, TravelEditValues, TravelStats } from '@/types/travel';
+
 import { CircleMinus, CirclePlus,Edit3, Loader2, Save, Trash2, X } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -9,8 +12,6 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import useLocations from '@/hooks/useLocations';
-import type { AxiosErrorResponse } from '@/types/commons';
-import type { Travel, TravelEditValues, TravelStats } from '@/types/travel';
 import { extractDate, extractTime, getEmojiForMode } from '@/utils';
 import { renderWeight } from '@/utils/weight';
 

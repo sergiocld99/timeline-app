@@ -1,3 +1,6 @@
+import type { AxiosErrorResponse } from "@/types/commons";
+import type { User } from "@/types/user";
+
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -5,8 +8,6 @@ import { useUser } from "@/contexts/UserContext";
 import TravelService from "@/services/TravelService";
 import UserService from "@/services/UserService";
 import VisitService from "@/services/VisitService";
-import type { AxiosErrorResponse } from "@/types/commons";
-import type { User } from "@/types/user";
 import { getTimeFromCurrent } from "@/utils";
 
 type TravelFormData = {

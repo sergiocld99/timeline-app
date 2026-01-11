@@ -1,7 +1,8 @@
+import type { ButtonProps } from "@/types/props";
+
 import { RewindIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import type { ButtonProps } from "@/types/props";
 
 const PreviousMonthBtn = ({ handleClick }: ButtonProps) => {
   return (

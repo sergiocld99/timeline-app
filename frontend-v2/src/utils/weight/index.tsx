@@ -1,4 +1,5 @@
 import type { Weighted } from "../../types/commons";
+
 import { getFixedPercentage } from "..";
 
 const getPercentagesByColor = (sourceArr: Weighted[]) => sourceArr.reduce((sum, elem) => {

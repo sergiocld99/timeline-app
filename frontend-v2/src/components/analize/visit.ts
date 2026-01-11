@@ -1,5 +1,6 @@
 import type { HourPart } from "@/types/chart";
 import type { Visit } from "@/types/travel";
+
 import { extractHourAndMinutes, normalizeHour } from "@/utils/chart";
 import { extractKeys, sortByDescendingValue } from "@/utils/kv";
 

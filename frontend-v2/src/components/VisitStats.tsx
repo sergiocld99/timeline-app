@@ -1,11 +1,12 @@
 "use client";
 
+import type { ChartData, ChartSource } from "@/types/chart";
+import type { Visit, VisitsData } from "@/types/travel";
+
 import { BarChart } from "recharts";
 import { Bar, CartesianGrid, XAxis } from "recharts";
 
 import { daysOfWeek } from "@/constants";
-import type { ChartData, ChartSource } from "@/types/chart";
-import type { Visit, VisitsData } from "@/types/travel";
 import { convertToArgentineTime } from "@/utils";
 import { buildChartConfig, getChartHours, useChartValue, useDefaultValues } from "@/utils/chart";
 

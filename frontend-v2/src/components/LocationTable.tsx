@@ -1,5 +1,7 @@
 "use client";
 
+import type { Location, LocationEditValues } from "@/types/travel";
+
 import { Save, X } from 'lucide-react';
 import Link from "next/link";
 import { useState } from "react";
@@ -16,7 +18,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { Location, LocationEditValues } from "@/types/travel";
 import { roundDecimals } from "@/utils/numbers";
 
 import ArrivalsAction from "./buttons/ArrivalsAction";

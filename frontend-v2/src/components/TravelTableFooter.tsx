@@ -1,4 +1,5 @@
 import type { Travel, TravelStats } from "@/types/travel";
+
 import { getHoursAndMinutes } from "@/utils";
 import { renderTotalWeightsCell } from "@/utils/weight";
 

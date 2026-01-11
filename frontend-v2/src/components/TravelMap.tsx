@@ -1,20 +1,21 @@
 "use client";
 
+import "leaflet/dist/leaflet.css";
+
+import type { Center } from "@/types/map";
+import type { Travel, TravelStats } from "@/types/travel";
+
 import L from "leaflet";
 import { useEffect, useMemo, useState } from "react";
 import { MapContainer, TileLayer, useMap } from "react-leaflet";
 
 import useNearbyCenters from "@/hooks/useNearbyCenters";
-import type { Center } from "@/types/map";
-import type { Travel, TravelStats } from "@/types/travel";
 import { calculateDistanceKm } from "@/utils/units/km";
 
 import { getZoomByDistance } from "./adjust/zoom";
 import { getUniqueLocations } from "./analize/travel";
 import { defaultMarker } from "./map/icons";
 import { renderLocationMarkers } from "./render/map";
-
-import "leaflet/dist/leaflet.css";
 
 type Props = {
   travels: Travel[];

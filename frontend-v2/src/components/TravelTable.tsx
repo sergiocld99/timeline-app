@@ -1,12 +1,13 @@
 "use client";
 
+import type { Travel, TravelStats } from '@/types/travel';
+
 import { toast } from 'sonner';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useDateRange } from '@/contexts/DateRangeContext';
 import { useUser } from '@/contexts/UserContext';
 import TravelService from '@/services/TravelService';
-import type { Travel, TravelStats } from '@/types/travel';
 
 import ExportButton from './buttons/ExportButton';
 import RemoveFilterBtn from './buttons/RemoveFilterBtn';

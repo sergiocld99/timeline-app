@@ -1,8 +1,9 @@
+import type { FormData } from '@/types/commons';
+import type { Travel, TravelsData } from '@/types/travel';
+
 import axios from 'axios';
 
 import { backendBaseUrl } from '@/constants';
-import type { FormData } from '@/types/commons';
-import type { Travel, TravelsData } from '@/types/travel';
 
 const baseUrl = `${backendBaseUrl}/travels`;
 

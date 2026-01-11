@@ -1,7 +1,8 @@
+import type { ButtonProps } from "@/types/props";
+
 import { Check } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import type { ButtonProps } from "@/types/props";
 
 const ApplyButton = ({ handleClick }: ButtonProps) => {
   return (

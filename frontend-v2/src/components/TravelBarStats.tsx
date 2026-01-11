@@ -1,6 +1,7 @@
+import type { Location, Travel } from "@/types/travel"
+
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
-import type { Location, Travel } from "@/types/travel"
 import { buildChartConfig } from "@/utils/chart"
 
 import { calculateBestLocations } from "./analize/travel";

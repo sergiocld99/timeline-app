@@ -1,6 +1,7 @@
+import type { MapLocation } from "@/types/map"
+
 import { Marker, Popup } from "react-leaflet"
 
-import type { MapLocation } from "@/types/map"
 
 import { blackMarker, defaultMarker, greenMarker, redMarker } from "../map/icons"
 

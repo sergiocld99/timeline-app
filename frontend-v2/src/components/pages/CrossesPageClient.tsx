@@ -1,7 +1,10 @@
 "use client";
 
 import type { CheckedState } from "@radix-ui/react-checkbox";
-import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
+import type { Dispatch, SetStateAction } from "react"
+import type { Cross } from "@/types/cross";
+
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import CrossForm from "@/components/CrossForm";
@@ -10,7 +13,6 @@ import TravelTable from "@/components/TravelTable";
 import useCrosses from "@/hooks/useCrosses";
 import useTravels from "@/hooks/useTravels";
 import TravelService from "@/services/TravelService";
-import type { Cross } from "@/types/cross";
 
 const CrossesPageClient = () => {
   const { crosses, refetch } = useCrosses();

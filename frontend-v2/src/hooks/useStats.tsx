@@ -1,9 +1,10 @@
+import type { StatByMode } from "@/types/stats";
+
 import { useCallback,useEffect, useState } from "react";
 
 import { useDateRange } from "@/contexts/DateRangeContext";
 import { useUser } from "@/contexts/UserContext";
 import StatsService from "@/services/StatsService";
-import type { StatByMode } from "@/types/stats";
 
 const useStats = () => {
   const { dateFrom, dateTo } = useDateRange();

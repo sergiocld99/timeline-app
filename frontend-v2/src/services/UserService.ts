@@ -1,7 +1,8 @@
+import type { User } from "@/types/user";
+
 import axios from "axios";
 
 import { backendBaseUrl } from "@/constants";
-import type { User } from "@/types/user";
 
 const baseUrl = `${backendBaseUrl}/users`;
 

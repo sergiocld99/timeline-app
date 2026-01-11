@@ -1,11 +1,14 @@
 "use client";
 
+import type { ChartConfig } from "@/components/ui/chart"
+import type { StatByMode, StatByModeChartData } from "@/types/stats"
+
 import { BadgeQuestionMarkIcon, BusIcon, CarIcon, CarTaxiFrontIcon, PersonStandingIcon, ShipIcon, TrainIcon } from "lucide-react";
 import { Label, Pie, PieChart } from 'recharts';
 
 import { Card, CardContent } from '@/components/ui/card';
-import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { type StatByMode, type StatByModeChartData } from "@/types/stats"
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+
 
 type Props = {
   stats: StatByMode[]
