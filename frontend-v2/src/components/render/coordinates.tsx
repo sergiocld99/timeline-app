@@ -10,7 +10,9 @@ export const renderPoint = (latitude?: number, longitude?: number) => {
 
 export const handleCopyCoordinates = async (latitude?: number, longitude?: number) => {
   if (!latitude || !longitude) return;
+
   const coordinates = renderPoint(latitude, longitude);
+
   try {
     await navigator.clipboard.writeText(coordinates);
     toast.success('Coordinates copied to clipboard!');

@@ -12,6 +12,8 @@ type Props = {
 }
 
 const recalculateStats = (travels: Travel[]): Partial<TravelStats> => {
+  if (travels.length === 0) return {}
+
   const sumLat1 = travels.reduce((sum, act) => act.origin.latitude * act.weight.percentage + sum, 0)
   const sumLat2 = travels.reduce((sum, act) => act.destination.latitude * act.weight.percentage + sum, 0)
 
@@ -19,7 +21,7 @@ const recalculateStats = (travels: Travel[]): Partial<TravelStats> => {
   const sumLng2 = travels.reduce((sum, act) => act.destination.longitude * act.weight.percentage + sum, 0)
 
   const sumWeight = travels.reduce((sum, act) => act.weight.percentage + sum, 0)
- 
+
   const setOfVisits = new Set()
 
   travels.forEach(t => {
@@ -28,11 +30,10 @@ const recalculateStats = (travels: Travel[]): Partial<TravelStats> => {
   })
 
   return {
-    count: travels.length,
     averageLatitude: (sumLat1 + sumLat2) / (sumWeight * 2),
     averageLongitude: (sumLng1 + sumLng2) / (sumWeight * 2),
     totalDistance: travels.reduce((sum, act) => act.distance + sum, 0),
-    totalMinutes: travels.reduce((sum ,act) => act.duration + sum, 0),
+    totalMinutes: travels.reduce((sum, act) => act.duration + sum, 0),
     placesVisited: { count: setOfVisits.size }
   }
 }
@@ -41,12 +42,12 @@ const TravelTableFooter = ({ travels, stats }: Props) => {
   const isFiltered = travels.length !== stats?.count;
   const fixedStats = isFiltered ? recalculateStats(travels) : (stats || {});
 
-  const { count, averageLatitude: totalLat, averageLongitude: totalLong, totalDistance = 0, totalMinutes = 0, placesVisited } = fixedStats || {}
+  const { averageLatitude: totalLat, averageLongitude: totalLong, totalDistance = 0, totalMinutes = 0, placesVisited } = fixedStats || {}
 
   return (
     <TableFooter>
       <TableRow className="border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-        <TableCell className="font-medium text-gray-900 dark:text-white">{count} travels</TableCell>
+        <TableCell className="font-medium text-gray-900 dark:text-white">{travels.length} travels</TableCell>
         <TableCell className="text-gray-900 dark:text-white" colSpan={2}>{renderPointWithCopyBtn(totalLat, totalLong)}</TableCell>
         <TableCell className="font-medium text-gray-900 dark:text-white" colSpan={2}>{placesVisited?.count || 0} places</TableCell>
         <TableCell className="font-medium text-gray-900 dark:text-white">{totalDistance?.toFixed(0)} km</TableCell>
