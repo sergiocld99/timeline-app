@@ -1,142 +1,25 @@
 "use client";
 
-import { useState } from "react";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import { AutocompleteLocation } from "@/components/AutocompleteLocation";
-import { getTimeFromCurrent } from "@/utils";
-import VisitService from "@/services/VisitService";
-import TravelService from "@/services/TravelService";
-import UserService from "@/services/UserService";
-import { useUser } from "@/contexts/UserContext";
-import type { AxiosErrorResponse } from "@/types/commons";
+import { StateCheckbox } from "@/components/StateCheckbox";
 import { Location } from "@/types/travel";
+import useTravelCreator from "@/hooks/useTravelCreator";
 
 type Props = {
   locations: Location[]
 };
 
 const TravelForm = ({ locations }: Props) => {
-  const { currentUser } = useUser();
-  const [formData, setFormData] = useState({
-    origin: "",
-    destination: "",
-    startTime: getTimeFromCurrent(2),
-    endTime: getTimeFromCurrent(0),
-    modeOfTransport: "car",
-    distance: "",
-    price: ""
-  });
-  const [createForAllUsers, setCreateForAllUsers] = useState(false);
-
-  const handleChange = (name: string, value: string) => {
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    
-    try {
-      if (formData.startTime === formData.endTime) {
-        toast.error("Start time and end time cannot be the same.");
-        return;
-      }
-      if (new Date(formData.startTime) > new Date(formData.endTime)) {
-        toast.error("Start time cannot be after end time.");
-        return;
-      }
-      if (formData.origin === formData.destination) {
-        toast.error("Origin and destination cannot be the same.");
-        return;
-      }
-      
-      // Validar que la duración no exceda 24 horas
-      const start = new Date(formData.startTime);
-      const end = new Date(formData.endTime);
-      const durationMs = end.getTime() - start.getTime();
-      const oneDayMs = 24 * 60 * 60 * 1000; // 24 horas en milisegundos
-      
-      if (durationMs > oneDayMs) {
-        toast.error("Travel duration cannot exceed 24 hours.");
-        return;
-      }
-
-      if (createForAllUsers) {
-        // Obtener todos los usuarios
-        const users = await UserService.getAll();
-        
-        if (users.length === 0) {
-          toast.error("No users found.");
-          return;
-        }
-
-        // Crear viaje para cada usuario
-        let successCount = 0;
-        let errorCount = 0;
-        
-        for (const user of users) {
-          try {
-            await TravelService.create(formData, user.userId);
-            await VisitService.persistIfNeeded(formData.startTime.split('T')[0], user.userId);
-            successCount++;
-          } catch (error) {
-            console.error(`Error creating travel for user ${user.userId}:`, error);
-            // Si es el error de duración, no continuar con los demás usuarios
-            const axiosError = error as AxiosErrorResponse;
-            if (axiosError.response?.status === 400 && axiosError.response?.data?.message?.includes('24 hours')) {
-              toast.error("Travel duration cannot exceed 24 hours. Operation cancelled.");
-              return;
-            }
-            errorCount++;
-          }
-        }
-
-        if (errorCount === 0) {
-          toast.success(`Travel created successfully for all ${successCount} users!`);
-        } else {
-          toast.warning(`Travel created for ${successCount} users, but ${errorCount} failed.`);
-        }
-      } else {
-        // Crear viaje solo para el usuario actual
-        const userId = currentUser?.userId;
-        await TravelService.create(formData, userId);
-        const persisted = await VisitService.persistIfNeeded(formData.startTime.split('T')[0], userId);
-        
-        if (persisted) {
-          toast.success("Travel with visit added successfully!");
-        } else {
-          toast.success("Travel added successfully");
-        }
-      }
-
-      setFormData({
-        ...formData,
-        origin: formData.destination,
-        destination: "",
-        startTime: formData.endTime,
-        distance: "",
-      });
-    } catch (error) {
-      console.error("There was an error adding the travel!", error, formData);
-      
-      // Manejar error específico de duración excedida
-      const axiosError = error as AxiosErrorResponse;
-      if (axiosError.response?.status === 400 && axiosError.response?.data?.message?.includes('24 hours')) {
-        toast.error("Travel duration cannot exceed 24 hours.");
-      } else {
-        toast.error("Failed to add travel. Please try again.");
-      }
-    }
-  };
-
+  const {
+    formData, handleChange, handleSubmit,
+    createForAllUsers, setCreateForAllUsers,
+    isSameDay, setIsSameDay
+  } = useTravelCreator()
 
   return (
     <Card className="w-full max-w-4xl mx-auto bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
@@ -245,19 +128,13 @@ const TravelForm = ({ locations }: Props) => {
             </div>
           </div>
 
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="createForAllUsers"
-              checked={createForAllUsers}
-              onCheckedChange={(checked) => setCreateForAllUsers(checked === true)}
-            />
-            <Label
-              htmlFor="createForAllUsers"
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-700 dark:text-gray-300 cursor-pointer"
-            >
-              Create travel for all registered users
-            </Label>
-          </div>
+          <StateCheckbox id="isSameDay" stateStatus={isSameDay} stateSetter={setIsSameDay}>
+            Starts and finishes on the same day
+          </StateCheckbox>
+          
+          <StateCheckbox id="createForAllUsers" stateStatus={createForAllUsers} stateSetter={setCreateForAllUsers}>
+            Create travel for all registered users
+          </StateCheckbox>
 
           <Button type="submit" className="w-full">
             Create Travel
