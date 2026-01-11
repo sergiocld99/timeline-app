@@ -8,12 +8,12 @@ import { getLocationKey } from "./location"
 
 export const calculateBestLocations = (travels: TravelWithFarthestPoint[], quantity: number) => {
   const topLocations = travels.reduce((acc, t) => {
-    const key1 = t.origin.name
-    const key2 = t.destination.name
+    const key1 = t.origin.zipcode
+    const key2 = t.destination.zipcode
 
     if (t.farthestPoint) {
-      if (!acc[t.farthestPoint.name]) { acc[t.farthestPoint.name] = 0 }
-      acc[t.farthestPoint.name] += t.duration
+      if (!acc[t.farthestPoint.zipcode]) { acc[t.farthestPoint.zipcode] = 0 }
+      acc[t.farthestPoint.zipcode] += t.duration
     } else {
       if (!acc[key1]) { acc[key1] = 0 }
       if (!acc[key2]) { acc[key2] = 0 }

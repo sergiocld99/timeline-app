@@ -26,7 +26,7 @@ const TravelsPageClient = () => {
 
   const onFilterLocation = (loc?: string) => {
     if (loc) {
-      setFilteredTravels(travels.filter(t => t.origin.name === loc || t.destination.name === loc));
+      setFilteredTravels(travels.filter(t => t.origin.zipcode === loc || t.destination.zipcode === loc));
       setIsFiltered(true);
     } else {
       setFilteredTravels(travels);
