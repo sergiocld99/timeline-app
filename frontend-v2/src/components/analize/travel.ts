@@ -1,9 +1,10 @@
-import { KnownCenter } from "@/types/center"
-import { HourAndMinutes, HourPart } from "@/types/chart"
-import { MapLocation } from "@/types/map"
+import type { KnownCenter } from "@/types/center"
+import type { HourAndMinutes, HourPart } from "@/types/chart"
+import type { MapLocation } from "@/types/map"
 import type { Location, Travel, TravelWithFarthestPoint } from "@/types/travel"
 import { extractHourAndMinutes, normalizeHour } from "@/utils/chart"
 import { extractKeys, sortByDescendingValue } from "@/utils/kv"
+
 import { getLocationKey } from "./location"
 
 export const calculateBestLocations = (travels: TravelWithFarthestPoint[], quantity: number) => {

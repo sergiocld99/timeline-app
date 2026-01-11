@@ -1,15 +1,17 @@
 "use client";
 
-import { Visit, VisitsData } from "@/types/travel";
-import { Card, CardContent } from "./ui/card";
-import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "./ui/chart";
 import { BarChart } from "recharts";
 import { Bar, CartesianGrid, XAxis } from "recharts";
-import { convertToArgentineTime } from "@/utils";
-import { ChartData, ChartSource } from "@/types/chart";
+
 import { daysOfWeek } from "@/constants";
+import type { ChartData, ChartSource } from "@/types/chart";
+import type { Visit, VisitsData } from "@/types/travel";
+import { convertToArgentineTime } from "@/utils";
 import { buildChartConfig, getChartHours, useChartValue, useDefaultValues } from "@/utils/chart";
+
 import { calculateBestLocations, getEachHourOfVisit } from "./analize/visit";
+import { Card, CardContent } from "./ui/card";
+import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "./ui/chart";
 
 type Props = {
   visitsData: VisitsData;

@@ -1,5 +1,5 @@
 import type { Weighted } from "./commons"
-import { Cross } from "./cross"
+import type { Cross } from "./cross"
 
 export type Location = {
   _id: string

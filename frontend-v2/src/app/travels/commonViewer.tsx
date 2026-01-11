@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link"
+
 import ArrivalsAction from "@/components/buttons/ArrivalsAction"
 import BackAction from "@/components/buttons/BackAction"
 import DeparturesAction from "@/components/buttons/DeparturesAction"
@@ -8,7 +10,6 @@ import TravelTable from "@/components/TravelTable"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import useLocations from "@/hooks/useLocations"
 import useTravels from "@/hooks/useTravels"
-import Link from "next/link"
 
 type Props = {
   locationId?: string

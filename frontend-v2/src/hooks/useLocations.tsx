@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import type { Location } from "@/types/travel";
+
 import LocationService from "@/services/LocationService";
+import type { Location } from "@/types/travel";
 
 const useLocations = () => {
   const [locations, setLocations] = useState<Location[]>([]);

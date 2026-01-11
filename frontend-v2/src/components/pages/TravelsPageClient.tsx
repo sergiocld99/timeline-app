@@ -1,11 +1,12 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
+
 import TravelBarStats from "@/components/TravelBarStats";
 import TravelTable from "@/components/TravelTable";
 import useTravels from "@/hooks/useTravels";
-import { useEffect, useState } from "react";
-import { Travel } from "@/types/travel";
+import type { Travel } from "@/types/travel";
 
 // Importar el mapa dinámicamente para evitar problemas de SSR con Leaflet
 const TravelMap = dynamic(() => import("@/components/TravelMap"), {

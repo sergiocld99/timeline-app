@@ -1,8 +1,9 @@
+import type { Travel, TravelStats } from "@/types/travel";
 import { getHoursAndMinutes } from "@/utils";
+import { renderTotalWeightsCell } from "@/utils/weight";
+
 import { renderPointWithCopyBtn } from "./render/coordinates";
 import { TableCell, TableFooter, TableRow } from "./ui/table";
-import { renderTotalWeightsCell } from "@/utils/weight";
-import { Travel, TravelStats } from "@/types/travel";
 
 type Props = {
   travels: Travel[];

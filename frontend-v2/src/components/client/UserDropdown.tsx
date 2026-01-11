@@ -1,5 +1,8 @@
 "use client"
 
+import { User } from "lucide-react";
+import Link from "next/link";
+
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -10,8 +13,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useUser } from "@/contexts/UserContext";
-import { User } from "lucide-react";
-import Link from "next/link";
 
 const UserDropdown = () => {
   const { currentUser, users, setCurrentUser, loading } = useUser();

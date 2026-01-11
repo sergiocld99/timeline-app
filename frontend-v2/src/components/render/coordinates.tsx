@@ -1,4 +1,5 @@
 import { toast } from "sonner";
+
 import CopyButton from "../buttons/CopyButton";
 
 export const renderPoint = (latitude?: number, longitude?: number) => {

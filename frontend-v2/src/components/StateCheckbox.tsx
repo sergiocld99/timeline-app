@@ -1,6 +1,7 @@
-import { Label } from "@/components/ui/label";
+import type { ReactNode } from "react";
+
 import { Checkbox } from "@/components/ui/checkbox";
-import { ReactNode } from "react";
+import { Label } from "@/components/ui/label";
 
 type Props = {
   id: string,

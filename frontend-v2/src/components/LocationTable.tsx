@@ -1,6 +1,13 @@
 "use client";
 
-import type { Location, LocationEditValues } from "@/types/travel";
+import { Save, X } from 'lucide-react';
+import Link from "next/link";
+import { useState } from "react";
+import { toast } from "sonner";
+
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -9,17 +16,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Save, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useState } from "react";
-import { toast } from "sonner";
-import { Input } from "./ui/input";
+import type { Location, LocationEditValues } from "@/types/travel";
 import { roundDecimals } from "@/utils/numbers";
-import EditAction from "./buttons/EditAction";
-import Link from "next/link";
-import DeparturesAction from "./buttons/DeparturesAction";
+
 import ArrivalsAction from "./buttons/ArrivalsAction";
+import DeparturesAction from "./buttons/DeparturesAction";
+import EditAction from "./buttons/EditAction";
 
 type Props = {
   locations: Location[];

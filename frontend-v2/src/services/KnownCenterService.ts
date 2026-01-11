@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import { backendBaseUrl } from '@/constants';
-import { KnownCenter } from '@/types/center';
+import type { KnownCenter } from '@/types/center';
 
 const baseUrl = `${backendBaseUrl}/known-centers`;
 

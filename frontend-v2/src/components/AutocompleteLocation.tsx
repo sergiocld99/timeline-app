@@ -1,11 +1,12 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
 import { Check, ChevronsUpDown } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { useEffect,useRef, useState } from "react"
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Location } from "@/types/travel"
+import { cn } from "@/lib/utils"
+import type { Location } from "@/types/travel"
 
 interface AutocompleteLocationProps {
   locations: Location[]

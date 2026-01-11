@@ -1,8 +1,9 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import type { User } from "@/types/user";
+import { createContext, type ReactNode,useContext, useEffect, useState } from "react";
+
 import UserService from "@/services/UserService";
+import type { User } from "@/types/user";
 
 interface UserContextType {
   currentUser: User | null;

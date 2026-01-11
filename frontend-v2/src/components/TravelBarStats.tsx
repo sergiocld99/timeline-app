@@ -1,11 +1,12 @@
-import { Location, Travel } from "@/types/travel"
+import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+
+import type { Location, Travel } from "@/types/travel"
 import { buildChartConfig } from "@/utils/chart"
-import { Card, CardContent } from "./ui/card";
-import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "./ui/chart";
-import { BarChart } from "recharts";
-import { Bar, CartesianGrid, XAxis } from "recharts";
+
 import { calculateBestLocations } from "./analize/travel";
 import { buildDailyChartData, buildHourlyChartData } from "./builders/travelBars";
+import { Card, CardContent } from "./ui/card";
+import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "./ui/chart";
 
 type Props = {
   travels: Travel[],

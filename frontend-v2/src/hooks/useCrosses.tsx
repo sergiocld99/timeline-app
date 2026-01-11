@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import type { Cross } from "@/types/cross";
+
 import CrossService from "@/services/CrossService";
+import type { Cross } from "@/types/cross";
 
 const useCrosses = () => {
   const [crosses, setCrosses] = useState<Cross[]>([]);

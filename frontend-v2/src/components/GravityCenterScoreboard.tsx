@@ -1,10 +1,11 @@
 "use client"
 
-import { TravelsData, Travel, VisitsData, Visit } from "@/types/travel"
-import { Card, CardContent } from "./ui/card"
 import useNearbyCenters from "@/hooks/useNearbyCenters"
-import { KnownCenter } from "@/types/center"
+import type { KnownCenter } from "@/types/center"
+import type { Travel, TravelsData, Visit,VisitsData } from "@/types/travel"
 import { shortcutName } from "@/utils/strings"
+
+import { Card, CardContent } from "./ui/card"
 
 type Props = {
   travelsData?: TravelsData

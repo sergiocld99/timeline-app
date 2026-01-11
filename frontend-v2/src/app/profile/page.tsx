@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useUser } from "@/contexts/UserContext";
-import UserService from "@/services/UserService";
+import { toast } from "sonner";
+
+import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
@@ -21,8 +20,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { toast } from "sonner";
-import Header from "@/components/Header";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useUser } from "@/contexts/UserContext";
+import UserService from "@/services/UserService";
 
 export default function ProfilePage() {
   const { users, refreshUsers, loading } = useUser();

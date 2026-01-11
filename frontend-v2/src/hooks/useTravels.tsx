@@ -1,8 +1,9 @@
-import { useEffect, useState, useCallback } from "react";
-import type { Travel, TravelsData } from "@/types/travel";
-import TravelService from "@/services/TravelService";
+import { useCallback,useEffect, useState } from "react";
+
 import { useDateRange } from "@/contexts/DateRangeContext";
 import { useUser } from "@/contexts/UserContext";
+import TravelService from "@/services/TravelService";
+import type { Travel, TravelsData } from "@/types/travel";
 
 const useTravels = (sortingField = 'duration', locFrom = '', locTo = '') => {
   const { dateFrom, dateTo } = useDateRange();

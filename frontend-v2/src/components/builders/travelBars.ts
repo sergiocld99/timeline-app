@@ -1,9 +1,10 @@
-import { ChartData, ChartSource } from "@/types/chart"
-import { TravelWithFarthestPoint } from "@/types/travel"
-import { getEachHourOfEachHalf, getEachHourOfTravel } from "../analize/travel"
-import { getChartHours, useChartValue, useDefaultValues } from "@/utils/chart"
-import { convertToArgentineTime } from "@/utils"
 import { daysOfWeek } from "@/constants"
+import type { ChartData, ChartSource } from "@/types/chart"
+import type { TravelWithFarthestPoint } from "@/types/travel"
+import { convertToArgentineTime } from "@/utils"
+import { getChartHours, useChartValue, useDefaultValues } from "@/utils/chart"
+
+import { getEachHourOfEachHalf, getEachHourOfTravel } from "../analize/travel"
 
 const CHART_FIELD = 'zipcode'
 

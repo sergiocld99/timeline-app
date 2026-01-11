@@ -1,6 +1,7 @@
-import KnownCenterService from "@/services/KnownCenterService"
-import { KnownCenter } from "@/types/center"
 import { useEffect, useState } from "react"
+
+import KnownCenterService from "@/services/KnownCenterService"
+import type { KnownCenter } from "@/types/center"
 
 type Props = {
   latitude?: number

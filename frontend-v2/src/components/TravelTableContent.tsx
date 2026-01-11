@@ -1,17 +1,19 @@
 "use client";
 
+import { CircleMinus, CirclePlus,Edit3, Loader2, Save, Trash2, X } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
+
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import useLocations from '@/hooks/useLocations';
+import type { AxiosErrorResponse } from '@/types/commons';
 import type { Travel, TravelEditValues, TravelStats } from '@/types/travel';
 import { extractDate, extractTime, getEmojiForMode } from '@/utils';
 import { renderWeight } from '@/utils/weight';
-import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Edit3, Trash2, Save, X, Loader2, CircleMinus, CirclePlus } from 'lucide-react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import type { AxiosErrorResponse } from '@/types/commons';
-import useLocations from '@/hooks/useLocations';
+
 import TravelTableFooter from './TravelTableFooter';
 
 type Props = {
