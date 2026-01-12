@@ -61,11 +61,21 @@ export type TravelsData = {
 }
 
 export type TravelEditValues = {
+  origin: string;
+  destination: string;
   distance: string;
   duration: string;
   modeOfTransport: string;
+}
+
+export type TravelFormData = {
   origin: string;
   destination: string;
+  startTime: string;
+  endTime: string;
+  modeOfTransport: string;
+  distance: string;
+  price: string;
 }
 
 export type Visit = Weighted & {

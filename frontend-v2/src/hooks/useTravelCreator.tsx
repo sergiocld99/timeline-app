@@ -1,5 +1,6 @@
 import type { AxiosErrorResponse } from "@/types/commons";
 import type { User } from "@/types/user";
+import type { TravelFormData } from "@/types/travel";
 
 import { useState } from "react";
 import { toast } from "sonner";
@@ -10,17 +11,11 @@ import UserService from "@/services/UserService";
 import VisitService from "@/services/VisitService";
 import { getTimeFromCurrent } from "@/utils";
 
-type TravelFormData = {
-  origin: string;
-  destination: string;
-  startTime: string;
-  endTime: string;
-  modeOfTransport: string;
-  distance: string;
-  price: string;
-}
-
 const validateFields = (formData: TravelFormData): boolean => {
+  if (!formData.origin || !formData.destination) {
+    throw new Error("Origin and destination are required.");
+  }
+
   if (formData.startTime === formData.endTime) {
     throw new Error("Start time and end time cannot be the same.");
   }
@@ -64,10 +59,7 @@ const performCreationForAllUsers = async (formData: TravelFormData) => {
     } catch (error) {
       const axiosError = error as AxiosErrorResponse;
 
-      if (axiosError.response?.status === 400 && axiosError.response?.data?.message?.includes('24 hours')) {
-        toast.error("Travel duration cannot exceed 24 hours. Operation cancelled.");
-        return;
-      }
+      toast.error(axiosError.response?.data?.message, { style: { background: 'red' } });
       errorCount++;
     }
   }
@@ -75,7 +67,7 @@ const performCreationForAllUsers = async (formData: TravelFormData) => {
   if (errorCount === 0) {
     toast.success(`Travel created successfully for all ${successCount} users!`);
   } else {
-    toast.warning(`Travel created for ${successCount} users, but ${errorCount} failed.`);
+    toast.warning(`Travel creation failed for ${errorCount} users.`, { style: { background: 'red' } });
   }
 }
 
@@ -134,7 +126,7 @@ const useTravelCreator = () => {
 
       if (name === 'endTime') {
         const datePart = formData.startTime.split('T')[0]
-        
+
         // Keep original format for backend (datetime-local)
         value = datePart.concat('T').concat(value)
       }
@@ -175,11 +167,7 @@ const useTravelCreator = () => {
     } catch (error) {
       const axiosError = error as AxiosErrorResponse;
 
-      if (axiosError.response?.status === 400 && axiosError.response?.data?.message?.includes('24 hours')) {
-        toast.error("Travel duration cannot exceed 24 hours.");
-      } else {
-        toast.error("Failed to add travel. Please try again.");
-      }
+      toast.error(axiosError.response?.data?.message, { style: { background: 'red' } });
     }
   }
 
