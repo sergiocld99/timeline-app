@@ -4,6 +4,7 @@ import { enrichTravels, enrichTravel, calculateTravelStats } from "../services/t
 import { useCorrectUser } from "../helpers/useCorrectUser.js";
 import { TravelRules } from "../domain/travelRules.js";
 import { Money } from "../domain/value-objects/Money.js";
+import { Distance } from "../domain/value-objects/Distance.js";
 
 export const getAllTravels = (req, res) => {
   const dateFrom = getDateFrom(req)
@@ -35,10 +36,11 @@ export const getAllTravels = (req, res) => {
 
 export const createTravel = (req, res) => {
   const { startTime, endTime, origin, destination, modeOfTransport, distance, price, userId } = req.body;
-  let safePrice;
+  let safePrice, safeDistance;
 
   try {
     TravelRules.validateDuration(startTime, endTime)
+    safeDistance = new Distance(distance);
     safePrice = new Money(price);
   } catch (error) {
     return res.status(400).json({
@@ -54,7 +56,7 @@ export const createTravel = (req, res) => {
     origin,
     destination,
     modeOfTransport,
-    distance,
+    distance: safeDistance.value,
     price: safePrice.amount,
   });
 
@@ -68,19 +70,32 @@ export const createTravel = (req, res) => {
 export const updateTravel = (req, res, next) => {
   const { id } = req.params;
   const { startTime, endTime, origin, destination, modeOfTransport, distance, crosses, userId } = req.body;
+  let safeDistance;
 
-  if (startTime && endTime) {
-    try {
+  try {
+    if (startTime && endTime) {
       TravelRules.validateDuration(startTime, endTime)
-    } catch (error) {
-      return res.status(400).json({
-        message: error.message,
-        name: error.name
-      });
     }
+
+    if (distance) {
+      safeDistance = new Distance(distance);
+    }
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+      name: error.name
+    });
   }
 
-  const updateData = { startTime, endTime, origin, destination, modeOfTransport, distance, crosses };
+  const updateData = {
+    startTime,
+    endTime,
+    origin,
+    destination,
+    modeOfTransport,
+    distance: safeDistance?.value,
+    crosses
+  };
 
   if (userId !== undefined) {
     updateData.userId = parseInt(userId, 10);
