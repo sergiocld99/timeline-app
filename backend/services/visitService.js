@@ -1,5 +1,6 @@
 import { useCorrectUser } from "../helpers/useCorrectUser.js";
 import Travel from "../models/Travel.js";
+import Visit from "../models/Visit.js";
 
 const getTravelsStartedOn = async (date, userId) => {
   const startOfDay = new Date(date);
@@ -29,7 +30,7 @@ export const calculateVisitsForDate = async (date, userId) => {
   const travels = await getTravelsStartedOn(date, userId);
   const visits = [];
 
-  for (let i=0; i<travels.length-1; i++) {
+  for (let i = 0; i < travels.length - 1; i++) {
     const currentTravel = travels[i];
     const nextTravel = travels[i + 1];
 
@@ -56,4 +57,21 @@ export const calculateVisitsForDate = async (date, userId) => {
 
   // reverse order (most recent first)
   return visits.reverse();
+}
+
+export const updateVisitFromTravel = async (travel) => {
+  const { origin, startTime, userId } = travel
+  const filter = { departureTime: startTime, userId }
+  const update = { location: origin }
+
+  try {
+    // Find just by User and End Time of visit -> Update location
+    const v = await Visit.findOneAndUpdate(filter, update, { new: true })
+
+    if (!v) {
+      console.log('No visits found for ', filter)
+    }
+  } catch (err) {
+    console.error('Error when updating visit after travel update: ', err.message)
+  }
 }

@@ -5,8 +5,12 @@ import {
   getAllTravels,
   updateTravel
 } from "../controller/travelController.js";
-import { buildGraph, exportTravelsCsv, findTravels, findAnyTravelsToCPs } from "../controller/travelExtras.js";
-import { updateVisitIfNeeded } from "../controller/visitController.js";
+import {
+  buildGraph,
+  exportTravelsCsv,
+  findTravels,
+  findAnyTravelsToCPs
+} from "../controller/travelExtras.js";
 
 const router = e.Router();
 
@@ -19,7 +23,7 @@ router.post('/v2', getAllTravels)
 router.post('/find-any', findAnyTravelsToCPs)
 
 router.post('/', createTravel);
-router.put('/:id', updateTravel, updateVisitIfNeeded);
+router.put('/:id', updateTravel);
 router.delete('/:id', deleteTravel);
 
 

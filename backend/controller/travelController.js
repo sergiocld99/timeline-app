@@ -1,10 +1,11 @@
 import Travel from "../models/Travel.js";
 import { getDateFrom, getDateTo, withWeight } from "../utils/index.js";
-import { enrichTravels, enrichTravel, calculateTravelStats } from "../services/travelService.js";
+import { enrichTravels, calculateTravelStats } from "../services/travelService.js";
 import { useCorrectUser } from "../helpers/useCorrectUser.js";
 import { TravelRules } from "../domain/travelRules.js";
 import { Money } from "../domain/value-objects/Money.js";
 import { Distance } from "../domain/value-objects/Distance.js";
+import { emitTravelUpdated } from "../events/publisher.js";
 
 export const getAllTravels = (req, res) => {
   const dateFrom = getDateFrom(req)
@@ -108,8 +109,8 @@ export const updateTravel = (req, res, next) => {
         return res.status(404).json({ message: 'Travel not found' });
       }
 
-      res.locals.enrichedTravel = enrichTravel(updatedTravel);
-      next()
+      emitTravelUpdated(origin, updatedTravel);
+      res.status(200).json(updatedTravel);
     })
     .catch(err => {
       return res.status(400).json({ message: 'Error updating travel', error: err.message });
