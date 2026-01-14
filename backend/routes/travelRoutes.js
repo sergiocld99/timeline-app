@@ -5,16 +5,18 @@ import {
   getAllTravels,
   updateTravel
 } from "../controller/travelController.js";
-import { buildGraph, exportTravelsCsv, findTravels } from "../controller/travelExtras.js";
+import { buildGraph, exportTravelsCsv, findTravels, findAnyTravelsToCPs } from "../controller/travelExtras.js";
 import { updateVisitIfNeeded } from "../controller/visitController.js";
 
 const router = e.Router();
 
 router.get('/', getAllTravels);
-router.post('/v2', getAllTravels)
 router.get('/graph', buildGraph);
 router.get('/export/csv', exportTravelsCsv);
 router.get('/find', findTravels)
+
+router.post('/v2', getAllTravels)
+router.post('/find-any', findAnyTravelsToCPs)
 
 router.post('/', createTravel);
 router.put('/:id', updateTravel, updateVisitIfNeeded);
