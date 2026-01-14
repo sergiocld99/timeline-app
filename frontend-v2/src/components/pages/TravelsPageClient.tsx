@@ -5,6 +5,7 @@ import type { Travel } from "@/types/travel";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
+import PresentialWorkAlert from "@/components/PresentialWorkAlert";
 import TravelBarStats from "@/components/TravelBarStats";
 import TravelTable from "@/components/TravelTable";
 import useTravels from "@/hooks/useTravels";
@@ -44,6 +45,7 @@ const TravelsPageClient = () => {
   return (
     <main className="mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
       <div className="space-y-8">
+        <PresentialWorkAlert />
         <div className="flex gap-8">
           <TravelMap travels={filteredTravels} stats={stats} />
           <TravelBarStats travels={filteredTravels} onFilterLocation={onFilterLocation} />
