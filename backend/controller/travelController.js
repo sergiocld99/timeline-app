@@ -3,6 +3,7 @@ import { getDateFrom, getDateTo, withWeight } from "../utils/index.js";
 import { enrichTravels, enrichTravel, calculateTravelStats } from "../services/travelService.js";
 import { useCorrectUser } from "../helpers/useCorrectUser.js";
 import { TravelRules } from "../domain/travelRules.js";
+import { Money } from "../domain/value-objects/Money.js";
 
 export const getAllTravels = (req, res) => {
   const dateFrom = getDateFrom(req)
@@ -34,9 +35,11 @@ export const getAllTravels = (req, res) => {
 
 export const createTravel = (req, res) => {
   const { startTime, endTime, origin, destination, modeOfTransport, distance, price, userId } = req.body;
+  let safePrice;
 
   try {
     TravelRules.validateDuration(startTime, endTime)
+    safePrice = new Money(price);
   } catch (error) {
     return res.status(400).json({
       message: error.message,
@@ -52,7 +55,7 @@ export const createTravel = (req, res) => {
     destination,
     modeOfTransport,
     distance,
-    price
+    price: safePrice.amount,
   });
 
   travel.save().then(savedTravel => {
