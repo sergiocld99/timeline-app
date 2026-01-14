@@ -2,6 +2,7 @@ import Travel from "../models/Travel.js";
 import { getDateFrom, getDateTo, withWeight } from "../utils/index.js";
 import { enrichTravels, enrichTravel, calculateTravelStats } from "../services/travelService.js";
 import { useCorrectUser } from "../helpers/useCorrectUser.js";
+import { TravelRules } from "../domain/travelRules.js";
 
 export const getAllTravels = (req, res) => {
   const dateFrom = getDateFrom(req)
@@ -10,9 +11,9 @@ export const getAllTravels = (req, res) => {
   const { sortingField = 'duration', userId, locFrom, locTo } = req.query
 
   // Fetch all travels with populated origin and destination (Location) fields
-  Travel.find({ 
+  Travel.find({
     ...useCorrectUser(userId),
-    startTime: { $gte: dateFrom }, 
+    startTime: { $gte: dateFrom },
     endTime: { $lte: dateTo },
     ...(crosses.length > 0 && { crosses: { $in: crosses } }),
     ...(locFrom && { origin: locFrom }),
@@ -21,7 +22,7 @@ export const getAllTravels = (req, res) => {
     const enrichedTravels = enrichTravels(travels);
     const weightedTravels = withWeight(enrichedTravels, sortingField);
     const stats = calculateTravelStats(weightedTravels);
-    
+
     res.json({
       travels: weightedTravels,
       stats
@@ -34,17 +35,13 @@ export const getAllTravels = (req, res) => {
 export const createTravel = (req, res) => {
   const { startTime, endTime, origin, destination, modeOfTransport, distance, price, userId } = req.body;
 
-  // Validar que la duración del viaje no exceda 24 horas
-  const start = new Date(startTime);
-  const end = new Date(endTime);
-  const durationMs = end - start;
-  const oneDayMs = 24 * 60 * 60 * 1000; // 24 horas en milisegundos
-
-  if (durationMs > oneDayMs) {
-    return res.status(400).json({ 
-      message: 'Travel duration cannot exceed 24 hours', 
-      error: 'The travel duration exceeds the maximum allowed time of 1 day' 
-    });
+  try {
+    TravelRules.validateDuration(startTime, endTime)
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+      name: error.name
+    })
   }
 
   const travel = new Travel({
@@ -68,23 +65,20 @@ export const createTravel = (req, res) => {
 export const updateTravel = (req, res, next) => {
   const { id } = req.params;
   const { startTime, endTime, origin, destination, modeOfTransport, distance, crosses, userId } = req.body;
-  
-  // Validar que la duración del viaje no exceda 24 horas si se están actualizando los tiempos
-  if (startTime && endTime) {
-    const start = new Date(startTime);
-    const end = new Date(endTime);
-    const durationMs = end - start;
-    const oneDayMs = 24 * 60 * 60 * 1000; // 24 horas en milisegundos
 
-    if (durationMs > oneDayMs) {
-      return res.status(400).json({ 
-        message: 'Travel duration cannot exceed 24 hours', 
-        error: 'The travel duration exceeds the maximum allowed time of 1 day' 
+  if (startTime && endTime) {
+    try {
+      TravelRules.validateDuration(startTime, endTime)
+    } catch (error) {
+      return res.status(400).json({
+        message: error.message,
+        name: error.name
       });
     }
   }
 
   const updateData = { startTime, endTime, origin, destination, modeOfTransport, distance, crosses };
+
   if (userId !== undefined) {
     updateData.userId = parseInt(userId, 10);
   }
@@ -95,14 +89,14 @@ export const updateTravel = (req, res, next) => {
       if (!updatedTravel) {
         return res.status(404).json({ message: 'Travel not found' });
       }
-      
+
       res.locals.enrichedTravel = enrichTravel(updatedTravel);
       next()
     })
     .catch(err => {
       return res.status(400).json({ message: 'Error updating travel', error: err.message });
     }
-  );
+    );
 }
 
 export const deleteTravel = (req, res) => {

@@ -16,25 +16,8 @@ const validateFields = (formData: TravelFormData): boolean => {
     throw new Error("Origin and destination are required.");
   }
 
-  if (formData.startTime === formData.endTime) {
-    throw new Error("Start time and end time cannot be the same.");
-  }
-
   if (formData.origin === formData.destination) {
-    throw new Error("Origin and destination cannot be the same.");
-  }
-
-  const start = new Date(formData.startTime);
-  const end = new Date(formData.endTime);
-  const durationMs = end.getTime() - start.getTime();
-  const oneDayMs = 24 * 60 * 60 * 1000;
-
-  if (durationMs > oneDayMs) {
-    throw new Error("Travel duration cannot exceed 24 hours.");
-  }
-
-  if (durationMs < 0) {
-    throw new Error("Start time cannot be after end time.");
+    throw new Error("Origin and destination should be different");
   }
 
   return true;

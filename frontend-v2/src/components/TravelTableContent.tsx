@@ -3,7 +3,7 @@
 import type { AxiosErrorResponse } from '@/types/commons';
 import type { Travel, TravelEditValues, TravelStats } from '@/types/travel';
 
-import { CircleMinus, CirclePlus,Edit3, Loader2, Save, Trash2, X } from 'lucide-react';
+import { CircleMinus, CirclePlus, Edit3, Loader2, Save, Trash2, X } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -80,15 +80,9 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
 
       resetEdition()
     } catch (error) {
-      console.error('Error updating travel:', error);
-
-      // Manejar error específico de duración excedida
       const axiosError = error as AxiosErrorResponse;
-      if (axiosError.response?.status === 400 && axiosError.response?.data?.message?.includes('24 hours')) {
-        toast.error('Travel duration cannot exceed 24 hours');
-      } else {
-        toast.error('Failed to update travel');
-      }
+
+      toast.error(axiosError.response?.data?.message, { style: { background: 'red' } })
     } finally {
       setIsSaving(false);
     }
