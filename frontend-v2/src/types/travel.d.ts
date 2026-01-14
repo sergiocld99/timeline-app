@@ -53,6 +53,11 @@ export type TravelStats = {
   }>
 }
 
+export type TravelFindResult = {
+  count: number,
+  travels: Travel[]
+}
+
 export type TravelsData = {
   travels: Travel[]
   stats?: TravelStats

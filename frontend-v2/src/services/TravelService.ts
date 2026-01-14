@@ -1,8 +1,9 @@
 import type { FormData } from '@/types/commons';
-import type { Travel, TravelsData } from '@/types/travel';
+import type { TravelFindResult } from '@/types/travel';
 
 import axios from 'axios';
 
+import { type Travel, type TravelsData } from '@/types/travel';
 import { backendBaseUrl } from '@/constants';
 
 const baseUrl = `${backendBaseUrl}/travels`;
@@ -56,7 +57,7 @@ class TravelService {
       if (Array.isArray(response.data)) {
         return { travels: response.data };
       }
-      
+
       return {
         travels: response.data.travels,
         stats: response.data.stats
@@ -102,12 +103,12 @@ class TravelService {
       const downloadUrl = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = downloadUrl;
-      
+
       // Generate filename from date range
       const fromLabel = dateFrom ? dateFrom.split('T')[0] : 'all';
       const toLabel = dateTo ? dateTo.split('T')[0] : 'all';
       link.download = `travels_${fromLabel}_${toLabel}.csv`;
-      
+
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -116,6 +117,17 @@ class TravelService {
       console.error("Error exporting CSV:", error);
       throw error;
     }
+  }
+
+  static async findAnyTravelsToCPs(zipcodes: string[], dateFrom?: string, dateTo?: string, userId?: number) {
+    const url = new URL(`${baseUrl}/find-any`);
+    if (dateFrom) url.searchParams.append("dateFrom", dateFrom);
+    if (dateTo) url.searchParams.append("dateTo", dateTo);
+    if (userId) url.searchParams.append("userId", userId.toString());
+
+    const result = await axios.post<TravelFindResult>(url.toString(), { zipcodes })
+    
+    return result.data
   }
 }
 
