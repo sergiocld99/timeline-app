@@ -17,12 +17,17 @@ export const renderWeight = (elem: Weighted) => (`${elem.weight.color} ${getFixe
 export const renderTotalWeightsCell = (sourceArr: Weighted[]) => {
   const percentagesByColor = getPercentagesByColor(sourceArr)
 
-  return (
-    <>
-      {'🔴'} {getFixedPercentage(percentagesByColor['🔴'])} <br />
-      {'🟠'} {getFixedPercentage(percentagesByColor['🟠'])} <br />
-      {'🟡'} {getFixedPercentage(percentagesByColor['🟡'])} <br />
-      {'🟢'} {getFixedPercentage(percentagesByColor['🟢'])} <br />
-    </>
-  )
+  const colors = ['🔴', '🟠', '🟡', '🟢'] as const;
+
+  return colors.map(color => {
+    const percentage = percentagesByColor[color];
+
+    if (percentage === 0) return null;
+
+    return (
+      <>
+        {color} {getFixedPercentage(percentage)} <br />
+      </>
+    )
+  })
 }
