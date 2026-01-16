@@ -3,7 +3,7 @@ import type { TravelFindResult } from '@/types/travel';
 
 import axios from 'axios';
 
-import { type Travel, type TravelsData } from '@/types/travel';
+import { type Travel, type TravelsData, type TravelStats } from '@/types/travel';
 import { backendBaseUrl } from '@/constants';
 
 const baseUrl = `${backendBaseUrl}/travels`;
@@ -67,6 +67,16 @@ class TravelService {
     }
   }
 
+  static async getStats(travels: { id: string, weight: any }[]): Promise<TravelStats> {
+    try {
+      const response = await axios.post<TravelStats>(`${baseUrl}/stats`, { travels });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching stats:", error);
+      throw error;
+    }
+  }
+
   static async update(id: string, travelData: Partial<Travel>) {
     try {
       const response = await axios.put<Travel>(`${baseUrl}/${id}`, travelData);
@@ -126,7 +136,7 @@ class TravelService {
     if (userId) url.searchParams.append("userId", userId.toString());
 
     const result = await axios.post<TravelFindResult>(url.toString(), { zipcodes })
-    
+
     return result.data
   }
 }
