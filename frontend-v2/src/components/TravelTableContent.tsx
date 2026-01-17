@@ -9,7 +9,6 @@ import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import useLocations from '@/hooks/useLocations';
 import { extractDate, extractTime, getEmojiForMode } from '@/utils';
@@ -20,6 +19,7 @@ import AddAction from './buttons/AddAction';
 import DeleteAction from './buttons/DeleteAction';
 import EditAction from './buttons/EditAction';
 import MinusAction from './buttons/MinusAction';
+import { Selector } from './common/Selector';
 
 type Props = {
   travels: Travel[];
@@ -146,21 +146,13 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
     if (editingId === travel._id) {
       const eligibleLocations = locations.filter(l => l.zipcode === travel[field].zipcode)
 
-      if (eligibleLocations.length < 2) {
-        return (
-          <span className="text-gray-900 dark:text-white">{travel[field].name}</span>
-        )
-      }
-
       return (
-        <Select value={editValues[field]} onValueChange={(value) => handleInputChange(field, value)}>
-          <SelectTrigger className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {eligibleLocations.map(l => (<SelectItem key={`origin-${l.name}`} value={l.name}>{l.name}</SelectItem>))}
-          </SelectContent>
-        </Select>
+        <Selector
+          value={editValues[field]}
+          onValueChange={(value) => handleInputChange(field, value)}
+          eligibleValues={eligibleLocations.map(l => ({ value: l.name, label: l.name }))}
+          minLength={2}
+        />
       )
     }
 
@@ -171,21 +163,16 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
 
   const renderEditableModeOfTransport = (travel: Travel) => {
     if (editingId === travel._id) {
+      const eligibleModes = ['car', 'taxi', 'bus', 'train', 'subway', 'ferry', 'walking']
+      const eligibleValues = eligibleModes.map(mode => ({ value: mode, label: getEmojiForMode(mode) }))
+
       return (
-        <Select value={editValues.modeOfTransport} onValueChange={(value) => handleInputChange('modeOfTransport', value)}>
-          <SelectTrigger className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="car">🚘</SelectItem>
-            <SelectItem value="taxi">🚖</SelectItem>
-            <SelectItem value="bus">🚍</SelectItem>
-            <SelectItem value="train">🚉</SelectItem>
-            <SelectItem value="subway">🚇</SelectItem>
-            <SelectItem value="ferry">⛴️</SelectItem>
-            <SelectItem value="walking">🚶🏽</SelectItem>
-          </SelectContent>
-        </Select>
+        <Selector
+          value={editValues.modeOfTransport}
+          onValueChange={(value) => handleInputChange('modeOfTransport', value)}
+          eligibleValues={eligibleValues}
+          minLength={1}
+        />
       );
     }
 
