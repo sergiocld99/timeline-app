@@ -3,7 +3,7 @@
 import type { AxiosErrorResponse } from '@/types/commons';
 import type { Travel, TravelEditValues, TravelStats } from '@/types/travel';
 
-import { CircleMinus, CirclePlus, Edit3, Loader2, Save, Trash2, X } from 'lucide-react';
+import { Loader2, Save, X } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -16,6 +16,10 @@ import { extractDate, extractTime, getEmojiForMode } from '@/utils';
 import { renderWeight } from '@/utils/weight';
 
 import TravelTableFooter from './TravelTableFooter';
+import AddAction from './buttons/AddAction';
+import DeleteAction from './buttons/DeleteAction';
+import EditAction from './buttons/EditAction';
+import MinusAction from './buttons/MinusAction';
 
 type Props = {
   travels: Travel[];
@@ -77,6 +81,8 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
         origin: locations.find(l => l.name === editValues.origin),
         destination: locations.find(l => l.name === editValues.destination)
       });
+
+      toast.success('Travel updated successfully!', { style: { background: 'green' } });
 
       resetEdition()
     } catch (error) {
@@ -191,23 +197,8 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
   const renderTravelsTabActionButtons = (travel: Travel) => {
     return (
       <div className="flex space-x-2">
-        <Button
-          onClick={() => { void handleEdit(travel); }}
-          size="sm"
-          variant="outline"
-          title="Edit travel"
-        >
-          <Edit3 className="h-4 w-4" />
-        </Button>
-        <Button
-          onClick={() => { void handleDelete(travel); }}
-          size="sm"
-          variant="outline"
-          title="Delete travel"
-          className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
-        >
-          <Trash2 className="h-4 w-4" />
-        </Button>
+        <EditAction handleClick={() => { void handleEdit(travel); }} />
+        <DeleteAction handleClick={() => { void handleDelete(travel); }} />
       </div>
     );
   }
@@ -215,22 +206,8 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
   const renderCrossesTabActionButtons = (travel: Travel) => {
     return (
       <div className="flex space-x-2">
-        <Button
-          onClick={() => { void onAddCrosses!(travel._id); }}
-          size="sm"
-          variant="outline"
-          title="Add crosses"
-        >
-          <CirclePlus className="h-4 w-4" />
-        </Button>
-        <Button
-          onClick={() => { void onRemoveCrosses!(travel._id); }}
-          size="sm"
-          variant="outline"
-          title="Remove crosses"
-        >
-          <CircleMinus className="h-4 w-4" />
-        </Button>
+        <AddAction handleClick={() => { void onAddCrosses!(travel._id); }} />
+        <MinusAction handleClick={() => { void onRemoveCrosses!(travel._id); }} />
       </div>
     )
   }
