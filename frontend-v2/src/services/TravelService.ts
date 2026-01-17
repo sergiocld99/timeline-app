@@ -139,6 +139,21 @@ class TravelService {
 
     return result.data
   }
+
+  static async findLastTravel(origin: string, destination: string, userId?: number): Promise<Travel | null> {
+    try {
+      const url = new URL(`${baseUrl}/find-last`);
+      url.searchParams.append("origin", origin);
+      url.searchParams.append("destination", destination);
+      if (userId) url.searchParams.append("userId", userId.toString());
+
+      const response = await axios.get<Travel>(url.toString());
+      return response.data;
+    } catch (error) {
+      console.error("Error finding last travel:", error);
+      throw error;
+    }
+  }
 }
 
 export default TravelService;

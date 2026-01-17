@@ -41,8 +41,26 @@ export const buildGraph = (req, res) => {
     });
 }
 
+export const findLastTravel = async (req, res) => {
+  const { origin, destination, userId } = req.query
+
+  if (!origin || !destination) {
+    return res.status(400).json({ message: 'Missing origin or destination' })
+  }
+
+  Travel.findOne({
+    ...useCorrectUser(userId),
+    origin,
+    destination,
+  }).sort({ startTime: -1 }).then(travel => {
+    res.json(travel)
+  }).catch(err => {
+    res.status(500).json({ message: 'Error finding travel', error: err.message });
+  })
+}
+
 export const findTravels = async (req, res) => {
-  const { originCP, destCP, userId } = req.query
+  const { originCP, destCP, userId, limit } = req.query
   const dateFrom = getDateFrom(req)
   const dateTo = getDateTo(req)
 
@@ -54,7 +72,7 @@ export const findTravels = async (req, res) => {
   const destLocs = await Location.find({ zipcode: destCP }).select('_id')
 
   if (originLocs.length === 0 || destLocs.length === 0) {
-    return res.status(404).json({ 
+    return res.status(404).json({
       message: 'No locations found with zipcode provided',
       originCount: originLocs.length,
       destCount: destLocs.length
@@ -65,12 +83,12 @@ export const findTravels = async (req, res) => {
   const destIds = destLocs.map(loc => loc._id);
 
   Travel.find({
-    ...useCorrectUser(userId), 
+    ...useCorrectUser(userId),
     origin: { $in: originIds },
     destination: { $in: destIds },
     startTime: { $gte: dateFrom },
     endTime: { $lte: dateTo }
-  }).sort({startTime: -1}).then(travels => {
+  }).sort({ startTime: -1 }).limit(limit).then(travels => {
     const speedData = getOverallSpeed(travels)
 
     res.json({ count: travels.length, speed: speedData[2], sumKm: speedData[0], sumMin: speedData[1], travels })
@@ -98,11 +116,11 @@ export const findAnyTravelsToCPs = async (req, res) => {
   }
 
   Travel.find({
-    ...useCorrectUser(userId), 
+    ...useCorrectUser(userId),
     destination: { $in: locIds },
     startTime: { $gte: dateFrom },
     endTime: { $lte: dateTo }
-  }).populate("destination").sort({startTime: -1}).then(travels => {
+  }).populate("destination").sort({ startTime: -1 }).then(travels => {
     res.json({ count: travels.length, travels })
   }).catch(err => {
     res.status(500).json({ message: 'Error finding travels', error: err.message });
