@@ -88,30 +88,66 @@ const useTravelCreator = () => {
     price: ""
   });
 
-  const handleChange = (name: keyof TravelFormData, value: string) => {
-    if (isSameDay) {
-      if (name === 'startTime') {
-        // startTime can be edited, so endTime needs to be updated too
-        try {
-          const endTime = getSameDayEndTime(value, formData.endTime)
+  const handleChangeOnSameDay = (name: keyof TravelFormData, value: string) => {
+    if (name === 'startTime') {
+      // startTime can be edited, so endTime needs to be updated too
+      try {
+        const endTime = getSameDayEndTime(value, formData.endTime)
 
-          setFormData({
-            ...formData,
-            startTime: value,
-            endTime
-          })
+        setFormData({
+          ...formData,
+          startTime: value,
+          endTime
+        })
 
-          return
-        } catch (err) {
-          console.error(err)
-        }
+        return true
+      } catch (err) {
+        console.error(err)
       }
+    }
 
-      if (name === 'endTime') {
-        const datePart = formData.startTime.split('T')[0]
+    if (name === 'endTime') {
+      const datePart = formData.startTime.split('T')[0]
 
-        // Keep original format for backend (datetime-local)
-        value = datePart.concat('T').concat(value)
+      // Keep original format for backend (datetime-local)
+      value = datePart.concat('T').concat(value)
+    }
+
+    return false
+  }
+
+  const handleChange = async (name: keyof TravelFormData, value: string) => {
+    if (isSameDay) {
+      const earlyReturn = handleChangeOnSameDay(name, value)
+
+      if (earlyReturn) {
+        return
+      }
+    }
+
+    // Auto-complete distance based on last travel
+    if (name === 'destination') {
+      const { origin, distance } = formData
+      const destination = value
+
+      if (origin && destination && !distance) {
+        try {
+          const lastTravel = await TravelService.findLastTravel(origin, destination, currentUser?.userId)
+
+          if (lastTravel) {
+            setFormData({
+              ...formData,
+              destination,
+              distance: lastTravel.distance.toString(),
+            })
+
+            return
+          }
+        } catch (err) {
+          const axiosError = err as AxiosErrorResponse;
+
+          toast.error(axiosError.response?.data?.message, { style: { background: 'red' } })
+        }
       }
     }
 

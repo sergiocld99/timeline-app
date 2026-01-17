@@ -3,7 +3,7 @@
 import type { Location } from "@/types/travel"
 
 import { Check, ChevronsUpDown } from "lucide-react"
-import { useEffect,useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -43,6 +43,7 @@ export function AutocompleteLocation({
     setSearchValue("")
   }
 
+  // Auto-select first location if only one is found
   if (filteredLocations.length === 1) {
     handleSelect(filteredLocations[0]._id)
   }
