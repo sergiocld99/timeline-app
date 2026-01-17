@@ -1,6 +1,8 @@
-import { ButtonProps } from "@/types/props";
-import { Button } from "../ui/button";
+import type { ButtonProps } from "@/types/props";
+
 import { SearchIcon } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 
 const BUTTON_TITLE = "Search"
 

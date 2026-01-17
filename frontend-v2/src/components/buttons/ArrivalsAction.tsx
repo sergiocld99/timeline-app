@@ -1,5 +1,6 @@
-import { Button } from "../ui/button";
 import { PlaneLandingIcon } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 
 const BUTTON_TITLE = "Arrivals"
 

@@ -1,5 +1,7 @@
 import { dirname } from "path";
 import { fileURLToPath } from "url";
+
+import typescriptEslint from "@typescript-eslint/eslint-plugin";
 import { FlatCompat } from "@eslint/eslintrc";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -19,6 +21,37 @@ const eslintConfig = [
       "build/**",
       "next-env.d.ts",
     ],
+  },
+  {
+    plugins: {
+      "@typescript-eslint": typescriptEslint,
+    },
+    rules: {
+      '@typescript-eslint/consistent-type-imports': [
+        'error',
+        { prefer: 'type-imports', fixStyle: 'separate-type-imports' }
+      ],
+      'import/order': [
+        'error',
+        {
+          groups: ['type', 'builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+          'newlines-between': 'always'
+        }
+      ],
+
+      // Other important rules
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-non-null-assertion": "warn",
+      "prefer-const": "error",
+    },
   },
 ];
 

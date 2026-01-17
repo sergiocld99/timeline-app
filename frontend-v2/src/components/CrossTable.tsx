@@ -1,6 +1,10 @@
 "use client";
 
+import type { CheckedState } from "@radix-ui/react-checkbox";
 import type { Cross } from "@/types/cross";
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   Table,
   TableBody,
@@ -9,9 +13,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox"
-import { CheckedState } from "@radix-ui/react-checkbox";
 
 type Props = {
   data: Cross[];

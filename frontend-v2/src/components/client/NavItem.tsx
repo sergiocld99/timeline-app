@@ -1,8 +1,9 @@
 "use client"
 
 import Link from "next/link"
-import { Button } from "../ui/button"
 import { usePathname } from "next/navigation"
+
+import { Button } from "@/components/ui/button"
 
 type Props = {
   path: string,

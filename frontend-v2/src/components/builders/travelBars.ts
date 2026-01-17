@@ -1,9 +1,13 @@
-import { ChartData, ChartSource } from "@/types/chart"
-import { TravelWithFarthestPoint } from "@/types/travel"
-import { getEachHourOfEachHalf, getEachHourOfTravel } from "../analize/travel"
-import { getChartHours, useChartValue, useDefaultValues } from "@/utils/chart"
-import { convertToArgentineTime } from "@/utils"
+import type { ChartData, ChartSource } from "@/types/chart"
+import type { TravelWithFarthestPoint } from "@/types/travel"
+
 import { daysOfWeek } from "@/constants"
+import { convertToArgentineTime } from "@/utils"
+import { getChartHours, useChartValue, useDefaultValues } from "@/utils/chart"
+
+import { getEachHourOfEachHalf, getEachHourOfTravel } from "../analize/travel"
+
+const CHART_FIELD = 'zipcode'
 
 /*
 const buildModeWeightByHour = (travels: Travel[], topModes: string[]): ChartSource => {
@@ -39,17 +43,17 @@ const buildModeWeightByDay = (travels: Travel[], topModes: string[]): ChartSourc
 
 const buildPlaceWeightByHour = (travels: TravelWithFarthestPoint[], topLocations: string[]): ChartSource => {
   return travels.reduce((acc, t) => {
-    const chartOrigin = topLocations.includes(t.origin.name) ? t.origin.name : 'others'
-    const chartDestination = topLocations.includes(t.destination.name) ? t.destination.name : 'others'
+    const chartOrigin = topLocations.includes(t.origin[CHART_FIELD]) ? t.origin[CHART_FIELD] : 'others'
+    const chartDestination = topLocations.includes(t.destination[CHART_FIELD]) ? t.destination[CHART_FIELD] : 'others'
     const farthestPoint = t.farthestPoint
 
-    if (chartOrigin === farthestPoint?.name || chartDestination === farthestPoint?.name) {
+    if (chartOrigin === farthestPoint?.[CHART_FIELD] || chartDestination === farthestPoint?.[CHART_FIELD]) {
       getEachHourOfTravel(t).forEach(hour => {
         if (!acc[hour.hour]) {
           acc[hour.hour] = useDefaultValues(topLocations)
         }
   
-        acc[hour.hour][farthestPoint.name] += hour.totalMinutes
+        acc[hour.hour][farthestPoint[CHART_FIELD]] += hour.totalMinutes
       })
 
       return acc
@@ -88,12 +92,12 @@ const buildPlaceWeightByDay = (travels: TravelWithFarthestPoint[], topLocations:
       acc[normalizedDay] = useDefaultValues(topLocations)
     }
 
-    const chartOrigin = topLocations.includes(t.origin.name) ? t.origin.name : 'others';
-    const chartDestination = topLocations.includes(t.destination.name) ? t.destination.name : 'others'
+    const chartOrigin = topLocations.includes(t.origin[CHART_FIELD]) ? t.origin[CHART_FIELD] : 'others';
+    const chartDestination = topLocations.includes(t.destination[CHART_FIELD]) ? t.destination[CHART_FIELD] : 'others'
     const farthestPoint = t.farthestPoint
 
-    if (chartOrigin === farthestPoint?.name || chartDestination === farthestPoint?.name) {
-      acc[normalizedDay][farthestPoint.name] += t.duration
+    if (chartOrigin === farthestPoint?.[CHART_FIELD] || chartDestination === farthestPoint?.[CHART_FIELD]) {
+      acc[normalizedDay][farthestPoint[CHART_FIELD]] += t.duration
     } else {
       acc[normalizedDay][chartOrigin] += t.duration / 2
       acc[normalizedDay][chartDestination] += t.duration / 2

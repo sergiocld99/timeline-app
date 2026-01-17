@@ -1,4 +1,4 @@
-import { Location } from "./travel";
+import type { Location } from "./travel";
 
 export type KnownCenter = Location & {
   distance: number

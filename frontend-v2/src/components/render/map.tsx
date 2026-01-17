@@ -1,6 +1,9 @@
-import { MapLocation } from "@/types/map"
-import { blackMarker, defaultMarker, greenMarker, redMarker } from "../map/icons"
+import type { MapLocation } from "@/types/map"
+
 import { Marker, Popup } from "react-leaflet"
+
+
+import { blackMarker, defaultMarker, greenMarker, redMarker } from "../map/icons"
 
 const getKey = (lat: number, lng: number, index = 0) => {
   return `${lat.toFixed(4)}-${lng.toFixed(4)}-${index}`

@@ -1,15 +1,18 @@
 "use client";
 
-import CrossForm from "@/components/CrossForm";
-import useCrosses from "@/hooks/useCrosses";
-import CrossTable from "@/components/CrossTable";
-import { Cross } from "@/types/cross";
-import { CheckedState } from "@radix-ui/react-checkbox";
-import useTravels from "@/hooks/useTravels";
-import TravelTable from "@/components/TravelTable";
-import TravelService from "@/services/TravelService";
+import type { CheckedState } from "@radix-ui/react-checkbox";
+import type { Dispatch, SetStateAction } from "react"
+import type { Cross } from "@/types/cross";
+
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+
+import CrossForm from "@/components/CrossForm";
+import CrossTable from "@/components/CrossTable";
+import TravelTable from "@/components/TravelTable";
+import useCrosses from "@/hooks/useCrosses";
+import useTravels from "@/hooks/useTravels";
+import TravelService from "@/services/TravelService";
 
 const CrossesPageClient = () => {
   const { crosses, refetch } = useCrosses();

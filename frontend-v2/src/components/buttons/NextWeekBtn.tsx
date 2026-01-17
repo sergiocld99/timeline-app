@@ -1,6 +1,8 @@
-import { Button } from "@/components/ui/button";
-import { ButtonProps } from "@/types/props";
+import type { ButtonProps } from "@/types/props";
+
 import { PlayIcon } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 
 const NextWeekBtn = ({ handleClick }: ButtonProps) => {
   return (

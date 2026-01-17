@@ -1,11 +1,13 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import type { Location } from "@/types/travel"
+
 import { Check, ChevronsUpDown } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { useEffect, useRef, useState } from "react"
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Location } from "@/types/travel"
+import { cn } from "@/lib/utils"
 
 interface AutocompleteLocationProps {
   locations: Location[]
@@ -41,6 +43,7 @@ export function AutocompleteLocation({
     setSearchValue("")
   }
 
+  // Auto-select first location if only one is found
   if (filteredLocations.length === 1) {
     handleSelect(filteredLocations[0]._id)
   }

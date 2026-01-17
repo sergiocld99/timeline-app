@@ -1,17 +1,20 @@
 "use client";
 
 import type { Visit, VisitsData } from '@/types/travel';
-import { extractDate, extractTime, getHoursAndMinutes } from '@/utils';
-import { renderTotalWeightsCell, renderWeight } from '@/utils/weight';
-import DateRangeSelector from './DateRangeSelector';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { toast } from 'sonner';
-import { Button } from './ui/button';
+
 import { Eye, EyeOff, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import { renderLocationWithZipcode } from './render/location';
+import { toast } from 'sonner';
+
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { extractDate, extractTime, getHoursAndMinutes } from '@/utils';
+import { renderTotalWeightsCell, renderWeight } from '@/utils/weight';
+
+import DateRangeSelector from './DateRangeSelector';
 import { renderPointWithCopyBtn } from './render/coordinates';
+import { renderLocationWithZipcode } from './render/location';
 
 type Props = {
   visitsData: VisitsData;

@@ -1,6 +1,7 @@
-import { ChartSource, HourAndMinutes } from "@/types/chart";
+import type { ChartConfig } from "@/components/ui/chart";
+import type { ChartSource, HourAndMinutes } from "@/types/chart";
+
 import { extractTime } from "..";
-import { ChartConfig } from "@/components/ui/chart";
 import { abbreviateWords } from "../strings";
 
 export const normalizeHour = (hour: number) => {

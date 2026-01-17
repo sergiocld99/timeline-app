@@ -10,6 +10,7 @@ import crossRoutes from "./routes/crossRoutes.js"
 import knownCenterRoutes from "./routes/knownCenterRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import connectToDatabase from "./config/database.js";
+import "./events/subscriber.js";
 
 dotenv.config();
 

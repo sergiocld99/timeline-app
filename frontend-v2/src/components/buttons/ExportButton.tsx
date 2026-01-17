@@ -1,6 +1,8 @@
+import type { ButtonProps } from "@/types/props"
+
 import { Download } from "lucide-react"
-import { Button } from "../ui/button"
-import { ButtonProps } from "@/types/props"
+
+import { Button } from "@/components/ui/button"
 
 const ExportButton = ({ handleClick }: ButtonProps) => {
   return (

@@ -1,18 +1,25 @@
 "use client";
 
-import { useState } from 'react';
+import type { AxiosErrorResponse } from '@/types/commons';
 import type { Travel, TravelEditValues, TravelStats } from '@/types/travel';
-import { extractDate, extractTime, getEmojiForMode, getHoursAndMinutes } from '@/utils';
-import { renderTotalWeightsCell, renderWeight } from '@/utils/weight';
+
+import { Loader2, Save, X } from 'lucide-react';
+import { useState } from 'react';
 import { toast } from 'sonner';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Edit3, Trash2, Save, X, Loader2, CircleMinus, CirclePlus } from 'lucide-react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { renderPointWithCopyBtn } from './render/coordinates';
-import type { AxiosErrorResponse } from '@/types/commons';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import useLocations from '@/hooks/useLocations';
+import { extractDate, extractTime, getEmojiForMode } from '@/utils';
+import { renderWeight } from '@/utils/weight';
+
+import TravelTableFooter from './TravelTableFooter';
+import AddAction from './buttons/AddAction';
+import DeleteAction from './buttons/DeleteAction';
+import EditAction from './buttons/EditAction';
+import MinusAction from './buttons/MinusAction';
+import { Selector } from './common/Selector';
 
 type Props = {
   travels: Travel[];
@@ -30,8 +37,6 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
   const [editValues, setEditValues] = useState<TravelEditValues>({ distance: '', duration: '', modeOfTransport: '', origin: '', destination: '' });
   const [isSaving, setIsSaving] = useState(false);
   const { locations } = useLocations()
-
-  const { averageLatitude: totalLat, averageLongitude: totalLong, totalDistance = 0, totalMinutes = 0, placesVisited } = stats || {}
 
   const resetEdition = () => {
     setEditingId(null);
@@ -77,17 +82,13 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
         destination: locations.find(l => l.name === editValues.destination)
       });
 
+      toast.success('Travel updated successfully!', { style: { background: 'green' } });
+
       resetEdition()
     } catch (error) {
-      console.error('Error updating travel:', error);
-
-      // Manejar error específico de duración excedida
       const axiosError = error as AxiosErrorResponse;
-      if (axiosError.response?.status === 400 && axiosError.response?.data?.message?.includes('24 hours')) {
-        toast.error('Travel duration cannot exceed 24 hours');
-      } else {
-        toast.error('Failed to update travel');
-      }
+
+      toast.error(axiosError.response?.data?.message, { style: { background: 'red' } })
     } finally {
       setIsSaving(false);
     }
@@ -145,21 +146,13 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
     if (editingId === travel._id) {
       const eligibleLocations = locations.filter(l => l.zipcode === travel[field].zipcode)
 
-      if (eligibleLocations.length < 2) {
-        return (
-          <span className="text-gray-900 dark:text-white">{travel[field].name}</span>
-        )
-      }
-
       return (
-        <Select value={editValues[field]} onValueChange={(value) => handleInputChange(field, value)}>
-          <SelectTrigger className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {eligibleLocations.map(l => (<SelectItem key={`origin-${l.name}`} value={l.name}>{l.name}</SelectItem>))}
-          </SelectContent>
-        </Select>
+        <Selector
+          value={editValues[field]}
+          onValueChange={(value) => handleInputChange(field, value)}
+          eligibleValues={eligibleLocations.map(l => ({ value: l.name, label: l.name }))}
+          minLength={2}
+        />
       )
     }
 
@@ -170,21 +163,16 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
 
   const renderEditableModeOfTransport = (travel: Travel) => {
     if (editingId === travel._id) {
+      const eligibleModes = ['car', 'taxi', 'bus', 'train', 'subway', 'ferry', 'walking']
+      const eligibleValues = eligibleModes.map(mode => ({ value: mode, label: getEmojiForMode(mode) }))
+
       return (
-        <Select value={editValues.modeOfTransport} onValueChange={(value) => handleInputChange('modeOfTransport', value)}>
-          <SelectTrigger className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="car">🚘</SelectItem>
-            <SelectItem value="taxi">🚖</SelectItem>
-            <SelectItem value="bus">🚍</SelectItem>
-            <SelectItem value="train">🚉</SelectItem>
-            <SelectItem value="subway">🚇</SelectItem>
-            <SelectItem value="ferry">⛴️</SelectItem>
-            <SelectItem value="walking">🚶🏽</SelectItem>
-          </SelectContent>
-        </Select>
+        <Selector
+          value={editValues.modeOfTransport}
+          onValueChange={(value) => handleInputChange('modeOfTransport', value)}
+          eligibleValues={eligibleValues}
+          minLength={1}
+        />
       );
     }
 
@@ -196,23 +184,8 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
   const renderTravelsTabActionButtons = (travel: Travel) => {
     return (
       <div className="flex space-x-2">
-        <Button
-          onClick={() => { void handleEdit(travel); }}
-          size="sm"
-          variant="outline"
-          title="Edit travel"
-        >
-          <Edit3 className="h-4 w-4" />
-        </Button>
-        <Button
-          onClick={() => { void handleDelete(travel); }}
-          size="sm"
-          variant="outline"
-          title="Delete travel"
-          className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
-        >
-          <Trash2 className="h-4 w-4" />
-        </Button>
+        <EditAction handleClick={() => { void handleEdit(travel); }} />
+        <DeleteAction handleClick={() => { void handleDelete(travel); }} />
       </div>
     );
   }
@@ -220,22 +193,8 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
   const renderCrossesTabActionButtons = (travel: Travel) => {
     return (
       <div className="flex space-x-2">
-        <Button
-          onClick={() => { void onAddCrosses!(travel._id); }}
-          size="sm"
-          variant="outline"
-          title="Add crosses"
-        >
-          <CirclePlus className="h-4 w-4" />
-        </Button>
-        <Button
-          onClick={() => { void onRemoveCrosses!(travel._id); }}
-          size="sm"
-          variant="outline"
-          title="Remove crosses"
-        >
-          <CircleMinus className="h-4 w-4" />
-        </Button>
+        <AddAction handleClick={() => { void onAddCrosses!(travel._id); }} />
+        <MinusAction handleClick={() => { void onRemoveCrosses!(travel._id); }} />
       </div>
     )
   }
@@ -299,20 +258,7 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
           </TableRow>
         ))}
       </TableBody>
-      <TableFooter>
-        <TableRow className="border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-          <TableCell className="font-medium text-gray-900 dark:text-white">Total</TableCell>
-          <TableCell className="text-gray-900 dark:text-white" colSpan={2}>{renderPointWithCopyBtn(totalLat, totalLong)}</TableCell>
-          <TableCell className="font-medium text-gray-900 dark:text-white" colSpan={2}>{placesVisited?.count || 0} places</TableCell>
-          <TableCell className="font-medium text-gray-900 dark:text-white">{totalDistance?.toFixed(0)} km</TableCell>
-          <TableCell className="font-medium text-gray-900 dark:text-white">{getHoursAndMinutes(totalMinutes)}</TableCell>
-          <TableCell className="font-medium text-gray-900 dark:text-white">
-            {totalMinutes === 0 ? 0 : (totalDistance / (totalMinutes / 60)).toFixed(1)} km/h
-          </TableCell>
-          <TableCell className="text-gray-900 dark:text-white">{renderTotalWeightsCell(travels)}</TableCell>
-          <TableCell></TableCell>
-        </TableRow>
-      </TableFooter>
+      <TravelTableFooter travels={travels} stats={stats} />
     </Table>
   );
 };

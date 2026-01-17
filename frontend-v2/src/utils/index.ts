@@ -16,6 +16,8 @@ export const getHoursAndMinutes = (totalMinutes: number) => {
   return `${hours}h ${minutes}m`;
 }
 
+export const renderNiceDate = (dateTime: string) => extractDate(dateTime)
+
 export const extractDate = (dateTime: string) => {
   const date = new Date(dateTime)
   const dayOfWeek = daysOfWeek[convertToArgentineTime(date).getDay()]

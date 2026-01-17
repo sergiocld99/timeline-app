@@ -1,6 +1,8 @@
+import type { ButtonProps } from "@/types/props"
+
 import { Copy } from "lucide-react"
-import { Button } from "../ui/button"
-import { ButtonProps } from "@/types/props"
+
+import { Button } from "@/components/ui/button"
 
 const CopyButton = ({handleClick}: ButtonProps) => {
   return (

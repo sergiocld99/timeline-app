@@ -1,7 +1,9 @@
+import type { FormData } from '@/types/commons';
+import type { TravelFindResult } from '@/types/travel';
+
 import axios from 'axios';
 
-import type { FormData } from '@/types/commons';
-import type { Travel, TravelsData } from '@/types/travel';
+import { type Travel, type TravelsData, type TravelStats } from '@/types/travel';
 import { backendBaseUrl } from '@/constants';
 
 const baseUrl = `${backendBaseUrl}/travels`;
@@ -55,12 +57,22 @@ class TravelService {
       if (Array.isArray(response.data)) {
         return { travels: response.data };
       }
-      
+
       return {
         travels: response.data.travels,
         stats: response.data.stats
       };
     } catch (error) {
+      throw error;
+    }
+  }
+
+  static async getStats(travels: { id: string, weight: any }[]): Promise<TravelStats> {
+    try {
+      const response = await axios.post<TravelStats>(`${baseUrl}/stats`, { travels });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching stats:", error);
       throw error;
     }
   }
@@ -101,18 +113,44 @@ class TravelService {
       const downloadUrl = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = downloadUrl;
-      
+
       // Generate filename from date range
       const fromLabel = dateFrom ? dateFrom.split('T')[0] : 'all';
       const toLabel = dateTo ? dateTo.split('T')[0] : 'all';
       link.download = `travels_${fromLabel}_${toLabel}.csv`;
-      
+
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(downloadUrl);
     } catch (error) {
       console.error("Error exporting CSV:", error);
+      throw error;
+    }
+  }
+
+  static async findAnyTravelsToCPs(zipcodes: string[], dateFrom?: string, dateTo?: string, userId?: number) {
+    const url = new URL(`${baseUrl}/find-any`);
+    if (dateFrom) url.searchParams.append("dateFrom", dateFrom);
+    if (dateTo) url.searchParams.append("dateTo", dateTo);
+    if (userId) url.searchParams.append("userId", userId.toString());
+
+    const result = await axios.post<TravelFindResult>(url.toString(), { zipcodes })
+
+    return result.data
+  }
+
+  static async findLastTravel(origin: string, destination: string, userId?: number): Promise<Travel | null> {
+    try {
+      const url = new URL(`${baseUrl}/find-last`);
+      url.searchParams.append("origin", origin);
+      url.searchParams.append("destination", destination);
+      if (userId) url.searchParams.append("userId", userId.toString());
+
+      const response = await axios.get<Travel>(url.toString());
+      return response.data;
+    } catch (error) {
+      console.error("Error finding last travel:", error);
       throw error;
     }
   }

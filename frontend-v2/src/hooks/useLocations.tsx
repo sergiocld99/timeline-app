@@ -1,5 +1,7 @@
-import { useEffect, useState } from "react";
 import type { Location } from "@/types/travel";
+
+import { useEffect, useState } from "react";
+
 import LocationService from "@/services/LocationService";
 
 const useLocations = () => {

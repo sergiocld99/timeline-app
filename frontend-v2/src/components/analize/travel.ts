@@ -1,19 +1,21 @@
-import { KnownCenter } from "@/types/center"
-import { HourAndMinutes, HourPart } from "@/types/chart"
-import { MapLocation } from "@/types/map"
+import type { KnownCenter } from "@/types/center"
+import type { HourAndMinutes, HourPart } from "@/types/chart"
+import type { MapLocation } from "@/types/map"
 import type { Location, Travel, TravelWithFarthestPoint } from "@/types/travel"
+
 import { extractHourAndMinutes, normalizeHour } from "@/utils/chart"
 import { extractKeys, sortByDescendingValue } from "@/utils/kv"
+
 import { getLocationKey } from "./location"
 
 export const calculateBestLocations = (travels: TravelWithFarthestPoint[], quantity: number) => {
   const topLocations = travels.reduce((acc, t) => {
-    const key1 = t.origin.name
-    const key2 = t.destination.name
+    const key1 = t.origin.zipcode
+    const key2 = t.destination.zipcode
 
     if (t.farthestPoint) {
-      if (!acc[t.farthestPoint.name]) { acc[t.farthestPoint.name] = 0 }
-      acc[t.farthestPoint.name] += t.duration
+      if (!acc[t.farthestPoint.zipcode]) { acc[t.farthestPoint.zipcode] = 0 }
+      acc[t.farthestPoint.zipcode] += t.duration
     } else {
       if (!acc[key1]) { acc[key1] = 0 }
       if (!acc[key2]) { acc[key2] = 0 }
@@ -124,43 +126,48 @@ export const getUniqueLocations = (travels: Travel[], nearbyCenters: KnownCenter
     // Origin
     if (travel.origin?.latitude && travel.origin?.longitude) {
       const key = getLocationKey(travel.origin.latitude, travel.origin.longitude);
+      let loc = locationMap.get(key)
 
-      if (!locationMap.has(key)) {
-        locationMap.set(key, initializeMapLocation(travel.origin, travel.shortDate));
+      if (!loc) {
+        loc = initializeMapLocation(travel.origin, travel.shortDate)
+        locationMap.set(key, loc)
       }
 
-      locationMap.get(key)!.frecuency += 1
+      loc.frecuency += 1
     }
 
     // Destination
     if (travel.destination?.latitude && travel.destination?.longitude) {
       const key = getLocationKey(travel.destination.latitude, travel.destination.longitude)
+      let loc = locationMap.get(key)
 
-      if (!locationMap.has(key)) {
-        locationMap.set(key, initializeMapLocation(travel.destination, travel.shortDate));
+      if (!loc) {
+        loc = initializeMapLocation(travel.destination, travel.shortDate)
+        locationMap.set(key, loc)
       }
 
-      locationMap.get(key)!.frecuency += 1
+      loc.frecuency += 1
     }
   });
 
   nearbyCenters.forEach((nc => {
     const key = getLocationKey(nc.latitude, nc.longitude)
+    let loc = locationMap.get(key)
 
-    if (!locationMap.has(key)) {
-      locationMap.set(key, {
+    if (!loc) {
+      loc = {
         name: nc.name,
         lat: nc.latitude,
         lng: nc.longitude,
         frecuency: 0,
         distanceAwayFromAvg: nc.distanceKm,
         type: 'nearby'
-      })
-    } else {
-      const mappedLocation = locationMap.get(key)!
+      }
 
-      mappedLocation.type = 'visited-nearby'
-      mappedLocation.distanceAwayFromAvg = nc.distanceKm
+      locationMap.set(key, loc)
+    } else {
+      loc.type = 'visited-nearby'
+      loc.distanceAwayFromAvg = nc.distanceKm
     }
   }))
 
