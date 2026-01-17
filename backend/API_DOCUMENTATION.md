@@ -104,6 +104,32 @@ Busca viajes entre dos códigos postales.
 
 ---
 
+### GET `/api/travels/find-last`
+Busca el último viaje registrado entre dos ubicaciones específicas.
+
+**Query Parameters:**
+- `origin` (string, requerido): ID de la ubicación de origen
+- `destination` (string, requerido): ID de la ubicación de destino
+- `userId` (string, opcional): ID del usuario
+
+**Response:**
+Objeto del viaje más reciente entre las ubicaciones especificadas, ordenado por `startTime` descendente. Retorna `null` si no se encuentra ningún viaje.
+
+```json
+{
+  "_id": "...",
+  "startTime": "2026-01-15T10:00:00.000Z",
+  "endTime": "2026-01-15T11:30:00.000Z",
+  "origin": "...",
+  "destination": "...",
+  "distance": 45.5,
+  "modeOfTransport": "car",
+  ...
+}
+```
+
+---
+
 ### POST `/api/travels/find-any`
 Busca viajes hacia cualquier código postal de la lista proporcionada.
 
@@ -124,6 +150,36 @@ Busca viajes hacia cualquier código postal de la lista proporcionada.
   "travels": [...]
 }
 ```
+
+---
+
+### POST `/api/travels/stats`
+Calcula estadísticas para un conjunto específico de viajes con pesos pre-calculados.
+
+**Request Body:**
+- `travels` (array, requerido): Array de objetos con `id` y `weight` de cada viaje
+  ```json
+  {
+    "travels": [
+      { "id": "travel_id_1", "weight": 0.85 },
+      { "id": "travel_id_2", "weight": 0.92 }
+    ]
+  }
+  ```
+
+**Response:**
+Objeto con estadísticas calculadas basadas en los viajes proporcionados y sus pesos:
+```json
+{
+  "totalDistance": 150.5,
+  "totalDuration": 180,
+  "averageSpeed": 50.17,
+  "totalPrice": 45.00,
+  ...
+}
+```
+
+**Nota:** Si se proporciona un array vacío, retorna estadísticas vacías. Este endpoint es útil para calcular estadísticas en el frontend sin tener que recalcular los pesos.
 
 ---
 
