@@ -2,15 +2,11 @@ import { toast } from "sonner";
 
 import CopyButton from "../buttons/CopyButton";
 
-export const renderPoint = (latitude?: number, longitude?: number) => {
-  if (!latitude || !longitude || isNaN(latitude) || isNaN(longitude)) return ""
-
+export const renderPoint = (latitude: number, longitude: number) => {
   return `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`
 }
 
-export const handleCopyCoordinates = async (latitude?: number, longitude?: number) => {
-  if (!latitude || !longitude) return;
-
+export const handleCopyCoordinates = async (latitude: number, longitude: number) => {
   const coordinates = renderPoint(latitude, longitude);
 
   try {
@@ -23,6 +19,8 @@ export const handleCopyCoordinates = async (latitude?: number, longitude?: numbe
 };
 
 export const renderPointWithCopyBtn = (latitude?: number, longitude?: number) => {
+  if (!latitude || !longitude || isNaN(latitude) || isNaN(longitude)) return ""
+
   return (
     <div className="flex items-center gap-2">
       <span>{renderPoint(latitude, longitude)}</span>
