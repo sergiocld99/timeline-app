@@ -1,0 +1,15 @@
+# Ignore everything by default
+*
+
+# Allow source files needed for build
+!pom.xml
+!src/
+!mvnw
+!mvnw.cmd
+!.mvn/
+
+# Ignore target (generated artifacts)
+target/
+.idea/
+.vscode/
+*.iml
