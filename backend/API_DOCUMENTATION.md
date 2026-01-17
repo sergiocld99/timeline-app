@@ -7,77 +7,97 @@ Todos los endpoints están bajo el prefijo `/api`
 
 ---
 
+## Índice
+
+### [Travels](#travels-apitravels)
+- [GET /api/travels](#get-apitravels) - Obtener viajes con filtros
+- [POST /api/travels/v2](#post-apitravelsv2) - Obtener viajes (POST)
+- [GET /api/travels/graph](#get-apitravelsgraph) - Grafo de conexiones
+- [GET /api/travels/export/csv](#get-apitravelsexportcsv) - Exportar CSV
+- [GET /api/travels/find](#get-apitravelsfind) - Buscar viajes entre CPs
+- [GET /api/travels/find-last](#get-apitravelsfind-last) - Último viaje entre ubicaciones
+- [POST /api/travels/find-any](#post-apitravelsfind-any) - Buscar viajes a múltiples CPs
+- [POST /api/travels/stats](#post-apitravelsstats) - Calcular estadísticas
+- [POST /api/travels](#post-apitravels) - Crear viaje
+- [PUT /api/travels/:id](#put-apitravelsid) - Actualizar viaje
+- [DELETE /api/travels/:id](#delete-apitravelsid) - Eliminar viaje
+
+### [Locations](#locations-apilocations)
+- [GET /api/locations](#get-apilocations) - Obtener ubicaciones
+- [POST /api/locations](#post-apilocations) - Crear ubicación
+- [PUT /api/locations/:id](#put-apilocationsid) - Actualizar ubicación
+- [DELETE /api/locations/:id](#delete-apilocationsid) - Eliminar ubicación
+
+### [Visits](#visits-apivisits)
+- [GET /api/visits](#get-apivisits) - Obtener visitas
+- [GET /api/visits/calculate/:date](#get-apivisitscalculatedate) - Calcular visitas
+- [POST /api/visits](#post-apivisits) - Crear visita
+- [PUT /api/visits/:id](#put-apivisitsid) - Actualizar visita
+- [DELETE /api/visits/:id](#delete-apivisitsid) - Eliminar visita
+
+### [Stats](#stats-apistats)
+- [GET /api/stats/visits](#get-apistatsvisits) - Ubicaciones más visitadas
+- [GET /api/stats/travels/by-mode](#get-apistatstravelsby-mode) - Estadísticas por modo de transporte
+
+### [Crosses](#crosses-apicrosses)
+- [GET /api/crosses](#get-apicrosses) - Obtener cruces
+- [POST /api/crosses](#post-apicrosses) - Crear cruce
+- [PUT /api/crosses/:id](#put-apicrossesid) - Actualizar cruce
+- [DELETE /api/crosses/:id](#delete-apicrossesid) - Eliminar cruce
+
+### [Known Centers](#known-centers-apiknown-centers)
+- [GET /api/known-centers](#get-apiknown-centers) - Centros cercanos
+
+### [Users](#users-apiusers)
+- [GET /api/users](#get-apiusers) - Obtener usuarios
+- [GET /api/users/:userId](#get-apiusersuserid) - Obtener usuario por ID
+- [GET /api/users/check-guest-data](#get-apiuserscheck-guest-data) - Verificar datos de invitado
+- [POST /api/users](#post-apiusers) - Crear usuario
+- [POST /api/users/:userId/migrate](#post-apiusersuseridmigrate) - Migrar datos de invitado
+- [PUT /api/users/:userId](#put-apiusersuserid) - Actualizar usuario
+- [DELETE /api/users/:userId](#delete-apiusersuserid) - Eliminar usuario
+
+---
+
 ## Travels (`/api/travels`)
 
 ### GET `/api/travels`
 Obtiene todos los viajes con filtros opcionales.
 
 **Query Parameters:**
-- `dateFrom` (string, opcional): Fecha de inicio en formato ISO. Por defecto: 30 días antes de hoy a las 00:00:00
-- `dateTo` (string, opcional): Fecha de fin en formato ISO. Por defecto: hoy a las 23:59:59
-- `userId` (string, opcional): ID del usuario. Si no se proporciona, busca viajes sin userId (guest data)
-- `locFrom` (string, opcional): ID de la ubicación de origen
-- `locTo` (string, opcional): ID de la ubicación de destino
-- `sortingField` (string, opcional): Campo para ordenar y calcular pesos. Por defecto: `'duration'`
+- `dateFrom`, `dateTo` (string, opcional): Rango de fechas ISO. Por defecto: últimos 30 días
+- `userId` (string, opcional): ID del usuario (null = guest data)
+- `locFrom`, `locTo` (string, opcional): IDs de ubicaciones origen/destino
+- `sortingField` (string, opcional): Campo para ordenar. Por defecto: `duration`
 
-**Request Body (para POST `/api/travels/v2`):**
-- `crossIds` (array, opcional): Array de IDs de cruces para filtrar
-
-**Response:**
-```json
-{
-  "travels": [...],
-  "stats": {...}
-}
-```
+**Response:** `{ travels: [...], stats: {...} }`
 
 ---
 
 ### POST `/api/travels/v2`
-Mismo comportamiento que GET `/api/travels` pero usando POST.
+Mismo que GET `/api/travels` pero usando POST.
 
-**Query Parameters:**
-- Mismos que GET `/api/travels`
+**Query Parameters:** Mismos que GET `/api/travels`
 
-**Request Body:**
-- `crossIds` (array, opcional): Array de IDs de cruces para filtrar
+**Request Body:** `crossIds` (array, opcional) - IDs de cruces para filtrar
 
 ---
 
 ### GET `/api/travels/graph`
-Construye un grafo de conexiones entre códigos postales basado en los viajes.
+Construye un grafo de conexiones entre códigos postales.
 
-**Query Parameters:**
-- `dateFrom` (string, opcional): Fecha de inicio. Por defecto: 30 días antes
-- `dateTo` (string, opcional): Fecha de fin. Por defecto: hoy
-- `userId` (string, opcional): ID del usuario
+**Query Parameters:** `dateFrom`, `dateTo`, `userId` (opcional)
 
-**Response:**
-```json
-{
-  "weights": {
-    "zipcode1": {
-      "zipcode2": {
-        "count": 5,
-        "duration": 1200000
-      }
-    }
-  }
-}
-```
+**Response:** Objeto con pesos de conexiones entre zipcodes: `{ weights: { zipcode1: { zipcode2: { count, duration } } } }`
 
 ---
 
 ### GET `/api/travels/export/csv`
-Exporta los viajes a formato CSV.
+Exporta viajes a CSV.
 
-**Query Parameters:**
-- `dateFrom` (string, opcional): Fecha de inicio. Por defecto: 30 días antes
-- `dateTo` (string, opcional): Fecha de fin. Por defecto: hoy
-- `userId` (string, opcional): ID del usuario
+**Query Parameters:** `dateFrom`, `dateTo`, `userId` (opcional)
 
-**Response:**
-Archivo CSV con headers: `travelId`, `startTime`, `endTime`, `modeOfTransport`, `distanceKm`, `durationMinutes`, `price`, `originName`, `originZipcode`, `destinationName`, `destinationZipcode`
+**Response:** CSV con columnas: travelId, startTime, endTime, modeOfTransport, distanceKm, durationMinutes, price, origin/destination (name, zipcode)
 
 ---
 
@@ -85,539 +105,267 @@ Archivo CSV con headers: `travelId`, `startTime`, `endTime`, `modeOfTransport`, 
 Busca viajes entre dos códigos postales.
 
 **Query Parameters:**
-- `originCP` (string, requerido): Código postal de origen
-- `destCP` (string, requerido): Código postal de destino
-- `dateFrom` (string, opcional): Fecha de inicio. Por defecto: 30 días antes
-- `dateTo` (string, opcional): Fecha de fin. Por defecto: hoy
-- `userId` (string, opcional): ID del usuario
+- `originCP`, `destCP` (string, requerido): Códigos postales origen/destino
+- `dateFrom`, `dateTo`, `userId` (opcional)
 
-**Response:**
-```json
-{
-  "count": 10,
-  "speed": 45.5,
-  "sumKm": 500,
-  "sumMin": 660,
-  "travels": [...]
-}
-```
+**Response:** `{ count, speed, sumKm, sumMin, travels: [...] }`
 
 ---
 
 ### GET `/api/travels/find-last`
-Busca el último viaje registrado entre dos ubicaciones específicas.
+Busca el último viaje entre dos ubicaciones (útil para autocompletar distancia).
 
 **Query Parameters:**
-- `origin` (string, requerido): ID de la ubicación de origen
-- `destination` (string, requerido): ID de la ubicación de destino
-- `userId` (string, opcional): ID del usuario
+- `origin`, `destination` (string, requerido): IDs de ubicaciones
+- `userId` (opcional)
 
-**Response:**
-Objeto del viaje más reciente entre las ubicaciones especificadas, ordenado por `startTime` descendente. Retorna `null` si no se encuentra ningún viaje.
-
-```json
-{
-  "_id": "...",
-  "startTime": "2026-01-15T10:00:00.000Z",
-  "endTime": "2026-01-15T11:30:00.000Z",
-  "origin": "...",
-  "destination": "...",
-  "distance": 45.5,
-  "modeOfTransport": "car",
-  ...
-}
-```
+**Response:** Objeto del viaje más reciente o `null`
 
 ---
 
 ### POST `/api/travels/find-any`
-Busca viajes hacia cualquier código postal de la lista proporcionada.
+Busca viajes hacia cualquier código postal de la lista.
 
-**Query Parameters:**
-- `userId` (string, opcional): ID del usuario
+**Query Parameters:** `dateFrom` (por defecto: 100 días antes), `dateTo`, `userId` (opcional)
 
-**Request Body:**
-- `zipcodes` (array, requerido): Array de códigos postales (strings)
+**Request Body:** `zipcodes` (array, requerido)
 
-**Query Parameters adicionales:**
-- `dateFrom` (string, opcional): Fecha de inicio. Por defecto: 100 días antes
-- `dateTo` (string, opcional): Fecha de fin. Por defecto: hoy
-
-**Response:**
-```json
-{
-  "count": 5,
-  "travels": [...]
-}
-```
+**Response:** `{ count, travels: [...] }`
 
 ---
 
 ### POST `/api/travels/stats`
-Calcula estadísticas para un conjunto específico de viajes con pesos pre-calculados.
+Calcula estadísticas para viajes con pesos pre-calculados (evita recalcular en backend).
 
-**Request Body:**
-- `travels` (array, requerido): Array de objetos con `id` y `weight` de cada viaje
-  ```json
-  {
-    "travels": [
-      { "id": "travel_id_1", "weight": 0.85 },
-      { "id": "travel_id_2", "weight": 0.92 }
-    ]
-  }
-  ```
+**Request Body:** `travels` (array) - Objetos con `{ id, weight }`
 
-**Response:**
-Objeto con estadísticas calculadas basadas en los viajes proporcionados y sus pesos:
-```json
-{
-  "totalDistance": 150.5,
-  "totalDuration": 180,
-  "averageSpeed": 50.17,
-  "totalPrice": 45.00,
-  ...
-}
-```
-
-**Nota:** Si se proporciona un array vacío, retorna estadísticas vacías. Este endpoint es útil para calcular estadísticas en el frontend sin tener que recalcular los pesos.
+**Response:** `{ totalDistance, totalDuration, averageSpeed, totalPrice, ... }`
 
 ---
 
 ### POST `/api/travels`
 Crea un nuevo viaje.
 
-**Request Body:**
-- `startTime` (string, requerido): Fecha/hora de inicio en formato ISO
-- `endTime` (string, requerido): Fecha/hora de fin en formato ISO
-- `origin` (string, requerido): ID de la ubicación de origen
-- `destination` (string, requerido): ID de la ubicación de destino
-- `modeOfTransport` (string, requerido): Modo de transporte
-- `distance` (number, requerido): Distancia en kilómetros
-- `price` (number, opcional): Precio del viaje
-- `userId` (number, opcional): ID del usuario
+**Request Body:** `startTime`, `endTime`, `origin`, `destination`, `modeOfTransport`, `distance` (requeridos) | `price`, `userId` (opcional)
 
-**Validaciones:**
-- La duración del viaje no puede exceder 24 horas
+**Validaciones:** Duración máxima 24 horas
 
-**Response:**
-Objeto del viaje creado (201)
+**Response:** Objeto del viaje creado (201)
 
 ---
 
 ### PUT `/api/travels/:id`
 Actualiza un viaje existente.
 
-**URL Parameters:**
-- `id` (string, requerido): ID del viaje a actualizar
+**Request Body:** `startTime`, `endTime`, `origin`, `destination`, `modeOfTransport`, `distance`, `crosses`, `userId` (todos opcionales)
 
-**Request Body:**
-- `startTime` (string, opcional): Fecha/hora de inicio
-- `endTime` (string, opcional): Fecha/hora de fin
-- `origin` (string, opcional): ID de la ubicación de origen
-- `destination` (string, opcional): ID de la ubicación de destino
-- `modeOfTransport` (string, opcional): Modo de transporte
-- `distance` (number, opcional): Distancia en kilómetros
-- `crosses` (array, opcional): Array de IDs de cruces
-- `userId` (number, opcional): ID del usuario
+**Validaciones:** Duración máxima 24 horas si se actualizan fechas
 
-**Validaciones:**
-- Si se proporcionan `startTime` y `endTime`, la duración no puede exceder 24 horas
-- Si se proporciona `origin`, se actualizará automáticamente la visita asociada
-
-**Response:**
-Objeto del viaje actualizado con datos enriquecidos
+**Response:** Viaje actualizado con datos enriquecidos
 
 ---
 
 ### DELETE `/api/travels/:id`
 Elimina un viaje.
 
-**URL Parameters:**
-- `id` (string, requerido): ID del viaje a eliminar
-
-**Response:**
-Objeto del viaje eliminado (200)
+**Response:** Viaje eliminado (200)
 
 ---
 
 ## Locations (`/api/locations`)
 
 ### GET `/api/locations`
-Obtiene todas las ubicaciones.
-
-**Response:**
-Array de ubicaciones ordenadas por código postal y nombre
+Obtiene todas las ubicaciones ordenadas por zipcode y nombre.
 
 ---
 
 ### POST `/api/locations`
-Crea una nueva ubicación.
+Crea una ubicación.
 
-**Request Body:**
-- `name` (string, requerido): Nombre de la ubicación
-- `latitude` (number, requerido): Latitud
-- `longitude` (number, requerido): Longitud
-- `zipcode` (string, requerido): Código postal
-- `notes` (string, opcional): Notas adicionales
+**Request Body:** `name`, `latitude`, `longitude`, `zipcode` (requeridos) | `notes` (opcional)
 
-**Response:**
-Objeto de la ubicación creada (201)
+**Response:** Ubicación creada (201)
 
 ---
 
 ### PUT `/api/locations/:id`
-Actualiza una ubicación existente.
+Actualiza una ubicación.
 
-**URL Parameters:**
-- `id` (string, requerido): ID de la ubicación a actualizar
-
-**Request Body:**
-- `name` (string, opcional): Nombre de la ubicación
-- `latitude` (number, opcional): Latitud
-- `longitude` (number, opcional): Longitud
-- `zipcode` (string, opcional): Código postal
-- `notes` (string, opcional): Notas adicionales
-
-**Response:**
-Objeto de la ubicación actualizada
+**Request Body:** `name`, `latitude`, `longitude`, `zipcode`, `notes` (todos opcionales)
 
 ---
 
 ### DELETE `/api/locations/:id`
 Elimina una ubicación.
 
-**URL Parameters:**
-- `id` (string, requerido): ID de la ubicación a eliminar
-
-**Response:**
-```json
-{
-  "message": "Location deleted successfully"
-}
-```
+**Response:** `{ message: "Location deleted successfully" }`
 
 ---
 
 ## Visits (`/api/visits`)
 
 ### GET `/api/visits`
-Obtiene todas las visitas con filtros de fecha.
+Obtiene visitas con pesos calculados.
 
-**Query Parameters:**
-- `dateFrom` (string, opcional): Fecha de inicio. Por defecto: 30 días antes
-- `dateTo` (string, opcional): Fecha de fin. Por defecto: hoy
-- `userId` (string, opcional): ID del usuario
+**Query Parameters:** `dateFrom`, `dateTo`, `userId` (opcional)
 
-**Response:**
-Array de visitas con pesos calculados, ordenadas por `arrivalTime` descendente
+**Response:** Array ordenado por `arrivalTime` descendente
 
 ---
 
 ### GET `/api/visits/calculate/:date`
-Calcula las visitas para una fecha específica basándose en los viajes.
+Calcula visitas para una fecha basándose en viajes.
 
-**URL Parameters:**
-- `date` (string, requerido): Fecha en formato ISO (YYYY-MM-DD)
+**URL Parameters:** `date` (requerido) - Fecha ISO (YYYY-MM-DD)
 
-**Query Parameters:**
-- `userId` (string, opcional): ID del usuario
-- `persist` (string, opcional): Si es `'true'`, persiste las visitas calculadas en la base de datos
+**Query Parameters:** `userId`, `persist` (opcional) - Si `persist=true`, guarda en BD
 
-**Response:**
-Si `persist=true`:
-```json
-{
-  "visits": [...],
-  "persisted": true,
-  "count": 10
-}
-```
-
-Si `persist` no es `'true'`:
-```json
-{
-  "visits": [...],
-  "count": 10
-}
-```
-
-**Nota:** Si no se encuentran visitas, retorna 204 con mensaje
+**Response:** `{ visits: [...], count, persisted? }`
 
 ---
 
 ### POST `/api/visits`
-Crea una nueva visita.
+Crea una visita.
 
-**Request Body:**
-- `date` (string, requerido): Fecha de la visita en formato ISO
-- `arrivalTime` (string, requerido): Hora de llegada en formato ISO
-- `departureTime` (string, requerido): Hora de salida en formato ISO
-- `location` (string, requerido): ID de la ubicación
-- `userId` (number, opcional): ID del usuario
+**Request Body:** `date`, `arrivalTime`, `departureTime`, `location` (requeridos) | `userId` (opcional)
 
 **Nota:** `durationMinutes` se calcula automáticamente
-
-**Response:**
-Objeto de la visita creada (201)
 
 ---
 
 ### PUT `/api/visits/:id`
-Actualiza una visita existente.
+Actualiza una visita.
 
-**URL Parameters:**
-- `id` (string, requerido): ID de la visita a actualizar
-
-**Request Body:**
-- `date` (string, opcional): Fecha de la visita
-- `arrivalTime` (string, opcional): Hora de llegada
-- `departureTime` (string, opcional): Hora de salida
-- `location` (string, opcional): ID de la ubicación
-- `userId` (number, opcional): ID del usuario
-
-**Nota:** `durationMinutes` se recalcula automáticamente
-
-**Response:**
-Objeto de la visita actualizada (200)
+**Request Body:** `date`, `arrivalTime`, `departureTime`, `location`, `userId` (todos opcionales)
 
 ---
 
 ### DELETE `/api/visits/:id`
 Elimina una visita.
 
-**URL Parameters:**
-- `id` (string, requerido): ID de la visita a eliminar
-
-**Response:**
-Objeto de la visita eliminada (200)
+**Response:** Visita eliminada (200)
 
 ---
 
 ## Stats (`/api/stats`)
 
 ### GET `/api/stats/visits`
-Obtiene las ubicaciones más visitadas ordenadas por tiempo total.
+Ubicaciones más visitadas ordenadas por tiempo total.
 
-**Query Parameters:**
-- `dateFrom` (string, opcional): Fecha de inicio. Por defecto: 30 días antes
-- `limit` (number, opcional): Número máximo de resultados. Por defecto: 10
-- `userId` (string, opcional): ID del usuario
+**Query Parameters:** `dateFrom` (por defecto: 30 días), `limit` (por defecto: 10), `userId` (opcional)
 
-**Response:**
-```json
-[
-  {
-    "location": {...},
-    "totalMinutes": 1440,
-    "count": 5
-  }
-]
-```
+**Response:** `[{ location: {...}, totalMinutes, count }]`
 
 ---
 
 ### GET `/api/stats/travels/by-mode`
-Obtiene estadísticas de viajes agrupadas por modo de transporte.
+Estadísticas agrupadas por modo de transporte.
 
-**Query Parameters:**
-- `dateFrom` (string, opcional): Fecha de inicio. Por defecto: 30 días antes
-- `dateTo` (string, opcional): Fecha de fin. Por defecto: hoy
-- `userId` (string, opcional): ID del usuario
+**Query Parameters:** `dateFrom`, `dateTo`, `userId` (opcional)
 
-**Response:**
-```json
-[
-  {
-    "modeOfTransport": "car",
-    "totalMinutes": 1200,
-    "totalKm": 500,
-    "count": 10
-  }
-]
-```
+**Response:** `[{ modeOfTransport, totalMinutes, totalKm, count }]`
 
 ---
 
 ## Crosses (`/api/crosses`)
 
 ### GET `/api/crosses`
-Obtiene todos los cruces.
-
-**Response:**
-Array de cruces ordenados por nombre
+Obtiene todos los cruces ordenados por nombre.
 
 ---
 
 ### POST `/api/crosses`
-Crea un nuevo cruce.
+Crea un cruce.
 
-**Request Body:**
-- `name` (string, requerido): Nombre del cruce
-- `latitude` (number, requerido): Latitud
-- `longitude` (number, requerido): Longitud
-
-**Response:**
-Objeto del cruce creado (201)
+**Request Body:** `name`, `latitude`, `longitude` (requeridos)
 
 ---
 
 ### PUT `/api/crosses/:id`
-Actualiza un cruce existente.
+Actualiza un cruce.
 
-**URL Parameters:**
-- `id` (string, requerido): ID del cruce a actualizar
-
-**Request Body:**
-- `name` (string, opcional): Nombre del cruce
-- `latitude` (number, opcional): Latitud
-- `longitude` (number, opcional): Longitud
-
-**Response:**
-Objeto del cruce actualizado
+**Request Body:** `name`, `latitude`, `longitude` (opcionales)
 
 ---
 
 ### DELETE `/api/crosses/:id`
 Elimina un cruce.
 
-**URL Parameters:**
-- `id` (string, requerido): ID del cruce a eliminar
-
-**Response:**
-```json
-{
-  "message": "Removed successfully"
-}
-```
+**Response:** `{ message: "Removed successfully" }`
 
 ---
 
 ## Known Centers (`/api/known-centers`)
 
 ### GET `/api/known-centers`
-Obtiene centros conocidos cercanos a una ubicación.
+Centros conocidos cercanos a una ubicación.
 
 **Query Parameters:**
-- `latitude` (number, requerido): Latitud del punto de referencia
-- `longitude` (number, requerido): Longitud del punto de referencia
-- `radiusKm` (number, opcional): Radio de búsqueda en kilómetros. Por defecto: 10
-- `limit` (number, opcional): Número máximo de resultados. Por defecto: 3
-
-**Response:**
-Array de ubicaciones cercanas
+- `latitude`, `longitude` (number, requerido)
+- `radiusKm` (por defecto: 10), `limit` (por defecto: 3)
 
 ---
 
 ## Users (`/api/users`)
 
 ### GET `/api/users`
-Obtiene todos los usuarios.
-
-**Response:**
-Array de usuarios ordenados por `userId`
+Obtiene todos los usuarios ordenados por `userId`.
 
 ---
 
 ### GET `/api/users/:userId`
-Obtiene un usuario por su ID.
-
-**URL Parameters:**
-- `userId` (string, requerido): ID del usuario
-
-**Response:**
-Objeto del usuario
+Obtiene un usuario por ID.
 
 ---
 
 ### GET `/api/users/check-guest-data`
-Verifica si existen datos de invitado (viajes o visitas sin userId).
+Verifica si existen datos de invitado.
 
-**Response:**
-```json
-{
-  "hasGuestData": true,
-  "travelCount": 10,
-  "visitCount": 5
-}
-```
+**Response:** `{ hasGuestData, travelCount, visitCount }`
 
 ---
 
 ### POST `/api/users`
-Crea un nuevo usuario.
+Crea un usuario.
 
-**Request Body:**
-- `userId` (number, requerido): ID del usuario (debe ser único)
-- `name` (string, requerido): Nombre del usuario
+**Request Body:** `userId` (number, requerido y único), `name` (requerido)
 
-**Response:**
-Objeto del usuario creado (201)
-
-**Errores:**
-- 409: Si el `userId` ya existe
+**Errores:** 409 si el userId ya existe
 
 ---
 
 ### POST `/api/users/:userId/migrate`
-Migra todos los datos de invitado (viajes y visitas sin userId) al usuario especificado.
+Migra datos de invitado al usuario.
 
-**URL Parameters:**
-- `userId` (string, requerido): ID del usuario al que migrar los datos
-
-**Response:**
-```json
-{
-  "success": true,
-  "travelsMigrated": 10,
-  "visitsMigrated": 5
-}
-```
+**Response:** `{ success, travelsMigrated, visitsMigrated }`
 
 ---
 
 ### PUT `/api/users/:userId`
-Actualiza un usuario existente.
+Actualiza un usuario.
 
-**URL Parameters:**
-- `userId` (string, requerido): ID del usuario a actualizar
-
-**Request Body:**
-- `name` (string, opcional): Nuevo nombre del usuario
-
-**Response:**
-Objeto del usuario actualizado
+**Request Body:** `name` (opcional)
 
 ---
 
 ### DELETE `/api/users/:userId`
 Elimina un usuario.
 
-**URL Parameters:**
-- `userId` (string, requerido): ID del usuario a eliminar
-
-**Response:**
-Objeto del usuario eliminado (200)
+**Response:** Usuario eliminado (200)
 
 ---
 
 ## Notas Generales
 
 ### Parámetros de Fecha
-- Los parámetros `dateFrom` y `dateTo` aceptan strings en formato ISO
-- Si `dateFrom` no se proporciona, por defecto es 30 días antes de hoy (algunos endpoints usan 100 días)
-- Si `dateTo` no se proporciona, por defecto es hoy a las 23:59:59
+- Formato ISO para `dateFrom` y `dateTo`
+- Por defecto: últimos 30 días (algunos endpoints usan 100 días)
 
 ### Filtrado por Usuario
-- El parámetro `userId` es opcional en la mayoría de endpoints
-- Si no se proporciona `userId`, los endpoints buscan documentos donde `userId` no existe o es `null` (datos de invitado)
-- Si se proporciona `userId`, filtra solo los documentos de ese usuario
+- `userId` opcional en la mayoría de endpoints
+- Sin `userId` = datos de invitado (guest data)
 
-### Códigos de Estado HTTP
-- `200`: Operación exitosa
-- `201`: Recurso creado exitosamente
-- `204`: Sin contenido (usado cuando no se encuentran visitas)
-- `400`: Error en la solicitud (validación, datos faltantes, etc.)
-- `404`: Recurso no encontrado
-- `409`: Conflicto (ej: usuario duplicado)
-- `500`: Error interno del servidor
-
+### Códigos HTTP
+- **200**: OK | **201**: Creado | **204**: Sin contenido
+- **400**: Error de validación | **404**: No encontrado
+- **409**: Conflicto | **500**: Error del servidor
