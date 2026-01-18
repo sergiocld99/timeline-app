@@ -4,6 +4,7 @@ import com.timeline.stats.domain.Location;
 import com.timeline.stats.domain.Travel;
 import com.timeline.stats.dto.PlacesVisitedDTO;
 import com.timeline.stats.dto.TravelStatsDTO;
+import com.timeline.stats.dto.TravelDTO;
 import com.timeline.stats.repository.TravelRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -26,6 +27,11 @@ public class StatsService {
 
   public TravelStatsDTO calculateBasicStats(Instant dateFrom, Instant dateTo, Integer userId) {
     List<Travel> travels = travelRepository.findByDateRangeAndUser(dateFrom, dateTo, userId);
+
+    return calculateBasicStats(travels);
+  }
+
+  public TravelStatsDTO calculateBasicStats(List<Travel> travels) {
     List<Location> locations = placesService.getLocationsFromTravels(travels);
     Set<String> zipcodes = placesService.getZipcodesFromLocations(locations);
     PlacesVisitedDTO placesVisited = new PlacesVisitedDTO(zipcodes);
@@ -56,5 +62,11 @@ public class StatsService {
 
     return new TravelStatsDTO(travels.size(), totalDistance, totalMinutes, totalLatitude, totalLongitude,
         placesVisited);
+  }
+
+  public TravelStatsDTO calculateBasicStatsFromWeighted(List<TravelDTO> travels) {
+    List<Travel> docs = travelRepository.findByIds(travels.stream().map(t -> t.id()).toList());
+
+    return calculateBasicStats(docs);
   }
 }

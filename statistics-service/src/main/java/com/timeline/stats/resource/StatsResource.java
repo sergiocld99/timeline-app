@@ -1,6 +1,7 @@
 package com.timeline.stats.resource;
 
 import com.timeline.stats.dto.TravelStatsDTO;
+import com.timeline.stats.dto.StatsRequestDTO;
 import com.timeline.stats.service.StatsService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -42,5 +43,12 @@ public class StatsResource {
     Instant dateFrom = dateFromStr != null ? Instant.parse(dateFromStr) : dateTo.minus(30, ChronoUnit.DAYS);
 
     return statsService.calculateBasicStats(dateFrom, dateTo, userId);
+  }
+
+  @POST
+  @Path("/travels/from-weighted")
+  @Operation(summary = "Get basic travel statistics from weighted travels")
+  public TravelStatsDTO getTravelStatsFromWeighted(StatsRequestDTO request) {
+    return statsService.calculateBasicStatsFromWeighted(request.travels());
   }
 }
