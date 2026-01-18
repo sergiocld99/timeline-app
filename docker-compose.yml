@@ -23,6 +23,7 @@ services:
       - "3002:3002"
     depends_on:
       - backend
+      - stats
 
   mongo:
     image: mongo
