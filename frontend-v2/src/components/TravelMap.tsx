@@ -41,7 +41,7 @@ const TravelMap = ({ travels, stats }: Props) => {
   const [zoom, setZoom] = useState(DEFAULT_ZOOM)
 
   const { averageLatitude, averageLongitude } = stats || {}
-  const nearbyRadius = travels.length < 1 ? undefined : (stats!.averageDistance * 2)
+  const nearbyRadius = travels.length === 0 ? undefined : (stats!.averageDistance * 2)
 
   const { nearbyCenters } = useNearbyCenters({ latitude: averageLatitude, longitude: averageLongitude, radiusKm: nearbyRadius })
 
