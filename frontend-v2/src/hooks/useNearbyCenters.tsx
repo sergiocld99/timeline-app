@@ -15,7 +15,7 @@ const useNearbyCenters = ({ latitude, longitude, radiusKm }: Props) => {
   const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
-    if (!latitude || !longitude || !radiusKm) {
+    if (!latitude || !longitude) {
       setNearbyCenters([])
       return
     }

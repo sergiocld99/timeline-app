@@ -10,7 +10,7 @@ const calculateStats = (visits: Visit[]): VisitsStats => {
   const totalPercentage = 100
   const totalLat = visits.reduce((sum, visit) => sum + visit.location.latitude * visit.weight.percentage, 0) / totalPercentage;
   const totalLong = visits.reduce((sum, visit) => sum + visit.location.longitude * visit.weight.percentage, 0) / totalPercentage;
-  
+
   return {
     averageLatitude: totalLat,
     averageLongitude: totalLong
@@ -19,7 +19,7 @@ const calculateStats = (visits: Visit[]): VisitsStats => {
 
 const useVisits = () => {
   const { dateFrom, dateTo } = useDateRange();
-  const { currentUser } = useUser();
+  const { currentUser, loading: userLoading } = useUser();
   const [visits, setVisits] = useState<VisitsData>({ visits: [] });
   const [error, setError] = useState<unknown>(null);
   const [loading, setLoading] = useState(true);
@@ -40,7 +40,7 @@ const useVisits = () => {
 
   const deleteVisit = async (id: string) => {
     await VisitService.delete(id).then(() => {
-      setVisits((prev) => ({...prev, visits: prev.visits.filter(visit => visit._id !== id) }));
+      setVisits((prev) => ({ ...prev, visits: prev.visits.filter(visit => visit._id !== id) }));
     }).catch((error) => {
       setError(error);
       throw error;
@@ -48,8 +48,10 @@ const useVisits = () => {
   }
 
   useEffect(() => {
-    fetchVisits(dateFrom, dateTo, currentUser?.userId);
-  }, [dateFrom, dateTo, currentUser]);
+    if (!userLoading) {
+      fetchVisits(dateFrom, dateTo, currentUser?.userId);
+    }
+  }, [dateFrom, dateTo, currentUser, userLoading]);
 
   return { visits, error, loading, refetch: fetchVisits, deleteVisit };
 };
