@@ -7,5 +7,7 @@ import io.quarkus.mongodb.panache.common.MongoEntity;
 @MongoEntity(collection = "locations")
 public class Location {
   public ObjectId id;
+  public double latitude;
+  public double longitude;
   public String zipcode;
 }

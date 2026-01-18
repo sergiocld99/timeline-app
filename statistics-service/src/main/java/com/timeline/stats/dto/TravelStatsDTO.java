@@ -11,12 +11,15 @@ public class TravelStatsDTO {
   public double totalHours;
   public double averageDistance;
   public double averageSpeed;
+  public double averageLatitude;
+  public double averageLongitude;
   public PlacesVisitedDTO placesVisited;
 
   public TravelStatsDTO() {
   }
 
-  public TravelStatsDTO(long count, double totalDistance, double totalMinutes, PlacesVisitedDTO placesVisited) {
+  public TravelStatsDTO(long count, double totalDistance, double totalMinutes, double totalLatitude,
+      double totalLongitude, PlacesVisitedDTO placesVisited) {
     this.count = count;
     this.totalDistance = Math.round(totalDistance * 100.0) / 100.0;
     this.totalMinutes = Math.round(totalMinutes * 100.0) / 100.0;
@@ -25,6 +28,8 @@ public class TravelStatsDTO {
 
     if (count > 0) {
       this.averageDistance = Math.round((totalDistance / count) * 100.0) / 100.0;
+      this.averageLatitude = totalLatitude / (totalMinutes * 2);
+      this.averageLongitude = totalLongitude / (totalMinutes * 2);
     }
 
     if (totalHours > 0) {
