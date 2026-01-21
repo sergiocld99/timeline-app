@@ -91,19 +91,15 @@ const useTravelCreator = () => {
   const handleChangeOnSameDay = (name: keyof TravelFormData, value: string) => {
     if (name === 'startTime') {
       // startTime can be edited, so endTime needs to be updated too
-      try {
-        const endTime = getSameDayEndTime(value, formData.endTime)
+      const endTime = getSameDayEndTime(value, formData.endTime)
 
-        setFormData({
-          ...formData,
-          startTime: value,
-          endTime
-        })
+      setFormData({
+        ...formData,
+        startTime: value,
+        endTime
+      })
 
-        return true
-      } catch (err) {
-        console.error(err)
-      }
+      return true
     }
 
     if (name === 'endTime') {
@@ -111,6 +107,13 @@ const useTravelCreator = () => {
 
       // Keep original format for backend (datetime-local)
       value = datePart.concat('T').concat(value)
+
+      setFormData({
+        ...formData,
+        endTime: value,
+      });
+
+      return true
     }
 
     return false
@@ -118,10 +121,14 @@ const useTravelCreator = () => {
 
   const handleChange = async (name: keyof TravelFormData, value: string) => {
     if (isSameDay) {
-      const earlyReturn = handleChangeOnSameDay(name, value)
+      try {
+        const updated = handleChangeOnSameDay(name, value)
 
-      if (earlyReturn) {
-        return
+        if (updated) {
+          return
+        }
+      } catch (err) {
+        console.error(err)
       }
     }
 

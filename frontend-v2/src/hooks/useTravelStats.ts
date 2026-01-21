@@ -55,7 +55,12 @@ export const useTravelStats = (travels: Travel[], initialStats?: TravelStats) =>
       } catch (error) {
         if (!ignore) {
           const err = error as AxiosErrorResponse;
-          toast.error(`Error fetching stats: ${err.response?.data?.message}`);
+
+          if (err.message?.includes('Network Error')) {
+            toast.error('Network Error: Stats could not be updated');
+          } else {
+            toast.error(`Error fetching stats: ${err.response?.data?.message}`);
+          }
         }
       } finally {
         if (!ignore) setIsLoading(false);
