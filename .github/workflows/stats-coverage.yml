@@ -1,0 +1,83 @@
+name: Statistics Service Coverage
+
+on:
+  pull_request:
+    paths:
+      - 'statistics-service/**'
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Run tests with JaCoCo
+        run: |
+          cd statistics-service
+          ./mvnw clean test -Dtest=!RepositoryTest
+
+      - name: Check coverage on modified files
+        run: |
+          cd statistics-service
+          # Get the list of modified classes (basename only, one per line)
+          MODIFIED_CLASSES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep "statistics-service/src/main/java" | grep -v "Repository" | xargs -n1 basename | sed 's/\.java$//' | sort -u)
+          
+          if [ -z "$MODIFIED_CLASSES" ]; then
+            echo "No modified Java files in statistics-service to check coverage for."
+            exit 0
+          fi
+
+          echo "Modified classes to check:"
+          echo "$MODIFIED_CLASSES"
+
+          # Write AWK script to a file to avoid shell escaping issues
+          cat << 'EOF' > coverage_check.awk
+          BEGIN {
+            n = split(cls_list, names, " ");
+            for (i=1; i<=n; i++) target[names[i]] = 1;
+            t_missed = 0;
+            t_covered = 0;
+            print "--- Coverage Breakdown ---";
+          }
+          NR > 1 {
+            if (target[$3]) {
+              missed = $4;
+              covered = $5;
+              t_missed += missed;
+              t_covered += covered;
+              if (missed + covered > 0) {
+                printf "Class: %s | Coverage: %.2f%% (%d/%d)\n", $3, (covered * 100 / (missed + covered)), covered, (missed + covered);
+              } else {
+                printf "Class: %s | Coverage: 100.00%% (0/0)\n", $3;
+              }
+              delete target[$3];
+            }
+          }
+          END {
+            print "--------------------------";
+            if (t_missed + t_covered == 0) {
+              print "No coverage data found for the modified files.";
+              exit 1;
+            }
+            total_perc = (t_covered * 100 / (t_missed + t_covered));
+            printf "Overall Modified Coverage: %.2f%%\n", total_perc;
+            print total_perc > "total_perc.env";
+          }
+          EOF
+
+          CLASSES_STR=$(echo "$MODIFIED_CLASSES" | tr '\n' ' ')
+          awk -v cls_list="$CLASSES_STR" -F, -f coverage_check.awk target/jacoco-report/jacoco.csv
+
+          TOTAL_PERC=$(cat total_perc.env)
+          
+          # Final check
+          awk -v perc="$TOTAL_PERC" 'BEGIN { if (perc < 70) { print "Error: Coverage is too low!"; exit 1 } else { print "Coverage check passed!" } }'

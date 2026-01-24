@@ -1,10 +1,10 @@
 import type { FormData } from '@/types/commons';
-import type { TravelFindResult } from '@/types/travel';
+import type { TravelDTO, TravelFindResult } from '@/types/travel';
 
 import axios from 'axios';
 
 import { type Travel, type TravelsData, type TravelStats } from '@/types/travel';
-import { backendBaseUrl } from '@/constants';
+import { backendBaseUrl, v2BaseUrl } from '@/constants';
 
 const baseUrl = `${backendBaseUrl}/travels`;
 
@@ -67,9 +67,11 @@ class TravelService {
     }
   }
 
-  static async getStats(travels: { id: string, weight: any }[]): Promise<TravelStats> {
+  static async getStats(travels: TravelDTO[]): Promise<TravelStats> {
+    const endpointV2 = `${v2BaseUrl}/stats/travels/from-ids`
+
     try {
-      const response = await axios.post<TravelStats>(`${baseUrl}/stats`, { travels });
+      const response = await axios.post<TravelStats>(endpointV2, { travels });
       return response.data;
     } catch (error) {
       console.error("Error fetching stats:", error);

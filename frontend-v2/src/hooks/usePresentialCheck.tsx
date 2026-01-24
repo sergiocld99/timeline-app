@@ -15,7 +15,7 @@ type AwarenessResult = {
 }
 
 export const usePresentialCheck = () => {
-  const { currentUser } = useUser();
+  const { currentUser, loading: userLoading } = useUser();
   const [result, setResult] = useState<TravelFindResult>({ count: 0, travels: [] })
   const [loading, setLoading] = useState(true)
 
@@ -24,7 +24,7 @@ export const usePresentialCheck = () => {
       .then(result => setResult(result))
       .catch(err => console.error(err))
       .finally(() => setLoading(false))
-  }, [ currentUser ]);
+  }, [currentUser]);
 
   const shouldShowAwareness = (): AwarenessResult => {
     const { count, travels } = result
@@ -48,8 +48,10 @@ export const usePresentialCheck = () => {
   }
 
   useEffect(() => {
-    fetchAnyTravelsToWork()
-  }, [fetchAnyTravelsToWork])
+    if (!userLoading) {
+      fetchAnyTravelsToWork()
+    }
+  }, [fetchAnyTravelsToWork, userLoading])
 
   return {
     loading,

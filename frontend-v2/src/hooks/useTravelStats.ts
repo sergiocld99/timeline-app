@@ -49,13 +49,18 @@ export const useTravelStats = (travels: Travel[], initialStats?: TravelStats) =>
 
       if (!ignore) setIsLoading(true);
       try {
-        const travelsPayload = travels.map(t => ({ id: t._id, weight: t.weight }));
-        const newStats = await TravelService.getStats(travelsPayload);
+        const payload = travels.map(t => ({ id: t._id, origin: t.origin._id, destination: t.destination._id }));
+        const newStats = await TravelService.getStats(payload);
         if (!ignore) setStats(newStats);
       } catch (error) {
         if (!ignore) {
           const err = error as AxiosErrorResponse;
-          toast.error(`Error fetching stats: ${err.response?.data?.message}`);
+
+          if (err.message?.includes('Network Error')) {
+            toast.error('Network Error: Stats could not be updated');
+          } else {
+            toast.error(`Error fetching stats: ${err.response?.data?.message}`);
+          }
         }
       } finally {
         if (!ignore) setIsLoading(false);

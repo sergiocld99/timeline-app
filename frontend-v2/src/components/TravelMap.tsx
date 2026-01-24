@@ -41,7 +41,7 @@ const TravelMap = ({ travels, stats }: Props) => {
   const [zoom, setZoom] = useState(DEFAULT_ZOOM)
 
   const { averageLatitude, averageLongitude } = stats || {}
-  const nearbyRadius = travels.length < 1 ? undefined : (stats!.averageDistance * 2)
+  const nearbyRadius = travels.length === 0 ? undefined : (stats!.averageDistance * 2)
 
   const { nearbyCenters } = useNearbyCenters({ latitude: averageLatitude, longitude: averageLongitude, radiusKm: nearbyRadius })
 
@@ -58,8 +58,6 @@ const TravelMap = ({ travels, stats }: Props) => {
       const centerLat = (lat1 + lat2) / 2
       const centerLng = (lng1 + lng2) / 2
       const distanceKm = calculateDistanceKm(lat1, lat2, lng1, lng2)
-
-      console.log('Distance Frequent vs Center: ', distanceKm)
 
       setMapCenter([centerLat, centerLng])
       setZoom(getZoomByDistance(distanceKm))

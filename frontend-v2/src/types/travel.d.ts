@@ -35,6 +35,12 @@ export type TravelWithFarthestPoint = Travel & {
   farthestPoint?: Location
 }
 
+export type TravelDTO = {
+  id: string
+  origin: string
+  destination: string
+}
+
 export type TravelStats = {
   count: number
   totalDistance: number
@@ -47,6 +53,7 @@ export type TravelStats = {
   averageDistance: number
   averageDuration: number
   averagePrice: number
+  uniqueDays?: number
   placesVisited: Partial<{
     count: number,
     zipcodes: string[]
