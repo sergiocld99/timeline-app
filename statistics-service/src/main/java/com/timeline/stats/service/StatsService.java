@@ -2,7 +2,9 @@ package com.timeline.stats.service;
 
 import com.timeline.stats.domain.Location;
 import com.timeline.stats.domain.Travel;
+import com.timeline.stats.dto.LocatedTravelDTO;
 import com.timeline.stats.dto.PlacesVisitedDTO;
+import com.timeline.stats.dto.StatsContextDTO;
 import com.timeline.stats.dto.TravelStatsDTO;
 import com.timeline.stats.dto.TravelDTO;
 import com.timeline.stats.repository.TravelRepository;
@@ -33,21 +35,29 @@ public class StatsService {
 
   public TravelStatsDTO calculateBasicStats(List<Travel> travels) {
     List<Location> locations = placesService.getLocationsFromTravels(travels);
-    Set<String> zipcodes = placesService.getZipcodesFromLocations(locations);
+    StatsContextDTO context = new StatsContextDTO(travels, locations);
+
+    return calculateBasicStatsFromContext(context);
+  }
+
+  public TravelStatsDTO calculateBasicStatsFromContext(StatsContextDTO context) {
+    Set<String> zipcodes = placesService.getZipcodesFromLocations(context.locations);
     PlacesVisitedDTO placesVisited = new PlacesVisitedDTO(zipcodes);
 
+    int travelCount = context.locatedTravels.size();
     double totalDistance = 0.0;
     double totalMinutes = 0.0;
     double totalLatitude = 0.0;
     double totalLongitude = 0.0;
 
-    for (Travel travel : travels) {
-      travel.enrich(); // Calculate duration and speed
+    for (LocatedTravelDTO locatedTravel : context.locatedTravels) {
+      Travel travel = locatedTravel.travel();
+      Location originRef = locatedTravel.origin();
+      Location destRef = locatedTravel.destination();
+
+      travel.enrich();
       totalDistance += (travel.distance != null ? travel.distance : 0.0);
       totalMinutes += (travel.duration != null ? travel.duration : 0.0);
-
-      Location originRef = locations.stream().filter(l -> l.id.equals(travel.origin)).findFirst().orElse(null);
-      Location destRef = locations.stream().filter(l -> l.id.equals(travel.destination)).findFirst().orElse(null);
 
       if (originRef != null) {
         totalLatitude += originRef.latitude * travel.duration;
@@ -60,7 +70,7 @@ public class StatsService {
       }
     }
 
-    return new TravelStatsDTO(travels.size(), totalDistance, totalMinutes, totalLatitude, totalLongitude,
+    return new TravelStatsDTO(travelCount, totalDistance, totalMinutes, totalLatitude, totalLongitude,
         placesVisited);
   }
 
