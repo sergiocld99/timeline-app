@@ -36,6 +36,7 @@ public class Travel {
    */
   public Double calculateDuration() {
     if (startTime == null || endTime == null) {
+      this.duration = 0.0;
       return 0.0;
     }
     long millisDiff = endTime.toEpochMilli() - startTime.toEpochMilli();
@@ -50,7 +51,7 @@ public class Travel {
     if (duration == null) {
       calculateDuration();
     }
-    if (duration == 0 || distance == null) {
+    if (duration == 0) {
       this.speed = 0.0;
       return this.speed;
     }
