@@ -17,7 +17,6 @@ Todos los endpoints están bajo el prefijo `/api`
 - [GET /api/travels/find](#get-apitravelsfind) - Buscar viajes entre CPs
 - [GET /api/travels/find-last](#get-apitravelsfind-last) - Último viaje entre ubicaciones
 - [POST /api/travels/find-any](#post-apitravelsfind-any) - Buscar viajes a múltiples CPs
-- [POST /api/travels/stats](#post-apitravelsstats) - Calcular estadísticas
 - [POST /api/travels](#post-apitravels) - Crear viaje
 - [PUT /api/travels/:id](#put-apitravelsid) - Actualizar viaje
 - [DELETE /api/travels/:id](#delete-apitravelsid) - Eliminar viaje
@@ -131,15 +130,6 @@ Busca viajes hacia cualquier código postal de la lista.
 **Request Body:** `zipcodes` (array, requerido)
 
 **Response:** `{ count, travels: [...] }`
-
----
-
-### POST `/api/travels/stats`
-Calcula estadísticas para viajes con pesos pre-calculados (evita recalcular en backend).
-
-**Request Body:** `travels` (array) - Objetos con `{ id, weight }`
-
-**Response:** `{ totalDistance, totalDuration, averageSpeed, totalPrice, ... }`
 
 ---
 

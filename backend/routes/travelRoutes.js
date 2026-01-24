@@ -3,8 +3,7 @@ import {
   createTravel,
   deleteTravel,
   getAllTravels,
-  updateTravel,
-  getStatsForTravels
+  updateTravel
 } from "../controller/travelController.js";
 import {
   buildGraph,
@@ -24,7 +23,6 @@ router.get('/find-last', findLastTravel)
 
 router.post('/v2', getAllTravels)
 router.post('/find-any', findAnyTravelsToCPs)
-router.post('/stats', getStatsForTravels)
 
 router.post('/', createTravel);
 router.put('/:id', updateTravel);

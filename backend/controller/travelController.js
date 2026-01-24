@@ -37,42 +37,6 @@ export const getAllTravels = (req, res) => {
   });
 }
 
-export const getStatsForTravels = (req, res) => {
-  const { travels: travelsWithWeights } = req.body;
-
-  if (!travelsWithWeights || !Array.isArray(travelsWithWeights)) {
-    return res.status(400).json({ message: 'Invalid travels provided' });
-  }
-
-  // If empty array, return empty stats immediately
-  if (travelsWithWeights.length === 0) {
-    return res.json(calculateTravelStats([]));
-  }
-
-  const travelIds = travelsWithWeights.map(t => t.id)
-  const weightsMap = new Map(travelsWithWeights.map(t => [t.id, t.weight]))
-
-  Travel.find({ _id: { $in: travelIds } })
-    .populate('origin destination')
-    .then(travelDocs => {
-      const enrichedTravels = enrichTravels(travelDocs);
-
-      // Attach the provided weight to each travel document
-      enrichedTravels.forEach(t => {
-        if (weightsMap.has(t.id)) {
-          t.set('weight', weightsMap.get(t.id), { strict: false });
-        }
-      })
-
-      // Calculate stats directly without re-weighting
-      const stats = calculateTravelStats(enrichedTravels);
-      res.json(stats);
-    })
-    .catch(err => {
-      res.status(500).json({ message: err.message });
-    });
-}
-
 export const createTravel = (req, res) => {
   const { startTime, endTime, origin, destination, modeOfTransport, distance, price, userId } = req.body;
   let safePrice, safeDistance;
