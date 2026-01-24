@@ -68,7 +68,7 @@ class TravelService {
   }
 
   static async getStats(travels: TravelDTO[]): Promise<TravelStats> {
-    const endpointV2 = `${v2BaseUrl}/stats/travels/from-weighted`
+    const endpointV2 = `${v2BaseUrl}/stats/travels/from-ids`
 
     try {
       const response = await axios.post<TravelStats>(endpointV2, { travels });

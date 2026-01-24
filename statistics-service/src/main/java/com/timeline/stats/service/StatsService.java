@@ -14,6 +14,7 @@ import jakarta.inject.Inject;
 import java.time.Instant;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Service for calculating travel statistics
@@ -75,10 +76,17 @@ public class StatsService {
   }
 
   public TravelStatsDTO calculateBasicStatsFromWeighted(List<TravelDTO> dtos) {
-    List<Travel> travels = travelRepository.findByIds(dtos.stream().map(t -> t.id()).toList());
-    List<Location> locations = placesService.getLocationsFromDTOs(dtos);
-    StatsContextDTO context = new StatsContextDTO(travels, locations);
+    CompletableFuture<List<Travel>> travelsFuture = CompletableFuture
+        .supplyAsync(() -> travelRepository.findByIds(dtos.stream().map(t -> t.id()).toList()));
 
+    CompletableFuture<List<Location>> locationsFuture = CompletableFuture
+        .supplyAsync(() -> placesService.getLocationsFromDTOs(dtos));
+
+    // Wait for both to complete
+    List<Travel> travels = travelsFuture.join();
+    List<Location> locations = locationsFuture.join();
+
+    StatsContextDTO context = new StatsContextDTO(travels, locations);
     return calculateBasicStatsFromContext(context);
   }
 }

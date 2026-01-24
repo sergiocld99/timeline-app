@@ -46,7 +46,7 @@ public class StatsResource {
   }
 
   @POST
-  @Path("/travels/from-weighted")
+  @Path("/travels/from-ids")
   @Operation(summary = "Get basic travel statistics from weighted travels")
   public TravelStatsDTO getTravelStatsFromWeighted(StatsRequestDTO request) {
     return statsService.calculateBasicStatsFromWeighted(request.travels());
