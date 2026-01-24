@@ -29,7 +29,7 @@ public class StatsResourceTest {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void testGetTravelStatsFromWeighted() {
+  public void testGetTravelStatsFromIds() {
     ObjectId travelId = new ObjectId();
     ObjectId originId = new ObjectId();
     ObjectId destinationId = new ObjectId();
@@ -39,7 +39,7 @@ public class StatsResourceTest {
 
     TravelStatsDTO responseStats = new TravelStatsDTO(1, 10.0, 60.0, 15.0, 25.0, new PlacesVisitedDTO(Set.of("12345")));
 
-    when(statsService.calculateBasicStatsFromWeighted(any(List.class))).thenReturn(responseStats);
+    when(statsService.calculateBasicStatsFromIds(any(List.class))).thenReturn(responseStats);
 
     given()
         .contentType(MediaType.APPLICATION_JSON)
@@ -61,21 +61,5 @@ public class StatsResourceTest {
         .then()
         .statusCode(200)
         .body("status", is("ok"));
-  }
-
-  @Test
-  public void testGetTravelStats() {
-    TravelStatsDTO responseStats = new TravelStatsDTO(1, 10.0, 60.0, 15.0, 25.0, new PlacesVisitedDTO(Set.of("12345")));
-    when(statsService.calculateBasicStats(any(), any(), any())).thenReturn(responseStats);
-
-    given()
-        .queryParam("dateFrom", "2026-01-01T00:00:00Z")
-        .queryParam("dateTo", "2026-01-31T23:59:59Z")
-        .queryParam("userId", 1)
-        .when()
-        .get("/api/v2/stats/travels/summary")
-        .then()
-        .statusCode(200)
-        .body("count", is(1));
   }
 }

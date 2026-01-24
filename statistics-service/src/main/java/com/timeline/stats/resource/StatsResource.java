@@ -9,9 +9,6 @@ import jakarta.ws.rs.core.MediaType;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-
 /**
  * REST API for travel statistics
  */
@@ -31,24 +28,10 @@ public class StatsResource {
     return "{\"status\":\"ok\",\"service\":\"statistics-service\",\"version\":\"1.0.0\"}";
   }
 
-  @GET
-  @Path("/travels/summary")
-  @Operation(summary = "Get basic travel statistics")
-  public TravelStatsDTO getTravelStats(
-      @QueryParam("dateFrom") String dateFromStr,
-      @QueryParam("dateTo") String dateToStr,
-      @QueryParam("userId") Integer userId) {
-    // Default: last 30 days
-    Instant dateTo = dateToStr != null ? Instant.parse(dateToStr) : Instant.now();
-    Instant dateFrom = dateFromStr != null ? Instant.parse(dateFromStr) : dateTo.minus(30, ChronoUnit.DAYS);
-
-    return statsService.calculateBasicStats(dateFrom, dateTo, userId);
-  }
-
   @POST
   @Path("/travels/from-ids")
   @Operation(summary = "Get basic travel statistics from weighted travels")
   public TravelStatsDTO getTravelStatsFromWeighted(StatsRequestDTO request) {
-    return statsService.calculateBasicStatsFromWeighted(request.travels());
+    return statsService.calculateBasicStatsFromIds(request.travels());
   }
 }

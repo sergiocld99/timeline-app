@@ -66,7 +66,7 @@ public class StatsServiceTest {
     when(placesService.getLocationsFromDTOs(any(List.class))).thenReturn(List.of(origin, destination));
     when(placesService.getZipcodesFromLocations(any())).thenCallRealMethod();
 
-    TravelStatsDTO result = statsService.calculateBasicStatsFromWeighted(List.of(dto));
+    TravelStatsDTO result = statsService.calculateBasicStatsFromIds(List.of(dto));
 
     assertEquals(1, result.count);
     assertEquals(10.0, result.totalDistance);

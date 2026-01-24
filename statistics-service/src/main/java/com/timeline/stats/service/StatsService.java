@@ -75,7 +75,7 @@ public class StatsService {
         placesVisited);
   }
 
-  public TravelStatsDTO calculateBasicStatsFromWeighted(List<TravelDTO> dtos) {
+  public TravelStatsDTO calculateBasicStatsFromIds(List<TravelDTO> dtos) {
     CompletableFuture<List<Travel>> travelsFuture = CompletableFuture
         .supplyAsync(() -> travelRepository.findByIds(dtos.stream().map(t -> t.id()).toList()));
 

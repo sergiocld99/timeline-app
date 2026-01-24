@@ -39,27 +39,6 @@ GET http://localhost:8081/health
 GET http://localhost:8081/api/v2/stats/ping
 ```
 
-### Travel Statistics Summary
-```bash
-GET http://localhost:8081/api/v2/stats/travels/summary?dateFrom=2026-01-01T00:00:00Z&dateTo=2026-01-31T23:59:59Z&userId=1
-```
-
-**Query Parameters**:
-- `dateFrom` (opcional): Fecha de inicio en formato ISO. Default: 30 días atrás
-- `dateTo` (opcional): Fecha de fin en formato ISO. Default: ahora
-- `userId` (opcional): ID del usuario. Si no se proporciona, busca datos de invitado
-
-**Response**:
-```json
-{
-  "count": 10,
-  "totalDistance": 500.5,
-  "totalMinutes": 660.0,
-  "averageDistance": 50.05,
-  "averageSpeed": 45.5
-}
-```
-
 ## 🏗️ Estructura del Proyecto
 
 ```
@@ -127,11 +106,3 @@ quarkus.http.port=8082
 - [Quarkus Documentation](https://quarkus.io/guides/)
 - [MongoDB with Panache](https://quarkus.io/guides/mongodb-panache)
 - [RESTEasy Reactive](https://quarkus.io/guides/rest)
-
-## 🎯 Próximos Pasos
-
-- [ ] Implementar más endpoints de estadísticas
-- [ ] Añadir caché con Redis
-- [ ] Implementar agregaciones complejas de MongoDB
-- [ ] Añadir tests unitarios y de integración
-- [ ] Configurar métricas con Micrometer
