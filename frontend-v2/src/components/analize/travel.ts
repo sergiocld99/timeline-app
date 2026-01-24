@@ -150,8 +150,6 @@ export const getUniqueLocations = (travels: Travel[], nearbyCenters: KnownCenter
     }
   });
 
-  console.log(locationMap)
-
   nearbyCenters.forEach((nc => {
     const key = getLocationKey(nc.latitude, nc.longitude)
     let loc = locationMap.get(key)

@@ -59,8 +59,6 @@ const TravelMap = ({ travels, stats }: Props) => {
       const centerLng = (lng1 + lng2) / 2
       const distanceKm = calculateDistanceKm(lat1, lat2, lng1, lng2)
 
-      console.log('Distance Frequent vs Center: ', distanceKm)
-
       setMapCenter([centerLat, centerLng])
       setZoom(getZoomByDistance(distanceKm))
     }
