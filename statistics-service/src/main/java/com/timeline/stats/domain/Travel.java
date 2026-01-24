@@ -26,7 +26,6 @@ public class Travel {
   // Calculated fields (not stored in DB)
   public transient Double duration; // in minutes
   public transient Double speed; // km/h
-  public transient String shortDate;
 
   public Travel() {
   }

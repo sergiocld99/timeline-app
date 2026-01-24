@@ -62,4 +62,33 @@ public class RepositoryTest {
     long count = travelRepository.countByDateRange(travel.startTime.minusSeconds(10), travel.endTime.plusSeconds(10));
     assertEquals(1, count);
   }
+
+  @Test
+  public void testTravelRepositoryGuestQueries() {
+    Location loc = new Location();
+    locationRepository.persist(loc);
+
+    Travel guestTravel = new Travel();
+    guestTravel.startTime = Instant.now().minusSeconds(3600);
+    guestTravel.endTime = Instant.now();
+    guestTravel.distance = 10.0;
+    guestTravel.origin = loc.id;
+    guestTravel.destination = loc.id;
+    guestTravel.userId = null;
+
+    Travel userTravel = new Travel();
+    userTravel.startTime = guestTravel.startTime;
+    userTravel.endTime = guestTravel.endTime;
+    userTravel.distance = guestTravel.distance;
+    userTravel.origin = loc.id;
+    userTravel.destination = loc.id;
+    userTravel.userId = 999;
+
+    travelRepository.persist(guestTravel);
+    travelRepository.persist(userTravel);
+
+    List<Travel> userRange = travelRepository.findByDateRangeAndUser(guestTravel.startTime.minusSeconds(10),
+        guestTravel.endTime.plusSeconds(10), null);
+    assertEquals(1, userRange.size());
+  }
 }

@@ -13,6 +13,7 @@ import jakarta.inject.Inject;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
@@ -57,8 +58,8 @@ public class StatsService {
       Location destRef = locatedTravel.destination();
 
       travel.enrich();
-      totalDistance += (travel.distance != null ? travel.distance : 0.0);
-      totalMinutes += (travel.duration != null ? travel.duration : 0.0);
+      totalDistance += Objects.requireNonNull(travel.distance);
+      totalMinutes += Objects.requireNonNull(travel.duration);
 
       if (originRef != null) {
         totalLatitude += originRef.latitude * travel.duration;

@@ -24,10 +24,6 @@ public class TravelRepository implements PanacheMongoRepository<Travel> {
    * Find travels by date range and userId
    */
   public List<Travel> findByDateRangeAndUser(Instant dateFrom, Instant dateTo, Integer userId) {
-    if (userId == null) {
-      // Guest data (no userId)
-      return find("startTime >= ?1 and endTime <= ?2 and userId = null", dateFrom, dateTo).list();
-    }
     return find("startTime >= ?1 and endTime <= ?2 and userId = ?3", dateFrom, dateTo, userId).list();
   }
 
