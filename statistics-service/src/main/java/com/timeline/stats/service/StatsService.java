@@ -12,6 +12,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -46,6 +47,7 @@ public class StatsService {
     Set<String> zipcodes = placesService.getZipcodesFromLocations(context.locations);
     PlacesVisitedDTO placesVisited = new PlacesVisitedDTO(zipcodes);
 
+    Set<String> uniqueDays = new HashSet<>();
     int travelCount = context.locatedTravels.size();
     double totalDistance = 0.0;
     double totalMinutes = 0.0;
@@ -60,6 +62,7 @@ public class StatsService {
       travel.enrich();
       totalDistance += Objects.requireNonNull(travel.distance);
       totalMinutes += Objects.requireNonNull(travel.duration);
+      uniqueDays.add(travel.date);
 
       if (originRef != null) {
         totalLatitude += originRef.latitude * travel.duration;
@@ -73,7 +76,7 @@ public class StatsService {
     }
 
     return new TravelStatsDTO(travelCount, totalDistance, totalMinutes, totalLatitude, totalLongitude,
-        placesVisited);
+        placesVisited, uniqueDays.size());
   }
 
   public TravelStatsDTO calculateBasicStatsFromIds(List<TravelDTO> dtos) {

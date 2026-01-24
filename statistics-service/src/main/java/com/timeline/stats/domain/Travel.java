@@ -26,6 +26,7 @@ public class Travel {
   // Calculated fields (not stored in DB)
   public transient Double duration; // in minutes
   public transient Double speed; // km/h
+  public transient String date;
 
   public Travel() {
   }
@@ -64,6 +65,7 @@ public class Travel {
   public Travel enrich() {
     calculateDuration();
     calculateSpeed();
+    this.date = startTime.toString().split("T")[0];
     return this;
   }
 }

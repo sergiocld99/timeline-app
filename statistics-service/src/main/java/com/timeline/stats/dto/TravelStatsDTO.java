@@ -14,17 +14,19 @@ public class TravelStatsDTO {
   public double averageLatitude;
   public double averageLongitude;
   public PlacesVisitedDTO placesVisited;
+  public long uniqueDays;
 
   public TravelStatsDTO() {
   }
 
   public TravelStatsDTO(long count, double totalDistance, double totalMinutes, double totalLatitude,
-      double totalLongitude, PlacesVisitedDTO placesVisited) {
+      double totalLongitude, PlacesVisitedDTO placesVisited, long uniqueDays) {
     this.count = count;
     this.totalDistance = Math.round(totalDistance * 100.0) / 100.0;
     this.totalMinutes = Math.round(totalMinutes * 100.0) / 100.0;
     this.totalHours = totalMinutes / 60.0;
     this.placesVisited = placesVisited;
+    this.uniqueDays = uniqueDays;
 
     if (count > 0) {
       this.averageDistance = Math.round((totalDistance / count) * 100.0) / 100.0;
