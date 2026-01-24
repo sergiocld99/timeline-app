@@ -29,7 +29,6 @@ jobs:
         run: |
           cd statistics-service
           # Get the list of modified classes (basename only, one per line)
-          # We exclude Repository classes because they require a running DB in CI
           MODIFIED_CLASSES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep "statistics-service/src/main/java" | grep -v "Repository" | xargs -n1 basename | sed 's/\.java$//' | sort -u)
           
           if [ -z "$MODIFIED_CLASSES" ]; then
@@ -40,50 +39,45 @@ jobs:
           echo "Modified classes to check:"
           echo "$MODIFIED_CLASSES"
 
-          # Use AWK to calculate totals and per-class coverage in a single pass
-          # We pass the modified classes as a space-separated string to AWK
-          CLASSES_STR=$(echo "$MODIFIED_CLASSES" | tr '\n' ' ')
-          
-          awk -v cls_list="$CLASSES_STR" -F, '
-            BEGIN {
-              n = split(cls_list, names, " ");
-              for (i=1; i<=n; i++) target[names[i]] = 1;
-              t_missed = 0;
-              t_covered = 0;
-              print "--- Coverage Breakdown ---";
-            }
-            NR > 1 {
-              # $3 is the CLASS name in JaCoCo CSV
-              if (target[$3]) {
-                missed = $4;
-                covered = $5;
-                t_missed += missed;
-                t_covered += covered;
-                if (missed + covered > 0) {
-                  printf "Class: %s | Coverage: %.2f%% (%d/%d)\n", $3, (covered * 100 / (missed + covered)), covered, (missed + covered);
-                } else {
-                  printf "Class: %s | Coverage: 100%% (0/0)\n", $3;
-                }
-                # Remove from target so we don't count same class name in different packages multiple times 
-                # (unless wanted, but JaCoCo CSV has one line per class)
-                delete target[$3];
+          # Write AWK script to a file to avoid shell escaping issues
+          cat << 'EOF' > coverage_check.awk
+          BEGIN {
+            n = split(cls_list, names, " ");
+            for (i=1; i<=n; i++) target[names[i]] = 1;
+            t_missed = 0;
+            t_covered = 0;
+            print "--- Coverage Breakdown ---";
+          }
+          NR > 1 {
+            if (target[$3]) {
+              missed = $4;
+              covered = $5;
+              t_missed += missed;
+              t_covered += covered;
+              if (missed + covered > 0) {
+                printf "Class: %s | Coverage: %.2f%% (%d/%d)\n", $3, (covered * 100 / (missed + covered)), covered, (missed + covered);
+              } else {
+                printf "Class: %s | Coverage: 100.00%% (0/0)\n", $3;
               }
+              delete target[$3];
             }
-            END {
-              print "--------------------------";
-              if (t_missed + t_covered == 0) {
-                print "No coverage data found for the modified files.";
-                exit 1;
-              }
-              total_perc = (t_covered * 100 / (t_missed + t_covered));
-              printf "Overall Modified Coverage: %.2f%%\n", total_perc;
-              # Output for next step
-              print "TOTAL_PERC=" total_perc > "total_perc.env";
+          }
+          END {
+            print "--------------------------";
+            if (t_missed + t_covered == 0) {
+              print "No coverage data found for the modified files.";
+              exit 1;
             }
-          ' target/jacoco-report/jacoco.csv
+            total_perc = (t_covered * 100 / (t_missed + t_covered));
+            printf "Overall Modified Coverage: %.2f%%\n", total_perc;
+            print total_perc > "total_perc.env";
+          }
+          EOF
 
-          # Read total percentage back
-          TOTAL_PERC=$(grep "TOTAL_PERC=" total_perc.env | cut -d'=' -f2)
+          CLASSES_STR=$(echo "$MODIFIED_CLASSES" | tr '\n' ' ')
+          awk -v cls_list="$CLASSES_STR" -F, -f coverage_check.awk target/jacoco-report/jacoco.csv
+
+          TOTAL_PERC=$(cat total_perc.env)
           
-          # Use awk for decimal comparison (instead of bc which can be finicky)
+          # Final check
           awk -v perc="$TOTAL_PERC" 'BEGIN { if (perc < 70) { print "Error: Coverage is too low!"; exit 1 } else { print "Coverage check passed!" } }'
