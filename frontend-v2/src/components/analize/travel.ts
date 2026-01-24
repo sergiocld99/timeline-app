@@ -47,7 +47,7 @@ export const calculateBestModes = (travels: Travel[], quantity: number) => {
 // example 14:05 - 13:35 = 60 - 30 = 30
 const calculateHalfTime = (startTime: HourAndMinutes, duration: number, fraction: number): HourAndMinutes => {
   const halfTimestamp = startTime.hour * 60 + startTime.minutes + duration * fraction
-  
+
   return {
     hour: Math.floor(halfTimestamp / 60) % 24,
     minutes: Math.floor(halfTimestamp % 60)
@@ -94,7 +94,7 @@ export const getEachHourOfTravel = ({ startTime: start, endTime: end }: Travel):
   return getNormalizedEachHourOfTravel(startTime, endTime)
 }
 
-export const getEachHourOfEachHalf = ({ startTime: start, endTime: end, duration}: Travel): HourPart[][] => {
+export const getEachHourOfEachHalf = ({ startTime: start, endTime: end, duration }: Travel): HourPart[][] => {
   const startTime = extractHourAndMinutes(start);
   const endTime = extractHourAndMinutes(end);
   const halfTime = calculateHalfTime(startTime, duration, 0.5)
@@ -150,6 +150,8 @@ export const getUniqueLocations = (travels: Travel[], nearbyCenters: KnownCenter
     }
   });
 
+  console.log(locationMap)
+
   nearbyCenters.forEach((nc => {
     const key = getLocationKey(nc.latitude, nc.longitude)
     let loc = locationMap.get(key)
@@ -182,7 +184,7 @@ export const getUniqueLocations = (travels: Travel[], nearbyCenters: KnownCenter
       if (l.frecuency > relevantFrecuency) {
         l.isFrequent = true
       }
-  
+
       return l
     })
   }

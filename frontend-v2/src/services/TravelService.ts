@@ -1,5 +1,5 @@
-import type { FormData, Weight } from '@/types/commons';
-import type { TravelFindResult } from '@/types/travel';
+import type { FormData } from '@/types/commons';
+import type { TravelDTO, TravelFindResult } from '@/types/travel';
 
 import axios from 'axios';
 
@@ -67,7 +67,7 @@ class TravelService {
     }
   }
 
-  static async getStats(travels: { id: string, weight: Weight }[]): Promise<TravelStats> {
+  static async getStats(travels: TravelDTO[]): Promise<TravelStats> {
     const endpointV2 = `${v2BaseUrl}/stats/travels/from-weighted`
 
     try {

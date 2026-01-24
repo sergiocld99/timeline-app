@@ -74,9 +74,11 @@ public class StatsService {
         placesVisited);
   }
 
-  public TravelStatsDTO calculateBasicStatsFromWeighted(List<TravelDTO> travels) {
-    List<Travel> docs = travelRepository.findByIds(travels.stream().map(t -> t.id()).toList());
+  public TravelStatsDTO calculateBasicStatsFromWeighted(List<TravelDTO> dtos) {
+    List<Travel> travels = travelRepository.findByIds(dtos.stream().map(t -> t.id()).toList());
+    List<Location> locations = placesService.getLocationsFromDTOs(dtos);
+    StatsContextDTO context = new StatsContextDTO(travels, locations);
 
-    return calculateBasicStats(docs);
+    return calculateBasicStatsFromContext(context);
   }
 }

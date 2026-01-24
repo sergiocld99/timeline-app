@@ -49,8 +49,8 @@ export const useTravelStats = (travels: Travel[], initialStats?: TravelStats) =>
 
       if (!ignore) setIsLoading(true);
       try {
-        const travelsPayload = travels.map(t => ({ id: t._id, weight: t.weight }));
-        const newStats = await TravelService.getStats(travelsPayload);
+        const payload = travels.map(t => ({ id: t._id, origin: t.origin._id, destination: t.destination._id }));
+        const newStats = await TravelService.getStats(payload);
         if (!ignore) setStats(newStats);
       } catch (error) {
         if (!ignore) {
