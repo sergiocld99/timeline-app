@@ -30,43 +30,82 @@ public class PlacesServiceTest {
   LocationRepository locationRepository;
 
   @Test
+  public void testGetZipcodesWhenNoTravels() {
+    Set<String> result = placesService.getZipcodesFromTravels(List.of());
+    assertEquals(0, result.size());
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testGetZipcodesFromTravels() {
+    Location loc1 = new Location();
+    loc1.id = new ObjectId();
+    loc1.zipcode = "B1859";
+
+    Location loc2 = new Location();
+    loc2.id = new ObjectId();
+    loc2.zipcode = "B1888";
+
+    Location loc3 = new Location();
+    loc3.id = new ObjectId();
+    loc3.zipcode = "B1888";
+
+    TravelDTO dto1 = new TravelDTO(new ObjectId(), loc1.id, loc2.id);
+    TravelDTO dto2 = new TravelDTO(new ObjectId(), loc2.id, loc3.id);
+    TravelDTO dto3 = new TravelDTO(new ObjectId(), loc3.id, loc1.id);
+
+    when(locationRepository.findByIds(any(Set.class))).thenReturn(List.of(loc1, loc2, loc3));
+
+    Set<String> result = placesService.getZipcodesFromTravels(List.of(dto1, dto2, dto3));
+
+    assertEquals(2, result.size());
+    assertTrue(result.contains("B1859"));
+    assertTrue(result.contains("B1888"));
+  }
+
+  @Test
   @SuppressWarnings("unchecked")
   public void testGetLocationsFromDTOs() {
-    ObjectId originId = new ObjectId();
-    ObjectId destinationId = new ObjectId();
-    TravelDTO dto = new TravelDTO(new ObjectId(), originId, destinationId);
-
     Location loc1 = new Location();
-    loc1.id = originId;
+    loc1.id = new ObjectId();
     Location loc2 = new Location();
-    loc2.id = destinationId;
+    loc2.id = new ObjectId();
+
+    TravelDTO dto1 = new TravelDTO(new ObjectId(), loc1.id, loc2.id);
+    TravelDTO dto2 = new TravelDTO(new ObjectId(), loc2.id, loc1.id);
 
     when(locationRepository.findByIds(any(Set.class))).thenReturn(List.of(loc1, loc2));
 
-    List<Location> result = placesService.getLocationsFromDTOs(List.of(dto));
+    List<Location> result = placesService.getLocationsFromDTOs(List.of(dto1, dto2));
 
     assertEquals(2, result.size());
+    assertTrue(result.contains(loc1));
+    assertTrue(result.contains(loc2));
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void testGetLocationsFromTravels() {
-    ObjectId originId = new ObjectId();
-    ObjectId destinationId = new ObjectId();
-    Travel travel = new Travel();
-    travel.origin = originId;
-    travel.destination = destinationId;
-
     Location loc1 = new Location();
-    loc1.id = originId;
+    loc1.id = new ObjectId();
     Location loc2 = new Location();
-    loc2.id = destinationId;
+    loc2.id = new ObjectId();
+
+    Travel travel1 = new Travel();
+    travel1.origin = loc1.id;
+    travel1.destination = loc2.id;
+
+    Travel travel2 = new Travel();
+    travel2.origin = loc2.id;
+    travel2.destination = loc1.id;
 
     when(locationRepository.findByIds(any(Set.class))).thenReturn(List.of(loc1, loc2));
 
-    List<Location> result = placesService.getLocationsFromTravels(List.of(travel));
+    List<Location> result = placesService.getLocationsFromTravels(List.of(travel1, travel2));
 
     assertEquals(2, result.size());
+    assertTrue(result.contains(loc1));
+    assertTrue(result.contains(loc2));
   }
 
   @Test
