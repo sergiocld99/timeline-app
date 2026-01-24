@@ -28,55 +28,61 @@ jobs:
       - name: Check coverage on modified files
         run: |
           cd statistics-service
-          MODIFIED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep "statistics-service/src/main/java" | sed 's|statistics-service/src/main/java/||' | sed 's/\.java$//')
+          # Get the list of modified classes (basename only, one per line)
+          MODIFIED_CLASSES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep "statistics-service/src/main/java" | xargs -n1 basename | sed 's/\.java$//' | sort -u)
           
-          if [ -z "$MODIFIED_FILES" ]; then
+          if [ -z "$MODIFIED_CLASSES" ]; then
             echo "No modified Java files in statistics-service to check coverage for."
             exit 0
           fi
 
-          echo "Modified files to check coverage for:"
-          echo "$MODIFIED_FILES"
+          echo "Modified classes to check:"
+          echo "$MODIFIED_CLASSES"
 
-          TOTAL_MISSED=0
-          TOTAL_COVERED=0
+          # Use AWK to calculate totals and per-class coverage in a single pass
+          # We pass the modified classes as a space-separated string to AWK
+          CLASSES_STR=$(echo "$MODIFIED_CLASSES" | tr '\n' ' ')
+          
+          awk -v cls_list="$CLASSES_STR" -F, '
+            BEGIN {
+              n = split(cls_list, names, " ");
+              for (i=1; i<=n; i++) target[names[i]] = 1;
+              t_missed = 0;
+              t_covered = 0;
+              print "--- Coverage Breakdown ---";
+            }
+            NR > 1 {
+              # $3 is the CLASS name in JaCoCo CSV
+              if (target[$3]) {
+                missed = $4;
+                covered = $5;
+                t_missed += missed;
+                t_covered += covered;
+                if (missed + covered > 0) {
+                  printf "Class: %s | Coverage: %.2f%% (%d/%d)\n", $3, (covered * 100 / (missed + covered)), covered, (missed + covered);
+                } else {
+                  printf "Class: %s | Coverage: 100%% (0/0)\n", $3;
+                }
+                # Remove from target so we don't count same class name in different packages multiple times 
+                # (unless wanted, but JaCoCo CSV has one line per class)
+                delete target[$3];
+              }
+            }
+            END {
+              print "--------------------------";
+              if (t_missed + t_covered == 0) {
+                print "No coverage data found for the modified files.";
+                exit 1;
+              }
+              total_perc = (t_covered * 100 / (t_missed + t_covered));
+              printf "Overall Modified Coverage: %.2f%%\n", total_perc;
+              # Output for next step
+              print "TOTAL_PERC=" total_perc > "total_perc.env";
+            }
+          ' target/jacoco-report/jacoco.csv
 
-          while read -r file; do
-            # MODIFIED_FILES is e.g. com/timeline/stats/service/StatsService
-            CLASSNAME=$(basename "$file")
-            
-            # Simple grep/awk to extract coverage from jacoco.csv
-            # jacoco.csv format: GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,...
-            # We use ,$CLASSNAME, to match the exact class name in the 3rd field
-            
-            MISSED=$(grep ",$CLASSNAME," target/jacoco-report/jacoco.csv | cut -d',' -f4 | awk '{sum+=$1} END {print sum}')
-            COVERED=$(grep ",$CLASSNAME," target/jacoco-report/jacoco.csv | cut -d',' -f5 | awk '{sum+=$1} END {print sum}')
-            
-            if [ -n "$MISSED" ] && [ -n "$COVERED" ]; then
-              TOTAL_MISSED=$((TOTAL_MISSED + MISSED))
-              TOTAL_COVERED=$((TOTAL_COVERED + COVERED))
-              
-              FILE_TOTAL=$((MISSED + COVERED))
-              if [ $FILE_TOTAL -gt 0 ]; then
-                FILE_PERC=$(echo "scale=2; $COVERED * 100 / $FILE_TOTAL" | bc)
-                echo "Class: $CLASSNAME - Coverage: $FILE_PERC%"
-              fi
-            else
-              echo "Warning: Could not find coverage data for $CLASSNAME"
-            fi
-          done <<< "$MODIFIED_FILES"
-
-          if [ $((TOTAL_MISSED + TOTAL_COVERED)) -eq 0 ]; then
-            echo "No coverage data found for modified files."
-            exit 0
-          fi
-
-          TOTAL_PERC=$(echo "scale=2; $TOTAL_COVERED * 100 / ($TOTAL_MISSED + TOTAL_COVERED)" | bc)
-          echo "Overall Coverage for modified files: $TOTAL_PERC%"
-
-          if (( $(echo "$TOTAL_PERC < 70" | bc -l) )); then
-            echo "Error: Coverage for modified files is below 70% ($TOTAL_PERC%)"
-            exit 1
-          fi
-
-          echo "Coverage check passed!"
+          # Read total percentage back
+          TOTAL_PERC=$(grep "TOTAL_PERC=" total_perc.env | cut -d'=' -f2)
+          
+          # Use awk for decimal comparison (instead of bc which can be finicky)
+          awk -v perc="$TOTAL_PERC" 'BEGIN { if (perc < 70) { print "Error: Coverage is too low!"; exit 1 } else { print "Coverage check passed!" } }'
