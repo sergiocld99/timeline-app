@@ -28,6 +28,7 @@ public class StatsResourceTest {
   StatsService statsService;
 
   @Test
+  @SuppressWarnings("unchecked")
   public void testGetTravelStatsFromWeighted() {
     ObjectId travelId = new ObjectId();
     ObjectId originId = new ObjectId();

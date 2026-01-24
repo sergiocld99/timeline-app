@@ -33,6 +33,7 @@ public class StatsServiceTest {
   PlacesService placesService;
 
   @Test
+  @SuppressWarnings("unchecked")
   public void testCalculateBasicStatsFromWeighted() {
     ObjectId travelId = new ObjectId();
     ObjectId originId = new ObjectId();

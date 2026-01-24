@@ -23,13 +23,14 @@ jobs:
       - name: Run tests with JaCoCo
         run: |
           cd statistics-service
-          ./mvnw clean test
+          ./mvnw clean test -Dtest=!RepositoryTest
 
       - name: Check coverage on modified files
         run: |
           cd statistics-service
           # Get the list of modified classes (basename only, one per line)
-          MODIFIED_CLASSES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep "statistics-service/src/main/java" | xargs -n1 basename | sed 's/\.java$//' | sort -u)
+          # We exclude Repository classes because they require a running DB in CI
+          MODIFIED_CLASSES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep "statistics-service/src/main/java" | grep -v "Repository" | xargs -n1 basename | sed 's/\.java$//' | sort -u)
           
           if [ -z "$MODIFIED_CLASSES" ]; then
             echo "No modified Java files in statistics-service to check coverage for."

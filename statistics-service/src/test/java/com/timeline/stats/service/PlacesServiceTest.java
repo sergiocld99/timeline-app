@@ -30,6 +30,7 @@ public class PlacesServiceTest {
   LocationRepository locationRepository;
 
   @Test
+  @SuppressWarnings("unchecked")
   public void testGetLocationsFromDTOs() {
     ObjectId originId = new ObjectId();
     ObjectId destinationId = new ObjectId();
@@ -48,6 +49,7 @@ public class PlacesServiceTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void testGetLocationsFromTravels() {
     ObjectId originId = new ObjectId();
     ObjectId destinationId = new ObjectId();
