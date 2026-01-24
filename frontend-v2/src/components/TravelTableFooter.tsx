@@ -1,7 +1,5 @@
 import type { Travel, TravelStats } from "@/types/travel";
 
-import { Loader2 } from "lucide-react";
-
 import { useTravelStats } from "@/hooks/useTravelStats";
 import { getHoursAndMinutes } from "@/utils";
 import { renderTotalWeightsCell } from "@/utils/weight";
@@ -14,8 +12,21 @@ type Props = {
   stats?: TravelStats;
 }
 
+const renderFirstTotalCell = (length: number, uniqueDays?: number) => {
+  return (
+    <div>
+      <p>
+        {length} {length === 1 ? "travel" : "travels"}
+      </p>
+      {uniqueDays && <p>
+        <span className="text-gray-500 dark:text-gray-400"> ({uniqueDays} {uniqueDays === 1 ? "day" : "days"})</span>
+      </p>}
+    </div>
+  )
+}
+
 const TravelTableFooter = ({ travels, stats: initialStats }: Props) => {
-  const { stats, isLoading } = useTravelStats(travels, initialStats);
+  const { stats } = useTravelStats(travels, initialStats);
 
   const { averageLatitude: totalLat, averageLongitude: totalLong, totalDistance = 0, totalMinutes = 0, placesVisited } = stats || {}
 
@@ -24,24 +35,23 @@ const TravelTableFooter = ({ travels, stats: initialStats }: Props) => {
       <TableRow className="border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
         <TableCell className="font-medium text-gray-900 dark:text-white">
           <div className="flex items-center gap-2">
-            {travels.length} travels
-            {isLoading && <Loader2 className="h-3 w-3 animate-spin text-gray-500" />}
+            {renderFirstTotalCell(travels.length, stats?.uniqueDays)}
           </div>
         </TableCell>
         <TableCell className="text-gray-900 dark:text-white" colSpan={2}>
-          {isLoading ? "-" : renderPointWithCopyBtn(totalLat, totalLong)}
+          {renderPointWithCopyBtn(totalLat, totalLong)}
         </TableCell>
         <TableCell className="font-medium text-gray-900 dark:text-white" colSpan={2}>
-          {isLoading ? "-" : `${placesVisited?.count || 0} places`}
+          {`${placesVisited?.count || 0} places`}
         </TableCell>
         <TableCell className="font-medium text-gray-900 dark:text-white">
-          {isLoading ? "-" : `${totalDistance?.toFixed(0)} km`}
+          {`${totalDistance?.toFixed(0)} km`}
         </TableCell>
         <TableCell className="font-medium text-gray-900 dark:text-white">
-          {isLoading ? "-" : getHoursAndMinutes(totalMinutes)}
+          {getHoursAndMinutes(totalMinutes)}
         </TableCell>
         <TableCell className="font-medium text-gray-900 dark:text-white">
-          {isLoading ? "-" : `${totalMinutes === 0 ? 0 : (totalDistance / (totalMinutes / 60)).toFixed(1)} km/h`}
+          {`${totalMinutes === 0 ? 0 : (totalDistance / (totalMinutes / 60)).toFixed(1)} km/h`}
         </TableCell>
         <TableCell className="text-gray-900 dark:text-white">{renderTotalWeightsCell(travels)}</TableCell>
         <TableCell></TableCell>
