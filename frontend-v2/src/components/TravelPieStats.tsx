@@ -118,7 +118,7 @@ const TravelPieStats = ({ stats }: Props) => {
   return (
     <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardContent className="h-[300px] flex items-center justify-center">
-        <ChartContainer config={config} className="min-h-[200px] max-h-[300px] max-w-[300px]">
+        <ChartContainer config={config} className="min-h-[200px] max-h-[300px] max-w-[250px]">
           <PieChart>
             <ChartTooltip content={<ChartTooltipContent />} />
             <Pie data={chartData} dataKey="totalKm" nameKey="modeOfTransport" innerRadius={60} strokeWidth={5}>
@@ -126,7 +126,7 @@ const TravelPieStats = ({ stats }: Props) => {
             </Pie>
           </PieChart>
         </ChartContainer>
-        <ChartContainer config={config} className="min-h-[200px] max-h-[300px] max-w-[300px]">
+        <ChartContainer config={config} className="min-h-[200px] max-h-[300px] max-w-[250px]">
           <PieChart>
             <ChartTooltip content={<ChartTooltipContent />} />
             <Pie data={chartData} dataKey="totalMinutes" nameKey="modeOfTransport" innerRadius={60} strokeWidth={5}>
@@ -134,7 +134,7 @@ const TravelPieStats = ({ stats }: Props) => {
             </Pie>
           </PieChart>
         </ChartContainer>
-        <ChartContainer config={config} className="min-h-[200px] max-h-[300px] max-w-[300px]">
+        <ChartContainer config={config} className="min-h-[200px] max-h-[300px] max-w-[250px]">
           <PieChart>
             <ChartTooltip content={<ChartTooltipContent />} />
             <Pie data={chartData} dataKey="count" nameKey="modeOfTransport" innerRadius={60} strokeWidth={5}>
@@ -142,7 +142,7 @@ const TravelPieStats = ({ stats }: Props) => {
             </Pie>
           </PieChart>
         </ChartContainer>
-        <ChartContainer config={config} className="min-h-[200px] max-h-[300px] max-w-[300px]">
+        <ChartContainer config={config} className="min-h-[200px] max-h-[300px] max-w-[250px]">
           <PieChart>
             <ChartTooltip content={<ChartTooltipContent />} />
             <Pie data={chartData} dataKey="averageSpeed" nameKey="modeOfTransport" innerRadius={60} strokeWidth={5}>

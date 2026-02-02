@@ -17,8 +17,7 @@ const Header = () => {
               {renderNavItem("/creator", "Creator")}
               {renderNavItem("/crosses", "Crosses")}
               {renderNavItem("/locations", "Locations")}
-              {renderNavItem("/travels-by-distance", "Travels by Distance")}
-              {renderNavItem("/travels", "Travels by Duration")}
+              {renderNavItem("/travels", "Travels")}
               {renderNavItem("/visits", "Visits")}
             </nav>
             <div className="flex items-center space-x-2">
