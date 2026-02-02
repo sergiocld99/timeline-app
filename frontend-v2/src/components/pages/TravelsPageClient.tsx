@@ -1,14 +1,20 @@
 "use client";
 
 import type { Travel } from "@/types/travel";
+import type { StatsView } from "@/types/stats";
 
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
 import PresentialWorkAlert from "@/components/PresentialWorkAlert";
 import TravelBarStats from "@/components/TravelBarStats";
+import TravelPieStats from "@/components/TravelPieStats";
 import TravelTable from "@/components/TravelTable";
+import useStats from "@/hooks/useStats";
 import useTravels from "@/hooks/useTravels";
+
+import BarViewBtn from "../buttons/BarViewBtn";
+import CircularViewBtn from "../buttons/CircularViewBtn";
 
 // Importar el mapa dinámicamente para evitar problemas de SSR con Leaflet
 const TravelMap = dynamic(() => import("@/components/TravelMap"), {
@@ -22,8 +28,10 @@ const TravelMap = dynamic(() => import("@/components/TravelMap"), {
 
 const TravelsPageClient = () => {
   const { travels: travelsData, updateTravel, deleteTravel } = useTravels();
+  const { statsByMode } = useStats();
   const { travels, stats } = travelsData;
 
+  const [statsView, setStatsView] = useState<StatsView>("bar");
   const [filteredTravels, setFilteredTravels] = useState<Travel[]>(travels);
   const [isFiltered, setIsFiltered] = useState(false);
 
@@ -48,7 +56,17 @@ const TravelsPageClient = () => {
         <PresentialWorkAlert />
         <div className="flex gap-8">
           <TravelMap travels={filteredTravels} stats={stats} />
-          <TravelBarStats travels={filteredTravels} onFilterLocation={onFilterLocation} />
+          <div className="w-8/10 relative">
+            <div className="absolute top-2 right-2 z-10 flex gap-1">
+              <BarViewBtn handleClick={() => setStatsView("bar")} isActive={statsView === "bar"} />
+              <CircularViewBtn handleClick={() => setStatsView("circular")} isActive={statsView === "circular"} />
+            </div>
+            {statsView === "bar" ? (
+              <TravelBarStats travels={filteredTravels} onFilterLocation={onFilterLocation} cardClassName="w-full" />
+            ) : (
+              <TravelPieStats stats={statsByMode} />
+            )}
+          </div>
         </div>
         <TravelTable
           travels={filteredTravels}
