@@ -14,7 +14,8 @@ type Props = {
   onFilterLocation: (loc?: string) => void,
   options?: {
     field: 'origin' | 'destination'
-  }
+  },
+  cardClassName?: string,
 }
 
 const calculateHome = (travels: Travel[], options: Props["options"]) => {
@@ -43,7 +44,7 @@ const enrichWithFarthestPoint = (t: Travel, home?: Location) => {
   }
 }
 
-const TravelBarStats = ({ travels, onFilterLocation, options }: Props) => {
+const TravelBarStats = ({ travels, onFilterLocation, options, cardClassName = "w-8/10" }: Props) => {
   const home = calculateHome(travels, options)
   const relevantTravels = travels.map(t => enrichWithFarthestPoint(t, home))
 
@@ -53,7 +54,7 @@ const TravelBarStats = ({ travels, onFilterLocation, options }: Props) => {
   const chartConfig = buildChartConfig(topKeys)
 
   return (
-    <Card className="w-8/10 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+    <Card className={`${cardClassName} bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700`}>
       <CardContent className="h-[300px] flex items-center justify-center">
         <ChartContainer config={chartConfig} className="min-h-[300px] max-h-[300px] max-w-3/5 min-w-3/5">
           <BarChart accessibilityLayer data={hourlyChartData}>

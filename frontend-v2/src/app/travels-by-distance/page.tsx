@@ -1,13 +1,5 @@
-import Header from "@/components/Header";
-import TravelsByDistancePageClient from "@/components/pages/TravelsByDistancePageClient";
+import { redirect } from "next/navigation";
 
-const TravelsByDistancePage = () => {
-  return (
-    <>
-      <Header />
-      <TravelsByDistancePageClient />
-    </>
-  );
-};
-
-export default TravelsByDistancePage;
+export default function TravelsByDistancePage() {
+  redirect("/travels");
+}

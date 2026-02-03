@@ -9,3 +9,5 @@ export type StatByModeChartData = StatByMode & {
   averageSpeed: number
   fill: string
 }
+
+export type StatsView = "bar" | "circular"
