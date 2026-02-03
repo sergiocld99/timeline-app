@@ -4,11 +4,12 @@ A modern Next.js frontend for tracking travels, visits, and locations with inter
 
 ## Tech Stack
 
-- **Next.js 15** with App Router
+- **Next.js 16** with App Router (Turbopack by default)
 - **React 19** with TypeScript
 - **Tailwind CSS v4** for styling
 - **shadcn/ui** for UI components
 - **Leaflet** for interactive maps
+- **Recharts** for charts
 
 ## Features
 
@@ -22,7 +23,7 @@ A modern Next.js frontend for tracking travels, visits, and locations with inter
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 20.9+ (see `.nvmrc` in this directory)
 - Backend API running on `http://localhost:3000/api`
 
 ### Installation
@@ -66,17 +67,6 @@ src/
 └── constants/             # App constants
 ```
 
-## Migration from v1
-
-This frontend v2 is a complete rewrite of the original React/Vite frontend, featuring:
-
-- ✅ Modern Next.js architecture
-- ✅ Tailwind CSS for styling
-- ✅ shadcn/ui component library
-- ✅ Improved performance and SEO
-- ✅ Better developer experience
-- ✅ Responsive design patterns
-
 ## Development
 
 - **Components**: Built with shadcn/ui and Tailwind CSS
@@ -84,6 +74,7 @@ This frontend v2 is a complete rewrite of the original React/Vite frontend, feat
 - **API Integration**: Axios-based services
 - **Type Safety**: Full TypeScript support
 - **Styling**: Utility-first CSS with Tailwind
+- **Lint**: ESLint (flat config); run with `npm run lint`
 
 ## Contributing
 

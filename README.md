@@ -10,9 +10,9 @@ A full-stack application for tracking travels, visits, and locations with intera
 - RESTful API architecture
 
 ### Frontend
-- **Next.js 15** (App Router) with **React 19**
+- **Next.js 16** (App Router, Turbopack) with **React 19**
 - **TypeScript**
-- **Tailwind CSS** with **shadcn/ui** components
+- **Tailwind CSS v4** with **shadcn/ui** components
 - **Leaflet** for interactive maps
 - **Recharts** for data visualization
 
@@ -43,7 +43,7 @@ timeline-app/
 
 ### Prerequisites
 - Docker and Docker Compose
-- Node.js 18+ (for local development)
+- Node.js 20.9+ (for local frontend development)
 
 ### Quick Start with Docker
 
@@ -124,7 +124,7 @@ npm start        # Start the server
 ### Frontend Scripts
 ```bash
 cd frontend-v2
-npm run dev      # Development server with Turbopack
+npm run dev      # Development server (Turbopack by default)
 npm run build    # Production build
 npm run start    # Start production server
 npm run lint     # Run ESLint
