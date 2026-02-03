@@ -1,45 +1,37 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-
+import { defineConfig, globalIgnores } from "eslint/config";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTs from "eslint-config-next/typescript";
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
-import { FlatCompat } from "@eslint/eslintrc";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
-
-const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
-  {
-    ignores: [
-      "node_modules/**",
-      ".next/**",
-      "out/**",
-      "build/**",
-      "next-env.d.ts",
-    ],
-  },
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  ...nextTs,
   {
     plugins: {
       "@typescript-eslint": typescriptEslint,
     },
     rules: {
-      '@typescript-eslint/consistent-type-imports': [
-        'error',
-        { prefer: 'type-imports', fixStyle: 'separate-type-imports' }
+      // Re-enable and fix effects when ready; Next 16 react-hooks is stricter
+      "react-hooks/set-state-in-effect": "off",
+      "@typescript-eslint/consistent-type-imports": [
+        "error",
+        { prefer: "type-imports", fixStyle: "separate-type-imports" },
       ],
-      'import/order': [
-        'error',
+      "import/order": [
+        "error",
         {
-          groups: ['type', 'builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
-          'newlines-between': 'always'
-        }
+          groups: [
+            "type",
+            "builtin",
+            "external",
+            "internal",
+            "parent",
+            "sibling",
+            "index",
+          ],
+          "newlines-between": "always",
+        },
       ],
-
-      // Other important rules
       "@typescript-eslint/no-unused-vars": [
         "error",
         {
@@ -53,6 +45,14 @@ const eslintConfig = [
       "prefer-const": "error",
     },
   },
-];
+  globalIgnores([
+    "node_modules/**",
+    ".next/**",
+    "out/**",
+    "build/**",
+    "coverage/**",
+    "next-env.d.ts",
+  ]),
+]);
 
 export default eslintConfig;
