@@ -23,6 +23,7 @@ import { roundDecimals } from "@/utils/numbers";
 import ArrivalsAction from "./buttons/ArrivalsAction";
 import DeparturesAction from "./buttons/DeparturesAction";
 import EditAction from "./buttons/EditAction";
+import { cn } from "@/lib/utils";
 
 type Props = {
   locations: Location[];
@@ -33,7 +34,7 @@ const columnHeaders = ['Name', 'Latitude', 'Longitude', 'Zipcode', 'Notes', 'Act
 
 const LocationTable = ({ locations, updateFn }: Props) => {
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editValues, setEditValues] = useState<LocationEditValues>({ name: '', latitude: 0, longitude: 0, notes: '' });
+  const [editValues, setEditValues] = useState<LocationEditValues>({ name: '', zipcode: '', latitude: 0, longitude: 0, notes: '' });
 
   const renderColumnHeaders = () => (
     columnHeaders.map((header) => (
@@ -43,7 +44,7 @@ const LocationTable = ({ locations, updateFn }: Props) => {
 
   const resetEditValues = () => {
     setEditingId(null);
-    setEditValues({ name: '', latitude: 0, longitude: 0, notes: '' })
+    setEditValues({ name: '', zipcode: '', latitude: 0, longitude: 0, notes: '' })
   }
 
   const renderActionButtons = (location: Location) => {
@@ -76,6 +77,7 @@ const LocationTable = ({ locations, updateFn }: Props) => {
           setEditingId(location._id)
           setEditValues({
             name: location.name,
+            zipcode: location.zipcode,
             latitude: roundDecimals(location.latitude, 4),
             longitude: roundDecimals(location.longitude, 4),
             notes: location.notes
@@ -91,14 +93,14 @@ const LocationTable = ({ locations, updateFn }: Props) => {
     );
   }
 
-  const renderEditableCell = (location: Location, field: 'name' | 'notes') => {
+  const renderEditableCell = (location: Location, field: 'name' | 'notes' | 'zipcode', customClassName = 'w-80') => {
     if (editingId === location._id) {
       return (
         <Input
           type="text"
           value={editValues[field]}
           onChange={(e) => setEditValues(prev => ({ ...prev, [field]: e.target.value }))}
-          className="w-80 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+          className={cn("bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white", customClassName)}
         />
       );
     }
@@ -139,7 +141,7 @@ const LocationTable = ({ locations, updateFn }: Props) => {
                 <TableCell className="font-medium text-gray-900 dark:text-white">{renderEditableCell(l, 'name')}</TableCell>
                 <TableCell className="text-gray-700 dark:text-gray-300">{renderEditableCoordinate(l, 'latitude')}</TableCell>
                 <TableCell className="text-gray-700 dark:text-gray-300">{renderEditableCoordinate(l, 'longitude')}</TableCell>
-                <TableCell className="text-gray-700 dark:text-gray-300">{l.zipcode}</TableCell>
+                <TableCell className="text-gray-700 dark:text-gray-300">{renderEditableCell(l, 'zipcode', 'w-30')}</TableCell>
                 <TableCell className="text-gray-700 dark:text-gray-300">{renderEditableCell(l, 'notes')}</TableCell>
                 <TableCell>{renderActionButtons(l)}</TableCell>
               </TableRow>
