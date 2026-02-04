@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "dev": "next dev",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "clean:install": "rm -rf node_modules && npm i"
@@ -25,7 +25,7 @@
     "cmdk": "^1.1.1",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.542.0",
-    "next": "^15.5.9",
+    "next": "^16",
     "next-themes": "^0.4.6",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
@@ -46,7 +46,7 @@
     "@typescript-eslint/eslint-plugin": "^8.52.0",
     "@typescript-eslint/parser": "^8.52.0",
     "eslint": "^9",
-    "eslint-config-next": "15.5.2",
+    "eslint-config-next": "^16",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "tailwindcss": "^4",
