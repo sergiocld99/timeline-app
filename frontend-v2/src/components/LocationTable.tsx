@@ -18,12 +18,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 import { roundDecimals } from "@/utils/numbers";
 
 import ArrivalsAction from "./buttons/ArrivalsAction";
 import DeparturesAction from "./buttons/DeparturesAction";
 import EditAction from "./buttons/EditAction";
-import { cn } from "@/lib/utils";
 
 type Props = {
   locations: Location[];
