@@ -1,4 +1,4 @@
-import { TopKeysResult } from "@/types/stats"
+import type { TopKeysResult } from "@/types/stats"
 
 export const sortByAscendingValue = (entries: Record<string, number>) => {
   return Object.entries(entries).sort((a, b) => a[1] - b[1])
