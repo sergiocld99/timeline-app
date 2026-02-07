@@ -10,7 +10,6 @@ import PresentialWorkAlert from "@/components/PresentialWorkAlert";
 import TravelBarStats from "@/components/TravelBarStats";
 import TravelPieStats from "@/components/TravelPieStats";
 import TravelTable from "@/components/TravelTable";
-import useStats from "@/hooks/useStats";
 import useTravels from "@/hooks/useTravels";
 
 import BarViewBtn from "../buttons/BarViewBtn";
@@ -28,7 +27,6 @@ const TravelMap = dynamic(() => import("@/components/TravelMap"), {
 
 const TravelsPageClient = () => {
   const { travels: travelsData, updateTravel, deleteTravel } = useTravels();
-  const { statsByMode } = useStats();
   const { travels, stats } = travelsData;
 
   const [statsView, setStatsView] = useState<StatsView>("bar");
@@ -64,7 +62,7 @@ const TravelsPageClient = () => {
             {statsView === "bar" ? (
               <TravelBarStats travels={filteredTravels} onFilterLocation={onFilterLocation} cardClassName="w-full" />
             ) : (
-              <TravelPieStats stats={statsByMode} />
+              <TravelPieStats travels={filteredTravels} />
             )}
           </div>
         </div>
