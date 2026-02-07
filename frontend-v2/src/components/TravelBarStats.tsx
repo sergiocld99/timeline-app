@@ -44,11 +44,15 @@ const enrichWithFarthestPoint = (t: Travel, home?: Location) => {
   }
 }
 
+const buildOthersFilterString = (otherKeys: string[]) => {
+  return otherKeys.join(", ")
+}
+
 const TravelBarStats = ({ travels, onFilterLocation, options, cardClassName = "w-8/10" }: Props) => {
   const home = calculateHome(travels, options)
   const relevantTravels = travels.map(t => enrichWithFarthestPoint(t, home))
 
-  const { topKeys, shouldShowOthers } = calculateBestLocations(relevantTravels, 5)
+  const { topKeys, otherKeys, shouldShowOthers } = calculateBestLocations(relevantTravels, 5)
   const hourlyChartData = buildHourlyChartData(relevantTravels, topKeys)
   const dailyChartData = buildDailyChartData(relevantTravels, topKeys)
   const chartConfig = buildChartConfig(topKeys)
@@ -101,7 +105,7 @@ const TravelBarStats = ({ travels, onFilterLocation, options, cardClassName = "w
                 dataKey="others"
                 stackId="a"
                 fill="var(--color-others)"
-                onClick={() => onFilterLocation(undefined)}
+                onClick={() => onFilterLocation(buildOthersFilterString(otherKeys))}
               />}
           </BarChart>
         </ChartContainer>
@@ -149,7 +153,7 @@ const TravelBarStats = ({ travels, onFilterLocation, options, cardClassName = "w
                 dataKey="others"
                 stackId="a"
                 fill="var(--color-others)"
-                onClick={() => onFilterLocation(undefined)}
+                onClick={() => onFilterLocation(buildOthersFilterString(otherKeys))}
               />}
           </BarChart>
         </ChartContainer>

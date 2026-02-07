@@ -35,8 +35,11 @@ const TravelsPageClient = () => {
 
   const onFilterLocation = (loc?: string) => {
     if (loc) {
-      setFilteredTravels(travels.filter(t => t.origin.zipcode === loc || t.destination.zipcode === loc));
-      setAppliedFilter(loc);
+      const zipcodes = loc.split(", ")
+      const displayName = zipcodes.length === 1 ? zipcodes[0] : zipcodes.length < 10 ? loc : "Others"
+
+      setFilteredTravels(travels.filter(t => zipcodes.includes(t.origin.zipcode) || zipcodes.includes(t.destination.zipcode)));
+      setAppliedFilter(displayName);
     } else {
       setFilteredTravels(travels);
       setAppliedFilter(null);
