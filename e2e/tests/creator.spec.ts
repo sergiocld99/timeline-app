@@ -32,10 +32,10 @@ test('can create and delete travel', async ({ page }) => {
   await page.locator('button').filter({ hasText: 'Apply' }).click()
   await page.screenshot({ path: 'test-results/travels_loaded.png', fullPage: true });
 
-  await expect(page.locator('td').filter({ hasText: '1 travels' })).toBeVisible()
+  await expect(page.locator('td').filter({ hasText: '1 travel' })).toBeVisible()
 
   // Delete travel
-  await page.getByRole('button', { name: 'Delete travel' }).click()
+  await page.getByRole('button', { name: 'Delete' }).click()
 
   await expect(page.locator('td').filter({ hasText: '0 travels' })).toBeVisible()
   await expect(page.locator('td').filter({ hasText: 'NaN' })).not.toBeVisible()
