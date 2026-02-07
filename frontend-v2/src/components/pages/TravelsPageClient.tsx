@@ -31,21 +31,21 @@ const TravelsPageClient = () => {
 
   const [statsView, setStatsView] = useState<StatsView>("bar");
   const [filteredTravels, setFilteredTravels] = useState<Travel[]>(travels);
-  const [isFiltered, setIsFiltered] = useState(false);
+  const [appliedFilter, setAppliedFilter] = useState<string | null>(null);
 
   const onFilterLocation = (loc?: string) => {
     if (loc) {
       setFilteredTravels(travels.filter(t => t.origin.zipcode === loc || t.destination.zipcode === loc));
-      setIsFiltered(true);
+      setAppliedFilter(loc);
     } else {
       setFilteredTravels(travels);
-      setIsFiltered(false);
+      setAppliedFilter(null);
     }
   };
 
   useEffect(() => {
     setFilteredTravels(travels);
-    setIsFiltered(false);
+    setAppliedFilter(null);
   }, [travels]);
 
   return (
@@ -72,7 +72,7 @@ const TravelsPageClient = () => {
           onUpdateTravel={updateTravel}
           onDeleteTravel={deleteTravel}
           onRemoveFilter={() => onFilterLocation(undefined)}
-          isFiltered={isFiltered}
+          appliedFilter={appliedFilter}
         />
       </div>
     </main>

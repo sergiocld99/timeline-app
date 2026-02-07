@@ -22,10 +22,10 @@ type Props = {
   onAddCrosses?: (travelId: string) => Promise<void>;
   onRemoveCrosses?: (travelId: string) => Promise<void>;
   onRemoveFilter?: () => void;
-  isFiltered?: boolean
+  appliedFilter?: string | null;
 };
 
-const TravelTable = ({ travels, stats, onUpdateTravel, onDeleteTravel, onAddCrosses, onRemoveCrosses, onRemoveFilter, isFiltered }: Props) => {
+const TravelTable = ({ travels, stats, onUpdateTravel, onDeleteTravel, onAddCrosses, onRemoveCrosses, onRemoveFilter, appliedFilter }: Props) => {
   const { dateFrom, dateTo } = useDateRange();
   const { currentUser } = useUser();
 
@@ -43,7 +43,7 @@ const TravelTable = ({ travels, stats, onUpdateTravel, onDeleteTravel, onAddCros
     <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-gray-900 dark:text-white">Travels</CardTitle>
-        {isFiltered && onRemoveFilter && <RemoveFilterBtn handleClick={onRemoveFilter} />}
+        {appliedFilter && onRemoveFilter && <RemoveFilterBtn handleClick={onRemoveFilter} filterName={appliedFilter} />}
         <ExportButton handleClick={handleExportCsv} />
       </CardHeader>
       <CardContent className="space-y-6">
@@ -53,10 +53,10 @@ const TravelTable = ({ travels, stats, onUpdateTravel, onDeleteTravel, onAddCros
             No travels found for the selected date range :/
           </div>
         )}
-        <TravelTableContent 
+        <TravelTableContent
           travels={travels}
           stats={stats}
-          onUpdate={onUpdateTravel} 
+          onUpdate={onUpdateTravel}
           onDelete={onDeleteTravel}
           onAddCrosses={onAddCrosses}
           onRemoveCrosses={onRemoveCrosses}
