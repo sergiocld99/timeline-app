@@ -1,17 +1,19 @@
 "use client";
 
 import type { ChartConfig } from "@/components/ui/chart"
-import type { StatByMode, StatByModeChartData } from "@/types/stats"
+import type { StatByModeChartData } from "@/types/stats"
+import type { Travel } from "@/types/travel"
 
 import { BadgeQuestionMarkIcon, BusIcon, CarIcon, CarTaxiFrontIcon, PersonStandingIcon, ShipIcon, TrainIcon } from "lucide-react";
 import { Label, Pie, PieChart } from 'recharts';
 
 import { Card, CardContent } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { calculateStatsByMode } from '@/utils/travelStats';
 
 
 type Props = {
-  stats: StatByMode[]
+  travels: Travel[]
 }
 
 const config = {
@@ -103,7 +105,9 @@ const getLabel = (total: number, label: string) => {
   )
 }
 
-const TravelPieStats = ({ stats }: Props) => {
+const TravelPieStats = ({ travels }: Props) => {
+  const stats = calculateStatsByMode(travels);
+
   const chartData: StatByModeChartData[] = stats.map((stat) => ({
     ...stat,
     averageSpeed: Math.round(60 * stat.totalKm / stat.totalMinutes),

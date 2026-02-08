@@ -68,6 +68,12 @@ This will start:
 - **Backend API** on port `3000`
 - **Frontend** on port `3002`
 
+> **⚠️ Important**: When making changes to the frontend code, always use the `--build` flag to force a rebuild:
+> ```bash
+> docker compose up --build -d
+> ```
+> This ensures Next.js recompiles with your latest changes.
+
 4. Open your browser:
 ```
 http://localhost:3002

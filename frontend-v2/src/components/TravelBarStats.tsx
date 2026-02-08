@@ -44,11 +44,15 @@ const enrichWithFarthestPoint = (t: Travel, home?: Location) => {
   }
 }
 
+const buildOthersFilterString = (otherKeys: string[]) => {
+  return otherKeys.join(", ")
+}
+
 const TravelBarStats = ({ travels, onFilterLocation, options, cardClassName = "w-8/10" }: Props) => {
   const home = calculateHome(travels, options)
   const relevantTravels = travels.map(t => enrichWithFarthestPoint(t, home))
 
-  const topKeys = calculateBestLocations(relevantTravels, 5)
+  const { topKeys, otherKeys, shouldShowOthers } = calculateBestLocations(relevantTravels, 5)
   const hourlyChartData = buildHourlyChartData(relevantTravels, topKeys)
   const dailyChartData = buildDailyChartData(relevantTravels, topKeys)
   const chartConfig = buildChartConfig(topKeys)
@@ -96,12 +100,13 @@ const TravelBarStats = ({ travels, onFilterLocation, options, cardClassName = "w
               fill="var(--color-blue)"
               onClick={() => onFilterLocation(topKeys.at(4))}
             />}
-            <Bar
-              dataKey="others"
-              stackId="a"
-              fill="var(--color-others)"
-              onClick={() => onFilterLocation(undefined)}
-            />
+            {shouldShowOthers &&
+              <Bar
+                dataKey="others"
+                stackId="a"
+                fill="var(--color-others)"
+                onClick={() => onFilterLocation(buildOthersFilterString(otherKeys))}
+              />}
           </BarChart>
         </ChartContainer>
         <ChartContainer config={chartConfig} className="min-h-[270px] max-h-[270px] mx-auto max-w-1/4 min-w-1/4">
@@ -143,12 +148,13 @@ const TravelBarStats = ({ travels, onFilterLocation, options, cardClassName = "w
               fill="var(--color-blue)"
               onClick={() => onFilterLocation(topKeys.at(4))}
             />
-            <Bar
-              dataKey="others"
-              stackId="a"
-              fill="var(--color-others)"
-              onClick={() => onFilterLocation(undefined)}
-            />
+            {shouldShowOthers &&
+              <Bar
+                dataKey="others"
+                stackId="a"
+                fill="var(--color-others)"
+                onClick={() => onFilterLocation(buildOthersFilterString(otherKeys))}
+              />}
           </BarChart>
         </ChartContainer>
       </CardContent>

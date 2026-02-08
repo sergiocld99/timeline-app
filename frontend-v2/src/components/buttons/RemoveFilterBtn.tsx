@@ -4,7 +4,11 @@ import { X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 
-const RemoveFilterBtn = ({ handleClick }: ButtonProps) => {
+type Props = ButtonProps & {
+  filterName: string
+}
+
+const RemoveFilterBtn = ({ handleClick, filterName }: Props) => {
   return (
     <Button
       onClick={handleClick}
@@ -13,7 +17,7 @@ const RemoveFilterBtn = ({ handleClick }: ButtonProps) => {
       className="gap-2"
     >
       <X className="h-4 w-4" />
-      Remove Filter
+      Remove Filter: {filterName}
     </Button>
   )
 }
