@@ -11,3 +11,9 @@ export type StatByModeChartData = StatByMode & {
 }
 
 export type StatsView = "bar" | "circular"
+
+export type TopKeysResult = {
+  topKeys: string[]
+  otherKeys: string[]
+  shouldShowOthers: boolean
+}

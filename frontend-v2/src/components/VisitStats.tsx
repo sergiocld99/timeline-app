@@ -61,7 +61,7 @@ const buildDailyChartData = (visits: Visit[], topLocations: string[]): ChartData
 const VisitStats = ({ visitsData }: Props) => {
   const { visits } = visitsData;
 
-  const topLocations = calculateBestLocations(visits, 5)
+  const { topKeys: topLocations, shouldShowOthers } = calculateBestLocations(visits, 5)
   const hourlyChartData = buildHourlyChartData(visits, topLocations)
   const dailyChartData = buildDailyChartData(visits, topLocations)
   const chartConfig = buildChartConfig(topLocations)
@@ -104,11 +104,12 @@ const VisitStats = ({ visitsData }: Props) => {
               stackId="a"
               fill="var(--color-blue)"
             />
-            <Bar
-              dataKey="others"
-              stackId="a"
-              fill="var(--color-others)"
-            />
+            {shouldShowOthers &&
+              <Bar
+                dataKey="others"
+                stackId="a"
+                fill="var(--color-others)"
+              />}
           </BarChart>
         </ChartContainer>
         <ChartContainer config={chartConfig} className="min-h-[270px] max-h-[270px] mx-auto max-w-1/4 min-w-1/4">
@@ -145,11 +146,12 @@ const VisitStats = ({ visitsData }: Props) => {
               stackId="a"
               fill="var(--color-blue)"
             />
-            <Bar
-              dataKey="others"
-              stackId="a"
-              fill="var(--color-others)"
-            />
+            {shouldShowOthers &&
+              <Bar
+                dataKey="others"
+                stackId="a"
+                fill="var(--color-others)"
+              />}
           </BarChart>
         </ChartContainer>
       </CardContent>

@@ -10,7 +10,6 @@ import PresentialWorkAlert from "@/components/PresentialWorkAlert";
 import TravelBarStats from "@/components/TravelBarStats";
 import TravelPieStats from "@/components/TravelPieStats";
 import TravelTable from "@/components/TravelTable";
-import useStats from "@/hooks/useStats";
 import useTravels from "@/hooks/useTravels";
 
 import BarViewBtn from "../buttons/BarViewBtn";
@@ -28,26 +27,28 @@ const TravelMap = dynamic(() => import("@/components/TravelMap"), {
 
 const TravelsPageClient = () => {
   const { travels: travelsData, updateTravel, deleteTravel } = useTravels();
-  const { statsByMode } = useStats();
   const { travels, stats } = travelsData;
 
   const [statsView, setStatsView] = useState<StatsView>("bar");
   const [filteredTravels, setFilteredTravels] = useState<Travel[]>(travels);
-  const [isFiltered, setIsFiltered] = useState(false);
+  const [appliedFilter, setAppliedFilter] = useState<string | null>(null);
 
   const onFilterLocation = (loc?: string) => {
     if (loc) {
-      setFilteredTravels(travels.filter(t => t.origin.zipcode === loc || t.destination.zipcode === loc));
-      setIsFiltered(true);
+      const zipcodes = loc.split(", ")
+      const displayName = zipcodes.length === 1 ? zipcodes[0] : zipcodes.length < 10 ? loc : "Others"
+
+      setFilteredTravels(travels.filter(t => zipcodes.includes(t.origin.zipcode) || zipcodes.includes(t.destination.zipcode)));
+      setAppliedFilter(displayName);
     } else {
       setFilteredTravels(travels);
-      setIsFiltered(false);
+      setAppliedFilter(null);
     }
   };
 
   useEffect(() => {
     setFilteredTravels(travels);
-    setIsFiltered(false);
+    setAppliedFilter(null);
   }, [travels]);
 
   return (
@@ -64,7 +65,7 @@ const TravelsPageClient = () => {
             {statsView === "bar" ? (
               <TravelBarStats travels={filteredTravels} onFilterLocation={onFilterLocation} cardClassName="w-full" />
             ) : (
-              <TravelPieStats stats={statsByMode} />
+              <TravelPieStats travels={filteredTravels} />
             )}
           </div>
         </div>
@@ -74,7 +75,7 @@ const TravelsPageClient = () => {
           onUpdateTravel={updateTravel}
           onDeleteTravel={deleteTravel}
           onRemoveFilter={() => onFilterLocation(undefined)}
-          isFiltered={isFiltered}
+          appliedFilter={appliedFilter}
         />
       </div>
     </main>
