@@ -87,13 +87,6 @@ export const getNormalizedEachHourOfTravel = (startTime: HourAndMinutes, endTime
   return hours
 }
 
-export const getEachHourOfTravel = ({ startTime: start, endTime: end }: Travel): HourPart[] => {
-  const startTime = extractHourAndMinutes(start);
-  const endTime = extractHourAndMinutes(end);
-
-  return getNormalizedEachHourOfTravel(startTime, endTime)
-}
-
 export const getEachHourOfEachHalf = ({ startTime: start, endTime: end, duration }: Travel): HourPart[][] => {
   const startTime = extractHourAndMinutes(start);
   const endTime = extractHourAndMinutes(end);

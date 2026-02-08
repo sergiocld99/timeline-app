@@ -1,3 +1,4 @@
+import type { HourPart } from "./chart"
 import type { Weighted } from "./commons"
 import type { Cross } from "./cross"
 
@@ -29,6 +30,7 @@ export type Travel = Weighted & {
   duration: number
   speed: number
   crosses: Cross[]
+  hourParts: HourPart[]
 }
 
 export type TravelWithFarthestPoint = Travel & {
