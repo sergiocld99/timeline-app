@@ -51,7 +51,7 @@ export const enrichTravels = (travels) => {
     t.set('speed', (t.distance / duration) * 60, { strict: false });
 
     // From FE: analize/travel.ts
-    t.set('hourParts', getHourParts(t.startTime, t.endTime), { strict: false });
+    t.set('hourParts', getHourParts(t.startTime, t.endTime, duration), { strict: false });
 
     return t;
   });

@@ -5,18 +5,16 @@ import { daysOfWeek } from "@/constants"
 import { convertToArgentineTime } from "@/utils"
 import { getChartHours, useChartValue, useDefaultValues } from "@/utils/chart"
 
-import { getEachHourOfEachHalf } from "../analize/travel"
-
 const CHART_FIELD = 'zipcode'
 
 const buildPlaceWeightByHour = (travels: TravelWithFarthestPoint[], topLocations: string[]): ChartSource => {
   return travels.reduce((acc, t) => {
     const chartOrigin = topLocations.includes(t.origin[CHART_FIELD]) ? t.origin[CHART_FIELD] : 'others'
     const chartDestination = topLocations.includes(t.destination[CHART_FIELD]) ? t.destination[CHART_FIELD] : 'others'
-    const farthestPoint = t.farthestPoint
+    const { farthestPoint, hourParts } = t
 
     if (chartOrigin === farthestPoint?.[CHART_FIELD] || chartDestination === farthestPoint?.[CHART_FIELD]) {
-      t.hourParts.forEach(hour => {
+      hourParts.completeParts.forEach(hour => {
         if (!acc[hour.hour]) {
           acc[hour.hour] = useDefaultValues(topLocations)
         }
@@ -27,10 +25,8 @@ const buildPlaceWeightByHour = (travels: TravelWithFarthestPoint[], topLocations
       return acc
     }
 
-    const hoursByHalf = getEachHourOfEachHalf(t)
-
     // FROM ORIGIN
-    hoursByHalf[0].forEach(hour => {
+    hourParts.firstHalf.forEach(hour => {
       if (!acc[hour.hour]) {
         acc[hour.hour] = useDefaultValues(topLocations)
       }
@@ -39,7 +35,7 @@ const buildPlaceWeightByHour = (travels: TravelWithFarthestPoint[], topLocations
     })
 
     // TO DESTINATION
-    hoursByHalf[1].forEach(hour => {
+    hourParts.secondHalf.forEach(hour => {
       if (!acc[hour.hour]) {
         acc[hour.hour] = useDefaultValues(topLocations)
       }

@@ -2,15 +2,21 @@ const normalizeHour = (hour) => {
   return hour.toString().padStart(2, '0');
 }
 
-export const extractHourAndMinutes = (time) => {
+const calculateHalfTime = (startTime, duration) => {
+  const halfTimestamp = startTime.hour * 60 + startTime.minutes + duration / 2
+
+  return {
+    hour: Math.floor(halfTimestamp / 60) % 24,
+    minutes: Math.floor(halfTimestamp % 60)
+  }
+}
+
+const extractHourAndMinutes = (time) => {
   const [hour, minutes] = time.toISOString().split('T')[1].split(':');
   return { hour: parseInt(hour), minutes: parseInt(minutes) };
 }
 
-export const getHourParts = (startTime, endTime) => {
-  const normalizedStart = extractHourAndMinutes(startTime);
-  const normalizedEnd = extractHourAndMinutes(endTime);
-
+const calculateHourParts = (normalizedStart, normalizedEnd) => {
   const hours = [];
 
   // Same day - short travel in same hour (< 60 min)
@@ -41,4 +47,16 @@ export const getHourParts = (startTime, endTime) => {
   }
 
   return hours
+}
+
+export const getHourParts = (startTime, endTime, duration) => {
+  const normalizedStart = extractHourAndMinutes(startTime);
+  const normalizedEnd = extractHourAndMinutes(endTime);
+  const normalizedHalfTime = calculateHalfTime(normalizedStart, duration);
+
+  return {
+    completeParts: calculateHourParts(normalizedStart, normalizedEnd),
+    firstHalf: calculateHourParts(normalizedStart, normalizedHalfTime),
+    secondHalf: calculateHourParts(normalizedHalfTime, normalizedEnd),
+  }
 }

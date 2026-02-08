@@ -1,9 +1,7 @@
 import type { KnownCenter } from "@/types/center"
-import type { HourAndMinutes, HourPart } from "@/types/chart"
 import type { MapLocation } from "@/types/map"
 import type { Location, Travel, TravelWithFarthestPoint } from "@/types/travel"
 
-import { extractHourAndMinutes, normalizeHour } from "@/utils/chart"
 import { extractKeys, sortByDescendingValue } from "@/utils/kv"
 
 import { getLocationKey } from "./location"
@@ -42,60 +40,6 @@ export const calculateBestModes = (travels: Travel[], quantity: number) => {
 
   const sortedModes = sortByDescendingValue(topModes)
   return extractKeys(sortedModes, quantity, true)
-}
-
-// example 14:05 - 13:35 = 60 - 30 = 30
-const calculateHalfTime = (startTime: HourAndMinutes, duration: number, fraction: number): HourAndMinutes => {
-  const halfTimestamp = startTime.hour * 60 + startTime.minutes + duration * fraction
-
-  return {
-    hour: Math.floor(halfTimestamp / 60) % 24,
-    minutes: Math.floor(halfTimestamp % 60)
-  }
-}
-
-export const getNormalizedEachHourOfTravel = (startTime: HourAndMinutes, endTime: HourAndMinutes): HourPart[] => {
-  const hours: HourPart[] = [];
-
-  // Same day - short travel in same hour (< 60 min)
-  if (endTime.hour === startTime.hour) {
-    return [{ hour: normalizeHour(endTime.hour), totalMinutes: (endTime.minutes - startTime.minutes) }]
-  }
-
-  // Partial hours (start and end)
-  hours.push({ hour: normalizeHour(startTime.hour), totalMinutes: (60 - startTime.minutes) });
-  hours.push({ hour: normalizeHour(endTime.hour), totalMinutes: endTime.minutes });
-
-  // Full hours for travels in same day
-  if (endTime.hour > startTime.hour) {
-    for (let i = startTime.hour + 1; i < endTime.hour; i++) {
-      hours.push({ hour: normalizeHour(i), totalMinutes: 60 });
-    }
-
-    return hours
-  }
-
-  // Full hours for travels between 2 days
-  for (let i = startTime.hour + 1; i < 24; i++) {
-    hours.push({ hour: normalizeHour(i), totalMinutes: 60 });
-  }
-
-  for (let i = 0; i < endTime.hour; i++) {
-    hours.push({ hour: normalizeHour(i), totalMinutes: 60 });
-  }
-
-  return hours
-}
-
-export const getEachHourOfEachHalf = ({ startTime: start, endTime: end, duration }: Travel): HourPart[][] => {
-  const startTime = extractHourAndMinutes(start);
-  const endTime = extractHourAndMinutes(end);
-  const halfTime = calculateHalfTime(startTime, duration, 0.5)
-
-  const firstHalfHours = getNormalizedEachHourOfTravel(startTime, halfTime)
-  const secondHalfHours = getNormalizedEachHourOfTravel(halfTime, endTime)
-
-  return [firstHalfHours, secondHalfHours]
 }
 
 const initializeMapLocation = (location: Location, date: string): MapLocation => {
