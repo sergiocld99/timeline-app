@@ -2,6 +2,7 @@
 
 import type { CheckedState } from "@radix-ui/react-checkbox";
 import type { Cross } from "@/types/cross";
+import type { ReactNode } from "react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox"
@@ -17,11 +18,22 @@ import {
 type Props = {
   data: Cross[];
   onCheckAnd: (checked: CheckedState, item: Cross) => void;
-  onCheckEdit: (checked: CheckedState, item: Cross) => void;
+  onCheckEdit?: (checked: CheckedState, item: Cross) => void;
+  isMobile?: boolean;
 };
 
-const CrossTable = ({ data, onCheckAnd, onCheckEdit }: Props) => {
-  const columnHeaders = ['Name', 'Latitude', 'Longitude', 'OR', 'EDIT'];
+const renderCell = (children: ReactNode) => (
+  <TableCell className="text-gray-700 dark:text-gray-300">{children}</TableCell>
+)
+
+const renderCheckbox = (id: string, onCheckedChange: (checked: CheckedState) => void) => (
+  <TableCell>
+    <Checkbox id={id} onCheckedChange={onCheckedChange} />
+  </TableCell>
+)
+
+const CrossTable = ({ data, onCheckAnd, onCheckEdit, isMobile = false }: Props) => {
+  const columnHeaders = !isMobile ? ['Name', 'Latitude', 'Longitude', 'OR', 'EDIT'] : ['Name', 'OR'];
 
   const renderColumnHeaders = () => (
     columnHeaders.map((header) => (
@@ -45,16 +57,12 @@ const CrossTable = ({ data, onCheckAnd, onCheckEdit }: Props) => {
             {data.map((item) => (
               <TableRow key={item._id} className="border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
                 <TableCell className="font-medium text-gray-900 dark:text-white">{item.name}</TableCell>
-                <TableCell className="text-gray-700 dark:text-gray-300">{item.latitude.toFixed(4)}</TableCell>
-                <TableCell className="text-gray-700 dark:text-gray-300">{item.longitude.toFixed(4)}</TableCell>
-                <TableCell>
-                  <Checkbox id={item._id} onCheckedChange={(checked) => onCheckAnd(checked, item)}/>
-                </TableCell>
-                <TableCell>
-                  <Checkbox id={item._id} onCheckedChange={(checked) => onCheckEdit(checked, item)}/>
-                </TableCell>
-              </TableRow>
-            ))}
+                {!isMobile && renderCell(item.latitude.toFixed(4))}
+                {!isMobile && renderCell(item.longitude.toFixed(4))}
+                {renderCheckbox(item._id, (checked) => onCheckAnd(checked, item))}
+                {onCheckEdit && renderCheckbox(item._id, (checked) => onCheckEdit(checked, item))}
+              </TableRow>)
+            )}
           </TableBody>
         </Table>
         {data.length === 0 && (

@@ -82,12 +82,15 @@ const CrossesPageClient = () => {
 
   return (
     <main className="py-8 bg-gray-50 dark:bg-gray-900 min-h-screen gap-8 px-8 w-full">
-      <div className="flex gap-8 mx-auto">
-        <div className="w-1/3">
+      <div className="flex flex-col lg:flex-row gap-8 mx-auto">
+        <div className="w-full lg:w-1/3">
           <CrossForm onSave={refetch} />
         </div>
-        <div className="w-2/3">
+        <div className="hidden lg:block w-2/3">
           <CrossTable data={crosses} onCheckAnd={onCheckAnd} onCheckEdit={onCheckEdit} />
+        </div>
+        <div className="lg:hidden w-full">
+          <CrossTable data={crosses} onCheckAnd={onCheckAnd} isMobile />
         </div>
       </div>
       <div className="py-8 space-y-8">
