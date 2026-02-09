@@ -13,6 +13,7 @@ import ExportButton from './buttons/ExportButton';
 import RemoveFilterBtn from './buttons/RemoveFilterBtn';
 import DateRangeSelector from './DateRangeSelector';
 import TravelTableContent from './TravelTableContent';
+import TravelListContent from './mobile/TravelListContent';
 
 type Props = {
   travels: Travel[];
@@ -53,14 +54,19 @@ const TravelTable = ({ travels, stats, onUpdateTravel, onDeleteTravel, onAddCros
             No travels found for the selected date range :/
           </div>
         )}
-        <TravelTableContent
-          travels={travels}
-          stats={stats}
-          onUpdate={onUpdateTravel}
-          onDelete={onDeleteTravel}
-          onAddCrosses={onAddCrosses}
-          onRemoveCrosses={onRemoveCrosses}
-        />
+        <div className="hidden lg:block">
+          <TravelTableContent
+            travels={travels}
+            stats={stats}
+            onUpdate={onUpdateTravel}
+            onDelete={onDeleteTravel}
+            onAddCrosses={onAddCrosses}
+            onRemoveCrosses={onRemoveCrosses}
+          />
+        </div>
+        <div className="lg:hidden">
+          <TravelListContent travels={travels} />
+        </div>
       </CardContent>
     </Card>
   );
