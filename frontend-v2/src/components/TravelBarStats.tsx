@@ -118,36 +118,36 @@ const TravelBarStats = ({ travels, onFilterLocation, options, cardClassName = "w
               tickFormatter={(value) => value.slice(0, 3)}
             />
             <ChartTooltip content={<ChartTooltipContent />} />
-            <Bar
+            {topKeys.at(0) && <Bar
               dataKey="red"
               stackId="a"
               fill="var(--color-red)"
               onClick={() => onFilterLocation(topKeys.at(0))}
-            />
-            <Bar
+            />}
+            {topKeys.at(1) && <Bar
               dataKey="orange"
               stackId="a"
               fill="var(--color-orange)"
               onClick={() => onFilterLocation(topKeys.at(1))}
-            />
-            <Bar
+            />}
+            {topKeys.at(2) && <Bar
               dataKey="yellow"
               stackId="a"
               fill="var(--color-yellow)"
               onClick={() => onFilterLocation(topKeys.at(2))}
-            />
-            <Bar
+            />}
+            {topKeys.at(3) && <Bar
               dataKey="green"
               stackId="a"
               fill="var(--color-green)"
               onClick={() => onFilterLocation(topKeys.at(3))}
-            />
-            <Bar
+            />}
+            {topKeys.at(4) && <Bar
               dataKey="blue"
               stackId="a"
               fill="var(--color-blue)"
               onClick={() => onFilterLocation(topKeys.at(4))}
-            />
+            />}
             {shouldShowOthers &&
               <Bar
                 dataKey="others"

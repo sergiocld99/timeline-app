@@ -1,3 +1,5 @@
+import { getHourParts } from "./timeService.js";
+
 const buildShortDate = (date) => {
   const dateParts = date.toISOString().split('T')[0].split('-');
   const timeParts = date.toISOString().split('T')[1].split(':');
@@ -47,6 +49,9 @@ export const enrichTravels = (travels) => {
     t.set('shortDate', buildShortDate(t.startTime), { strict: false });
     t.set('duration', duration, { strict: false });
     t.set('speed', (t.distance / duration) * 60, { strict: false });
+
+    // From FE: analize/travel.ts
+    t.set('hourParts', getHourParts(t.startTime, t.endTime, duration), { strict: false });
 
     return t;
   });

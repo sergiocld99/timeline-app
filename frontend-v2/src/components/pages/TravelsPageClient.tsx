@@ -14,6 +14,8 @@ import useTravels from "@/hooks/useTravels";
 
 import BarViewBtn from "../buttons/BarViewBtn";
 import CircularViewBtn from "../buttons/CircularViewBtn";
+import LineViewBtn from "../buttons/LineViewBtn";
+import TravelLineStats from "../TravelLineStats";
 
 // Importar el mapa dinámicamente para evitar problemas de SSR con Leaflet
 const TravelMap = dynamic(() => import("@/components/TravelMap"), {
@@ -58,15 +60,14 @@ const TravelsPageClient = () => {
         <div className="flex gap-8">
           <TravelMap travels={filteredTravels} stats={stats} />
           <div className="w-8/10 relative">
-            <div className="absolute top-2 right-2 z-10 flex gap-1">
+            <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
               <BarViewBtn handleClick={() => setStatsView("bar")} isActive={statsView === "bar"} />
               <CircularViewBtn handleClick={() => setStatsView("circular")} isActive={statsView === "circular"} />
+              <LineViewBtn handleClick={() => setStatsView("line")} isActive={statsView === "line"} />
             </div>
-            {statsView === "bar" ? (
-              <TravelBarStats travels={filteredTravels} onFilterLocation={onFilterLocation} cardClassName="w-full" />
-            ) : (
-              <TravelPieStats travels={filteredTravels} />
-            )}
+            {statsView === "bar" && <TravelBarStats travels={filteredTravels} onFilterLocation={onFilterLocation} cardClassName="w-full" />}
+            {statsView === "circular" && <TravelPieStats travels={filteredTravels} />}
+            {statsView === "line" && <TravelLineStats travels={filteredTravels} />}
           </div>
         </div>
         <TravelTable
