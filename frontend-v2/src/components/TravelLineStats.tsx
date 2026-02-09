@@ -77,8 +77,6 @@ const TravelLineStats = ({ travels }: Props) => {
 
   const hourlyChartData = buildHourlyChartData({ travels })
 
-  console.log(hourlyChartData)
-
   return (
     <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardHeader>
@@ -107,46 +105,17 @@ const TravelLineStats = ({ travels }: Props) => {
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
-            <Line
-              dataKey="car"
-              type="natural"
-              stroke="var(--color-car)"
-              strokeWidth={2}
-              dot={{ fill: "var(--color-car)" }}
-              activeDot={{ r: 6 }}
-            />
-            <Line
-              dataKey="bus"
-              type="natural"
-              stroke="var(--color-bus)"
-              strokeWidth={2}
-              dot={{ fill: "var(--color-bus)" }}
-              activeDot={{ r: 6 }}
-            />
-            <Line
-              dataKey="taxi"
-              type="natural"
-              stroke="var(--color-taxi)"
-              strokeWidth={2}
-              dot={{ fill: "var(--color-taxi)" }}
-              activeDot={{ r: 6 }}
-            />
-            <Line
-              dataKey="walking"
-              type="natural"
-              stroke="var(--color-walking)"
-              strokeWidth={2}
-              dot={{ fill: "var(--color-walking)" }}
-              activeDot={{ r: 6 }}
-            />
-            <Line
-              dataKey="others"
-              type="natural"
-              stroke="var(--color-others)"
-              strokeWidth={2}
-              dot={{ fill: "var(--color-others)" }}
-              activeDot={{ r: 6 }}
-            />
+            {['car', 'bus', 'taxi', 'walking', 'others'].map(key => (
+              <Line
+                key={key}
+                dataKey={key}
+                type="natural"
+                stroke={`var(--color-${key})`}
+                strokeWidth={4}
+                dot={{ fill: `var(--color-${key})`, r: 4 }}
+                activeDot={{ r: 7 }}
+              />
+            ))}
           </LineChart>
         </ChartContainer>
       </CardContent>
