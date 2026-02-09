@@ -17,7 +17,7 @@ import {
 
 type Props = {
   data: Cross[];
-  onCheckAnd: (checked: CheckedState, item: Cross) => void;
+  onCheckOR: (checked: CheckedState, item: Cross) => void;
   onCheckEdit?: (checked: CheckedState, item: Cross) => void;
   isMobile?: boolean;
 };
@@ -32,7 +32,7 @@ const renderCheckbox = (id: string, onCheckedChange: (checked: CheckedState) => 
   </TableCell>
 )
 
-const CrossTable = ({ data, onCheckAnd, onCheckEdit, isMobile = false }: Props) => {
+const CrossTable = ({ data, onCheckOR, onCheckEdit, isMobile = false }: Props) => {
   const columnHeaders = !isMobile ? ['Name', 'Latitude', 'Longitude', 'OR', 'EDIT'] : ['Name', 'OR'];
 
   const renderColumnHeaders = () => (
@@ -59,7 +59,7 @@ const CrossTable = ({ data, onCheckAnd, onCheckEdit, isMobile = false }: Props) 
                 <TableCell className="font-medium text-gray-900 dark:text-white">{item.name}</TableCell>
                 {!isMobile && renderCell(item.latitude.toFixed(4))}
                 {!isMobile && renderCell(item.longitude.toFixed(4))}
-                {renderCheckbox(item._id, (checked) => onCheckAnd(checked, item))}
+                {renderCheckbox(item._id, (checked) => onCheckOR(checked, item))}
                 {onCheckEdit && renderCheckbox(item._id, (checked) => onCheckEdit(checked, item))}
               </TableRow>)
             )}
