@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "clean:install": "rm -rf node_modules && npm i"
+    "clean:install": "rm -rf node_modules package-lock.json && npm i"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
@@ -19,7 +19,7 @@
     "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-slot": "^1.2.3",
     "@types/leaflet": "^1.9.21",
-    "axios": "^1.11.0",
+    "axios": "^1.13.5",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
