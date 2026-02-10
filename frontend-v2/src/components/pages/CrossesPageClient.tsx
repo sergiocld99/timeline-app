@@ -17,7 +17,7 @@ import TravelService from "@/services/TravelService";
 const CrossesPageClient = () => {
   const { crosses, refetch } = useCrosses();
   const { travels: travelsData, refetch: refetchTravels } = useTravels();
-  const [andCrosses, setAndCrosses] = useState<Cross[]>([]);
+  const [orCrosses, setOrCrosses] = useState<Cross[]>([]);
   const [editCrosses, setEditCrosses] = useState<Cross[]>([]);
 
   const { travels, stats } = travelsData;
@@ -31,11 +31,11 @@ const CrossesPageClient = () => {
   };
 
   useEffect(() => {
-    refetchTravels(andCrosses.map(cross => cross._id));
-  }, [andCrosses, refetchTravels]);
+    refetchTravels(orCrosses.map(cross => cross._id));
+  }, [orCrosses, refetchTravels]);
 
-  const onCheckAnd = (checked: CheckedState, item: Cross) => {
-    updateSet(checked, item, setAndCrosses);
+  const onCheckOR = (checked: CheckedState, item: Cross) => {
+    updateSet(checked, item, setOrCrosses);
   };
 
   const onCheckEdit = (checked: CheckedState, item: Cross) => {
@@ -77,17 +77,20 @@ const CrossesPageClient = () => {
       .catch(err => {
         toast.error(`Failed to remove crosses: ${err}`);
       })
-      .finally(() => refetchTravels(andCrosses.map(cross => cross._id)));
+      .finally(() => refetchTravels(orCrosses.map(cross => cross._id)));
   };
 
   return (
     <main className="py-8 bg-gray-50 dark:bg-gray-900 min-h-screen gap-8 px-8 w-full">
-      <div className="flex gap-8 mx-auto">
-        <div className="w-1/3">
+      <div className="flex flex-col lg:flex-row gap-8 mx-auto">
+        <div className="w-full lg:w-1/3">
           <CrossForm onSave={refetch} />
         </div>
-        <div className="w-2/3">
-          <CrossTable data={crosses} onCheckAnd={onCheckAnd} onCheckEdit={onCheckEdit} />
+        <div className="hidden lg:block w-2/3">
+          <CrossTable data={crosses} onCheckOR={onCheckOR} onCheckEdit={onCheckEdit} />
+        </div>
+        <div className="lg:hidden w-full">
+          <CrossTable data={crosses} onCheckOR={onCheckOR} isMobile />
         </div>
       </div>
       <div className="py-8 space-y-8">

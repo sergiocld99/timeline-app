@@ -41,7 +41,7 @@ const Header = () => {
           </h1>
 
           {/* Desktop: nav + user + theme */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden lg:flex items-center space-x-4">
             <nav className="flex space-x-4">
               {NAV_ITEMS.map(({ path, label }) => (
                 <NavItem key={path} path={path} label={label} />
@@ -54,7 +54,7 @@ const Header = () => {
           </div>
 
           {/* Mobile: hamburger + sheet */}
-          <div className="flex md:hidden items-center gap-2">
+          <div className="flex lg:hidden items-center gap-2">
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
                 <Button
