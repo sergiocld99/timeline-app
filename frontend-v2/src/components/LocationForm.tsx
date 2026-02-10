@@ -1,10 +1,22 @@
 "use client";
 
+import dynamic from "next/dynamic";
+import { MapPin } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
+// Import MapPicker dynamically to avoid SSR issues with Leaflet
+const MapPicker = dynamic(() => import("@/components/MapPicker"), {
+  ssr: false,
+  loading: () => (
+    <div className="h-[400px] w-full bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
+      <p className="text-gray-500 dark:text-gray-400">Loading map...</p>
+    </div>
+  ),
+});
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -22,6 +34,7 @@ const LocationForm = ({ onLocationAdded }: Props) => {
     zipcode: "",
     notes: "",
   });
+  const [isMapOpen, setIsMapOpen] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -49,6 +62,14 @@ const LocationForm = ({ onLocationAdded }: Props) => {
       toast.error("Failed to add location. Please try again.");
     }
   };
+  const handleMapSelect = (lat: number, lng: number) => {
+    setFormData({
+      ...formData,
+      latitude: lat.toString(),
+      longitude: lng.toString(),
+    });
+    setIsMapOpen(false);
+  };
 
   return (
     <Card className="w-full max-w-2xl mx-auto bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
@@ -68,6 +89,20 @@ const LocationForm = ({ onLocationAdded }: Props) => {
               required
               className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
             />
+          </div>
+
+          <div className="flex items-center justify-between pt-2">
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Coordinates</span>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setIsMapOpen(true)}
+              className="flex items-center gap-2 h-8"
+            >
+              <MapPin className="h-4 w-4" />
+              Pick on Map
+            </Button>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -129,6 +164,21 @@ const LocationForm = ({ onLocationAdded }: Props) => {
             Save Location
           </Button>
         </form>
+
+        <Dialog open={isMapOpen} onOpenChange={setIsMapOpen}>
+          <DialogContent className="sm:max-w-[600px]">
+            <DialogHeader>
+              <DialogTitle>Pick Location on Map</DialogTitle>
+            </DialogHeader>
+            <div className="py-4">
+              <MapPicker
+                onSelect={handleMapSelect}
+                initialLat={formData.latitude ? parseFloat(formData.latitude) : undefined}
+                initialLng={formData.longitude ? parseFloat(formData.longitude) : undefined}
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
       </CardContent>
     </Card>
   );
