@@ -1,4 +1,6 @@
 import Location from "../models/Location.js";
+import Travel from "../models/Travel.js";
+import Visit from "../models/Visit.js";
 
 export const getAllLocations = (req, res) => {
   Location.find().sort({ zipcode: 1, name: 1 }).then(locations => {
@@ -40,21 +42,41 @@ export const updateLocation = (req, res) => {
     .catch(err => {
       res.status(400).json({ message: 'Error updating location', error: err.message });
     }
-  );
+    );
 }
 
-export const deleteLocation = (req, res) => {
+export const deleteLocation = async (req, res) => {
   const { id } = req.params;
 
-  Location.findByIdAndDelete(id)
-    .then(deletedLocation => {
-      if (!deletedLocation) {
-        return res.status(404).json({ message: 'Location not found' });
-      }
-      res.json({ message: 'Location deleted successfully' });
-    })
-    .catch(err => {
-      res.status(400).json({ message: 'Error deleting location', error: err.message });
+  try {
+    // Check for associated travels
+    const travelsCount = await Travel.countDocuments({
+      $or: [{ origin: id }, { destination: id }]
+    });
+
+    if (travelsCount > 0) {
+      return res.status(400).json({
+        message: 'Cannot delete location: It has associated travels.'
+      });
     }
-  );
+
+    // Check for associated visits
+    const visitsCount = await Visit.countDocuments({ location: id });
+
+    if (visitsCount > 0) {
+      return res.status(400).json({
+        message: 'Cannot delete location: It has associated visits.'
+      });
+    }
+
+    const deletedLocation = await Location.findByIdAndDelete(id);
+
+    if (!deletedLocation) {
+      return res.status(404).json({ message: 'Location not found' });
+    }
+
+    res.json({ message: 'Location deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ message: 'Error deleting location', error: err.message });
+  }
 }
