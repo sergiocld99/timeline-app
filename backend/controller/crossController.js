@@ -38,7 +38,7 @@ export const update = (req, res) => {
     .catch(err => {
       res.status(400).json({ message: 'Failed to update', error: err.message });
     }
-  );
+    );
 }
 
 export const remove = (req, res) => {
@@ -49,10 +49,10 @@ export const remove = (req, res) => {
       if (!removed) {
         return res.status(404).json({ message: 'Not found by id' });
       }
-      res.json({ message: 'Removed successfully' });
+      res.status(204).send();
     })
     .catch(err => {
       res.status(400).json({ message: 'Failed to remove', error: err.message });
     }
-  );
+    );
 }
