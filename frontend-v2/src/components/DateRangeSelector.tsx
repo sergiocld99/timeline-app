@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -57,10 +57,17 @@ const DateRangeSelector = () => {
         <CardTitle className="text-gray-900 dark:text-white">Date Range</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-col sm:flex-row items-center gap-4">
-          <div className="pt-6 flex-row space-x-2">
+        <div className="flex flex-col lg:flex-row items-center gap-4">
+          <div className="hidden lg:block pt-6 flex-row space-x-2">
             <PreviousMonthBtn handleClick={() => handleDayMovement(-30)} />
             <PreviousWeekBtn handleClick={() => handleDayMovement(-7)} />
+          </div>
+
+          <div className="lg:hidden flex-row space-x-4">
+            <PreviousMonthBtn handleClick={() => handleDayMovement(-30)} />
+            <PreviousWeekBtn handleClick={() => handleDayMovement(-7)} />
+            <NextWeekBtn handleClick={() => handleDayMovement(+7)} />
+            <NextMonthBtn handleClick={() => handleDayMovement(+30)} />
           </div>
 
           <div className="space-y-2 flex-1">
@@ -87,7 +94,7 @@ const DateRangeSelector = () => {
             />
           </div>
 
-          <div className="pt-6 flex-row space-x-2">
+          <div className="hidden lg:block pt-6 flex-row space-x-2">
             <NextWeekBtn handleClick={() => handleDayMovement(+7)} />
             <NextMonthBtn handleClick={() => handleDayMovement(+30)} />
           </div>
