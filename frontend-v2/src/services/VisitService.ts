@@ -40,9 +40,12 @@ class VisitService {
   }
 
   static async delete(id: string) {
-    return axios.delete<Visit>(`${baseUrl}/${id}`)
-      .then((response) => response.data)
-      .catch((error) => { throw error });
+    try {
+      await axios.delete(`${baseUrl}/${id}`);
+    } catch (error) {
+      console.error("Error deleting visit:", error);
+      throw error;
+    }
   }
 }
 

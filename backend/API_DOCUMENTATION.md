@@ -158,7 +158,7 @@ Actualiza un viaje existente.
 ### DELETE `/api/travels/:id`
 Elimina un viaje.
 
-**Response:** Viaje eliminado (200)
+**Response:** 204 No Content
 
 ---
 
@@ -188,7 +188,7 @@ Actualiza una ubicación.
 ### DELETE `/api/locations/:id`
 Elimina una ubicación.
 
-**Response:** `{ message: "Location deleted successfully" }`
+**Response:** 204 No Content
 
 ---
 
@@ -233,7 +233,7 @@ Actualiza una visita.
 ### DELETE `/api/visits/:id`
 Elimina una visita.
 
-**Response:** Visita eliminada (200)
+**Response:** 204 No Content
 
 ---
 
@@ -281,7 +281,7 @@ Actualiza un cruce.
 ### DELETE `/api/crosses/:id`
 Elimina un cruce.
 
-**Response:** `{ message: "Removed successfully" }`
+**Response:** 204 No Content
 
 ---
 
@@ -341,7 +341,7 @@ Actualiza un usuario.
 ### DELETE `/api/users/:userId`
 Elimina un usuario.
 
-**Response:** Usuario eliminado (200)
+**Response:** 204 No Content
 
 ---
 

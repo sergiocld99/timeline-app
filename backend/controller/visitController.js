@@ -98,7 +98,10 @@ export const updateVisit = (req, res) => {
 export const deleteVisit = (req, res) => {
   const { id } = req.params;
   Visit.findByIdAndDelete(id).then(deletedVisit => {
-    res.status(200).json(deletedVisit);
+    if (!deletedVisit) {
+      return res.status(404).json({ message: 'Visit not found' });
+    }
+    res.status(204).send();
   }).catch(err => {
     res.status(400).json({ message: 'Error deleting visit', error: err.message });
   });

@@ -40,7 +40,7 @@ export const updateLocation = (req, res) => {
     .catch(err => {
       res.status(400).json({ message: 'Error updating location', error: err.message });
     }
-  );
+    );
 }
 
 export const deleteLocation = (req, res) => {
@@ -51,10 +51,10 @@ export const deleteLocation = (req, res) => {
       if (!deletedLocation) {
         return res.status(404).json({ message: 'Location not found' });
       }
-      res.json({ message: 'Location deleted successfully' });
+      res.status(204).send();
     })
     .catch(err => {
       res.status(400).json({ message: 'Error deleting location', error: err.message });
     }
-  );
+    );
 }

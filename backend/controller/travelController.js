@@ -123,7 +123,10 @@ export const updateTravel = (req, res, next) => {
 export const deleteTravel = (req, res) => {
   const { id } = req.params;
   Travel.findByIdAndDelete(id).then(deletedTravel => {
-    res.status(200).json(deletedTravel);
+    if (!deletedTravel) {
+      return res.status(404).json({ message: 'Travel not found' });
+    }
+    res.status(204).send();
   }).catch(err => {
     res.status(400).json({ message: 'Error deleting travel', error: err.message });
   });

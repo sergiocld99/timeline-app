@@ -47,10 +47,9 @@ class UserService {
     }
   }
 
-  static async delete(userId: number): Promise<User> {
+  static async delete(userId: number) {
     try {
-      const response = await axios.delete<User>(`${baseUrl}/${userId}`);
-      return response.data;
+      await axios.delete(`${baseUrl}/${userId}`);
     } catch (error) {
       console.error("Error deleting user:", error);
       throw error;
