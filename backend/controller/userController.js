@@ -69,7 +69,7 @@ export const deleteUser = (req, res) => {
     if (!deletedUser) {
       return res.status(404).json({ message: 'User not found' });
     }
-    res.status(200).json(deletedUser);
+    res.status(204).send();
   }).catch(err => {
     res.status(400).json({ message: 'Error deleting user', error: err.message });
   });
@@ -78,19 +78,19 @@ export const deleteUser = (req, res) => {
 export const checkGuestData = async (req, res) => {
   try {
     // Check for documents where userId doesn't exist or is null
-    const travelCount = await Travel.countDocuments({ 
+    const travelCount = await Travel.countDocuments({
       $or: [
         { userId: { $exists: false } },
         { userId: null }
       ]
     });
-    const visitCount = await Visit.countDocuments({ 
+    const visitCount = await Visit.countDocuments({
       $or: [
         { userId: { $exists: false } },
         { userId: null }
       ]
     });
-    
+
     res.json({
       hasGuestData: travelCount > 0 || visitCount > 0,
       travelCount,
@@ -112,7 +112,7 @@ export const migrateGuestData = async (req, res) => {
   try {
     // Update all travels without userId (where field doesn't exist or is null)
     const travelResult = await Travel.updateMany(
-      { 
+      {
         $or: [
           { userId: { $exists: false } },
           { userId: null }
@@ -123,7 +123,7 @@ export const migrateGuestData = async (req, res) => {
 
     // Update all visits without userId (where field doesn't exist or is null)
     const visitResult = await Visit.updateMany(
-      { 
+      {
         $or: [
           { userId: { $exists: false } },
           { userId: null }

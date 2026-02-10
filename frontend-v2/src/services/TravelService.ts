@@ -91,8 +91,7 @@ class TravelService {
 
   static async delete(id: string) {
     try {
-      const response = await axios.delete<Travel>(`${baseUrl}/${id}`);
-      return response.data;
+      await axios.delete(`${baseUrl}/${id}`);
     } catch (error) {
       console.error("Error deleting travel:", error);
       throw error;
