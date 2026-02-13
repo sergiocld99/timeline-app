@@ -56,9 +56,16 @@ cd timeline-app
 2. Create a `.env` file in the root directory:
 ```env
 # Add your environment variables here
+MONGO_URI="mongodb://mongo:27017/timeline_db"
 ```
 
-3. Start all services:
+3. (Optional) Create a `frontend-v2/.env.local` for user defaults:
+```env
+# Set a default user ID for auto-login (prevents Guest mode)
+NEXT_PUBLIC_DEFAULT_USER_ID=1
+```
+
+4. Start all services:
 ```bash
 docker compose up --build -d
 ```
