@@ -1,6 +1,5 @@
 import type { Travel, TravelStats } from "@/types/travel";
 
-import { useTravelStats } from "@/hooks/useTravelStats";
 import { getHoursAndMinutes } from "@/utils";
 import { renderTotalWeightsCell } from "@/utils/weight";
 
@@ -25,9 +24,7 @@ const renderFirstTotalCell = (length: number, uniqueDays?: number) => {
   )
 }
 
-const TravelTableFooter = ({ travels, stats: initialStats }: Props) => {
-  const { stats } = useTravelStats(travels, initialStats);
-
+const TravelTableFooter = ({ travels, stats }: Props) => {
   const { averageLatitude: totalLat, averageLongitude: totalLong, totalDistance = 0, totalMinutes = 0, placesVisited } = stats || {}
 
   return (
