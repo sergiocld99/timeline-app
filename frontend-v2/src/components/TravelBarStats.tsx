@@ -60,7 +60,7 @@ const TravelBarStats = ({ travels, onFilterLocation, options, cardClassName = "w
   return (
     <Card className={`${cardClassName} bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700`}>
       <CardContent className="h-[300px] flex items-center justify-center">
-        <ChartContainer config={chartConfig} className="min-h-[300px] max-h-[300px] max-w-3/5 min-w-3/5">
+        <ChartContainer config={chartConfig} className="min-h-[300px] max-h-[300px] min-w-3/5">
           <BarChart accessibilityLayer data={hourlyChartData}>
             <CartesianGrid vertical={false} />
             <XAxis

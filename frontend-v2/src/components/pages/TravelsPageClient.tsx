@@ -57,7 +57,7 @@ const TravelsPageClient = () => {
     <main className="mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
       <div className="space-y-8">
         <PresentialWorkAlert />
-        <div className="flex gap-8">
+        <div className="hidden lg:block flex gap-8">
           <TravelMap travels={filteredTravels} stats={stats} />
           <div className="w-8/10 relative">
             <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
