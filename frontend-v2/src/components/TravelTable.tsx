@@ -65,7 +65,7 @@ const TravelTable = ({ travels, stats, onUpdateTravel, onDeleteTravel, onAddCros
           />
         </div>
         <div className="lg:hidden">
-          <TravelListContent travels={travels} />
+          <TravelListContent travels={travels} stats={stats} />
         </div>
       </CardContent>
     </Card>
