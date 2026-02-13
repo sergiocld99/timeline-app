@@ -4,7 +4,7 @@ import LocationTable from "@/components/LocationTable";
 import useLocations from "@/hooks/useLocations";
 
 const LocationsPageClient = () => {
-  const { locations, error, update } = useLocations();
+  const { locations, error, update, remove } = useLocations();
 
   if (error) {
     return (
@@ -19,7 +19,11 @@ const LocationsPageClient = () => {
   return (
     <main className="mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
       <div className="space-y-8">
-        <LocationTable locations={locations} updateFn={update} />
+        <LocationTable
+          locations={locations}
+          updateFn={update}
+          deleteFn={remove}
+        />
       </div>
     </main>
   );

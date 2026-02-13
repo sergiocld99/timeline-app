@@ -22,17 +22,19 @@ import { cn } from "@/lib/utils";
 import { roundDecimals } from "@/utils/numbers";
 
 import ArrivalsAction from "./buttons/ArrivalsAction";
+import DeleteAction from "./buttons/DeleteAction";
 import DeparturesAction from "./buttons/DeparturesAction";
 import EditAction from "./buttons/EditAction";
 
 type Props = {
   locations: Location[];
   updateFn: (id: string, updates: Partial<Location>) => Promise<Location>;
+  deleteFn: (id: string) => Promise<void>;
 };
 
 const columnHeaders = ['Name', 'Latitude', 'Longitude', 'Zipcode', 'Notes', 'Actions'];
 
-const LocationTable = ({ locations, updateFn }: Props) => {
+const LocationTable = ({ locations, updateFn, deleteFn }: Props) => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValues, setEditValues] = useState<LocationEditValues>({ name: '', zipcode: '', latitude: 0, longitude: 0, notes: '' });
 
@@ -89,6 +91,16 @@ const LocationTable = ({ locations, updateFn }: Props) => {
         <Link href={`/travels/to/${location._id}`} >
           <ArrivalsAction size="sm" />
         </Link>
+        <DeleteAction handleClick={() => {
+          if (window.confirm(`Are you sure you want to delete "${location.name}"?`)) {
+            deleteFn(location._id)
+              .then(() => toast.success('Location deleted successfully'))
+              .catch((err) => {
+                const message = err.response?.data?.message || err.message || 'Failed to delete location';
+                toast.error(message);
+              });
+          }
+        }} />
       </div>
     );
   }
