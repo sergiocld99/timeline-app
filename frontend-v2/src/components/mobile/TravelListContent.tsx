@@ -4,7 +4,7 @@ import { extractDate, extractTime, getEmojiForMode, getHoursAndMinutes } from "@
 import { useTravelStats } from "@/hooks/useTravelStats";
 
 import { Item, ItemContent, ItemDescription, ItemMedia, ItemTitle } from "../ui/item";
-import { renderPoint, renderPointWithCopyBtn } from "../render/coordinates";
+import { renderPoint } from "../render/coordinates";
 
 type Props = {
   travels: Travel[];

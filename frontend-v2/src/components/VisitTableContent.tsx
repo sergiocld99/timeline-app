@@ -1,16 +1,17 @@
+import type { Visit } from '@/types/travel';
+
+import { toast } from 'sonner';
+import { Eye, EyeOff, Trash2 } from 'lucide-react';
+import { useState } from 'react';
+
 import { Table, TableBody, TableCell, TableHead, TableFooter, TableHeader, TableRow } from '@/components/ui/table';
 import { extractDate, extractTime, getHoursAndMinutes } from '@/utils';
 import { renderTotalWeightsCell, renderWeight } from '@/utils/weight';
-
-import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
 
 import { renderPointWithCopyBtn } from './render/coordinates';
 import { renderLocationWithZipcode } from './render/location';
-import type { Visit } from '@/types/travel';
 
-import { Button } from '@/components/ui/button';
-import { Eye, EyeOff, Trash2 } from 'lucide-react';
-import { useState } from 'react';
 
 const columnHeaders = ['Date', 'Location', 'Arrival', 'Departure', 'Duration', 'Weight', 'Actions'];
 
