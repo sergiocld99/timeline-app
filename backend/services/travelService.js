@@ -2,15 +2,8 @@ import { getHourParts } from "./timeService.js";
 
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-const convertToArgentineTime = (date) => {
-  const newDate = new Date(date);
-  newDate.setHours(newDate.getHours() + 3);
-  return newDate;
-};
-
 const extractDate = (date) => {
-  const argentineDate = convertToArgentineTime(date);
-  const dayOfWeek = daysOfWeek[argentineDate.getDay()];
+  const dayOfWeek = daysOfWeek[date.getDay()];
   const dateParts = date.toISOString().split('T')[0].split('-');
   const shortYear = dateParts[0].substring(2);
   return `${dayOfWeek} ${dateParts[2]}/${dateParts[1]}/${shortYear}`;
