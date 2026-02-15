@@ -1,6 +1,3 @@
-## 🎫 Ticket / Issue
-- ID: `CODX-XXX`
-
 ## ⚙️ Cambios del Backend
 - **Endpoints**: (Nuevos, modificados o eliminados)
 - **Lógica de Negocio/Validaciones**:
