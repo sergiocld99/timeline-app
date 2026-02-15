@@ -8,7 +8,7 @@ import { calculateBestLocations } from "./analize/travel";
 import { buildDailyChartData, buildHourlyChartData } from "./builders/travelBars";
 import { Card, CardContent } from "./ui/card";
 import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "./ui/chart";
-import { FilteringData } from "@/types/stats";
+import type { FilteringData } from "@/types/stats";
 
 type Props = {
   travels: Travel[],

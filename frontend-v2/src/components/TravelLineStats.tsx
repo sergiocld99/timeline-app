@@ -8,9 +8,11 @@ import { roundDecimals } from "@/utils/numbers";
 
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "./ui/chart"
+import type { FilteringData } from "@/types/stats";
 
 type Props = {
   travels: Travel[]
+  onFilterLocation: (data: FilteringData) => void
 }
 
 const getHourData = (travels: Travel[], hour: string) => {
@@ -30,7 +32,7 @@ const getHourData = (travels: Travel[], hour: string) => {
   return sumHours ? roundDecimals(sumKm / sumHours, 1) : null
 }
 
-const buildHourlyChartData = ({ travels }: Props) => {
+const buildHourlyChartData = (travels: Travel[]) => {
   const travelsByMode = {
     car: travels.filter(t => t.modeOfTransport === 'car'),
     bus: travels.filter(t => t.modeOfTransport === 'bus'),
@@ -38,8 +40,6 @@ const buildHourlyChartData = ({ travels }: Props) => {
     walking: travels.filter(t => t.modeOfTransport === 'walking'),
     others: travels.filter(t => !['car', 'bus', 'taxi', 'walking'].includes(t.modeOfTransport)),
   }
-
-  console.log(travelsByMode['car'])
 
   return getChartHours().map(hour => ({
     hour,
@@ -51,7 +51,7 @@ const buildHourlyChartData = ({ travels }: Props) => {
   }));
 }
 
-const TravelLineStats = ({ travels }: Props) => {
+const TravelLineStats = ({ travels, onFilterLocation }: Props) => {
   const chartConfig = {
     car: {
       label: "car",
@@ -75,7 +75,11 @@ const TravelLineStats = ({ travels }: Props) => {
     }
   } satisfies ChartConfig
 
-  const hourlyChartData = buildHourlyChartData({ travels })
+  const hourlyChartData = buildHourlyChartData(travels)
+
+  const handleHourClick = (value?: string) => {
+    onFilterLocation({ type: 'hour', value })
+  }
 
   return (
     <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
@@ -95,11 +99,13 @@ const TravelLineStats = ({ travels }: Props) => {
           >
             <CartesianGrid vertical={false} />
             <XAxis
+              className="hover:cursor-pointer"
               dataKey="hour"
               tickLine={false}
               axisLine={false}
               tickMargin={8}
               tickFormatter={(value) => value.slice(0, 3)}
+              onClick={(data) => handleHourClick(data?.value)}
             />
             <ChartTooltip
               cursor={false}

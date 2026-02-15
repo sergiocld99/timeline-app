@@ -81,8 +81,8 @@ const TravelsPageClient = () => {
               <LineViewBtn handleClick={() => setStatsView("line")} isActive={statsView === "line"} />
             </div>
             {statsView === "bar" && <TravelBarStats travels={filteredTravels} onFilterLocation={onFilterLocation} cardClassName="w-full" />}
+            {statsView === "line" && <TravelLineStats travels={filteredTravels} onFilterLocation={onFilterLocation} />}
             {statsView === "circular" && <TravelPieStats travels={filteredTravels} />}
-            {statsView === "line" && <TravelLineStats travels={filteredTravels} />}
           </div>
         </div>
         <TravelTable
