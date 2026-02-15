@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import useLocations from '@/hooks/useLocations';
-import { extractDate, extractTime, getEmojiForMode } from '@/utils';
+import { extractTime, getEmojiForMode } from '@/utils';
 import { renderWeight } from '@/utils/weight';
 
 import TravelTableFooter from './TravelTableFooter';
@@ -245,7 +245,7 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
       <TableBody>
         {travels.map((t) => (
           <TableRow key={t._id} className="border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
-            <TableCell className="text-gray-900 dark:text-white">{extractDate(t.startTime)}</TableCell>
+            <TableCell className="text-gray-900 dark:text-white">{t.extractedDate}</TableCell>
             <TableCell className="text-gray-900 dark:text-white">{renderEditableModeOfTransport(t)}</TableCell>
             <TableCell className="text-gray-900 dark:text-white">{renderEditableLocation(t, 'origin')}</TableCell>
             <TableCell className="text-gray-900 dark:text-white">{renderEditableLocation(t, 'destination')}</TableCell>
