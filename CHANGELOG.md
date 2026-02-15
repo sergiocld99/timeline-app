@@ -18,19 +18,15 @@
 - COD4-064: update pie stats with filtered zipcode (#12) [417]
 
 ## v0.3.0 (2026-01-16)
-- COD3-204: Improve travel management + E2E testing (#6) [20482]
+- COD3-204: E2E testing + travel management improvements (#6) [20482]
   - **Backend**: New `/find-last` and zipcode search endpoints; business logic validations; visit update events; API documentation.
   - **Frontend**: Travel distance autocomplete; "Same day" travel support; `useTravelCreator` hook; Refactored table components & common Selector; Stats logic moved to backend; Work-travel awareness (>60 days).
   - **General**: New Playwright E2E test suite; Docker build optimizations; Strict ESLint rules for import order and types; Coordinate and date utility fixes.
 
 ## v0.2.0 (2026-01-02)
-- COD2-036: Multi-user support (#3) [3604]
-  - **Auth/Users**: Support for optional user IDs in backend; guest-to-user data migration; session storage management in frontend.
-  - **Backend**: Updated indexes for user isolation; support for guest data in stats and travel services.
-  - **Frontend**: Dependency update to React 19 and Next 15; new CI workflows for linting and security audits.
-  - **UI/UX**: Colored user status indicators; coordinate copy-to-clipboard; abbreviation support for chart legends.
+- COD2-036: Add guest and multi-user management for travels and visits (#3) [3604]
 
-- COD2-048: OpenStreetMap for Travels (#4) [1680]
+- COD2-048: Travels Map, Filter by Location and Date Navigation (#4) [1680]
   - **Map**: Initial Leaflet integration with typed markers and auto-zoom based on distance.
   - **Navigation**: Added "Previous/Next week" buttons and quick date jumps (week/month) to the range selector.
   - **Interactivity**: Bar chart filtering (click to filter travels); custom generic Button and RemoveButton components.
@@ -50,7 +46,7 @@
   - **Frontend**: TypeScript migration; dedicated forms and tables for all models; service-based communication.
   - **Infrastructure**: Docker & Docker Compose setup for localized development.
 
-- COD1-114: Travel Action Buttons (#2) [1418]
+- COD1-114: Travel Action Buttons & Toast Notifications (#2) [1418]
   - **Backend**: Middleware for visit persistence; new update and delete endpoints.
   - **UI/UX**: Replaced alerts with a modern toast system; added transport mode emojis to the table.
   - **Components**: Refactored table logic and date range selectors into dedicated reusable components.
