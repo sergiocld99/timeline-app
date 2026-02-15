@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useDateRange } from '@/contexts/DateRangeContext';
 import { useUser } from '@/contexts/UserContext';
+import { useTravelStats } from '@/hooks/useTravelStats';
 import TravelService from '@/services/TravelService';
 
 import ExportButton from './buttons/ExportButton';
@@ -26,9 +27,10 @@ type Props = {
   appliedFilter?: string | null;
 };
 
-const TravelTable = ({ travels, stats, onUpdateTravel, onDeleteTravel, onAddCrosses, onRemoveCrosses, onRemoveFilter, appliedFilter }: Props) => {
+const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTravel, onAddCrosses, onRemoveCrosses, onRemoveFilter, appliedFilter }: Props) => {
   const { dateFrom, dateTo } = useDateRange();
   const { currentUser } = useUser();
+  const { stats } = useTravelStats(travels, initialStats);
 
   const handleExportCsv = async () => {
     try {
@@ -65,7 +67,7 @@ const TravelTable = ({ travels, stats, onUpdateTravel, onDeleteTravel, onAddCros
           />
         </div>
         <div className="lg:hidden">
-          <TravelListContent travels={travels} />
+          <TravelListContent travels={travels} stats={stats} />
         </div>
       </CardContent>
     </Card>
