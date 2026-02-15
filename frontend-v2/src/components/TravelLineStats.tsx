@@ -12,7 +12,7 @@ import type { FilteringData } from "@/types/stats";
 
 type Props = {
   travels: Travel[]
-  onFilterLocation: (data: FilteringData) => void
+  onFilter: (data: FilteringData) => void
 }
 
 const getHourData = (travels: Travel[], hour: string) => {
@@ -51,7 +51,7 @@ const buildHourlyChartData = (travels: Travel[]) => {
   }));
 }
 
-const TravelLineStats = ({ travels, onFilterLocation }: Props) => {
+const TravelLineStats = ({ travels, onFilter }: Props) => {
   const chartConfig = {
     car: {
       label: "car",
@@ -78,7 +78,7 @@ const TravelLineStats = ({ travels, onFilterLocation }: Props) => {
   const hourlyChartData = buildHourlyChartData(travels)
 
   const handleHourClick = (value?: string) => {
-    onFilterLocation({ type: 'hour', value })
+    onFilter({ type: 'hour', value })
   }
 
   return (

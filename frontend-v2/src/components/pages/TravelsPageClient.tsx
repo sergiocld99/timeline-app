@@ -35,7 +35,7 @@ const TravelsPageClient = () => {
   const [filteredTravels, setFilteredTravels] = useState<Travel[]>(travels);
   const [appliedFilter, setAppliedFilter] = useState<string | null>(null);
 
-  const onFilterLocation = (data?: FilteringData) => {
+  const onFilter = (data?: FilteringData) => {
     const { type, value } = data || {}
 
     if (type === 'zipcode' && value) {
@@ -80,8 +80,8 @@ const TravelsPageClient = () => {
               <CircularViewBtn handleClick={() => setStatsView("circular")} isActive={statsView === "circular"} />
               <LineViewBtn handleClick={() => setStatsView("line")} isActive={statsView === "line"} />
             </div>
-            {statsView === "bar" && <TravelBarStats travels={filteredTravels} onFilterLocation={onFilterLocation} cardClassName="w-full" />}
-            {statsView === "line" && <TravelLineStats travels={filteredTravels} onFilterLocation={onFilterLocation} />}
+            {statsView === "bar" && <TravelBarStats travels={filteredTravels} onFilter={onFilter} cardClassName="w-full" />}
+            {statsView === "line" && <TravelLineStats travels={filteredTravels} onFilter={onFilter} />}
             {statsView === "circular" && <TravelPieStats travels={filteredTravels} />}
           </div>
         </div>
@@ -90,7 +90,7 @@ const TravelsPageClient = () => {
           stats={stats}
           onUpdateTravel={updateTravel}
           onDeleteTravel={deleteTravel}
-          onRemoveFilter={() => onFilterLocation(undefined)}
+          onRemoveFilter={() => onFilter()}
           appliedFilter={appliedFilter}
         />
       </div>

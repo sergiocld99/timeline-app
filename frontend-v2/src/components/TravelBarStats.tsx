@@ -12,7 +12,7 @@ import type { FilteringData } from "@/types/stats";
 
 type Props = {
   travels: Travel[],
-  onFilterLocation: (data: FilteringData) => void,
+  onFilter: (data: FilteringData) => void,
   options?: {
     field: 'origin' | 'destination'
   },
@@ -45,7 +45,7 @@ const enrichWithFarthestPoint = (t: Travel, home?: Location) => {
   }
 }
 
-const TravelBarStats = ({ travels, onFilterLocation, options, cardClassName = "w-8/10" }: Props) => {
+const TravelBarStats = ({ travels, onFilter, options, cardClassName = "w-8/10" }: Props) => {
   const home = calculateHome(travels, options)
   const relevantTravels = travels.map(t => enrichWithFarthestPoint(t, home))
 
@@ -55,15 +55,15 @@ const TravelBarStats = ({ travels, onFilterLocation, options, cardClassName = "w
   const chartConfig = buildChartConfig(topKeys)
 
   const handleZipcodeClick = (zipcode?: string) => {
-    onFilterLocation({ type: 'zipcode', value: zipcode })
+    onFilter({ type: 'zipcode', value: zipcode })
   }
 
   const handleDayClick = (day?: string) => {
-    onFilterLocation({ type: 'day', value: day })
+    onFilter({ type: 'day', value: day })
   }
 
   const handleHourClick = (hour?: string) => {
-    onFilterLocation({ type: 'hour', value: hour })
+    onFilter({ type: 'hour', value: hour })
   }
 
   return (
