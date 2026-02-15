@@ -79,37 +79,36 @@ const VisitStats = ({ visits, onFilter }: Props) => {
             />
             <ChartTooltip content={<ChartTooltipContent />} />
             <ChartLegend content={<ChartLegendContent />} />
-            <Bar
+            {topLocations.at(0) && <Bar
               dataKey="red"
               stackId="a"
               fill="var(--color-red)"
-            />
-            <Bar
+            />}
+            {topLocations.at(1) && <Bar
               dataKey="orange"
               stackId="a"
               fill="var(--color-orange)"
-            />
-            <Bar
+            />}
+            {topLocations.at(2) && <Bar
               dataKey="yellow"
               stackId="a"
               fill="var(--color-yellow)"
-            />
-            <Bar
+            />}
+            {topLocations.at(3) && <Bar
               dataKey="green"
               stackId="a"
               fill="var(--color-green)"
-            />
-            <Bar
+            />}
+            {topLocations.at(4) && <Bar
               dataKey="blue"
               stackId="a"
               fill="var(--color-blue)"
-            />
-            {shouldShowOthers &&
-              <Bar
-                dataKey="others"
-                stackId="a"
-                fill="var(--color-others)"
-              />}
+            />}
+            {shouldShowOthers && <Bar
+              dataKey="others"
+              stackId="a"
+              fill="var(--color-others)"
+            />}
           </BarChart>
         </ChartContainer>
         <ChartContainer config={chartConfig} className="min-h-[270px] max-h-[270px] mx-auto max-w-1/4 min-w-1/4">
@@ -123,37 +122,36 @@ const VisitStats = ({ visits, onFilter }: Props) => {
               onClick={(e) => onFilter({ type: 'day', value: e?.value })}
             />
             <ChartTooltip content={<ChartTooltipContent />} />
-            <Bar
+            {topLocations.at(0) && <Bar
               dataKey="red"
               stackId="a"
               fill="var(--color-red)"
-            />
-            <Bar
+            />}
+            {topLocations.at(1) && <Bar
               dataKey="orange"
               stackId="a"
               fill="var(--color-orange)"
-            />
-            <Bar
+            />}
+            {topLocations.at(2) && <Bar
               dataKey="yellow"
               stackId="a"
               fill="var(--color-yellow)"
-            />
-            <Bar
+            />}
+            {topLocations.at(3) && <Bar
               dataKey="green"
               stackId="a"
               fill="var(--color-green)"
-            />
-            <Bar
+            />}
+            {topLocations.at(4) && <Bar
               dataKey="blue"
               stackId="a"
               fill="var(--color-blue)"
-            />
-            {shouldShowOthers &&
-              <Bar
-                dataKey="others"
-                stackId="a"
-                fill="var(--color-others)"
-              />}
+            />}
+            {shouldShowOthers && <Bar
+              dataKey="others"
+              stackId="a"
+              fill="var(--color-others)"
+            />}
           </BarChart>
         </ChartContainer>
       </CardContent>
