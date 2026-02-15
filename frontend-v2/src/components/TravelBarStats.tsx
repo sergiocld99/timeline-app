@@ -62,6 +62,10 @@ const TravelBarStats = ({ travels, onFilterLocation, options, cardClassName = "w
     onFilterLocation({ type: 'day', value: day })
   }
 
+  const handleHourClick = (hour?: string) => {
+    onFilterLocation({ type: 'hour', value: hour })
+  }
+
   return (
     <Card className={`${cardClassName} bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700`}>
       <CardContent className="h-[300px] flex items-center justify-center">
@@ -69,9 +73,11 @@ const TravelBarStats = ({ travels, onFilterLocation, options, cardClassName = "w
           <BarChart accessibilityLayer data={hourlyChartData}>
             <CartesianGrid vertical={false} />
             <XAxis
+              className="hover:cursor-pointer"
               dataKey="hour"
               tickMargin={10}
               tickFormatter={(value) => value.slice(0, 3)}
+              onClick={(data) => handleHourClick(data?.value)}
             />
             <ChartTooltip content={<ChartTooltipContent />} />
             <ChartLegend content={<ChartLegendContent />} />

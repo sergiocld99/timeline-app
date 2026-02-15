@@ -19,6 +19,6 @@ export type TopKeysResult = {
 }
 
 export type FilteringData = {
-  type: 'zipcode' | 'day'
+  type: 'zipcode' | 'day' | 'hour'
   value: string | undefined | null
 }
