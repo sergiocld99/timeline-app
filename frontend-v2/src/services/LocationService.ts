@@ -37,6 +37,16 @@ class LocationService {
       throw error;
     }
   }
+
+  static async delete(id: string) {
+    try {
+      const response = await axios.delete(`${baseUrl}/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error("Error deleting location:", error);
+      throw error;
+    }
+  }
 }
 
 export default LocationService;
