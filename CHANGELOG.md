@@ -29,5 +29,16 @@
 - COD2-086: work of week ending on Jan 2, 2026 (#5) [4373]
 
 ## v0.1.0 (2025-08-24)
-- COD1-103: Week 1 - Locations, Travels and Visits (#1) [10359]
-- COD1-114: IT2 - Travel Action Buttons - Toast Notifications (#2) [1418]
+- COD1-103: Week 1 - Core Foundation: Locations, Travels, and Visits (#1) [10359]
+  - **Core**: Initial setup with Node.js/Express backend and React/Vite frontend.
+  - **Database**: MongoDB integration with schemas for Locations, Travels, and Visits.
+  - **Backend**: REST API with controllers and services; visit calculation and weight logic.
+  - **Frontend**: TypeScript migration; dedicated forms and tables for all models; service-based communication.
+  - **Infrastructure**: Docker & Docker Compose setup for localized development.
+
+- COD1-114: IT2 - Travel Action Buttons & UI Refinement (#2) [1418]
+  - **Backend**: Middleware for visit persistence; new update and delete endpoints.
+  - **UI/UX**: Replaced alerts with a modern toast system; added transport mode emojis to the table.
+  - **Components**: Refactored table logic and date range selectors into dedicated reusable components.
+  - **Features**: Added date range filtering for travels/visits and delete actions for travels.
+  - **Fixes**: Corrected 00:00h date handling in travel forms.
