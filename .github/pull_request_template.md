@@ -21,5 +21,5 @@
 - [ ] Actualicé el Changelog con el formato correcto.
 - [ ] Actualicé la Documentación de la API.
 - [ ] Los tests E2E de Playwright pasan localmente.
-- [ ] El comando `npm run lint` no devuelve errores.
+- [ ] Asigné el milestone según el impacto del cambio.
 - [ ] La build de Docker funciona correctamente.
