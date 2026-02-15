@@ -1,22 +1,28 @@
-# Cambios del Backend
--
+## 🎫 Ticket / Issue
+- ID: `CODX-XXX`
 
-# Cambios del Frontend
+## ⚙️ Cambios del Backend
+- **Endpoints**: (Nuevos, modificados o eliminados)
+- **Lógica de Negocio/Validaciones**:
 
-## Locations
-- 
+## 🎨 Cambios del Frontend
+### Core
+- **Locations**: 
+- **Travels**: 
+- **Visits**: 
+- **Stats**: 
 
-## Travels
-- 
+### Generales
+- (Componentes UI, Hooks, Refactors)
 
-## Visits
-- 
+## 🛠️ Otros cambios
+- **Testing**: (¿Se agregaron tests de Playwright?)
+- **Infraestructura/Docker**:
+- **Calidad/ESLint/Tipos**:
 
-## Stats
-- 
-
-## Generales
-- 
-
-# Otros cambios
-- 
+## ✅ Checklist antes del Merge
+- [ ] Actualicé el Changelog con el formato correcto.
+- [ ] Actualicé la Documentación de la API.
+- [ ] Los tests E2E de Playwright pasan localmente.
+- [ ] El comando `npm run lint` no devuelve errores.
+- [ ] La build de Docker funciona correctamente.
