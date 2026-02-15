@@ -1,7 +1,7 @@
 "use client";
 
 import type { Travel } from "@/types/travel";
-import type { StatsView } from "@/types/stats";
+import type { FilteringData, StatsView } from "@/types/stats";
 
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
@@ -35,17 +35,26 @@ const TravelsPageClient = () => {
   const [filteredTravels, setFilteredTravels] = useState<Travel[]>(travels);
   const [appliedFilter, setAppliedFilter] = useState<string | null>(null);
 
-  const onFilterLocation = (loc?: string) => {
-    if (loc) {
-      const zipcodes = loc.split(", ")
-      const displayName = zipcodes.length === 1 ? zipcodes[0] : zipcodes.length < 10 ? loc : "Others"
+  const onFilterLocation = (data?: FilteringData) => {
+    const { type, value } = data || {}
+
+    if (type === 'zipcode' && value) {
+      const zipcodes = value.split(", ")
+      const displayName = zipcodes.length === 1 ? zipcodes[0] : zipcodes.length < 10 ? value : "Others"
 
       setFilteredTravels(travels.filter(t => zipcodes.includes(t.origin.zipcode) || zipcodes.includes(t.destination.zipcode)));
       setAppliedFilter(displayName);
-    } else {
-      setFilteredTravels(travels);
-      setAppliedFilter(null);
+      return;
     }
+
+    if (type === 'day' && value) {
+      setFilteredTravels(travels.filter(t => t.extractedDate.slice(0, 3) === value))
+      setAppliedFilter(value);
+      return;
+    }
+
+    setFilteredTravels(travels);
+    setAppliedFilter(null);
   };
 
   useEffect(() => {

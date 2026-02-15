@@ -17,3 +17,8 @@ export type TopKeysResult = {
   otherKeys: string[]
   shouldShowOthers: boolean
 }
+
+export type FilteringData = {
+  type: 'zipcode' | 'day'
+  value: string | undefined | null
+}

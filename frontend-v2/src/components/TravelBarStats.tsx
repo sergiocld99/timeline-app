@@ -8,10 +8,11 @@ import { calculateBestLocations } from "./analize/travel";
 import { buildDailyChartData, buildHourlyChartData } from "./builders/travelBars";
 import { Card, CardContent } from "./ui/card";
 import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "./ui/chart";
+import { FilteringData } from "@/types/stats";
 
 type Props = {
   travels: Travel[],
-  onFilterLocation: (loc?: string) => void,
+  onFilterLocation: (data: FilteringData) => void,
   options?: {
     field: 'origin' | 'destination'
   },
@@ -44,10 +45,6 @@ const enrichWithFarthestPoint = (t: Travel, home?: Location) => {
   }
 }
 
-const buildOthersFilterString = (otherKeys: string[]) => {
-  return otherKeys.join(", ")
-}
-
 const TravelBarStats = ({ travels, onFilterLocation, options, cardClassName = "w-8/10" }: Props) => {
   const home = calculateHome(travels, options)
   const relevantTravels = travels.map(t => enrichWithFarthestPoint(t, home))
@@ -56,6 +53,14 @@ const TravelBarStats = ({ travels, onFilterLocation, options, cardClassName = "w
   const hourlyChartData = buildHourlyChartData(relevantTravels, topKeys)
   const dailyChartData = buildDailyChartData(relevantTravels, topKeys)
   const chartConfig = buildChartConfig(topKeys)
+
+  const handleZipcodeClick = (zipcode?: string) => {
+    onFilterLocation({ type: 'zipcode', value: zipcode })
+  }
+
+  const handleDayClick = (day?: string) => {
+    onFilterLocation({ type: 'day', value: day })
+  }
 
   return (
     <Card className={`${cardClassName} bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700`}>
@@ -74,38 +79,38 @@ const TravelBarStats = ({ travels, onFilterLocation, options, cardClassName = "w
               dataKey="red"
               stackId="a"
               fill="var(--color-red)"
-              onClick={() => onFilterLocation(topKeys.at(0))}
+              onClick={() => handleZipcodeClick(topKeys.at(0))}
             />}
             {topKeys.at(1) && <Bar
               dataKey="orange"
               stackId="a"
               fill="var(--color-orange)"
-              onClick={() => onFilterLocation(topKeys.at(1))}
+              onClick={() => handleZipcodeClick(topKeys.at(1))}
             />}
             {topKeys.at(2) && <Bar
               dataKey="yellow"
               stackId="a"
               fill="var(--color-yellow)"
-              onClick={() => onFilterLocation(topKeys.at(2))}
+              onClick={() => handleZipcodeClick(topKeys.at(2))}
             />}
             {topKeys.at(3) && <Bar
               dataKey="green"
               stackId="a"
               fill="var(--color-green)"
-              onClick={() => onFilterLocation(topKeys.at(3))}
+              onClick={() => handleZipcodeClick(topKeys.at(3))}
             />}
             {topKeys.at(4) && <Bar
               dataKey="blue"
               stackId="a"
               fill="var(--color-blue)"
-              onClick={() => onFilterLocation(topKeys.at(4))}
+              onClick={() => handleZipcodeClick(topKeys.at(4))}
             />}
             {shouldShowOthers &&
               <Bar
                 dataKey="others"
                 stackId="a"
                 fill="var(--color-others)"
-                onClick={() => onFilterLocation(buildOthersFilterString(otherKeys))}
+                onClick={() => handleZipcodeClick(otherKeys.join(", "))}
               />}
           </BarChart>
         </ChartContainer>
@@ -113,47 +118,43 @@ const TravelBarStats = ({ travels, onFilterLocation, options, cardClassName = "w
           <BarChart accessibilityLayer data={dailyChartData}>
             <CartesianGrid vertical={false} />
             <XAxis
+              className="hover:cursor-pointer"
               dataKey="day"
               tickMargin={10}
               tickFormatter={(value) => value.slice(0, 3)}
+              onClick={(data) => handleDayClick(data?.value)}
             />
             <ChartTooltip content={<ChartTooltipContent />} />
             {topKeys.at(0) && <Bar
               dataKey="red"
               stackId="a"
               fill="var(--color-red)"
-              onClick={() => onFilterLocation(topKeys.at(0))}
             />}
             {topKeys.at(1) && <Bar
               dataKey="orange"
               stackId="a"
               fill="var(--color-orange)"
-              onClick={() => onFilterLocation(topKeys.at(1))}
             />}
             {topKeys.at(2) && <Bar
               dataKey="yellow"
               stackId="a"
               fill="var(--color-yellow)"
-              onClick={() => onFilterLocation(topKeys.at(2))}
             />}
             {topKeys.at(3) && <Bar
               dataKey="green"
               stackId="a"
               fill="var(--color-green)"
-              onClick={() => onFilterLocation(topKeys.at(3))}
             />}
             {topKeys.at(4) && <Bar
               dataKey="blue"
               stackId="a"
               fill="var(--color-blue)"
-              onClick={() => onFilterLocation(topKeys.at(4))}
             />}
             {shouldShowOthers &&
               <Bar
                 dataKey="others"
                 stackId="a"
                 fill="var(--color-others)"
-                onClick={() => onFilterLocation(buildOthersFilterString(otherKeys))}
               />}
           </BarChart>
         </ChartContainer>
