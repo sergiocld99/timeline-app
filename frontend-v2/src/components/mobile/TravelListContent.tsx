@@ -1,7 +1,6 @@
 import type { Travel, TravelStats } from "@/types/travel";
 
 import { extractDate, extractTime, getEmojiForMode, getHoursAndMinutes } from "@/utils";
-import { useTravelStats } from "@/hooks/useTravelStats";
 
 import { Item, ItemContent, ItemDescription, ItemMedia, ItemTitle } from "../ui/item";
 import { renderPoint } from "../render/coordinates";
@@ -11,9 +10,7 @@ type Props = {
   stats?: TravelStats;
 }
 
-const TravelListContent = ({ travels, stats: initialStats }: Props) => {
-  const { stats } = useTravelStats(travels, initialStats);
-
+const TravelListContent = ({ travels, stats }: Props) => {
   const {
     averageLatitude: totalLat,
     averageLongitude: totalLong,

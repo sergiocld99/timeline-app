@@ -26,10 +26,13 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     try {
       const fetchedUsers = await UserService.getAll();
       setUsers(fetchedUsers);
-      
-      // If no current user is set, set the first user (or user with userId 1)
+
+      // If no current user is set, set the default user (from env or userId 1)
       if (!currentUser && fetchedUsers.length > 0) {
-        const defaultUser = fetchedUsers.find(u => u.userId === 1) || fetchedUsers[0];
+        const defaultUserId = process.env.NEXT_PUBLIC_DEFAULT_USER_ID
+          ? parseInt(process.env.NEXT_PUBLIC_DEFAULT_USER_ID, 10)
+          : 1;
+        const defaultUser = fetchedUsers.find(u => u.userId === defaultUserId) || fetchedUsers[0];
         setCurrentUserState(defaultUser);
         localStorage.setItem('currentUserId', defaultUser.userId.toString());
       }
@@ -52,29 +55,34 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     // Load current user from localStorage on mount
     const savedUserId = localStorage.getItem('currentUserId');
-    
+
     const initializeUser = async () => {
       const fetchedUsers = await UserService.getAll();
       setUsers(fetchedUsers);
-      
+
       if (savedUserId) {
         const userId = parseInt(savedUserId, 10);
         const user = fetchedUsers.find(u => u.userId === userId);
         if (user) {
           setCurrentUserState(user);
         } else if (fetchedUsers.length > 0) {
-          // If saved user not found, default to user with userId 1 or first user
-          const defaultUser = fetchedUsers.find(u => u.userId === 1) || fetchedUsers[0];
+          const defaultUserId = process.env.NEXT_PUBLIC_DEFAULT_USER_ID
+            ? parseInt(process.env.NEXT_PUBLIC_DEFAULT_USER_ID, 10)
+            : 1;
+          const defaultUser = fetchedUsers.find(u => u.userId === defaultUserId) || fetchedUsers[0];
           setCurrentUserState(defaultUser);
           localStorage.setItem('currentUserId', defaultUser.userId.toString());
         }
       } else if (fetchedUsers.length > 0) {
-        // No saved user, default to user with userId 1 or first user
-        const defaultUser = fetchedUsers.find(u => u.userId === 1) || fetchedUsers[0];
+        // No saved user, default to user from env or userId 1
+        const defaultUserId = process.env.NEXT_PUBLIC_DEFAULT_USER_ID
+          ? parseInt(process.env.NEXT_PUBLIC_DEFAULT_USER_ID, 10)
+          : 1;
+        const defaultUser = fetchedUsers.find(u => u.userId === defaultUserId) || fetchedUsers[0];
         setCurrentUserState(defaultUser);
         localStorage.setItem('currentUserId', defaultUser.userId.toString());
       }
-      
+
       setLoading(false);
     };
 
