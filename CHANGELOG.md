@@ -18,7 +18,10 @@
 - COD4-064: update pie stats with filtered zipcode (#12) [417]
 
 ## v0.3.0 (2026-01-16)
-- COD3-204: work of fortnight ending on jan 16th (#6) [20482]
+- COD3-204: Major update for Travel management, Stats backend migration, and E2E testing (#6) [20482]
+  - **Backend**: New `/find-last` and zipcode search endpoints; business logic validations; visit update events; API documentation.
+  - **Frontend**: Travel distance autocomplete; "Same day" travel support; `useTravelCreator` hook; Refactored table components & common Selector; Stats logic moved to backend; Work-travel awareness (>60 days).
+  - **General**: New Playwright E2E test suite; Docker build optimizations; Strict ESLint rules for import order and types; Coordinate and date utility fixes.
 
 ## v0.2.0 (2026-01-02)
 - COD2-036: add guest and multi-user management for travels and visits (#3) [3604]
