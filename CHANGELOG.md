@@ -3,6 +3,7 @@
 ## v0.6.0 (WIP)
 - COD6-001: Pick Map to fill coordinates on create location + delete btn (#17) [148]
 - COD6-002: Give Access from Other Devices in same network (#18) [125]
+- COD6-003: New changelog + PR template (#19) [90]
 
 ## v0.5.0 (2026-02-10)
 - COD5-005: Migrate Hour Parts to backend + New Line Stats (#13) [537]
