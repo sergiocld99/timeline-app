@@ -1,7 +1,7 @@
 "use client";
 
 import type { ChartData, ChartSource } from "@/types/chart";
-import type { Visit, VisitsData } from "@/types/travel";
+import type { Visit } from "@/types/travel";
 
 import { BarChart } from "recharts";
 import { Bar, CartesianGrid, XAxis } from "recharts";
@@ -13,9 +13,11 @@ import { buildChartConfig, getChartHours, useChartValue, useDefaultValues } from
 import { calculateBestLocations, getEachHourOfVisit } from "./analize/visit";
 import { Card, CardContent } from "./ui/card";
 import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "./ui/chart";
+import { FilteringData } from "@/types/stats";
 
 type Props = {
-  visitsData: VisitsData;
+  visits: Visit[];
+  onFilter: (data: FilteringData) => void
 }
 
 const buildHourlyChartData = (visits: Visit[], topLocations: string[]): ChartData<"hour"> => {
@@ -58,9 +60,7 @@ const buildDailyChartData = (visits: Visit[], topLocations: string[]): ChartData
   }));
 }
 
-const VisitStats = ({ visitsData }: Props) => {
-  const { visits } = visitsData;
-
+const VisitStats = ({ visits, onFilter }: Props) => {
   const { topKeys: topLocations, shouldShowOthers } = calculateBestLocations(visits, 5)
   const hourlyChartData = buildHourlyChartData(visits, topLocations)
   const dailyChartData = buildDailyChartData(visits, topLocations)
@@ -116,9 +116,11 @@ const VisitStats = ({ visitsData }: Props) => {
           <BarChart accessibilityLayer data={dailyChartData}>
             <CartesianGrid vertical={false} />
             <XAxis
+              className="hover:cursor-pointer"
               dataKey="day"
               tickMargin={10}
               tickFormatter={(value) => value.slice(0, 3)}
+              onClick={(e) => onFilter({ type: 'day', value: e?.value })}
             />
             <ChartTooltip content={<ChartTooltipContent />} />
             <Bar

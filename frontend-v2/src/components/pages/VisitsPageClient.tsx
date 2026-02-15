@@ -4,9 +4,35 @@ import GravityCenterScoreboard from "@/components/GravityCenterScoreboard";
 import VisitStats from "@/components/VisitStats";
 import VisitTable from "@/components/VisitTable";
 import useVisits from "@/hooks/useVisits";
+import type { FilteringData } from "@/types/stats";
+import { Visit } from "@/types/travel";
+import { extractDate } from "@/utils";
+import { useEffect, useState } from "react";
 
 const VisitsPageClient = () => {
-  const { visits, error, deleteVisit } = useVisits();
+  const { visits: visitsData, error, deleteVisit } = useVisits();
+  const { visits } = visitsData;
+
+  const [filteredVisits, setFilteredVisits] = useState<Visit[]>(visits);
+  const [appliedFilter, setAppliedFilter] = useState<string | null>(null);
+
+  const onFilter = (data?: FilteringData) => {
+    const { type, value } = data || {}
+
+    if (type === 'day' && value) {
+      setFilteredVisits(visits.filter(v => extractDate(v.date).slice(0, 3) === value))
+      setAppliedFilter(value)
+      return
+    }
+
+    setFilteredVisits(visits)
+    setAppliedFilter(null)
+  }
+
+  useEffect(() => {
+    setFilteredVisits(visits);
+    setAppliedFilter(null);
+  }, [visits]);
 
   if (error) {
     return (
@@ -22,12 +48,14 @@ const VisitsPageClient = () => {
     <main className="mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
       <div className="space-y-8">
         <div className="flex gap-8">
-          <GravityCenterScoreboard visitsData={visits} />
-          <VisitStats visitsData={visits} />
+          <GravityCenterScoreboard visitsData={visitsData} />
+          <VisitStats visits={filteredVisits} onFilter={onFilter} />
         </div>
         <VisitTable
-          visitsData={visits}
+          visits={filteredVisits}
           onDelete={deleteVisit}
+          onRemoveFilter={() => onFilter()}
+          appliedFilter={appliedFilter}
         />
       </div>
     </main>
