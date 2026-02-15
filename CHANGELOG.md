@@ -18,25 +18,39 @@
 - COD4-064: update pie stats with filtered zipcode (#12) [417]
 
 ## v0.3.0 (2026-01-16)
-- COD3-204: Major update for Travel management, Stats backend migration, and E2E testing (#6) [20482]
+- COD3-204: Improve travel management + E2E testing (#6) [20482]
   - **Backend**: New `/find-last` and zipcode search endpoints; business logic validations; visit update events; API documentation.
   - **Frontend**: Travel distance autocomplete; "Same day" travel support; `useTravelCreator` hook; Refactored table components & common Selector; Stats logic moved to backend; Work-travel awareness (>60 days).
   - **General**: New Playwright E2E test suite; Docker build optimizations; Strict ESLint rules for import order and types; Coordinate and date utility fixes.
 
 ## v0.2.0 (2026-01-02)
-- COD2-036: add guest and multi-user management for travels and visits (#3) [3604]
-- COD2-048: work of week ending on december 26th (#4) [1680]
-- COD2-086: work of week ending on Jan 2, 2026 (#5) [4373]
+- COD2-036: Multi-user support (#3) [3604]
+  - **Auth/Users**: Support for optional user IDs in backend; guest-to-user data migration; session storage management in frontend.
+  - **Backend**: Updated indexes for user isolation; support for guest data in stats and travel services.
+  - **Frontend**: Dependency update to React 19 and Next 15; new CI workflows for linting and security audits.
+  - **UI/UX**: Colored user status indicators; coordinate copy-to-clipboard; abbreviation support for chart legends.
+
+- COD2-048: OpenStreetMap for Travels (#4) [1680]
+  - **Map**: Initial Leaflet integration with typed markers and auto-zoom based on distance.
+  - **Navigation**: Added "Previous/Next week" buttons and quick date jumps (week/month) to the range selector.
+  - **Interactivity**: Bar chart filtering (click to filter travels); custom generic Button and RemoveButton components.
+  - **Logic**: Validations for travel duration (<24h); PR template addition; layout adjustments for travel creation.
+
+- COD2-086: Location and Travel Edition (#5) [4373]
+  - **Edition**: Full support for editing location coordinates and updating travel origins/destinations within the same zipcode.
+  - **Sync**: Automated visit location updates when a related travel's origin changes.
+  - **Features**: New "Arrivals" and "Departures" views for locations; advanced travel search by zipcode with speed/duration metrics.
+  - **Performance**: SSR improvements by separating Client and Server components in the Header; optimized hooks by minimizing `use client` usage.
 
 ## v0.1.0 (2025-08-24)
-- COD1-103: Week 1 - Core Foundation: Locations, Travels, and Visits (#1) [10359]
+- COD1-103: Core Foundation: Locations, Travels, Visits (#1) [10359]
   - **Core**: Initial setup with Node.js/Express backend and React/Vite frontend.
   - **Database**: MongoDB integration with schemas for Locations, Travels, and Visits.
   - **Backend**: REST API with controllers and services; visit calculation and weight logic.
   - **Frontend**: TypeScript migration; dedicated forms and tables for all models; service-based communication.
   - **Infrastructure**: Docker & Docker Compose setup for localized development.
 
-- COD1-114: IT2 - Travel Action Buttons & UI Refinement (#2) [1418]
+- COD1-114: Travel Action Buttons (#2) [1418]
   - **Backend**: Middleware for visit persistence; new update and delete endpoints.
   - **UI/UX**: Replaced alerts with a modern toast system; added transport mode emojis to the table.
   - **Components**: Refactored table logic and date range selectors into dedicated reusable components.
