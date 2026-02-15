@@ -8,9 +8,9 @@
 ## 🎨 Cambios del Frontend
 ### Core
 - **Locations**: 
+- **Crosses**: 
 - **Travels**: 
 - **Visits**: 
-- **Stats**: 
 
 ### Generales
 - (Componentes UI, Hooks, Refactors)
