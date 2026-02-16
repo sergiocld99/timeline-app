@@ -5,7 +5,8 @@ A full-stack application for tracking travels, visits, and locations with intera
 ## 🚀 Tech Stack
 
 ### Backend
-- **Node.js** with **Express** (v5)
+- **Node.js** with **Express** (v5) - Main API
+- **Java 21** with **Quarkus 3** - Statistics Service
 - **MongoDB** with **Mongoose**
 - RESTful API architecture
 
@@ -29,6 +30,10 @@ timeline-app/
 │   ├── models/       # Mongoose schemas
 │   ├── routes/       # API routes
 │   └── services/     # Business logic
+│
+├── statistics-service/ # Quarkus Stats microservice (Java)
+│   ├── src/          # Source code
+│   └── pom.xml       # Maven dependencies
 │
 └── frontend-v2/      # Next.js application
     └── src/
@@ -73,6 +78,7 @@ docker compose up --build -d
 This will start:
 - **MongoDB** on port `27017`
 - **Backend API** on port `3000`
+- **Statistics Service** on port `8081`
 - **Frontend** on port `3002`
 
 > **⚠️ Important**: When making changes to the frontend code, always use the `--build` flag to force a rebuild:
@@ -95,14 +101,21 @@ npm install
 npm start
 ```
 
+#### Statistics Service (Quarkus)
+```bash
+cd statistics-service
+./mvnw quarkus:dev
+```
+The service will run on `http://localhost:8081`.
+
 #### Frontend
 ```bash
 cd frontend-v2
 npm install
 npm run dev
 ```
-
 The frontend will run on `http://localhost:3002` (Next.js default).
+
 
 ## ✨ Features
 
@@ -124,7 +137,8 @@ The backend provides RESTful endpoints for:
 - `/visits` - Visit tracking
 - `/crosses` - Cross management
 - `/users` - User management
-- `/stats` - Statistics and analytics
+- `/stats` - Basic statistics (Node.js)
+- `/api/v2/stats` - Advanced analytics (Quarkus - port 8081)
 
 ## 🔧 Development
 
@@ -152,6 +166,7 @@ npm run lint     # Run ESLint
 
 - **mongo**: MongoDB database
 - **backend**: Express API server
+- **stats**: Quarkus Statistics microservice
 - **frontend-v2**: Next.js application
 
 ## 📝 Notes
