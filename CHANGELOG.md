@@ -5,7 +5,7 @@
 - COD6-002: Give Access from Other Devices in same network (#18) [125]
 - COD6-003: New changelog + PR template (#20) [90]
 - COD6-006: Responsive Visits + Hide Map/Stats on Mobile (#19) [366]
-- COD6-010: Apply Filters by Hour and Weekday (#21) [542]
+- COD6-012: Apply Filters by Hour and Weekday (#21) [628]
 
 ## v0.5.0 (2026-02-10)
 - COD5-005: Migrate Hour Parts to backend + New Line Stats (#13) [537]
