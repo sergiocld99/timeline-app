@@ -1,5 +1,6 @@
 import type { Travel } from "@/types/travel"
 import type { ChartConfig } from "./ui/chart";
+import type { FilteringData } from "@/types/stats";
 
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
 
@@ -8,7 +9,6 @@ import { roundDecimals } from "@/utils/numbers";
 
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "./ui/chart"
-import type { FilteringData } from "@/types/stats";
 
 type Props = {
   travels: Travel[]

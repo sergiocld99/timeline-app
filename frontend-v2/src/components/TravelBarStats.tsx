@@ -1,4 +1,5 @@
 import type { Location, Travel } from "@/types/travel"
+import type { FilteringData } from "@/types/stats";
 
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
@@ -8,7 +9,6 @@ import { calculateBestLocations } from "./analize/travel";
 import { buildDailyChartData, buildHourlyChartData } from "./builders/travelBars";
 import { Card, CardContent } from "./ui/card";
 import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "./ui/chart";
-import type { FilteringData } from "@/types/stats";
 
 type Props = {
   travels: Travel[],

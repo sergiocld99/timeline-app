@@ -2,6 +2,7 @@
 
 import type { ChartData, ChartSource } from "@/types/chart";
 import type { Visit } from "@/types/travel";
+import type { FilteringData } from "@/types/stats";
 
 import { BarChart } from "recharts";
 import { Bar, CartesianGrid, XAxis } from "recharts";
@@ -13,7 +14,6 @@ import { buildChartConfig, getChartHours, useChartValue, useDefaultValues } from
 import { calculateBestLocations, getEachHourOfVisit } from "./analize/visit";
 import { Card, CardContent } from "./ui/card";
 import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "./ui/chart";
-import { FilteringData } from "@/types/stats";
 
 type Props = {
   visits: Visit[];

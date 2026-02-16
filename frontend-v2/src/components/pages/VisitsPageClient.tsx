@@ -1,13 +1,16 @@
 "use client";
 
+import type { FilteringData } from "@/types/stats";
+import type { Visit } from "@/types/travel";
+
+import { useEffect, useState } from "react";
+
 import GravityCenterScoreboard from "@/components/GravityCenterScoreboard";
 import VisitStats from "@/components/VisitStats";
 import VisitTable from "@/components/VisitTable";
 import useVisits from "@/hooks/useVisits";
-import type { FilteringData } from "@/types/stats";
-import { Visit } from "@/types/travel";
 import { extractDate } from "@/utils";
-import { useEffect, useState } from "react";
+
 
 const VisitsPageClient = () => {
   const { visits: visitsData, error, deleteVisit } = useVisits();
