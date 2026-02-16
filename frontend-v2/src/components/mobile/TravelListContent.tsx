@@ -3,7 +3,7 @@ import type { Travel, TravelStats } from "@/types/travel";
 import { extractTime, getEmojiForMode, getHoursAndMinutes } from "@/utils";
 
 import { Item, ItemContent, ItemDescription, ItemMedia, ItemTitle } from "../ui/item";
-import { renderPointWithCopyBtn } from "../render/coordinates";
+import { renderPoint } from "../render/coordinates";
 
 type Props = {
   travels: Travel[];
@@ -41,7 +41,7 @@ const TravelListContent = ({ travels, stats }: Props) => {
         <ItemContent>
           <ItemTitle>{placesVisited?.count || 0} places • {totalDistance.toFixed(0)} km • {getHoursAndMinutes(totalMinutes)}</ItemTitle>
           <ItemDescription>
-            {renderPointWithCopyBtn(totalLat, totalLong)}
+            {totalLat && totalLong && renderPoint(totalLat, totalLong) || ""}
           </ItemDescription>
         </ItemContent>
       </Item>
