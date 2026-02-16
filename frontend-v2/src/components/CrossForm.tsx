@@ -1,5 +1,6 @@
 "use client";
 
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -10,16 +11,28 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 
-type Props = {
-  onSave: () => void;
-}
-
-const CrossForm = ({ onSave }: Props) => {
-
+const CrossForm = () => {
+  const queryClient = useQueryClient();
   const [formData, setFormData] = useState({
     name: "",
     latitude: "",
     longitude: "",
+  });
+
+  const mutation = useMutation({
+    mutationFn: (newCross: typeof formData) => CrossService.create(newCross),
+    onSuccess: (data) => {
+      toast.success(`Cross "${data.name}" added successfully!`);
+      setFormData({
+        name: "",
+        latitude: "",
+        longitude: "",
+      });
+      queryClient.invalidateQueries({ queryKey: ["crosses"] });
+    },
+    onError: (err) => {
+      toast.error(`Failed to add cross: ${err}`);
+    },
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -31,18 +44,7 @@ const CrossForm = ({ onSave }: Props) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    CrossService.create(formData).then((data) => {
-      toast.success(`Cross "${data.name}" added successfully!`);
-      setFormData({
-        name: "",
-        latitude: "",
-        longitude: "",
-      })
-      onSave();
-    }).catch(err => {
-      toast.error(`Failed to add cross: ${err}`);
-    })
+    mutation.mutate(formData);
   };
 
   return (
