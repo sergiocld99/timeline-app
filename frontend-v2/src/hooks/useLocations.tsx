@@ -1,51 +1,43 @@
 import type { Location } from "@/types/travel";
-
-import { useEffect, useState } from "react";
-
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import LocationService from "@/services/LocationService";
 
 const useLocations = () => {
-  const [locations, setLocations] = useState<Location[]>([]);
-  const [error, setError] = useState<unknown>(null);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
 
-  const fetchLocations = async () => {
-    try {
-      setLoading(true);
-      const data = await LocationService.getAll();
-      setLocations(data);
-      setError(null);
-    } catch (error) {
-      setError(error);
-    } finally {
-      setLoading(false);
-    }
+  // 1. Fetching logic with useQuery
+  const { data: locations = [], error, isLoading } = useQuery({
+    queryKey: ['locations'],
+    queryFn: LocationService.getAll,
+  });
+
+  // 2. Update logic with useMutation
+  const updateMutation = useMutation({
+    mutationFn: ({ id, updates }: { id: string; updates: Partial<Location> }) =>
+      LocationService.update(id, updates),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['locations'] });
+    },
+  });
+
+  // 3. Delete logic with useMutation
+  const removeMutation = useMutation({
+    mutationFn: (id: string) => LocationService.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['locations'] });
+    },
+  });
+
+  return {
+    locations,
+    error,
+    loading: isLoading,
+    update: async (id: string, updates: Partial<Location>) =>
+      updateMutation.mutateAsync({ id, updates }),
+    remove: async (id: string) =>
+      removeMutation.mutateAsync(id),
+    refetch: () => queryClient.invalidateQueries({ queryKey: ['locations'] })
   };
-
-  const update = async (id: string, updates: Partial<Location>) => {
-    try {
-      const updatedItem = await LocationService.update(id, updates);
-      setLocations(prev => prev.map(l => l._id === updatedItem._id ? updatedItem : l))
-      return updatedItem
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  const remove = async (id: string) => {
-    try {
-      await LocationService.delete(id);
-      setLocations(prev => prev.filter(l => l._id !== id));
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  useEffect(() => {
-    fetchLocations();
-  }, []);
-
-  return { locations, error, loading, update, remove, refetch: fetchLocations };
 };
 
 export default useLocations;
