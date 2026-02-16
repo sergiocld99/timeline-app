@@ -18,7 +18,14 @@ export type TopKeysResult = {
   shouldShowOthers: boolean
 }
 
-export type FilteringData = {
-  type: 'zipcode' | 'day' | 'hour'
+type FilteringByZipcode = {
+  type: 'zipcode'
+  value: string[]
+}
+
+type FilteringByTime = {
+  type: 'day' | 'hour'
   value: string | undefined | null
 }
+
+export type FilteringData = FilteringByZipcode | FilteringByTime

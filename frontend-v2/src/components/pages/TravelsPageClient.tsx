@@ -39,10 +39,9 @@ const TravelsPageClient = () => {
     const { type, value } = data || {}
 
     if (type === 'zipcode' && value) {
-      const zipcodes = value.split(", ")
-      const displayName = zipcodes.length === 1 ? zipcodes[0] : zipcodes.length < 10 ? value : "Others"
+      const displayName = value.length === 1 ? value[0] : value.length < 10 ? value.join(", ") : "Others"
 
-      setFilteredTravels(travels.filter(t => zipcodes.includes(t.origin.zipcode) || zipcodes.includes(t.destination.zipcode)));
+      setFilteredTravels(travels.filter(t => value.includes(t.origin.zipcode) || value.includes(t.destination.zipcode)));
       setAppliedFilter(displayName);
       return;
     }
