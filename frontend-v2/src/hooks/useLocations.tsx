@@ -1,5 +1,7 @@
 import type { Location } from "@/types/travel";
+
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+
 import LocationService from "@/services/LocationService";
 
 const useLocations = () => {
