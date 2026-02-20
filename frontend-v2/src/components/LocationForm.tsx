@@ -4,6 +4,15 @@ import dynamic from "next/dynamic";
 import { MapPin } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import LocationService from "@/services/LocationService";
 
 // Import MapPicker dynamically to avoid SSR issues with Leaflet
 const MapPicker = dynamic(() => import("@/components/MapPicker"), {
@@ -14,19 +23,9 @@ const MapPicker = dynamic(() => import("@/components/MapPicker"), {
     </div>
   ),
 });
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import LocationService from "@/services/LocationService";
 
-type Props = {
-  onLocationAdded: () => void;
-};
-
-const LocationForm = ({ onLocationAdded }: Props) => {
+const LocationForm = () => {
+  const queryClient = useQueryClient();
   const [formData, setFormData] = useState({
     name: "",
     latitude: "",
@@ -35,6 +34,25 @@ const LocationForm = ({ onLocationAdded }: Props) => {
     notes: "",
   });
   const [isMapOpen, setIsMapOpen] = useState(false);
+
+  const mutation = useMutation({
+    mutationFn: (newLocation: typeof formData) => LocationService.create(newLocation),
+    onSuccess: (data) => {
+      toast.success(`Location "${data.name}" added successfully!`);
+      setFormData({
+        name: "",
+        latitude: "",
+        longitude: "",
+        zipcode: "",
+        notes: "",
+      });
+      queryClient.invalidateQueries({ queryKey: ['locations'] });
+    },
+    onError: (error) => {
+      console.error("There was an error adding the location!", error);
+      toast.error("Failed to add location. Please try again.");
+    }
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -45,22 +63,7 @@ const LocationForm = ({ onLocationAdded }: Props) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    try {
-      const data = await LocationService.create(formData);
-      toast.success(`Location "${data.name}" added successfully!`);
-      setFormData({
-        name: "",
-        latitude: "",
-        longitude: "",
-        zipcode: "",
-        notes: "",
-      });
-      onLocationAdded();
-    } catch (error) {
-      console.error("There was an error adding the location!", error);
-      toast.error("Failed to add location. Please try again.");
-    }
+    mutation.mutate(formData);
   };
   const handleMapSelect = (lat: number, lng: number) => {
     setFormData({

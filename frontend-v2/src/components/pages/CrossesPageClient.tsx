@@ -15,7 +15,7 @@ import useTravels from "@/hooks/useTravels";
 import TravelService from "@/services/TravelService";
 
 const CrossesPageClient = () => {
-  const { crosses, refetch } = useCrosses();
+  const { crosses } = useCrosses();
   const { travels: travelsData, refetch: refetchTravels } = useTravels();
   const [orCrosses, setOrCrosses] = useState<Cross[]>([]);
   const [editCrosses, setEditCrosses] = useState<Cross[]>([]);
@@ -84,7 +84,7 @@ const CrossesPageClient = () => {
     <main className="py-8 bg-gray-50 dark:bg-gray-900 min-h-screen gap-8 px-8 w-full">
       <div className="flex flex-col lg:flex-row gap-8 mx-auto">
         <div className="w-full lg:w-1/3">
-          <CrossForm onSave={refetch} />
+          <CrossForm />
         </div>
         <div className="hidden lg:block w-2/3">
           <CrossTable data={crosses} onCheckOR={onCheckOR} onCheckEdit={onCheckEdit} />
