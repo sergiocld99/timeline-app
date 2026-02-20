@@ -1,5 +1,14 @@
 import { getHourParts } from "./timeService.js";
 
+const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+const extractDate = (date) => {
+  const dayOfWeek = daysOfWeek[date.getDay()];
+  const dateParts = date.toISOString().split('T')[0].split('-');
+  const shortYear = dateParts[0].substring(2);
+  return `${dayOfWeek} ${dateParts[2]}/${dateParts[1]}/${shortYear}`;
+};
+
 const buildShortDate = (date) => {
   const dateParts = date.toISOString().split('T')[0].split('-');
   const timeParts = date.toISOString().split('T')[1].split(':');
@@ -47,6 +56,7 @@ export const enrichTravels = (travels) => {
     const duration = calculateDuration(t.startTime, t.endTime);
 
     t.set('shortDate', buildShortDate(t.startTime), { strict: false });
+    t.set('extractedDate', extractDate(t.startTime), { strict: false });
     t.set('duration', duration, { strict: false });
     t.set('speed', (t.distance / duration) * 60, { strict: false });
 
@@ -64,11 +74,12 @@ export const enrichTravels = (travels) => {
  */
 export const enrichTravel = (travel) => {
   const duration = calculateDuration(travel.startTime, travel.endTime);
-  
+
   travel.shortDate = buildShortDate(travel.startTime);
+  travel.extractedDate = extractDate(travel.startTime);
   travel.duration = duration;
   travel.speed = (travel.distance / duration) * 60;
-  
+
   return travel;
 };
 
@@ -122,7 +133,7 @@ export const calculateTravelStats = (travels) => {
   const averageDistance = count > 0 ? totalKm / count : 0;
   const averageDuration = count > 0 ? totalMinutes / count : 0;
   const averagePrice = count > 0 ? totalPrice / count : 0;
-  
+
   const totalHours = totalMinutes / 60
   const averageSpeed = totalHours > 0 ? totalKm / totalHours : 0;
 
