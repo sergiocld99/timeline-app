@@ -16,30 +16,43 @@ test('can create and delete travel', async ({ page }) => {
   await page.locator('#endTime').fill('18:00')
   await page.locator('#distance').fill('30')
 
-  // Save travel
-  await page.screenshot({ path: 'test-results/creator_filled.png' });
+  // Save travel - Wait for the POST request to complete
+  const createPromise = page.waitForResponse(response =>
+    response.url().includes('/travels') && response.request().method() === 'POST' && response.status() === 201
+  );
   await page.getByRole('button', { name: 'Create Travel' }).click()
+  await createPromise;
 
   await expect(page.getByText('Travel added successfully')).toBeVisible()
 
-  await page.screenshot({ path: 'test-results/creator_saved.png' });
-
+  // Wait for initial load of travels BEFORE navigating
+  const initialLoadPromise = page.waitForResponse(response =>
+    response.url().includes('/travels') && response.request().method() === 'GET'
+  );
   await page.goto('/travels');
+  await initialLoadPromise;
 
   // Filter by date range
   await page.locator('#date_from').fill('2099-08-01T00:00')
   await page.locator('#date_to').fill('2099-08-31T23:59')
+
+  // Wait for the filtered travels list to load
+  const filterPromise = page.waitForResponse(response =>
+    response.url().includes('/travels') && response.request().method() === 'GET'
+  );
   await page.locator('button').filter({ hasText: 'Apply' }).click()
-  await page.screenshot({ path: 'test-results/travels_loaded.png', fullPage: true });
+  await filterPromise;
 
   await expect(page.locator('td').filter({ hasText: '1 travel' })).toBeVisible()
 
-  // Delete travel
+  // Delete travel - Wait for the DELETE request to complete
+  const deletePromise = page.waitForResponse(response =>
+    response.url().includes('/travels') && response.request().method() === 'DELETE' && response.status() === 204
+  );
   await page.getByRole('button', { name: 'Delete' }).click()
+  await deletePromise;
 
   await expect(page.locator('td').filter({ hasText: '0 travels' })).toBeVisible()
   await expect(page.locator('td').filter({ hasText: 'NaN' })).not.toBeVisible()
   await expect(page.getByText('Travel deleted successfully!')).toBeVisible()
-
-  await page.screenshot({ path: 'test-results/travels_removed.png', fullPage: true });
 })

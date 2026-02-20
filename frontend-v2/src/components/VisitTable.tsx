@@ -1,26 +1,28 @@
 "use client";
 
-import type { VisitsData } from '@/types/travel';
+import type { Visit } from '@/types/travel';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import DateRangeSelector from './DateRangeSelector';
+import RemoveFilterBtn from './buttons/RemoveFilterBtn';
 import VisitTableContent from './VisitTableContent';
 import VisitListContent from './mobile/VisitListContent';
 
 
 type Props = {
-  visitsData: VisitsData;
+  visits: Visit[];
   onDelete: (id: string) => Promise<void>;
+  onRemoveFilter: () => void;
+  appliedFilter: string | null;
 };
 
-const VisitTable = ({ visitsData, onDelete }: Props) => {
-  const { visits } = visitsData;
-
+const VisitTable = ({ visits, onDelete, appliedFilter, onRemoveFilter }: Props) => {
   return (
     <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-gray-900 dark:text-white">Visits</CardTitle>
+        {appliedFilter && onRemoveFilter && <RemoveFilterBtn handleClick={onRemoveFilter} filterName={appliedFilter} />}
       </CardHeader>
       <CardContent className="space-y-6">
         <DateRangeSelector />

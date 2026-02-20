@@ -1,7 +1,7 @@
 "use client";
 
 import type { Travel } from "@/types/travel";
-import type { StatsView } from "@/types/stats";
+import type { FilteringData, StatsView } from "@/types/stats";
 
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
@@ -35,17 +35,31 @@ const TravelsPageClient = () => {
   const [filteredTravels, setFilteredTravels] = useState<Travel[]>(travels);
   const [appliedFilter, setAppliedFilter] = useState<string | null>(null);
 
-  const onFilterLocation = (loc?: string) => {
-    if (loc) {
-      const zipcodes = loc.split(", ")
-      const displayName = zipcodes.length === 1 ? zipcodes[0] : zipcodes.length < 10 ? loc : "Others"
+  const onFilter = (data?: FilteringData) => {
+    const { type, value } = data || {}
 
-      setFilteredTravels(travels.filter(t => zipcodes.includes(t.origin.zipcode) || zipcodes.includes(t.destination.zipcode)));
+    if (type === 'zipcode' && value) {
+      const displayName = value.length === 1 ? value[0] : value.length < 10 ? value.join(", ") : "Others"
+
+      setFilteredTravels(travels.filter(t => value.includes(t.origin.zipcode) || value.includes(t.destination.zipcode)));
       setAppliedFilter(displayName);
-    } else {
-      setFilteredTravels(travels);
-      setAppliedFilter(null);
+      return;
     }
+
+    if (type === 'day' && value) {
+      setFilteredTravels(travels.filter(t => t.extractedDate.slice(0, 3) === value))
+      setAppliedFilter(value);
+      return;
+    }
+
+    if (type === 'hour' && value) {
+      setFilteredTravels(travels.filter(t => t.hourParts.completeParts.find(p => p.hour === value)))
+      setAppliedFilter(value);
+      return;
+    }
+
+    setFilteredTravels(travels);
+    setAppliedFilter(null);
   };
 
   useEffect(() => {
@@ -65,9 +79,9 @@ const TravelsPageClient = () => {
               <CircularViewBtn handleClick={() => setStatsView("circular")} isActive={statsView === "circular"} />
               <LineViewBtn handleClick={() => setStatsView("line")} isActive={statsView === "line"} />
             </div>
-            {statsView === "bar" && <TravelBarStats travels={filteredTravels} onFilterLocation={onFilterLocation} cardClassName="w-full" />}
+            {statsView === "bar" && <TravelBarStats travels={filteredTravels} onFilter={onFilter} cardClassName="w-full" />}
+            {statsView === "line" && <TravelLineStats travels={filteredTravels} onFilter={onFilter} />}
             {statsView === "circular" && <TravelPieStats travels={filteredTravels} />}
-            {statsView === "line" && <TravelLineStats travels={filteredTravels} />}
           </div>
         </div>
         <TravelTable
@@ -75,7 +89,7 @@ const TravelsPageClient = () => {
           stats={stats}
           onUpdateTravel={updateTravel}
           onDeleteTravel={deleteTravel}
-          onRemoveFilter={() => onFilterLocation(undefined)}
+          onRemoveFilter={() => onFilter()}
           appliedFilter={appliedFilter}
         />
       </div>

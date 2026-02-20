@@ -1,6 +1,6 @@
 import type { Travel, TravelStats } from "@/types/travel";
 
-import { extractDate, extractTime, getEmojiForMode, getHoursAndMinutes } from "@/utils";
+import { extractTime, getEmojiForMode, getHoursAndMinutes } from "@/utils";
 
 import { Item, ItemContent, ItemDescription, ItemMedia, ItemTitle } from "../ui/item";
 import { renderPoint } from "../render/coordinates";
@@ -28,7 +28,7 @@ const TravelListContent = ({ travels, stats }: Props) => {
               {getEmojiForMode(travel.modeOfTransport)}
             </ItemMedia>
             <ItemContent>
-              <ItemTitle>{extractDate(travel.startTime)} • {travel.distance} km</ItemTitle>
+              <ItemTitle>{travel.extractedDate} • {travel.distance} km</ItemTitle>
               <ItemDescription>
                 From: {travel.origin.name} ({extractTime(travel.startTime)}) <br /> To: {travel.destination.name} ({extractTime(travel.endTime)})
               </ItemDescription>

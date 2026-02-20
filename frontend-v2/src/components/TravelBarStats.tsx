@@ -1,4 +1,5 @@
 import type { Location, Travel } from "@/types/travel"
+import type { FilteringData } from "@/types/stats";
 
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
@@ -11,7 +12,7 @@ import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartToo
 
 type Props = {
   travels: Travel[],
-  onFilterLocation: (loc?: string) => void,
+  onFilter: (data: FilteringData) => void,
   options?: {
     field: 'origin' | 'destination'
   },
@@ -44,11 +45,7 @@ const enrichWithFarthestPoint = (t: Travel, home?: Location) => {
   }
 }
 
-const buildOthersFilterString = (otherKeys: string[]) => {
-  return otherKeys.join(", ")
-}
-
-const TravelBarStats = ({ travels, onFilterLocation, options, cardClassName = "w-8/10" }: Props) => {
+const TravelBarStats = ({ travels, onFilter, options, cardClassName = "w-8/10" }: Props) => {
   const home = calculateHome(travels, options)
   const relevantTravels = travels.map(t => enrichWithFarthestPoint(t, home))
 
@@ -57,6 +54,18 @@ const TravelBarStats = ({ travels, onFilterLocation, options, cardClassName = "w
   const dailyChartData = buildDailyChartData(relevantTravels, topKeys)
   const chartConfig = buildChartConfig(topKeys)
 
+  const handleZipcodeClick = (zipcode: string[]) => {
+    onFilter({ type: 'zipcode', value: zipcode })
+  }
+
+  const handleDayClick = (day?: string) => {
+    onFilter({ type: 'day', value: day })
+  }
+
+  const handleHourClick = (hour?: string) => {
+    onFilter({ type: 'hour', value: hour })
+  }
+
   return (
     <Card className={`${cardClassName} bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700`}>
       <CardContent className="h-[300px] flex items-center justify-center">
@@ -64,9 +73,11 @@ const TravelBarStats = ({ travels, onFilterLocation, options, cardClassName = "w
           <BarChart accessibilityLayer data={hourlyChartData}>
             <CartesianGrid vertical={false} />
             <XAxis
+              className="hover:cursor-pointer"
               dataKey="hour"
               tickMargin={10}
               tickFormatter={(value) => value.slice(0, 3)}
+              onClick={(data) => handleHourClick(data?.value)}
             />
             <ChartTooltip content={<ChartTooltipContent />} />
             <ChartLegend content={<ChartLegendContent />} />
@@ -74,38 +85,38 @@ const TravelBarStats = ({ travels, onFilterLocation, options, cardClassName = "w
               dataKey="red"
               stackId="a"
               fill="var(--color-red)"
-              onClick={() => onFilterLocation(topKeys.at(0))}
+              onClick={() => handleZipcodeClick([topKeys[0]])}
             />}
             {topKeys.at(1) && <Bar
               dataKey="orange"
               stackId="a"
               fill="var(--color-orange)"
-              onClick={() => onFilterLocation(topKeys.at(1))}
+              onClick={() => handleZipcodeClick([topKeys[1]])}
             />}
             {topKeys.at(2) && <Bar
               dataKey="yellow"
               stackId="a"
               fill="var(--color-yellow)"
-              onClick={() => onFilterLocation(topKeys.at(2))}
+              onClick={() => handleZipcodeClick([topKeys[2]])}
             />}
             {topKeys.at(3) && <Bar
               dataKey="green"
               stackId="a"
               fill="var(--color-green)"
-              onClick={() => onFilterLocation(topKeys.at(3))}
+              onClick={() => handleZipcodeClick([topKeys[3]])}
             />}
             {topKeys.at(4) && <Bar
               dataKey="blue"
               stackId="a"
               fill="var(--color-blue)"
-              onClick={() => onFilterLocation(topKeys.at(4))}
+              onClick={() => handleZipcodeClick([topKeys[4]])}
             />}
             {shouldShowOthers &&
               <Bar
                 dataKey="others"
                 stackId="a"
                 fill="var(--color-others)"
-                onClick={() => onFilterLocation(buildOthersFilterString(otherKeys))}
+                onClick={() => handleZipcodeClick(otherKeys)}
               />}
           </BarChart>
         </ChartContainer>
@@ -113,47 +124,43 @@ const TravelBarStats = ({ travels, onFilterLocation, options, cardClassName = "w
           <BarChart accessibilityLayer data={dailyChartData}>
             <CartesianGrid vertical={false} />
             <XAxis
+              className="hover:cursor-pointer"
               dataKey="day"
               tickMargin={10}
               tickFormatter={(value) => value.slice(0, 3)}
+              onClick={(data) => handleDayClick(data?.value)}
             />
             <ChartTooltip content={<ChartTooltipContent />} />
             {topKeys.at(0) && <Bar
               dataKey="red"
               stackId="a"
               fill="var(--color-red)"
-              onClick={() => onFilterLocation(topKeys.at(0))}
             />}
             {topKeys.at(1) && <Bar
               dataKey="orange"
               stackId="a"
               fill="var(--color-orange)"
-              onClick={() => onFilterLocation(topKeys.at(1))}
             />}
             {topKeys.at(2) && <Bar
               dataKey="yellow"
               stackId="a"
               fill="var(--color-yellow)"
-              onClick={() => onFilterLocation(topKeys.at(2))}
             />}
             {topKeys.at(3) && <Bar
               dataKey="green"
               stackId="a"
               fill="var(--color-green)"
-              onClick={() => onFilterLocation(topKeys.at(3))}
             />}
             {topKeys.at(4) && <Bar
               dataKey="blue"
               stackId="a"
               fill="var(--color-blue)"
-              onClick={() => onFilterLocation(topKeys.at(4))}
             />}
             {shouldShowOthers &&
               <Bar
                 dataKey="others"
                 stackId="a"
                 fill="var(--color-others)"
-                onClick={() => onFilterLocation(buildOthersFilterString(otherKeys))}
               />}
           </BarChart>
         </ChartContainer>

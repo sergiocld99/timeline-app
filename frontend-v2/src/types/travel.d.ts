@@ -28,6 +28,7 @@ export type Travel = Weighted & {
   modeOfTransport: string
   distance: number
   shortDate: string
+  extractedDate: string
   duration: number
   speed: number
   crosses: Cross[]
