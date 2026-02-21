@@ -16,10 +16,11 @@ import { getZoomByDistance } from "./adjust/zoom";
 import { getUniqueLocations } from "./analize/travel";
 import { defaultMarker } from "./map/icons";
 import { renderLocationMarkers } from "./render/map";
+import { useTravelStats } from "@/hooks/useTravelStats";
 
 type Props = {
   travels: Travel[];
-  stats?: TravelStats;
+  isFiltered?: boolean;
 };
 
 const DEFAULT_ZOOM = 9
@@ -36,12 +37,13 @@ const ChangeMapView = ({ center, zoom }: { center: Center, zoom: number }) => {
   return null;
 }
 
-const TravelMap = ({ travels, stats }: Props) => {
+const TravelMap = ({ travels, isFiltered }: Props) => {
+  const { stats } = useTravelStats(travels);
   const [mapCenter, setMapCenter] = useState<[number, number]>([DEFAULT_LAT, DEFAULT_LNG])
   const [zoom, setZoom] = useState(DEFAULT_ZOOM)
 
-  const { averageLatitude, averageLongitude } = stats || {}
-  const nearbyRadius = travels.length === 0 ? undefined : (stats!.averageDistance * 2)
+  const { count, averageLatitude, averageLongitude } = stats || {}
+  const nearbyRadius = stats ? (stats.averageDistance * 2) : undefined
 
   const { nearbyCenters } = useNearbyCenters({ latitude: averageLatitude, longitude: averageLongitude, radiusKm: nearbyRadius })
 
@@ -51,6 +53,8 @@ const TravelMap = ({ travels, stats }: Props) => {
 
   // Calcular el centro y zoom para mostrar todos los markers
   useEffect(() => {
+    if (count != travels.length) return; // No calcular si los stats están cargando
+
     if (mostFrequentLocation && averageLatitude && averageLongitude) {
       const [lat1, lng1] = [mostFrequentLocation.lat, mostFrequentLocation.lng]
       const [lat2, lng2] = [averageLatitude, averageLongitude]
@@ -58,11 +62,13 @@ const TravelMap = ({ travels, stats }: Props) => {
       const centerLat = (lat1 + lat2) / 2
       const centerLng = (lng1 + lng2) / 2
       const distanceKm = calculateDistanceKm(lat1, lat2, lng1, lng2)
+      const recommendedZoom = getZoomByDistance(distanceKm)
+      const adjustedZoom = (isFiltered && count < 5) ? recommendedZoom - 1 : recommendedZoom
 
+      setZoom(adjustedZoom)
       setMapCenter([centerLat, centerLng])
-      setZoom(getZoomByDistance(distanceKm))
     }
-  }, [mostFrequentLocation, averageLatitude, averageLongitude])
+  }, [mostFrequentLocation, averageLatitude, averageLongitude, count])
 
   useEffect(() => {
     // Asegurar que los iconos por defecto estén configurados
