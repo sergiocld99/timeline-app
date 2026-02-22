@@ -12,3 +12,8 @@ export type MapLocation = {
 }
 
 export type Center = [number, number]
+
+export type GravityCenter = {
+  lat?: number;
+  lng?: number;
+}

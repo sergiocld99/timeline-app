@@ -71,7 +71,7 @@ const TravelForm = ({ locations }: Props) => {
                 id="endTime"
                 name="endTime"
                 type={isSameDay ? 'time' : 'datetime-local'}
-                value={isSameDay ? formData.endTime.split('T')[1] : formData.endTime }
+                value={isSameDay ? formData.endTime.split('T')[1] : formData.endTime}
                 onChange={(e) => handleChange("endTime", e.target.value)}
                 required
                 className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"

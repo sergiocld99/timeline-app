@@ -7,6 +7,8 @@
 - COD6-006: Responsive Visits + Hide Map/Stats on Mobile (#19) [366]
 - COD6-012: Apply Filters by Hour and Weekday (#21) [628]
 - COD6-016: Add TanStack Query for Locations and Crosses (#22) [456]
+- COD6-017: Add Changelog & Milestone Compliance Workflow (#25)
+- COD6-018: Reload Known Centers on Apply Filtering (#24) [317]
 
 ## v0.5.0 (2026-02-10)
 - COD5-005: Migrate Hour Parts to backend + New Line Stats (#13) [537]
