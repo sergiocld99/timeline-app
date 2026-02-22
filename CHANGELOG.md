@@ -1,6 +1,9 @@
 # CHANGELOG
 
-## v0.6.0 (WIP)
+## v0.7.0
+- COD7-001: Provide Visit Hour Parts from Backend to enable filtering (#26) [86]
+
+## v0.6.0 (2026-02-22)
 - COD6-001: Pick Map to fill coordinates on create location + delete btn (#17) [148]
 - COD6-002: Give Access from Other Devices in same network (#18) [125]
 - COD6-003: New changelog + PR template (#20) [90]
