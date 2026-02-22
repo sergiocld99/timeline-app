@@ -2,7 +2,7 @@
 
 import "leaflet/dist/leaflet.css";
 
-import type { Center, GravityCenter } from "@/types/map";
+import type { Center } from "@/types/map";
 import type { Travel } from "@/types/travel";
 
 import L from "leaflet";
