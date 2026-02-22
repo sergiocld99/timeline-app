@@ -53,7 +53,7 @@ const TravelsPageClient = () => {
     }
 
     if (type === 'hour' && value) {
-      setFilteredTravels(travels.filter(t => t.hourParts.completeParts.find(p => p.hour === value)))
+      setFilteredTravels(travels.filter(t => t.hourParts.completeParts.some(p => p.hour === value)))
       setAppliedFilter(value);
       return;
     }

@@ -73,9 +73,11 @@ const VisitStats = ({ visits, onFilter }: Props) => {
           <BarChart accessibilityLayer data={hourlyChartData}>
             <CartesianGrid vertical={false} />
             <XAxis
+              className="hover:cursor-pointer"
               dataKey="hour"
               tickMargin={10}
               tickFormatter={(value) => value.slice(0, 3)}
+              onClick={(e) => onFilter({ type: 'hour', value: e?.value })}
             />
             <ChartTooltip content={<ChartTooltipContent />} />
             <ChartLegend content={<ChartLegendContent />} />
