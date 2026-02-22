@@ -1,6 +1,14 @@
 import { useCorrectUser } from "../helpers/useCorrectUser.js";
 import Travel from "../models/Travel.js";
 import Visit from "../models/Visit.js";
+import { getCompleteHourParts } from "./timeService.js";
+
+export const enrichVisits = (visits) => {
+  return visits.map(v => {
+    v.set('hourParts', getCompleteHourParts(v.arrivalTime, v.departureTime), { strict: false });
+    return v;
+  })
+}
 
 const getTravelsStartedOn = async (date, userId) => {
   const startOfDay = new Date(date);

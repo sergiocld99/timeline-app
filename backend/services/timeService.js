@@ -60,3 +60,10 @@ export const getHourParts = (startTime, endTime, duration) => {
     secondHalf: calculateHourParts(normalizedHalfTime, normalizedEnd),
   }
 }
+
+export const getCompleteHourParts = (startTime, endTime) => {
+  const normalizedStart = extractHourAndMinutes(startTime);
+  const normalizedEnd = extractHourAndMinutes(endTime);
+
+  return calculateHourParts(normalizedStart, normalizedEnd)
+}

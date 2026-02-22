@@ -105,6 +105,7 @@ export type Visit = Weighted & {
   arrivalTime: string
   departureTime: string
   durationMinutes: number
+  hourParts: HourPart[]
 }
 
 export type VisitsStats = {
