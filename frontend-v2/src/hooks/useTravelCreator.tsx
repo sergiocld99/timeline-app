@@ -3,6 +3,7 @@ import type { User } from "@/types/user";
 import type { TravelFormData } from "@/types/travel";
 
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import { useUser } from "@/contexts/UserContext";
@@ -75,6 +76,7 @@ const getSameDayEndTime = (startTime: string, endTime: string) => {
 
 const useTravelCreator = () => {
   const { currentUser } = useUser();
+  const queryClient = useQueryClient();
   const [createForAllUsers, setCreateForAllUsers] = useState<boolean>(false);
   const [isSameDay, setIsSameDay] = useState<boolean>(true);
 
@@ -132,14 +134,19 @@ const useTravelCreator = () => {
       }
     }
 
-    // Auto-complete distance based on last travel
+    // Auto-complete distance based on last travel only when changing destination
     if (name === 'destination') {
       const { origin, distance } = formData
       const destination = value
 
       if (origin && destination && !distance) {
         try {
-          const lastTravel = await TravelService.findLastTravel(origin, destination, currentUser?.userId)
+          // Usamos fetchQuery para aprovechar el cache si ya se pidió antes
+          const lastTravel = await queryClient.fetchQuery({
+            queryKey: ['last_travel', origin, destination, currentUser?.userId],
+            queryFn: () => TravelService.findLastTravel(origin, destination, currentUser?.userId),
+            staleTime: 1000 * 60 * 30,
+          });
 
           if (lastTravel) {
             setFormData({
@@ -151,9 +158,8 @@ const useTravelCreator = () => {
             return
           }
         } catch (err) {
-          const axiosError = err as AxiosErrorResponse;
-
-          toast.error(axiosError.response?.data?.message, { style: { background: 'red' } })
+          // Si falla, simplemente seguimos sin auto-completar
+          console.error("Error fetching last travel for autocomplete:", err);
         }
       }
     }
