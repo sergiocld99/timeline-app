@@ -68,8 +68,8 @@ const LocationForm = () => {
   const handleMapSelect = (lat: number, lng: number) => {
     setFormData({
       ...formData,
-      latitude: lat.toString(),
-      longitude: lng.toString(),
+      latitude: lat.toFixed(4),
+      longitude: lng.toFixed(4),
     });
     setIsMapOpen(false);
   };
