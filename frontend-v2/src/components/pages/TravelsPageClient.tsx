@@ -72,7 +72,7 @@ const TravelsPageClient = () => {
       <div className="space-y-8">
         <PresentialWorkAlert />
         <div className="hidden lg:flex gap-8">
-          <TravelMap travels={filteredTravels} stats={stats} />
+          <TravelMap travels={filteredTravels} isFiltered={!!appliedFilter} />
           <div className="w-8/10 relative">
             <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
               <BarViewBtn handleClick={() => setStatsView("bar")} isActive={statsView === "bar"} />

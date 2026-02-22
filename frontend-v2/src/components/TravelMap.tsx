@@ -3,23 +3,23 @@
 import "leaflet/dist/leaflet.css";
 
 import type { Center } from "@/types/map";
-import type { Travel, TravelStats } from "@/types/travel";
+import type { Travel } from "@/types/travel";
 
 import L from "leaflet";
 import { useEffect, useMemo, useState } from "react";
 import { MapContainer, TileLayer, useMap } from "react-leaflet";
 
 import useNearbyCenters from "@/hooks/useNearbyCenters";
-import { calculateDistanceKm } from "@/utils/units/km";
+import { useTravelStats } from "@/hooks/useTravelStats";
 
-import { getZoomByDistance } from "./adjust/zoom";
 import { getUniqueLocations } from "./analize/travel";
 import { defaultMarker } from "./map/icons";
 import { renderLocationMarkers } from "./render/map";
+import { calculateViewpoint } from "./analize/viewpoint";
 
 type Props = {
   travels: Travel[];
-  stats?: TravelStats;
+  isFiltered?: boolean;
 };
 
 const DEFAULT_ZOOM = 9
@@ -36,33 +36,46 @@ const ChangeMapView = ({ center, zoom }: { center: Center, zoom: number }) => {
   return null;
 }
 
-const TravelMap = ({ travels, stats }: Props) => {
+const TravelMap = ({ travels, isFiltered }: Props) => {
+  const { stats } = useTravelStats(travels);
   const [mapCenter, setMapCenter] = useState<[number, number]>([DEFAULT_LAT, DEFAULT_LNG])
   const [zoom, setZoom] = useState(DEFAULT_ZOOM)
 
-  const { averageLatitude, averageLongitude } = stats || {}
-  const nearbyRadius = travels.length === 0 ? undefined : (stats!.averageDistance * 2)
+  const { count = 0, averageLatitude, averageLongitude } = stats || {}
+  const nearbyRadius = stats ? (stats.averageDistance * 2) : undefined
+
+  // Auxiliar variables
+  const isStronglyFiltered = isFiltered && count < 5
+  const areStatsReady = count === travels.length
 
   const { nearbyCenters } = useNearbyCenters({ latitude: averageLatitude, longitude: averageLongitude, radiusKm: nearbyRadius })
 
   // Agrupar coordenadas por ubicación para evitar markers duplicados
+  const gravityCenter = useMemo(() => ({ lat: averageLatitude, lng: averageLongitude }), [averageLatitude, averageLongitude])
   const uniqueLocations = useMemo(() => getUniqueLocations(travels, nearbyCenters), [travels, nearbyCenters]);
-  const mostFrequentLocation = uniqueLocations.length > 0 ? uniqueLocations.reduce((max, act) => max.frecuency > act.frecuency ? max : act) : undefined
+
+  const mostFrequentLocation = useMemo(() =>
+    uniqueLocations.length > 0 ? uniqueLocations.reduce((max, act) => max.frecuency > act.frecuency ? max : act) : undefined
+    , [uniqueLocations]);
 
   // Calcular el centro y zoom para mostrar todos los markers
+  // TODO: [CSAPP-22] Esta lógica de viewpoint debería resolverse en el backend
+  const viewpoint = useMemo(() => {
+    if (!areStatsReady) return null;
+
+    return calculateViewpoint({
+      mostFrequentLocation,
+      gravityCenter,
+      isStronglyFiltered,
+    });
+  }, [mostFrequentLocation, gravityCenter, areStatsReady, isStronglyFiltered]);
+
   useEffect(() => {
-    if (mostFrequentLocation && averageLatitude && averageLongitude) {
-      const [lat1, lng1] = [mostFrequentLocation.lat, mostFrequentLocation.lng]
-      const [lat2, lng2] = [averageLatitude, averageLongitude]
-
-      const centerLat = (lat1 + lat2) / 2
-      const centerLng = (lng1 + lng2) / 2
-      const distanceKm = calculateDistanceKm(lat1, lat2, lng1, lng2)
-
-      setMapCenter([centerLat, centerLng])
-      setZoom(getZoomByDistance(distanceKm))
+    if (viewpoint) {
+      setZoom(viewpoint.zoom);
+      setMapCenter(viewpoint.center);
     }
-  }, [mostFrequentLocation, averageLatitude, averageLongitude])
+  }, [viewpoint]);
 
   useEffect(() => {
     // Asegurar que los iconos por defecto estén configurados
