@@ -1,12 +1,13 @@
 "use client"
 
 import type { KnownCenter } from "@/types/center"
-import type { Travel, TravelsData, Visit,VisitsData } from "@/types/travel"
+import type { Travel, TravelsData, Visit, VisitsData } from "@/types/travel"
 
 import useNearbyCenters from "@/hooks/useNearbyCenters"
 import { shortcutName } from "@/utils/strings"
 
 import { Card, CardContent } from "./ui/card"
+import Link from "next/link"
 
 type Props = {
   travelsData?: TravelsData
@@ -16,7 +17,7 @@ type Props = {
 const renderNearbyCenter = (kc: KnownCenter, index: number, travels: Travel[], visits: Visit[]) => {
   const rank = index + 1
   const distanceFormatted = kc.distanceKm.toFixed(1)
-  
+
   // Check if the location is active (present in travel table)
   const isActive = travels.some(
     (travel) => travel.origin._id === kc._id || travel.destination._id === kc._id
@@ -31,7 +32,7 @@ const renderNearbyCenter = (kc: KnownCenter, index: number, travels: Travel[], v
   }
 
   return (
-    <div className={classNames} key={kc.zipcode.concat(index.toString())}>
+    <Link href={'/travels/to/' + kc._id} target="_blank" className={classNames} key={kc.zipcode.concat(index.toString())}>
       <div className="flex items-baseline gap-2">
         <span className="font-bold">#{rank}</span>
         <span className="font-bold">{shortcutName(kc.name, 24)}</span>
@@ -39,7 +40,7 @@ const renderNearbyCenter = (kc: KnownCenter, index: number, travels: Travel[], v
       <div className="text-sm text-muted-foreground mt-1">
         {kc.zipcode} - {distanceFormatted} km away
       </div>
-    </div>
+    </Link>
   )
 }
 

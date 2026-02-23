@@ -16,10 +16,11 @@ const DateRangeContext = createContext<DateRangeContextType | undefined>(undefin
 
 interface DateRangeProviderProps {
   children: ReactNode;
+  initialDays?: number;
 }
 
-export const DateRangeProvider = ({ children }: DateRangeProviderProps) => {
-  const [dateFrom, setDateFrom] = useState(getStartDateFromCurrent(30));
+export const DateRangeProvider = ({ children, initialDays = 30 }: DateRangeProviderProps) => {
+  const [dateFrom, setDateFrom] = useState(getStartDateFromCurrent(initialDays));
   const [dateTo, setDateTo] = useState(getTodayEndTime());
 
   const updateDateRange = (newDateFrom: string, newDateTo: string) => {
