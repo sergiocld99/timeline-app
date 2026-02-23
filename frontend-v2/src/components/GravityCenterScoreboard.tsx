@@ -3,11 +3,12 @@
 import type { KnownCenter } from "@/types/center"
 import type { Travel, TravelsData, Visit, VisitsData } from "@/types/travel"
 
+import Link from "next/link"
+
 import useNearbyCenters from "@/hooks/useNearbyCenters"
 import { shortcutName } from "@/utils/strings"
 
 import { Card, CardContent } from "./ui/card"
-import Link from "next/link"
 
 type Props = {
   travelsData?: TravelsData
