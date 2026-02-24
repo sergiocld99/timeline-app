@@ -28,6 +28,12 @@ const VisitsPageClient = () => {
       return
     }
 
+    if (type === 'hour' && value) {
+      setFilteredVisits(visits.filter(v => v.hourParts.some(hp => hp.hour === value)))
+      setAppliedFilter(value)
+      return
+    }
+
     setFilteredVisits(visits)
     setAppliedFilter(null)
   }

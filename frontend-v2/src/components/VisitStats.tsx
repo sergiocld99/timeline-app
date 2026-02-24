@@ -11,7 +11,7 @@ import { daysOfWeek } from "@/constants";
 import { convertToArgentineTime } from "@/utils";
 import { buildChartConfig, getChartHours, useChartValue, useDefaultValues } from "@/utils/chart";
 
-import { calculateBestLocations, getEachHourOfVisit } from "./analize/visit";
+import { calculateBestLocations } from "./analize/visit";
 import { Card, CardContent } from "./ui/card";
 import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "./ui/chart";
 
@@ -24,7 +24,7 @@ const buildHourlyChartData = (visits: Visit[], topLocations: string[]): ChartDat
   const weightByHour = visits.reduce((acc, v) => {
     const chartLocation = topLocations.includes(v.location.name) ? v.location.name : 'others';
 
-    getEachHourOfVisit(v).forEach(hour => {
+    v.hourParts.forEach(hour => {
       if (!acc[hour.hour]) {
         acc[hour.hour] = useDefaultValues(topLocations)
       }
@@ -73,9 +73,11 @@ const VisitStats = ({ visits, onFilter }: Props) => {
           <BarChart accessibilityLayer data={hourlyChartData}>
             <CartesianGrid vertical={false} />
             <XAxis
+              className="hover:cursor-pointer"
               dataKey="hour"
               tickMargin={10}
               tickFormatter={(value) => value.slice(0, 3)}
+              onClick={(e) => onFilter({ type: 'hour', value: e?.value })}
             />
             <ChartTooltip content={<ChartTooltipContent />} />
             <ChartLegend content={<ChartLegendContent />} />

@@ -2,6 +2,7 @@ import { useCorrectUser } from "../helpers/useCorrectUser.js";
 import Visit from "../models/Visit.js";
 import { calculateVisitsForDate, getMinutesBetween } from "../services/visitService.js";
 import { getDateFrom, getDateTo, withWeight } from "../utils/index.js";
+import { enrichVisits } from "../services/visitService.js";
 
 export const getAllVisits = (req, res) => {
   const dateFrom = getDateFrom(req)
@@ -9,7 +10,10 @@ export const getAllVisits = (req, res) => {
   const { userId } = req.query
 
   Visit.find({ ...useCorrectUser(userId), date: { $gte: dateFrom, $lte: dateTo } }).sort({ arrivalTime: -1 }).populate('location').then(visits => {
-    res.json(withWeight(visits, 'durationMinutes'));
+    const enrichedVisits = enrichVisits(visits);
+    const weightedVisits = withWeight(enrichedVisits, 'durationMinutes');
+
+    res.json(weightedVisits);
   }).catch(err => {
     res.status(500).json({ message: 'Error fetching visits', error: err.message });
   });
