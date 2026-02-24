@@ -41,7 +41,7 @@ const TravelMap = ({ travels, isFiltered }: Props) => {
   const [mapCenter, setMapCenter] = useState<[number, number]>([DEFAULT_LAT, DEFAULT_LNG])
   const [zoom, setZoom] = useState(DEFAULT_ZOOM)
 
-  const { count = 0, averageLatitude, averageLongitude } = stats || {}
+  const { count = 0, averageLatitude, averageLongitude, mapConfig } = stats || {}
   const nearbyRadius = stats ? (stats.averageDistance * 2) : undefined
 
   // Auxiliar variables
@@ -58,17 +58,23 @@ const TravelMap = ({ travels, isFiltered }: Props) => {
     uniqueLocations.length > 0 ? uniqueLocations.reduce((max, act) => max.frecuency > act.frecuency ? max : act) : undefined
     , [uniqueLocations]);
 
-  // Calcular el centro y zoom para mostrar todos los markers
-  // TODO: [CSAPP-22] Esta lógica de viewpoint debería resolverse en el backend
+  // Calcular el centro y zoom para mostrar todos los markers (CSAPP-22)
   const viewpoint = useMemo(() => {
     if (!areStatsReady) return null;
+
+    if (mapConfig) {
+      return {
+        center: mapConfig.center,
+        zoom: isStronglyFiltered ? mapConfig.zoom - 1 : mapConfig.zoom
+      };
+    }
 
     return calculateViewpoint({
       mostFrequentLocation,
       gravityCenter,
       isStronglyFiltered,
     });
-  }, [mostFrequentLocation, gravityCenter, areStatsReady, isStronglyFiltered]);
+  }, [mapConfig, mostFrequentLocation, gravityCenter, areStatsReady, isStronglyFiltered]);
 
   useEffect(() => {
     if (viewpoint) {
