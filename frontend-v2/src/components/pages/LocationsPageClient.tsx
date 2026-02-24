@@ -59,6 +59,7 @@ const LocationsPageClient = () => {
             locations={filteredLocations}
             updateFn={update}
             deleteFn={remove}
+            searchTerm={searchTerm}
           />
         )}
       </div>

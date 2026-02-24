@@ -30,11 +30,12 @@ type Props = {
   locations: Location[];
   updateFn: (id: string, updates: Partial<Location>) => Promise<Location>;
   deleteFn: (id: string) => Promise<void>;
+  searchTerm?: string;
 };
 
 const columnHeaders = ['Name', 'Latitude', 'Longitude', 'Zipcode', 'Notes', 'Actions'];
 
-const LocationTable = ({ locations, updateFn, deleteFn }: Props) => {
+const LocationTable = ({ locations, updateFn, deleteFn, searchTerm }: Props) => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValues, setEditValues] = useState<LocationEditValues>({ name: '', zipcode: '', latitude: 0, longitude: 0, notes: '' });
 
@@ -161,8 +162,12 @@ const LocationTable = ({ locations, updateFn, deleteFn }: Props) => {
           </TableBody>
         </Table>
         {locations.length === 0 && (
-          <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-            No locations found. Add your first location above!
+          <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+            {searchTerm ? (
+              <p>No locations found matching &quot;<span className="font-semibold text-gray-900 dark:text-white">{searchTerm}</span>&quot;</p>
+            ) : (
+              <p>No locations created yet. Add your first location in the Creator page!</p>
+            )}
           </div>
         )}
       </CardContent>
