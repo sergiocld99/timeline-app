@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 import com.timeline.stats.dto.MapConfigDTO;
+import com.timeline.stats.utils.GeoUtils;
 
 /**
  * Service for calculating travel statistics
@@ -111,37 +112,10 @@ public class StatsService {
     double centerLat = (mostFrequent.latitude + avgLat) / 2.0;
     double centerLng = (mostFrequent.longitude + avgLng) / 2.0;
 
-    double distanceKm = calculateDistanceKm(mostFrequent.latitude, avgLat, mostFrequent.longitude, avgLng);
-    int zoom = getZoomByDistance(distanceKm);
+    double distanceKm = GeoUtils.calculateDistanceKm(mostFrequent.latitude, avgLat, mostFrequent.longitude, avgLng);
+    int zoom = GeoUtils.getZoomByDistance(distanceKm);
 
     return new MapConfigDTO(Arrays.asList(centerLat, centerLng), zoom);
-  }
-
-  private double calculateDistanceKm(double lat1, double lat2, double lon1, double lon2) {
-    final int R = 6371; // Radius of the earth
-    double latDistance = Math.toRadians(lat2 - lat1);
-    double lonDistance = Math.toRadians(lon2 - lon1);
-    double a = Math.sin(latDistance / 2.0) * Math.sin(latDistance / 2.0)
-        + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
-            * Math.sin(lonDistance / 2.0) * Math.sin(lonDistance / 2.0);
-    double c = 2.0 * Math.atan2(Math.sqrt(a), Math.sqrt(1.0 - a));
-    return R * c;
-  }
-
-  private int getZoomByDistance(double km) {
-    if (km > 140)
-      return 7;
-    if (km > 100)
-      return 8;
-    if (km > 50)
-      return 9;
-    if (km > 15)
-      return 10;
-    if (km > 7.5)
-      return 11;
-    if (km > 3.25)
-      return 12;
-    return 13;
   }
 
   public TravelStatsDTO calculateBasicStatsFromIds(List<TravelDTO> dtos) {

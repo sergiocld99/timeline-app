@@ -68,9 +68,23 @@ public class StatsServiceTest {
 
     TravelStatsDTO result = statsService.calculateBasicStatsFromIds(List.of(dto));
 
+    // Assertions básicas (SDD - Validando lógica ponderada por tiempo)
     assertEquals(1, result.count);
     assertEquals(10.0, result.totalDistance);
     assertEquals(60.0, result.totalMinutes);
+    assertEquals(20.0, result.averageLatitude, 0.001); // ( (10*60)+(30*60) ) / (60*2) = 20
+    assertEquals(30.0, result.averageLongitude, 0.001); // ( (20*60)+(40*60) ) / (60*2) = 30
+
+    // Assertions de MapConfig (CSAPP-22)
+    org.junit.jupiter.api.Assertions.assertNotNull(result.mapConfig, "mapConfig should not be null");
+
+    // Centro = Promedio entre el punto más frecuente (10,20) y el centro de
+    // gravedad (20,30)
+    assertEquals(15.0, result.mapConfig.center.get(0), 0.001);
+    assertEquals(25.0, result.mapConfig.center.get(1), 0.001);
+
+    // Zoom para la distancia calculada
+    assertEquals(7, result.mapConfig.zoom);
   }
 
   @Test

@@ -2,6 +2,7 @@
 
 ## v0.7.0
 - COD7-001: Provide Visit Hour Parts from Backend to enable filtering (#26) [105]
+- COD7-004: Migrate Zoom y Map Center to Statistics Backend (#28) [469]
 
 ## v0.6.0 (2026-02-22)
 - COD6-001: Pick Map to fill coordinates on create location + delete btn (#17) [148]
