@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { Search } from "lucide-react";
+
 import LocationTable from "@/components/LocationTable";
 import useLocations from "@/hooks/useLocations";
 import { Input } from "@/components/ui/input";
