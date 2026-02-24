@@ -5,6 +5,10 @@ package com.timeline.stats.utils;
  */
 public class GeoUtils {
 
+  private GeoUtils() {
+    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+  }
+
   /**
    * Calculates the distance between two points in kilometers using the Haversine
    * formula

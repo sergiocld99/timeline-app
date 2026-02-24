@@ -1,10 +1,24 @@
 package com.timeline.stats.utils;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@QuarkusTest
 public class GeoUtilsTest {
+
+  @Test
+  public void testConstructorIsPrivate() throws NoSuchMethodException {
+    Constructor<GeoUtils> constructor = GeoUtils.class.getDeclaredConstructor();
+    assertTrue(Modifier.isPrivate(constructor.getModifiers()));
+    constructor.setAccessible(true);
+    assertThrows(InvocationTargetException.class, constructor::newInstance);
+  }
 
   @Test
   public void testCalculateDistanceKm() {
