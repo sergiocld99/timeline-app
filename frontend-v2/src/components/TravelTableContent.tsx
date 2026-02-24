@@ -13,6 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import useLocations from '@/hooks/useLocations';
 import { extractTime, getEmojiForMode } from '@/utils';
 import { renderWeight } from '@/utils/weight';
+import { cn } from '@/lib/utils';
 
 import TravelTableFooter from './TravelTableFooter';
 import AddAction from './buttons/AddAction';
@@ -244,7 +245,13 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
       </TableHeader>
       <TableBody>
         {travels.map((t) => (
-          <TableRow key={t._id} className="border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
+          <TableRow
+            key={t._id}
+            className={cn(
+              "border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700",
+              t.crosses?.length > 0 && "bg-yellow-50/50 dark:bg-yellow-900/20"
+            )}
+          >
             <TableCell className="text-gray-900 dark:text-white">{t.extractedDate}</TableCell>
             <TableCell className="text-gray-900 dark:text-white">{renderEditableModeOfTransport(t)}</TableCell>
             <TableCell className="text-gray-900 dark:text-white">{renderEditableLocation(t, 'origin')}</TableCell>

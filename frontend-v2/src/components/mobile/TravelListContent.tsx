@@ -1,6 +1,7 @@
 import type { Travel, TravelStats } from "@/types/travel";
 
 import { extractTime, getEmojiForMode, getHoursAndMinutes } from "@/utils";
+import { cn } from "@/lib/utils";
 
 import { Item, ItemContent, ItemDescription, ItemMedia, ItemTitle } from "../ui/item";
 import { renderPoint } from "../render/coordinates";
@@ -23,7 +24,10 @@ const TravelListContent = ({ travels, stats }: Props) => {
     <div className="flex flex-col gap-4">
       {travels.map((travel) => (
         <div key={travel._id} className="flex flex-col gap-2">
-          <Item variant="outline">
+          <Item
+            variant="outline"
+            className={cn(travel.crosses?.length > 0 && "bg-yellow-50/50 dark:bg-yellow-900/10")}
+          >
             <ItemMedia variant="icon">
               {getEmojiForMode(travel.modeOfTransport)}
             </ItemMedia>
