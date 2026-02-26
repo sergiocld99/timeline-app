@@ -138,7 +138,9 @@ Crea un nuevo viaje.
 
 **Request Body:** `startTime`, `endTime`, `origin`, `destination`, `modeOfTransport`, `distance` (requeridos) | `price`, `userId` (opcional)
 
-**Validaciones:** Duración máxima 24 horas
+**Validaciones:** 
+- Duración máxima 24 horas
+- No se permiten colisiones: no puede existir otro viaje para el mismo usuario que se superponga con el rango [startTime, endTime].
 
 **Response:** Objeto del viaje creado (201)
 
@@ -149,7 +151,8 @@ Actualiza un viaje existente.
 
 **Request Body:** `startTime`, `endTime`, `origin`, `destination`, `modeOfTransport`, `distance`, `crosses`, `userId` (todos opcionales)
 
-**Validaciones:** Duración máxima 24 horas si se actualizan fechas
+**Validaciones:** 
+- Duración máxima 24 horas si se actualizan fechas
 
 **Response:** Viaje actualizado con datos enriquecidos
 

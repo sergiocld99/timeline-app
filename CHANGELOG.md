@@ -3,6 +3,7 @@
 ## v0.7.0
 - COD7-001: Provide Visit Hour Parts from Backend to enable filtering (#26) [105]
 - COD7-002: Add Search to Locations Page (#27) [64]
+- COD7-003: Add Collision Control on Travel Creation (#29) [101]
 - COD7-004: Migrate Zoom y Map Center to Statistics Backend (#28) [469]
 
 ## v0.6.0 (2026-02-22)
