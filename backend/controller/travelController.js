@@ -52,21 +52,37 @@ export const createTravel = (req, res) => {
     })
   }
 
-  const travel = new Travel({
+  // Check for collisions with other travels of same user
+  Travel.findOne({
     ...useCorrectUser(userId),
-    startTime,
-    endTime,
-    origin,
-    destination,
-    modeOfTransport,
-    distance: safeDistance.value,
-    price: safePrice.amount,
-  });
+    startTime: { $lt: endTime },
+    endTime: { $gt: startTime }
+  }).then(collision => {
+    if (collision) {
+      return res.status(400).json({
+        message: 'Travel collision detected. Another travel already exists in this time range.',
+        name: 'CollisionError'
+      });
+    }
 
-  travel.save().then(savedTravel => {
-    res.status(201).json(savedTravel);
+    const travel = new Travel({
+      ...useCorrectUser(userId),
+      startTime,
+      endTime,
+      origin,
+      destination,
+      modeOfTransport,
+      distance: safeDistance.value,
+      price: safePrice.amount,
+    });
+
+    travel.save().then(savedTravel => {
+      res.status(201).json(savedTravel);
+    }).catch(err => {
+      res.status(400).json({ message: 'Error creating travel', error: err.message });
+    });
   }).catch(err => {
-    res.status(400).json({ message: 'Error creating travel', error: err.message });
+    res.status(500).json({ message: 'Error checking for collisions', error: err.message });
   });
 }
 
