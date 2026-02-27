@@ -193,10 +193,15 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
     const showLine = travel.modeOfTransport === 'bus' && travel.line;
 
     return (
-      <span className="text-gray-900 dark:text-white">
-        {getEmojiForMode(travel.modeOfTransport)}
-        {showLine && <span className="ml-1 text-xs font-semibold text-blue-600 dark:text-blue-400">({travel.line})</span>}
-      </span>
+      <div className="text-gray-900 dark:text-white">
+        {showLine ? (
+          <span className="font-semibold text-yellow-600 dark:text-yellow-400">
+            {travel.line}
+          </span>
+        ) : (
+          <span>{getEmojiForMode(travel.modeOfTransport)}</span>
+        )}
+      </div>
     );
   };
 
