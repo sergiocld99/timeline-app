@@ -25,12 +25,7 @@ export const calculateVisitsController = (req, res, next) => {
   const userIdNum = userId ? parseInt(userId, 10) : undefined;
 
   calculateVisitsForDate(date, userIdNum).then(visits => {
-    if (!visits || visits.length === 0) {
-      res.locals.visits = [];
-      return res.status(204).json({ message: 'No visits found for the specified date' });
-    }
-
-    res.locals.visits = visits;
+    res.locals.visits = visits || [];
     next();
   }).catch(error => {
     res.status(500).json({ error: error.message || "Failed to calculate visits" });
@@ -41,20 +36,29 @@ export const persistIfNeeded = (req, res) => {
   const { persist } = req.query;
   const { visits } = res.locals;
 
-  if (persist === 'true') {
-    Visit.insertMany(visits).then(() => {
+  if (persist === 'true' && visits.length > 0) {
+    const bulkOps = visits.map(v => ({
+      updateOne: {
+        filter: {
+          userId: v.userId,
+          arrivalTime: v.arrivalTime
+        },
+        update: { $set: v },
+        upsert: true
+      }
+    }));
+
+    Visit.bulkWrite(bulkOps).then(() => {
       res.status(201).json({
         visits,
         persisted: true,
         count: visits.length
       });
     }).catch(error => {
-      if (error.code === 11000) {
-        return res.status(409).json({ visits, persisted: false, error: error.message });
-      }
-
-      return res.status(500).json({ error: "Failed to persist visits" });
+      return res.status(500).json({ error: "Failed to persist visits", details: error.message });
     });
+  } else if (persist === 'true') {
+    res.status(200).json({ visits: [], persisted: true, count: 0 });
   } else {
     res.status(200).json({
       visits,
