@@ -11,6 +11,7 @@ const TravelSchema = new mongoose.Schema({
     modeOfTransport: { type: String, enum: acceptedModesOfTransport, required: true },
     distance: { type: Number, required: true }, // in kilometers
     price: { type: Number, required: false },
+    line: { type: String, required: false },
     crosses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Cross', required: false }]
 });
 

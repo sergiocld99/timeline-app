@@ -29,7 +29,14 @@ const TravelListContent = ({ travels, stats }: Props) => {
             className={cn(travel.crosses?.length > 0 && "bg-yellow-50/50 dark:bg-yellow-900/10")}
           >
             <ItemMedia variant="icon">
-              {getEmojiForMode(travel.modeOfTransport)}
+              <div className="flex flex-col items-center">
+                <span>{getEmojiForMode(travel.modeOfTransport)}</span>
+                {travel.modeOfTransport === 'bus' && travel.line && (
+                  <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400 mt-[-4px]">
+                    {travel.line}
+                  </span>
+                )}
+              </div>
             </ItemMedia>
             <ItemContent>
               <ItemTitle>{travel.extractedDate} • {travel.distance} km</ItemTitle>

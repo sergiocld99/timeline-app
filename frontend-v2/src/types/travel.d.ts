@@ -26,6 +26,7 @@ export type Travel = Weighted & {
   origin: Location
   destination: Location
   modeOfTransport: string
+  line?: string
   distance: number
   shortDate: string
   extractedDate: string
@@ -86,6 +87,7 @@ export type TravelEditValues = {
   distance: string;
   duration: string;
   modeOfTransport: string;
+  line?: string;
 }
 
 export type TravelFormData = {
@@ -94,6 +96,7 @@ export type TravelFormData = {
   startTime: string;
   endTime: string;
   modeOfTransport: string;
+  line: string;
   distance: string;
   price: string;
 }
