@@ -26,23 +26,29 @@ jobs:
         with:
           files: CHANGELOG.md
 
-      - name: Debug Info
+      - name: Validate CHANGELOG.md and Milestone
+        env:
+          CHANGED_COUNT: ${{ steps.all-changed-files.outputs.all_changed_count }}
+          CHANGELOG_CHANGED: ${{ steps.changed-files.outputs.any_changed }}
+          MILESTONE: ${{ github.event.pull_request.milestone }}
         run: |
-          echo "Total changed files: ${{ steps.all-changed-files.outputs.all_changed_count }}"
-          echo "Is CHANGELOG changed?: ${{ steps.changed-files.outputs.any_changed }}"
+          echo "Total changed files: $CHANGED_COUNT"
+          echo "Is CHANGELOG changed?: $CHANGELOG_CHANGED"
+          echo "Milestone present: ${MILESTONE:-None}"
 
-      - name: Validate CHANGELOG.md
-        if: |
-          fromJSON(steps.all-changed-files.outputs.all_changed_count) >= 3 &&
-          steps.changed-files.outputs.any_changed == 'false'
-        run: |
-          echo "::error file=CHANGELOG.md::CHANGELOG.md debe estar actualizado para PRs con 3 o más archivos."
-          echo "Error: CHANGELOG.md no ha sido modificado en un PR de ${{ steps.all-changed-files.outputs.all_changed_count }} archivos."
-          exit 1
+          # 1. Validación de Milestone (Obligatorio para todos)
+          if [ -z "$MILESTONE" ]; then
+            echo "::error::El PR debe tener un Milestone asignado cuando está listo para revisión."
+            exit 1
+          fi
 
-      - name: Validate Milestone
-        if: github.event.pull_request.milestone == null
-        run: |
-          echo "::error::El PR debe tener un Milestone asignado cuando está listo para revisión."
-          echo "Error: Milestone no asignado."
-          exit 1
+          # 2. Validación de CHANGELOG (Solo si >= 3 archivos)
+          if [ "$CHANGED_COUNT" -ge 3 ]; then
+            if [ "$CHANGELOG_CHANGED" = "false" ]; then
+              echo "::error file=CHANGELOG.md::CHANGELOG.md debe estar actualizado para PRs con 3 o más archivos."
+              echo "Error: CHANGELOG.md no ha sido modificado en un PR de $CHANGED_COUNT archivos."
+              exit 1
+            fi
+          else
+            echo "Saltando validación de CHANGELOG (menos de 3 archivos)."
+          fi
