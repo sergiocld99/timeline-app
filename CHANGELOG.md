@@ -5,6 +5,7 @@
 - COD7-002: Add Search to Locations Page (#27) [64]
 - COD7-003: Add Collision Control on Travel Creation (#29) [101]
 - COD7-004: Allow bus line for bus type travels (#30) [101]
+- COD7-008: Migrate Zoom y Map Center to Statistics Backend (#28) [469]
 
 ## v0.6.0 (2026-02-22)
 - COD6-001: Pick Map to fill coordinates on create location + delete btn (#17) [148]

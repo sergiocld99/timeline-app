@@ -67,6 +67,10 @@ export type TravelStats = {
     count: number,
     zipcodes: string[]
   }>
+  mapConfig?: {
+    center: [number, number],
+    zoom: number
+  }
 }
 
 export type TravelFindResult = {

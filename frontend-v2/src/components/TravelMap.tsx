@@ -15,7 +15,6 @@ import { useTravelStats } from "@/hooks/useTravelStats";
 import { getUniqueLocations } from "./analize/travel";
 import { defaultMarker } from "./map/icons";
 import { renderLocationMarkers } from "./render/map";
-import { calculateViewpoint } from "./analize/viewpoint";
 
 type Props = {
   travels: Travel[];
@@ -41,7 +40,7 @@ const TravelMap = ({ travels, isFiltered }: Props) => {
   const [mapCenter, setMapCenter] = useState<[number, number]>([DEFAULT_LAT, DEFAULT_LNG])
   const [zoom, setZoom] = useState(DEFAULT_ZOOM)
 
-  const { count = 0, averageLatitude, averageLongitude } = stats || {}
+  const { count = 0, averageLatitude, averageLongitude, mapConfig } = stats || {}
   const nearbyRadius = stats ? (stats.averageDistance * 2) : undefined
 
   // Auxiliar variables
@@ -51,24 +50,17 @@ const TravelMap = ({ travels, isFiltered }: Props) => {
   const { nearbyCenters } = useNearbyCenters({ latitude: averageLatitude, longitude: averageLongitude, radiusKm: nearbyRadius })
 
   // Agrupar coordenadas por ubicación para evitar markers duplicados
-  const gravityCenter = useMemo(() => ({ lat: averageLatitude, lng: averageLongitude }), [averageLatitude, averageLongitude])
   const uniqueLocations = useMemo(() => getUniqueLocations(travels, nearbyCenters), [travels, nearbyCenters]);
 
-  const mostFrequentLocation = useMemo(() =>
-    uniqueLocations.length > 0 ? uniqueLocations.reduce((max, act) => max.frecuency > act.frecuency ? max : act) : undefined
-    , [uniqueLocations]);
-
-  // Calcular el centro y zoom para mostrar todos los markers
-  // TODO: [CSAPP-22] Esta lógica de viewpoint debería resolverse en el backend
+  // Calcular el centro y zoom para mostrar todos los markers (CSAPP-22)
   const viewpoint = useMemo(() => {
-    if (!areStatsReady) return null;
+    if (!areStatsReady || !mapConfig) return null;
 
-    return calculateViewpoint({
-      mostFrequentLocation,
-      gravityCenter,
-      isStronglyFiltered,
-    });
-  }, [mostFrequentLocation, gravityCenter, areStatsReady, isStronglyFiltered]);
+    return {
+      center: mapConfig.center,
+      zoom: isStronglyFiltered ? mapConfig.zoom - 1 : mapConfig.zoom
+    };
+  }, [mapConfig, areStatsReady, isStronglyFiltered]);
 
   useEffect(() => {
     if (viewpoint) {

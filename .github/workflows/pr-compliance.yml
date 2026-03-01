@@ -16,6 +16,10 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Get all changed files
+        id: all-changed-files
+        uses: tj-actions/changed-files@v45
+
       - name: Check CHANGELOG.md update
         id: changed-files
         uses: tj-actions/changed-files@v45
@@ -23,9 +27,11 @@ jobs:
           files: CHANGELOG.md
 
       - name: Validate CHANGELOG.md
-        if: steps.changed-files.outputs.any_changed == 'false'
+        if: |
+          steps.all-changed-files.outputs.all_changed_count >= 3 &&
+          steps.changed-files.outputs.any_changed == 'false'
         run: |
-          echo "::error file=CHANGELOG.md::CHANGELOG.md debe estar actualizado cuando el PR está listo para revisión."
+          echo "::error file=CHANGELOG.md::CHANGELOG.md debe estar actualizado para PRs con 3 o más archivos."
           echo "Error: CHANGELOG.md no ha sido modificado."
           exit 1
 
