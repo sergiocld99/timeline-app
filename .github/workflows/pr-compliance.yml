@@ -21,21 +21,24 @@ jobs:
           MILESTONE: ${{ github.event.pull_request.milestone.number }}
           BASE_REF: ${{ github.base_ref }}
         run: |
-          # Obtener la lista de archivos cambiados entre la rama base y el head del PR
-          # Usamos origin/$BASE_REF para asegurar que comparamos contra la rama remota
+          # Obtener la lista de archivos cambiados respecto a la rama base
           FILES=$(git diff --name-only origin/$BASE_REF...HEAD)
           
           # Contar archivos (excluyendo líneas vacías)
           COUNT=$(echo "$FILES" | grep -v '^$' | wc -l | xargs)
           
-          # Verificar si CHANGELOG.md está en la lista
-          CHANGELOG_CHANGED=$(echo "$FILES" | grep -xc "CHANGELOG.md" || echo "0")
+          # Verificar si CHANGELOG.md está en la lista (1 si existe, 0 si no)
+          if echo "$FILES" | grep -qx "CHANGELOG.md"; then
+            CHANGELOG_CHANGED=1
+          else
+            CHANGELOG_CHANGED=0
+          fi
           
           echo "Total changed files: $COUNT"
-          echo "CHANGELOG changed count: $CHANGELOG_CHANGED"
+          echo "CHANGELOG changed: $CHANGELOG_CHANGED"
           echo "Milestone present: ${MILESTONE:-None}"
 
-          # 1. Validación de Milestone (Obligatorio para todos)
+          # 1. Validación de Milestone (Siempre obligatorio)
           if [ -z "$MILESTONE" ]; then
             echo "::error::El PR debe tener un Milestone asignado cuando está listo para revisión."
             exit 1
@@ -45,8 +48,10 @@ jobs:
           if [ "$COUNT" -ge 3 ]; then
             if [ "$CHANGELOG_CHANGED" -eq 0 ]; then
               echo "::error file=CHANGELOG.md::CHANGELOG.md debe estar actualizado para PRs con 3 o más archivos (detectados $COUNT archivos)."
+              echo "Error: CHANGELOG.md no ha sido modificado."
               exit 1
             fi
+            echo "Validación de CHANGELOG: OK"
           else
-            echo "Saltando validación de CHANGELOG (menos de 3 archivos)."
+            echo "Saltando validación de CHANGELOG (solo $COUNT archivos)."
           fi
