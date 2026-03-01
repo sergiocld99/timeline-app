@@ -150,13 +150,13 @@ const useTravelCreator = () => {
           });
 
           if (lastTravel) {
-            setFormData({
-              ...formData,
+            setFormData(prev => ({
+              ...prev,
               destination,
               distance: lastTravel.distance.toString(),
-            })
+            }));
 
-            return
+            return;
           }
         } catch (err) {
           // Si falla, simplemente seguimos sin auto-completar

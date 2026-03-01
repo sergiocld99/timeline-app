@@ -6,15 +6,32 @@ test('can create and delete travel', async ({ page }) => {
   // Select origin
   await page.locator('button[role="combobox"]').filter({ hasText: 'Select Origin' }).click();
   await page.getByPlaceholder('Search locations...').fill('1425');
+  // Dropdown auto-selects and closes when 1 match is found
+  await expect(page.locator('button[role="combobox"]').filter({ hasText: 'C1425 - Palermo' })).toBeVisible();
 
   // Select destination
   await page.locator('button[role="combobox"]').filter({ hasText: 'Select Destination' }).click();
   await page.getByPlaceholder('Search locations...').fill('Varela Centro');
+  // Dropdown auto-selects and closes
+  await expect(page.locator('button[role="combobox"]').filter({ hasText: 'B1888 - Varela Centro' })).toBeVisible();
 
-  // Set time and distance
-  await page.locator('#startTime').fill('2099-08-18T16:20');
-  await page.locator('#endTime').fill('18:00')
-  await page.locator('#distance').fill('30')
+  // Set time and distance with explicit value checking to handle React state sync
+  const startTime = page.locator('#startTime');
+  await startTime.fill('2099-08-18T16:20');
+  await startTime.blur();
+
+  const endTime = page.locator('#endTime');
+  await endTime.fill('18:00');
+  await endTime.blur();
+
+  const distance = page.locator('#distance');
+  await distance.fill('30');
+  await distance.blur();
+
+  // Verify inputs before submitting to avoid issues with Playwright speed
+  await expect(page.locator('#startTime')).toHaveValue('2099-08-18T16:20');
+  await expect(page.locator('#endTime')).toHaveValue('18:00');
+  await expect(page.locator('#distance')).toHaveValue('30');
 
   // Save travel - Wait for the POST request to complete
   const createPromise = page.waitForResponse(response =>
