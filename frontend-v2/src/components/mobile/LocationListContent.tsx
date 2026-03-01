@@ -1,8 +1,9 @@
 import type { Location } from "@/types/travel";
 
+import { MapPin } from "lucide-react";
+
 import { Item, ItemContent, ItemDescription, ItemMedia, ItemTitle } from "../ui/item";
 import { renderLocationWithZipcode } from "../render/location";
-import { MapPin } from "lucide-react";
 
 type Props = {
   locations: Location[];
