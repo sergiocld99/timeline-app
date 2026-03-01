@@ -16,25 +16,23 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v45
-        with:
-          files_yaml: |
-            changelog:
-              - CHANGELOG.md
-
       - name: Validate CHANGELOG.md and Milestone
         env:
-          CHANGED_COUNT: ${{ steps.changed-files.outputs.all_changed_count }}
-          CHANGELOG_CHANGED: ${{ steps.changed-files.outputs.changelog_any_changed }}
           MILESTONE: ${{ github.event.pull_request.milestone.number }}
+          BASE_REF: ${{ github.base_ref }}
         run: |
-          # Fallback a 0 si el conteo viene vacío
-          COUNT=${CHANGED_COUNT:-0}
+          # Obtener la lista de archivos cambiados entre la rama base y el head del PR
+          # Usamos origin/$BASE_REF para asegurar que comparamos contra la rama remota
+          FILES=$(git diff --name-only origin/$BASE_REF...HEAD)
+          
+          # Contar archivos (excluyendo líneas vacías)
+          COUNT=$(echo "$FILES" | grep -v '^$' | wc -l | xargs)
+          
+          # Verificar si CHANGELOG.md está en la lista
+          CHANGELOG_CHANGED=$(echo "$FILES" | grep -xc "CHANGELOG.md" || echo "0")
           
           echo "Total changed files: $COUNT"
-          echo "Is CHANGELOG changed?: $CHANGELOG_CHANGED"
+          echo "CHANGELOG changed count: $CHANGELOG_CHANGED"
           echo "Milestone present: ${MILESTONE:-None}"
 
           # 1. Validación de Milestone (Obligatorio para todos)
@@ -45,9 +43,8 @@ jobs:
 
           # 2. Validación de CHANGELOG (Solo si >= 3 archivos)
           if [ "$COUNT" -ge 3 ]; then
-            if [ "$CHANGELOG_CHANGED" = "false" ]; then
-              echo "::error file=CHANGELOG.md::CHANGELOG.md debe estar actualizado para PRs con 3 o más archivos."
-              echo "Error: CHANGELOG.md no ha sido modificado en un PR de $COUNT archivos."
+            if [ "$CHANGELOG_CHANGED" -eq 0 ]; then
+              echo "::error file=CHANGELOG.md::CHANGELOG.md debe estar actualizado para PRs con 3 o más archivos (detectados $COUNT archivos)."
               exit 1
             fi
           else
