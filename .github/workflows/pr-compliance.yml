@@ -16,9 +16,19 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Validate CHANGELOG.md and Milestone
+      - name: Validate Milestone
         env:
           MILESTONE: ${{ github.event.pull_request.milestone.number }}
+        run: |
+          echo "Milestone present: ${MILESTONE:-None}"
+          if [ -z "$MILESTONE" ]; then
+            echo "::error::El PR debe tener un Milestone asignado cuando está listo para revisión."
+            exit 1
+          fi
+          echo "Milestone: OK"
+
+      - name: Validate CHANGELOG.md
+        env:
           BASE_REF: ${{ github.base_ref }}
         run: |
           # Obtener la lista de archivos cambiados respecto a la rama base
@@ -36,19 +46,11 @@ jobs:
           
           echo "Total changed files: $COUNT"
           echo "CHANGELOG changed: $CHANGELOG_CHANGED"
-          echo "Milestone present: ${MILESTONE:-None}"
 
-          # 1. Validación de Milestone (Siempre obligatorio)
-          if [ -z "$MILESTONE" ]; then
-            echo "::error::El PR debe tener un Milestone asignado cuando está listo para revisión."
-            exit 1
-          fi
-
-          # 2. Validación de CHANGELOG (Solo si >= 3 archivos)
+          # Validación de CHANGELOG (Solo si >= 3 archivos)
           if [ "$COUNT" -ge 3 ]; then
             if [ "$CHANGELOG_CHANGED" -eq 0 ]; then
               echo "::error file=CHANGELOG.md::CHANGELOG.md debe estar actualizado para PRs con 3 o más archivos (detectados $COUNT archivos)."
-              echo "Error: CHANGELOG.md no ha sido modificado."
               exit 1
             fi
             echo "Validación de CHANGELOG: OK"
