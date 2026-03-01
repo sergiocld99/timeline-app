@@ -86,6 +86,7 @@ const useTravelCreator = () => {
     startTime: getTimeFromCurrent(2),
     endTime: getTimeFromCurrent(0),
     modeOfTransport: "car",
+    line: "",
     distance: "",
     price: ""
   });
@@ -194,6 +195,7 @@ const useTravelCreator = () => {
         origin: formData.destination,
         destination: "",
         startTime: formData.endTime,
+        line: "",
         distance: "",
       });
     } catch (error) {

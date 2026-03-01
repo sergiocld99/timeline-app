@@ -21,6 +21,7 @@ public class Travel {
   public String modeOfTransport;
   public Double distance;
   public Double price;
+  public String line;
   public Integer userId;
 
   // Calculated fields (not stored in DB)
