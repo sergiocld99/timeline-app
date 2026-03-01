@@ -54,12 +54,3 @@ export const renderLocationMarkers = (locations: MapLocation[]) => {
   })
 }
 
-export const renderAveragePointMarker = (averageLat: number, averageLng: number) => {
-  return (
-    <Marker
-      key={getKey(averageLat, averageLng)}
-      position={[averageLat, averageLng]}
-      icon={redMarker}
-    />
-  )
-}
