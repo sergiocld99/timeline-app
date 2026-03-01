@@ -26,13 +26,18 @@ jobs:
         with:
           files: CHANGELOG.md
 
+      - name: Debug Info
+        run: |
+          echo "Total changed files: ${{ steps.all-changed-files.outputs.all_changed_count }}"
+          echo "Is CHANGELOG changed?: ${{ steps.changed-files.outputs.any_changed }}"
+
       - name: Validate CHANGELOG.md
         if: |
-          steps.all-changed-files.outputs.all_changed_count >= 3 &&
+          fromJSON(steps.all-changed-files.outputs.all_changed_count) >= 3 &&
           steps.changed-files.outputs.any_changed == 'false'
         run: |
           echo "::error file=CHANGELOG.md::CHANGELOG.md debe estar actualizado para PRs con 3 o más archivos."
-          echo "Error: CHANGELOG.md no ha sido modificado."
+          echo "Error: CHANGELOG.md no ha sido modificado en un PR de ${{ steps.all-changed-files.outputs.all_changed_count }} archivos."
           exit 1
 
       - name: Validate Milestone
