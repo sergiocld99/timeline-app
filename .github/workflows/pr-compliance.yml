@@ -16,23 +16,24 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Get all changed files
-        id: all-changed-files
-        uses: tj-actions/changed-files@v45
-
-      - name: Check CHANGELOG.md update
+      - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v45
         with:
-          files: CHANGELOG.md
+          files_yaml: |
+            changelog:
+              - CHANGELOG.md
 
       - name: Validate CHANGELOG.md and Milestone
         env:
-          CHANGED_COUNT: ${{ steps.all-changed-files.outputs.all_changed_count }}
-          CHANGELOG_CHANGED: ${{ steps.changed-files.outputs.any_changed }}
+          CHANGED_COUNT: ${{ steps.changed-files.outputs.all_changed_count }}
+          CHANGELOG_CHANGED: ${{ steps.changed-files.outputs.changelog_any_changed }}
           MILESTONE: ${{ github.event.pull_request.milestone.number }}
         run: |
-          echo "Total changed files: $CHANGED_COUNT"
+          # Fallback a 0 si el conteo viene vacío
+          COUNT=${CHANGED_COUNT:-0}
+          
+          echo "Total changed files: $COUNT"
           echo "Is CHANGELOG changed?: $CHANGELOG_CHANGED"
           echo "Milestone present: ${MILESTONE:-None}"
 
@@ -43,10 +44,10 @@ jobs:
           fi
 
           # 2. Validación de CHANGELOG (Solo si >= 3 archivos)
-          if [ "$CHANGED_COUNT" -ge 3 ]; then
+          if [ "$COUNT" -ge 3 ]; then
             if [ "$CHANGELOG_CHANGED" = "false" ]; then
               echo "::error file=CHANGELOG.md::CHANGELOG.md debe estar actualizado para PRs con 3 o más archivos."
-              echo "Error: CHANGELOG.md no ha sido modificado en un PR de $CHANGED_COUNT archivos."
+              echo "Error: CHANGELOG.md no ha sido modificado en un PR de $COUNT archivos."
               exit 1
             fi
           else
