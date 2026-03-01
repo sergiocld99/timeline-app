@@ -99,6 +99,21 @@ const TravelForm = ({ locations }: Props) => {
               </Select>
             </div>
 
+            {formData.modeOfTransport === 'bus' && (
+              <div className="space-y-2">
+                <Label htmlFor="line" className="text-gray-700 dark:text-gray-300">Bus Line</Label>
+                <Input
+                  id="line"
+                  name="line"
+                  type="text"
+                  placeholder="e.g. 152, 60, etc."
+                  value={formData.line}
+                  onChange={(e) => handleChange("line", e.target.value)}
+                  className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+                />
+              </div>
+            )}
+
             <div className="space-y-2">
               <Label htmlFor="distance" className="text-gray-700 dark:text-gray-300">Distance (km)</Label>
               <Input

@@ -38,7 +38,7 @@ export const getAllTravels = (req, res) => {
 }
 
 export const createTravel = (req, res) => {
-  const { startTime, endTime, origin, destination, modeOfTransport, distance, price, userId } = req.body;
+  const { startTime, endTime, origin, destination, modeOfTransport, distance, price, userId, line } = req.body;
   let safePrice, safeDistance;
 
   try {
@@ -74,6 +74,7 @@ export const createTravel = (req, res) => {
       modeOfTransport,
       distance: safeDistance.value,
       price: safePrice.amount,
+      line,
     });
 
     travel.save().then(savedTravel => {
@@ -88,7 +89,7 @@ export const createTravel = (req, res) => {
 
 export const updateTravel = (req, res, next) => {
   const { id } = req.params;
-  const { startTime, endTime, origin, destination, modeOfTransport, distance, crosses, userId } = req.body;
+  const { startTime, endTime, origin, destination, modeOfTransport, distance, crosses, userId, line } = req.body;
   let safeDistance;
 
   try {
@@ -113,7 +114,8 @@ export const updateTravel = (req, res, next) => {
     destination,
     modeOfTransport,
     distance: safeDistance?.value,
-    crosses
+    crosses,
+    line
   };
 
   if (userId !== undefined) {
