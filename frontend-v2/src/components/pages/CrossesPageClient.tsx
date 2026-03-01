@@ -12,11 +12,10 @@ import CrossTable from "@/components/CrossTable";
 import TravelTable from "@/components/TravelTable";
 import useCrosses from "@/hooks/useCrosses";
 import useTravels from "@/hooks/useTravels";
-import TravelService from "@/services/TravelService";
 
 const CrossesPageClient = () => {
   const { crosses } = useCrosses();
-  const { travels: travelsData, refetch: refetchTravels } = useTravels();
+  const { travels: travelsData, refetch: refetchTravels, updateTravel } = useTravels();
   const [orCrosses, setOrCrosses] = useState<Cross[]>([]);
   const [editCrosses, setEditCrosses] = useState<Cross[]>([]);
 
@@ -51,7 +50,7 @@ const CrossesPageClient = () => {
       return;
     }
 
-    TravelService.update(travelId, { crosses })
+    updateTravel(travelId, { crosses })
       .then(t => {
         toast.success(`After addition, travel has ${t.crosses.length} crosses, wanted ${crosses.length}`);
       })
@@ -70,7 +69,7 @@ const CrossesPageClient = () => {
       return;
     }
 
-    TravelService.update(travelId, { crosses })
+    updateTravel(travelId, { crosses })
       .then(t => {
         toast.success(`After deletion, travel has ${t.crosses.length} crosses, wanted ${crosses.length}`);
       })
