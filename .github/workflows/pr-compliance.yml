@@ -30,7 +30,7 @@ jobs:
         env:
           CHANGED_COUNT: ${{ steps.all-changed-files.outputs.all_changed_count }}
           CHANGELOG_CHANGED: ${{ steps.changed-files.outputs.any_changed }}
-          MILESTONE: ${{ github.event.pull_request.milestone }}
+          MILESTONE: ${{ github.event.pull_request.milestone.number }}
         run: |
           echo "Total changed files: $CHANGED_COUNT"
           echo "Is CHANGELOG changed?: $CHANGELOG_CHANGED"
