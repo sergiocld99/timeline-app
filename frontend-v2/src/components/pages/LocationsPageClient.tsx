@@ -7,6 +7,8 @@ import LocationTable from "@/components/LocationTable";
 import useLocations from "@/hooks/useLocations";
 import { Input } from "@/components/ui/input";
 
+import QuickFilters from "@/components/QuickFilters";
+
 const LocationsPageClient = () => {
   const { locations, error, update, remove, loading } = useLocations();
   const [searchTerm, setSearchTerm] = useState("");
@@ -63,21 +65,11 @@ const LocationsPageClient = () => {
             />
           </div>
 
-          <div className="flex flex-wrap gap-2">
-            {prefixes.map((p) => (
-              <button
-                key={p.value}
-                onClick={() => setSelectedPrefix(selectedPrefix === p.value ? null : p.value)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors border
-                  ${selectedPrefix === p.value
-                    ? "bg-blue-600 border-blue-600 text-white"
-                    : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-                  }`}
-              >
-                {p.label}
-              </button>
-            ))}
-          </div>
+          <QuickFilters
+            options={prefixes}
+            selectedValue={selectedPrefix}
+            onSelect={setSelectedPrefix}
+          />
         </div>
 
         {loading ? (
