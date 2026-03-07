@@ -30,12 +30,16 @@ const LocationTable = ({ locations, updateFn, deleteFn, searchTerm }: Props) => 
             )}
           </div>
         )}
-        <div className='hidden lg:block'>
-          <LocationTableContent locations={locations} updateFn={updateFn} deleteFn={deleteFn} />
-        </div>
-        <div className='lg:hidden'>
-          <LocationListContent locations={locations} />
-        </div>
+        {locations.length > 0 && (
+          <>
+            <div className='hidden lg:block'>
+              <LocationTableContent locations={locations} updateFn={updateFn} deleteFn={deleteFn} />
+            </div>
+            <div className='lg:hidden'>
+              <LocationListContent locations={locations} />
+            </div>
+          </>
+        )}
       </CardContent>
     </Card>
   );
