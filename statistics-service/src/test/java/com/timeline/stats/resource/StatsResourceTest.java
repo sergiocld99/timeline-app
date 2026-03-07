@@ -38,7 +38,7 @@ public class StatsResourceTest {
     StatsRequestDTO request = new StatsRequestDTO(List.of(travelDTO));
 
     PlacesVisitedDTO placesVisitedDTO = new PlacesVisitedDTO(Set.of("12345"));
-    TravelStatsDTO responseStats = new TravelStatsDTO(1, 10.0, 60.0, 15.0, 25.0, placesVisitedDTO, 1);
+    TravelStatsDTO responseStats = new TravelStatsDTO(1, 10.0, 60.0, 15.0, 25.0, placesVisitedDTO, 1, 1);
 
     when(statsService.calculateBasicStatsFromIds(any(List.class))).thenReturn(responseStats);
 
@@ -52,7 +52,8 @@ public class StatsResourceTest {
         .body("count", is(1))
         .body("totalDistance", is(10.0f))
         .body("totalMinutes", is(60.0f))
-        .body("uniqueDays", is(1));
+        .body("uniqueDays", is(1))
+        .body("uniqueRoutes", is(1));
   }
 
   @Test

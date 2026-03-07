@@ -15,19 +15,27 @@ public class TravelStatsDTO {
   public double averageLongitude;
   public PlacesVisitedDTO placesVisited;
   public long uniqueDays;
+  public long uniqueRoutes;
   public MapConfigDTO mapConfig;
 
   public TravelStatsDTO() {
   }
 
+  public TravelStatsDTO(long count, StatsTotalsDTO totals, PlacesVisitedDTO placesVisited, long uniqueDays,
+      long uniqueRoutes) {
+    this(count, totals.totalDistance, totals.totalMinutes, totals.totalLatitude, totals.totalLongitude, placesVisited,
+        uniqueDays, uniqueRoutes);
+  }
+
   public TravelStatsDTO(long count, double totalDistance, double totalMinutes, double totalLatitude,
-      double totalLongitude, PlacesVisitedDTO placesVisited, long uniqueDays) {
+      double totalLongitude, PlacesVisitedDTO placesVisited, long uniqueDays, long uniqueRoutes) {
     this.count = count;
     this.totalDistance = Math.round(totalDistance * 100.0) / 100.0;
     this.totalMinutes = Math.round(totalMinutes * 100.0) / 100.0;
     this.totalHours = totalMinutes / 60.0;
     this.placesVisited = placesVisited;
     this.uniqueDays = uniqueDays;
+    this.uniqueRoutes = uniqueRoutes;
 
     if (count > 0) {
       this.averageDistance = Math.round((totalDistance / count) * 100.0) / 100.0;
