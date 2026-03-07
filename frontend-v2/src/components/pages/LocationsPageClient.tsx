@@ -3,11 +3,10 @@
 import { useState, useMemo } from "react";
 import { Search } from "lucide-react";
 
+import QuickFilters from "@/components/QuickFilters";
 import LocationTable from "@/components/LocationTable";
 import useLocations from "@/hooks/useLocations";
 import { Input } from "@/components/ui/input";
-
-import QuickFilters from "@/components/QuickFilters";
 
 const LocationsPageClient = () => {
   const { locations, error, update, remove, loading } = useLocations();
