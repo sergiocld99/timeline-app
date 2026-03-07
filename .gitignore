@@ -1,5 +1,6 @@
 .agent
 .env
 .cursor
+.playwright-mcp
 .vscode
 PR_DESCRIPTION.md
