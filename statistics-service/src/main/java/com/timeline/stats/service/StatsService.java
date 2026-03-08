@@ -5,6 +5,7 @@ import com.timeline.stats.domain.Travel;
 import com.timeline.stats.dto.LocatedTravelDTO;
 import com.timeline.stats.dto.PlacesVisitedDTO;
 import com.timeline.stats.dto.StatsContextDTO;
+import com.timeline.stats.dto.StatsTotalsDTO;
 import com.timeline.stats.dto.TravelStatsDTO;
 import com.timeline.stats.dto.TravelDTO;
 import com.timeline.stats.repository.TravelRepository;
@@ -54,14 +55,14 @@ public class StatsService {
     PlacesVisitedDTO placesVisited = new PlacesVisitedDTO(zipcodes);
 
     Set<String> uniqueDays = new HashSet<>();
+    Set<String> uniqueRoutes = new HashSet<>();
+
     int travelCount = context.locatedTravels.size();
+    StatsTotalsDTO totals = new StatsTotalsDTO();
+
     Map<String, Integer> frequencyMap = new HashMap<>();
     Location mostFrequentLocation = null;
     int maxFrequency = 0;
-    double totalDistance = 0.0;
-    double totalMinutes = 0.0;
-    double totalLatitude = 0.0;
-    double totalLongitude = 0.0;
 
     for (LocatedTravelDTO locatedTravel : context.locatedTravels) {
       Travel travel = locatedTravel.travel();
@@ -69,13 +70,12 @@ public class StatsService {
       Location destRef = locatedTravel.destination();
 
       travel.enrich();
-      totalDistance += Objects.requireNonNull(travel.distance);
-      totalMinutes += Objects.requireNonNull(travel.duration);
+      totals.addDistance(Objects.requireNonNull(travel.distance));
+      totals.addMinutes(Objects.requireNonNull(travel.duration));
       uniqueDays.add(travel.date);
 
       if (originRef != null) {
-        totalLatitude += originRef.latitude * travel.duration;
-        totalLongitude += originRef.longitude * travel.duration;
+        totals.addCoordinateAccumulation(originRef.latitude, originRef.longitude, travel.duration);
 
         int freq = frequencyMap.getOrDefault(originRef.id.toString(), 0) + 1;
         frequencyMap.put(originRef.id.toString(), freq);
@@ -86,8 +86,7 @@ public class StatsService {
       }
 
       if (destRef != null) {
-        totalLatitude += destRef.latitude * travel.duration;
-        totalLongitude += destRef.longitude * travel.duration;
+        totals.addCoordinateAccumulation(destRef.latitude, destRef.longitude, travel.duration);
 
         int freq = frequencyMap.getOrDefault(destRef.id.toString(), 0) + 1;
         frequencyMap.put(destRef.id.toString(), freq);
@@ -96,10 +95,17 @@ public class StatsService {
           mostFrequentLocation = destRef;
         }
       }
+
+      // UNIQUE ROUTE
+      if (originRef != null && destRef != null) {
+        List<String> routeZipcodes = Arrays.asList(originRef.zipcode, destRef.zipcode);
+        routeZipcodes.sort((a, b) -> a.compareTo(b));
+        uniqueRoutes.add(String.join("-", routeZipcodes));
+      }
     }
 
-    TravelStatsDTO stats = new TravelStatsDTO(travelCount, totalDistance, totalMinutes, totalLatitude, totalLongitude,
-        placesVisited, uniqueDays.size());
+    TravelStatsDTO stats = new TravelStatsDTO(travelCount, totals, placesVisited, uniqueDays.size(),
+        uniqueRoutes.size());
 
     if (mostFrequentLocation != null && stats.averageLatitude != 0) {
       stats.mapConfig = calculateMapConfig(mostFrequentLocation, stats.averageLatitude, stats.averageLongitude);
