@@ -63,6 +63,7 @@ export type TravelStats = {
   averageDuration: number
   averagePrice: number
   uniqueDays?: number
+  uniqueRoutes?: number
   placesVisited: Partial<{
     count: number,
     zipcodes: string[]

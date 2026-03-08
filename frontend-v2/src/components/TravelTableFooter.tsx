@@ -11,28 +11,31 @@ type Props = {
   stats?: TravelStats;
 }
 
-const renderFirstTotalCell = (length: number, uniqueDays?: number) => {
+const renderFirstTotalCell = (length: number, uniqueRoutes?: number, uniqueDays?: number) => {
   return (
     <div>
       <p>
         {length} {length === 1 ? "travel" : "travels"}
       </p>
+      {uniqueRoutes && <p>
+        <span className="text-gray-500 dark:text-gray-400"> {uniqueRoutes} {uniqueRoutes === 1 ? "route" : "routes"}</span>
+      </p>}
       {uniqueDays && <p>
-        <span className="text-gray-500 dark:text-gray-400"> ({uniqueDays} {uniqueDays === 1 ? "day" : "days"})</span>
+        <span className="text-gray-500 dark:text-gray-400"> {uniqueDays} {uniqueDays === 1 ? "day" : "days"}</span>
       </p>}
     </div>
   )
 }
 
 const TravelTableFooter = ({ travels, stats }: Props) => {
-  const { averageLatitude: totalLat, averageLongitude: totalLong, totalDistance = 0, totalMinutes = 0, placesVisited } = stats || {}
+  const { averageLatitude: totalLat, averageLongitude: totalLong, totalDistance = 0, totalMinutes = 0, placesVisited, uniqueDays, uniqueRoutes } = stats || {}
 
   return (
     <TableFooter>
       <TableRow className="border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
         <TableCell className="font-medium text-gray-900 dark:text-white">
           <div className="flex items-center gap-2">
-            {renderFirstTotalCell(travels.length, stats?.uniqueDays)}
+            {renderFirstTotalCell(travels.length, uniqueRoutes, uniqueDays)}
           </div>
         </TableCell>
         <TableCell className="text-gray-900 dark:text-white" colSpan={2}>

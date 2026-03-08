@@ -49,7 +49,7 @@ const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTra
         {appliedFilter && onRemoveFilter && <RemoveFilterBtn handleClick={onRemoveFilter} filterName={appliedFilter} />}
         <ExportButton handleClick={handleExportCsv} />
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="flex flex-col gap-6">
         <DateRangeSelector />
         {travels.length === 0 && (
           <div className="text-center py-8 text-gray-500 dark:text-gray-400">
