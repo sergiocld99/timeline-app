@@ -18,11 +18,15 @@ services:
       - mongo
 
   frontend-v2:
-    build: ./frontend-v2
+    build:
+      context: ./frontend-v2
+      args:
+        - NEXT_PUBLIC_FIREBASE_API_KEY=${NEXT_PUBLIC_FIREBASE_API_KEY}
+        - NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=${NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN}
+        - NEXT_PUBLIC_FIREBASE_PROJECT_ID=${NEXT_PUBLIC_FIREBASE_PROJECT_ID}
+        - NEXT_PUBLIC_FIREBASE_APP_ID=${NEXT_PUBLIC_FIREBASE_APP_ID}
     ports:
       - "3002:3002"
-    env_file:
-      - .env
     depends_on:
       - backend
       - stats
