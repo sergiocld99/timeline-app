@@ -51,6 +51,16 @@ const DateRangeSelector = () => {
     updateDateRange(dateFromStr, dateToStr)
   }
 
+  const handleApply = () => {
+    if (new Date(dateFrom) > new Date(dateTo)) {
+      alert("La fecha de inicio no puede ser posterior a la fecha de fin.");
+      return;
+    }
+    updateDateRange(dateFrom, dateTo);
+  };
+
+  const isInvalidRange = new Date(dateFrom) > new Date(dateTo);
+
   return (
     <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardHeader>
@@ -78,7 +88,7 @@ const DateRangeSelector = () => {
               id="date_from"
               onChange={handleChangeDateFrom}
               value={dateFrom}
-              className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+              className={`bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white ${isInvalidRange ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
             />
           </div>
 
@@ -90,7 +100,7 @@ const DateRangeSelector = () => {
               id="date_to"
               onChange={handleChangeDateTo}
               value={dateTo}
-              className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+              className={`bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white ${isInvalidRange ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
             />
           </div>
 
@@ -100,7 +110,7 @@ const DateRangeSelector = () => {
           </div>
 
           <div className="pt-6">
-            <ApplyButton handleClick={() => updateDateRange(dateFrom, dateTo)} />
+            <ApplyButton handleClick={handleApply} disabled={isInvalidRange} />
           </div>
         </div>
       </CardContent>

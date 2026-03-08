@@ -32,3 +32,16 @@ db.visits.dropIndex({ date: 1, location: 1, arrivalTime: 1 })
 ```
 
 Finally, do a clean rebuild and run of the app.
+
+## Software Design Documents (SDD)
+All new features and architectural changes should be documented in the `docs/sdd` folder before implementation. 
+1. Copy the `template.md` to a new file (e.g., `01-feature-name.md`).
+2. Draft your design and get it reviewed.
+3. Use it as a guide during implementation.
+
+## 🛠️ Recommended Tools
+### GitHub CLI (gh)
+To streamline the Pull Request process, it is recommended to have the GitHub CLI installed.
+- **Install (macOS)**: `brew install gh`
+- **Auth**: `gh auth login`
+- **Create PR**: `gh pr create --title "feat: descriptive title" --body "Summary of changes"`
