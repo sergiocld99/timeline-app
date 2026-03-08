@@ -1,5 +1,6 @@
 export type ButtonProps = {
   handleClick: () => void,
   isActive?: boolean,
-  disabled?: boolean
+  disabled?: boolean,
+  text?: string
 }

@@ -49,9 +49,9 @@ export const createUser = (req, res) => {
 export const updateUser = (req, res) => {
   const { userId } = req.params;
   const userIdNum = parseInt(userId, 10);
-  const { name } = req.body;
+  const { name, email, firebaseUid } = req.body;
 
-  User.findOneAndUpdate({ userId: userIdNum }, { name }, { new: true }).then(updatedUser => {
+  User.findOneAndUpdate({ userId: userIdNum }, { name, email, firebaseUid }, { new: true }).then(updatedUser => {
     if (!updatedUser) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -140,5 +140,30 @@ export const migrateGuestData = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: 'Error migrating guest data', error: err.message });
   }
+}
+
+export const linkGoogleAccount = (req, res) => {
+  const { userId } = req.params;
+  const { email, firebaseUid } = req.body;
+
+  if (!email || !firebaseUid) {
+    return res.status(400).json({ message: 'email and firebaseUid are required' });
+  }
+
+  User.findOneAndUpdate(
+    { userId: parseInt(userId, 10) },
+    { email, firebaseUid },
+    { new: true }
+  ).then(updatedUser => {
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json(updatedUser);
+  }).catch(err => {
+    if (err.code === 11000) {
+      return res.status(409).json({ message: 'This Google account is already linked to another user' });
+    }
+    res.status(400).json({ message: 'Error linking Google account', error: err.message });
+  });
 }
 

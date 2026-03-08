@@ -6,7 +6,8 @@ import {
   getAllUsers,
   getUserById,
   migrateGuestData,
-  updateUser
+  updateUser,
+  linkGoogleAccount
 } from "../controller/userController.js";
 
 const router = e.Router();
@@ -16,6 +17,7 @@ router.get('/check-guest-data', checkGuestData);
 router.get('/:userId', getUserById);
 router.post('/', createUser);
 router.post('/:userId/migrate', migrateGuestData);
+router.post('/:userId/link-google', linkGoogleAccount);
 router.put('/:userId', updateUser);
 router.delete('/:userId', deleteUser);
 

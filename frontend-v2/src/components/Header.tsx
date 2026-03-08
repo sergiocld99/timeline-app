@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import NavItem from "./client/NavItem";
 import ThemeToggle from "./client/ThemeToggle";
 import UserDropdown from "./client/UserDropdown";
-import GoogleLoginButton from "./buttons/GoogleLoginButton";
 import { Button } from "./ui/button";
 import {
   Sheet,
@@ -49,7 +48,6 @@ const Header = () => {
               ))}
             </nav>
             <div className="flex items-center space-x-2">
-              <GoogleLoginButton />
               <UserDropdown />
               <ThemeToggle />
             </div>
@@ -80,7 +78,6 @@ const Header = () => {
                   ))}
                 </nav>
                 <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700 flex flex-col gap-2">
-                  <GoogleLoginButton />
                   <UserDropdown />
                 </div>
               </SheetContent>

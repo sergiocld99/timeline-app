@@ -75,6 +75,16 @@ class UserService {
       throw error;
     }
   }
+
+  static async linkGoogleAccount(userId: number, email: string, firebaseUid: string): Promise<User> {
+    try {
+      const response = await axios.post<User>(`${baseUrl}/${userId}/link-google`, { email, firebaseUid });
+      return response.data;
+    } catch (error: any) {
+      console.error("Error linking Google account:", error);
+      throw error;
+    }
+  }
 }
 
 export default UserService;

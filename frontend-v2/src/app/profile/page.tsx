@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { toast } from "sonner";
+import { successToast, errorToast } from "@/utils/toast";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
@@ -24,6 +26,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useUser } from "@/contexts/UserContext";
 import UserService from "@/services/UserService";
+import { TextButton } from "@/components/buttons/TextButton";
+import { AssociateGoogleBtn } from "@/components/buttons/AssociateGoogleBtn";
 
 export default function ProfilePage() {
   const { users, refreshUsers, loading } = useUser();
@@ -44,23 +48,23 @@ export default function ProfilePage() {
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!userId || !name) {
-      toast.error("User ID and name are required");
+      errorToast("User ID and name are required");
       return;
     }
 
     const userIdNum = parseInt(userId, 10);
     if (isNaN(userIdNum)) {
-      toast.error("User ID must be a number");
+      errorToast("User ID must be a number");
       return;
     }
 
     setIsSubmitting(true);
 
     UserService.create(userIdNum, name).then(async (u) => {
-      toast.success(`User ${u.name} created successfully`);
+      successToast(`User ${u.name} created successfully`);
       setUserId("");
       setName("");
-      
+
       // Check if this is the first user and if there's guest data
       const wasFirstUser = users.length === 0;
       if (wasFirstUser) {
@@ -81,7 +85,7 @@ export default function ProfilePage() {
         await refreshUsers();
       }
     }).catch(() => {
-      toast.error("Error creating user");
+      errorToast("Error creating user");
     }).finally(() => {
       setIsSubmitting(false);
     });
@@ -93,7 +97,7 @@ export default function ProfilePage() {
     setIsMigrating(true);
     try {
       const result = await UserService.migrateGuestData(newUser.userId);
-      toast.success(
+      successToast(
         `Migration complete! ${result.travelsMigrated} travels and ${result.visitsMigrated} visits migrated to ${newUser.name}.`
       );
       setShowMigrationDialog(false);
@@ -101,7 +105,7 @@ export default function ProfilePage() {
       setGuestDataInfo(null);
       await refreshUsers();
     } catch (error) {
-      toast.error("Error migrating data. Please try again.");
+      errorToast("Error migrating data. Please try again.");
       console.error("Migration error:", error);
     } finally {
       setIsMigrating(false);
@@ -122,19 +126,19 @@ export default function ProfilePage() {
 
   const handleUpdate = async (userIdNum: number) => {
     if (!editName) {
-      toast.error("Name is required");
+      errorToast("Name is required");
       return;
     }
 
     setIsSubmitting(true);
 
     UserService.update(userIdNum, editName).then(u => {
-      toast.success(`User ${u.name} edited successfully`)
+      successToast(`User ${u.name} edited successfully`)
       setEditingUserId(null)
       setEditName("")
       void refreshUsers()
     }).catch(() => {
-      toast.error("Error updating user")
+      errorToast("Error updating user")
     }).finally(() => {
       setIsSubmitting(false)
     })
@@ -143,6 +147,33 @@ export default function ProfilePage() {
   const handleCancelEdit = () => {
     setEditingUserId(null);
     setEditName("");
+  };
+
+  const handleLinkGoogle = async (userIdNum: number) => {
+    const provider = new GoogleAuthProvider();
+    setIsSubmitting(true);
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const { email, uid } = result.user;
+
+      if (!email) {
+        errorToast("Google account must have an email associated");
+        return;
+      }
+
+      await UserService.linkGoogleAccount(userIdNum, email, uid);
+      successToast("Account successfully associated with Google");
+      void refreshUsers();
+    } catch (error: any) {
+      if (error.response?.status === 409) {
+        errorToast("This Google account is already linked to another user");
+      } else {
+        errorToast("Error linking account: " + error.message);
+      }
+      console.error("Linking error:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (loading) {
@@ -224,7 +255,6 @@ export default function ProfilePage() {
                     {editingUserId === user.userId ? (
                       <div className="flex items-center gap-4 flex-1">
                         <div className="flex-1">
-                          <Label>Name</Label>
                           <Input
                             value={editName}
                             onChange={(e) => setEditName(e.target.value)}
@@ -257,14 +287,22 @@ export default function ProfilePage() {
                           </p>
                         </div>
                         <div className="flex gap-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleEdit(user)}
+                          {!user.firebaseUid && (
+                            <AssociateGoogleBtn
+                              handleClick={() => handleLinkGoogle(user.userId)}
+                              disabled={isSubmitting}
+                            />
+                          )}
+                          {user.firebaseUid && (
+                            <span className="text-xs text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded-full flex items-center">
+                              Linked: {user.email}
+                            </span>
+                          )}
+                          <TextButton
+                            handleClick={() => handleEdit(user)}
                             disabled={isSubmitting}
-                          >
-                            Edit
-                          </Button>
+                            text="Edit Name"
+                          />
                         </div>
                       </>
                     )}
@@ -280,7 +318,7 @@ export default function ProfilePage() {
             <DialogHeader>
               <DialogTitle>Migrate Guest Data?</DialogTitle>
               <DialogDescription>
-                We found {guestDataInfo?.travelCount || 0} travels and {guestDataInfo?.visitCount || 0} visits 
+                We found {guestDataInfo?.travelCount || 0} travels and {guestDataInfo?.visitCount || 0} visits
                 that don&apos;t have a user assigned (guest mode data).
                 <br /><br />
                 Would you like to migrate all this data to <strong>{newUser?.name}</strong> (ID: {newUser?.userId})?
