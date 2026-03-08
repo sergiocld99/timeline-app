@@ -8,6 +8,7 @@
 - COD7-008: Migrate Zoom y Map Center to Statistics Backend (#28) [469]
 - COD7-012: Locations Responsive Page (#33) [664]
 - COD7-013: Date Range Selector Validation (#34) [81]
+- COD7-014: Zipcode quick filters and empty table fix (#35) [126]
 - COD7-015: Show Unique Routes in Travel Footer (#36) [101]
 
 ## v0.6.0 (2026-02-22)
