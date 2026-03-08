@@ -1,6 +1,6 @@
 import type { Visit } from '@/types/travel';
 
-import { toast } from 'sonner';
+import { successToast, errorToast } from '@/utils/toast';
 import { Eye, EyeOff, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -31,9 +31,9 @@ const VisitTableContent = ({ visits, onDelete }: Props) => {
 
   const handleDelete = (visit: Visit) => {
     onDelete(visit._id).then(() => {
-      toast.success('Visit deleted');
+      successToast('Visit deleted');
     }).catch(() => {
-      toast.error('Failed to delete visit');
+      errorToast('Failed to delete visit');
     });
   }
 

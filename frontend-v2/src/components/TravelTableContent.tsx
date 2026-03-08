@@ -5,7 +5,7 @@ import type { Travel, TravelEditValues, TravelStats } from '@/types/travel';
 
 import { Loader2, Save, X } from 'lucide-react';
 import { useState } from 'react';
-import { toast } from 'sonner';
+import { successToast, errorToast } from '@/utils/toast';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -65,14 +65,14 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
       const duration = parseFloat(editValues.duration);
 
       if (isNaN(distance) || isNaN(duration) || distance <= 0 || duration <= 0) {
-        toast.error('Please enter valid positive numbers for distance and duration');
+        errorToast('Please enter valid positive numbers for distance and duration');
         return;
       }
 
       // Validar que la duración no exceda 24 horas (1440 minutos)
       const maxDurationMinutes = 24 * 60; // 1440 minutos
       if (duration > maxDurationMinutes) {
-        toast.error('Travel duration cannot exceed 24 hours (1440 minutes)');
+        errorToast('Travel duration cannot exceed 24 hours (1440 minutes)');
         return;
       }
 
@@ -85,13 +85,13 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
         line: editValues.line
       });
 
-      toast.success('Travel updated successfully!', { style: { background: 'green' } });
+      successToast('Travel updated successfully!');
 
       resetEdition()
     } catch (error) {
       const axiosError = error as AxiosErrorResponse;
 
-      toast.error(axiosError.response?.data?.message, { style: { background: 'red' } })
+      errorToast(axiosError.response?.data?.message || 'Error updating travel');
     } finally {
       setIsSaving(false);
     }
@@ -111,10 +111,10 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
     try {
       setIsSaving(true);
       await onDelete(travel._id);
-      toast.success('Travel deleted successfully!');
+      successToast('Travel deleted successfully!');
     } catch (error) {
       console.error('Error deleting travel:', error);
-      toast.error('Failed to delete travel');
+      errorToast('Failed to delete travel');
     } finally {
       setIsSaving(false);
     }

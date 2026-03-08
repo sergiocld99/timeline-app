@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import { MapPin } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
+import { successToast, errorToast } from "@/utils/toast";
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import CrossService from "@/services/CrossService";
@@ -37,7 +37,7 @@ const CrossForm = () => {
   const mutation = useMutation({
     mutationFn: (newCross: typeof formData) => CrossService.create(newCross),
     onSuccess: (data) => {
-      toast.success(`Cross "${data.name}" added successfully!`);
+      successToast(`Cross "${data.name}" added successfully!`);
       setFormData({
         name: "",
         latitude: "",
@@ -46,7 +46,7 @@ const CrossForm = () => {
       queryClient.invalidateQueries({ queryKey: ["crosses"] });
     },
     onError: (err) => {
-      toast.error(`Failed to add cross: ${err}`);
+      errorToast(`Failed to add cross: ${err}`);
     },
   });
 

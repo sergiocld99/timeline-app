@@ -5,7 +5,7 @@ import type { Location, LocationEditValues } from "@/types/travel";
 import { Save, X } from 'lucide-react';
 import Link from "next/link";
 import { useState } from "react";
-import { toast } from "sonner";
+import { successToast, errorToast } from "@/utils/toast";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
@@ -49,9 +49,9 @@ const LocationTableContent = ({ locations, updateFn, deleteFn }: Props) => {
             onClick={() => {
               updateFn(location._id, editValues)
                 .then(() => {
-                  toast.success('Location updated!')
+                  successToast('Location updated!')
                   resetEditValues()
-                }).catch(() => toast.error('Failed to update location'))
+                }).catch(() => errorToast('Failed to update location'))
             }}
             size="sm"
             className="bg-green-600 hover:bg-green-700"
@@ -86,10 +86,10 @@ const LocationTableContent = ({ locations, updateFn, deleteFn }: Props) => {
         <DeleteAction handleClick={() => {
           if (window.confirm(`Are you sure you want to delete "${location.name}"?`)) {
             deleteFn(location._id)
-              .then(() => toast.success('Location deleted successfully'))
+              .then(() => successToast('Location deleted successfully'))
               .catch((err) => {
                 const message = err.response?.data?.message || err.message || 'Failed to delete location';
-                toast.error(message);
+                errorToast(message);
               });
           }
         }} />

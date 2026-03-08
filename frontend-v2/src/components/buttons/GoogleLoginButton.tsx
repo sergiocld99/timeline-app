@@ -3,7 +3,7 @@
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { LogIn } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
+import { successToast, errorToast } from "@/utils/toast";
 
 import { auth } from "@/lib/firebase";
 import { Button } from "../ui/button";
@@ -18,9 +18,9 @@ const GoogleLoginButton = () => {
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-      toast.success(`Welcome, ${user.displayName}`);
+      successToast(`Welcome, ${user.displayName}`);
     } catch (error: any) {
-      toast.error("Login error: " + error.message);
+      errorToast("Login error: " + error.message);
     } finally {
       setLoading(false);
     }

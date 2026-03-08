@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { MapPin } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
+import { successToast, errorToast } from "@/utils/toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
@@ -38,7 +38,7 @@ const LocationForm = () => {
   const mutation = useMutation({
     mutationFn: (newLocation: typeof formData) => LocationService.create(newLocation),
     onSuccess: (data) => {
-      toast.success(`Location "${data.name}" added successfully!`);
+      successToast(`Location "${data.name}" added successfully!`);
       setFormData({
         name: "",
         latitude: "",
@@ -50,7 +50,7 @@ const LocationForm = () => {
     },
     onError: (error) => {
       console.error("There was an error adding the location!", error);
-      toast.error("Failed to add location. Please try again.");
+      errorToast("Failed to add location. Please try again.");
     }
   });
 
