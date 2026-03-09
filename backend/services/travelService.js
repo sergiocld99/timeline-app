@@ -94,6 +94,8 @@ export const calculateTravelStats = (travels) => {
   }
 
   const placesVisited = new Set()
+  const monthlyStats = {};
+  const routeStats = {};
 
   let totalKm = 0;
   let totalMinutes = 0;
@@ -101,6 +103,9 @@ export const calculateTravelStats = (travels) => {
   let sumLatitude = 0;
   let sumLongitude = 0;
   let validWeight = 0;
+
+  let maxDistanceTravel = null;
+  let maxDurationTravel = null;
 
   travels.forEach(t => {
     const distance = t.distance || 0;
@@ -111,6 +116,31 @@ export const calculateTravelStats = (travels) => {
     totalKm += distance;
     totalMinutes += duration;
     totalPrice += price;
+
+    // Monthly Stats
+    const date = new Date(t.startTime);
+    const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    if (!monthlyStats[monthKey]) {
+      monthlyStats[monthKey] = { km: 0, minutes: 0, count: 0 };
+    }
+    monthlyStats[monthKey].km += distance;
+    monthlyStats[monthKey].minutes += duration;
+    monthlyStats[monthKey].count += 1;
+
+    // Route Stats
+    if (t.origin && t.destination) {
+      const sortedZipcodes = [t.origin.zipcode, t.destination.zipcode].sort()
+      const routeKey = `${sortedZipcodes[0]} <-> ${sortedZipcodes[1]}`;
+      routeStats[routeKey] = (routeStats[routeKey] || 0) + 1;
+    }
+
+    // Records / Outliers
+    if (!maxDistanceTravel || distance > maxDistanceTravel.distance) {
+      maxDistanceTravel = t;
+    }
+    if (!maxDurationTravel || duration > (maxDurationTravel.get ? maxDurationTravel.get('duration') : maxDurationTravel.duration)) {
+      maxDurationTravel = t;
+    }
 
     // Calculate average coordinates from all origins and destinations
     if (t.origin && t.origin.latitude != null && t.origin.longitude != null) {
@@ -137,12 +167,18 @@ export const calculateTravelStats = (travels) => {
   const totalHours = totalMinutes / 60
   const averageSpeed = totalHours > 0 ? totalKm / totalHours : 0;
 
+  // Format Top Routes
+  const topRoutes = Object.entries(routeStats)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 5)
+    .map(([route, count]) => ({ route, count }));
+
   return {
     count,
     totalDistance: Math.round(totalKm * 100) / 100, // Round to 2 decimals
     totalHours: Math.round(totalHours * 100) / 100,
     totalMinutes,
-    totalPrice,
+    totalPrice: Math.round(totalPrice * 100) / 100,
     averageLatitude: Math.round(averageLatitude * 10000) / 10000, // Round to 4 decimals
     averageLongitude: Math.round(averageLongitude * 10000) / 10000,
     averageSpeed: Math.round(averageSpeed * 100) / 100,
@@ -152,6 +188,22 @@ export const calculateTravelStats = (travels) => {
     placesVisited: {
       count: placesVisited.size,
       zipcodes: Array.from(placesVisited.values())
+    },
+    monthlyStats,
+    topRoutes,
+    records: {
+      maxDistance: maxDistanceTravel ? {
+        value: maxDistanceTravel.distance,
+        date: maxDistanceTravel.startTime,
+        origin: maxDistanceTravel.origin?.name,
+        destination: maxDistanceTravel.destination?.name
+      } : null,
+      maxDuration: maxDurationTravel ? {
+        value: maxDurationTravel.get ? maxDurationTravel.get('duration') : maxDurationTravel.duration,
+        date: maxDurationTravel.startTime,
+        origin: maxDurationTravel.origin?.name,
+        destination: maxDurationTravel.destination?.name
+      } : null
     }
   };
 };
