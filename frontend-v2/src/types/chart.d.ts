@@ -6,7 +6,8 @@ export type ChartData<T extends string> = Array<{
   yellow: number,
   green: number,
   blue: number,
-  others: number
+  others: number,
+  empty: boolean
 } & Record<T, string>>
 
 export type HourPart = {

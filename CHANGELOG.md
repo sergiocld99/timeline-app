@@ -10,7 +10,7 @@
 - COD7-013: Date Range Selector Validation (#34) [81]
 - COD7-014: Zipcode quick filters and empty table fix (#35) [126]
 - COD7-015: Show Unique Routes in Travel Footer (#36) [101]
-- COD7-016: Home Travel Dashboard (#37) [183]
+- COD7-018: Home Dashboard & Clean Unused Hour Bars (#37) [349]
 
 ## v0.6.0 (2026-02-22)
 - COD6-001: Pick Map to fill coordinates on create location + delete btn (#17) [148]

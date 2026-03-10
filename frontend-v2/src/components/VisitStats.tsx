@@ -9,7 +9,7 @@ import { Bar, CartesianGrid, XAxis } from "recharts";
 
 import { daysOfWeek } from "@/constants";
 import { convertToArgentineTime } from "@/utils";
-import { buildChartConfig, getChartHours, useChartValue, useDefaultValues } from "@/utils/chart";
+import { buildChartConfig, cleanUnusedBorders, getChartHours, useChartValue, useDefaultValues } from "@/utils/chart";
 
 import { calculateBestLocations } from "./analize/visit";
 import { Card, CardContent } from "./ui/card";
@@ -34,10 +34,12 @@ const buildHourlyChartData = (visits: Visit[], topLocations: string[]): ChartDat
     return acc;
   }, {} as ChartSource);
 
-  return getChartHours().map(hour => ({
+  const chartData = getChartHours().map(hour => ({
     hour,
     ...useChartValue(hour, weightByHour, topLocations)
   }));
+
+  return cleanUnusedBorders(chartData)
 }
 
 const buildDailyChartData = (visits: Visit[], topLocations: string[]): ChartData<"day"> => {

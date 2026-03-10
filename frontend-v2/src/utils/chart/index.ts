@@ -1,5 +1,5 @@
 import type { ChartConfig } from "@/components/ui/chart";
-import type { ChartSource, HourAndMinutes } from "@/types/chart";
+import type { ChartData, ChartSource, HourAndMinutes } from "@/types/chart";
 
 import { extractTime } from "..";
 import { abbreviateWords } from "../strings";
@@ -44,7 +44,8 @@ export const useChartValue = (key: string, weightByField: ChartSource, topKeys: 
       yellow: 0,
       green: 0,
       blue: 0,
-      others: 0
+      others: 0,
+      empty: true
     }
   }
 
@@ -54,8 +55,25 @@ export const useChartValue = (key: string, weightByField: ChartSource, topKeys: 
     yellow: roundChartValue(weightByField[key][topKeys[2]] || 0),
     green: roundChartValue(weightByField[key][topKeys[3]] || 0),
     blue: roundChartValue(weightByField[key][topKeys[4]] || 0),
-    others: roundChartValue(weightByField[key].others || 0)
+    others: roundChartValue(weightByField[key].others || 0),
+    empty: false
   }
+}
+
+export const cleanUnusedBorders = (chartData: ChartData<"hour">) => {
+  // CLEAN FIRST EMPTY HOURS
+  const firstNotEmptyIndex = chartData.findIndex(h => !h.empty) - 1
+  if (firstNotEmptyIndex > 0) {
+    chartData = chartData.slice(firstNotEmptyIndex)
+  }
+
+  // CLEAN LAST EMPTY HOURS
+  const lastNotEmptyIndex = chartData.findLastIndex(h => !h.empty) + 1
+  if (lastNotEmptyIndex < chartData.length - 1) {
+    chartData = chartData.slice(0, lastNotEmptyIndex + 1)
+  }
+
+  return chartData
 }
 
 export const buildChartConfig = (topKeys: string[]) => {
