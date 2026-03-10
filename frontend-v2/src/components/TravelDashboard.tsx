@@ -17,16 +17,11 @@ import {
 } from "recharts";
 
 import { renderNiceDate } from "@/utils";
+import { ACCENT1, ACCENT2, ACCENT4, BORDER, MUTED } from "@/constants/colors";
 
 type Props = {
   stats: TravelStats;
 };
-
-const ACCENT1 = "#e8ff47";
-const ACCENT2 = "#47d4ff";
-const ACCENT4 = "#b847ff";
-const BORDER = "#2a2a3a";
-const MUTED = "#6b6b80";
 
 const MONTH_NAMES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 
