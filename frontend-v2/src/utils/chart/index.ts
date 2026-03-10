@@ -80,8 +80,6 @@ export const cleanUnusedBorders = (chartData: ChartData<"hour">) => {
   const p0 = Math.max(firstNotEmptyIndex - emptyRequiredSlots, 0)
   const p1 = Math.min(lastNotEmptyIndex + emptyRequiredSlots + 1, 24)
 
-  console.log(p0, p1, emptyRequiredSlots)
-
   return chartData.slice(p0, p1)
 }
 
