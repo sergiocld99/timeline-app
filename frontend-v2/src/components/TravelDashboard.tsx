@@ -60,7 +60,7 @@ const TravelDashboard = ({ stats }: Props) => {
       <div className="absolute inset-0 pointer-events-none opacity-5 z-0"
         style={{ backgroundImage: `linear-gradient(${ACCENT1} 1px, transparent 1px), linear-gradient(90deg, ${ACCENT1} 1px, transparent 1px)`, backgroundSize: '60px 60px' }} />
 
-      <header className="relative z-10 flex flex-col md:flex-row items-start md:items-end justify-between border-bottom border-[#2a2a3a] pb-6 mb-12 animate-in fade-in slide-in-from-bottom-5 duration-700">
+      <header className="relative z-10 flex flex-col md:flex-row items-start md:items-end justify-between border-bottom border-[#2a2a3a] pb-6 mb-12 animate-in  duration-700">
         <div>
           <h1 className="text-2xl md:text-4xl font-extrabold leading-[0.9] tracking-tighter text-[#e8ff47]">
             DASHBOARD
@@ -85,7 +85,7 @@ const TravelDashboard = ({ stats }: Props) => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 relative z-10">
         {/* Chart 1: Places per month */}
-        <div className="bg-[#111118] border border-[#2a2a3a] rounded-sm p-7 relative overflow-hidden before:absolute before:top-0 before:left-0 before:w-[3px] before:h-full before:bg-[#e8ff47] animate-in fade-in slide-in-from-bottom-5 duration-700 delay-200">
+        <div className="bg-[#111118] border border-[#2a2a3a] rounded-sm p-7 relative overflow-hidden before:absolute before:top-0 before:left-0 before:w-[3px] before:h-full before:bg-[#e8ff47] animate-in duration-700 delay-200">
           <div className="flex justify-between items-center mb-6">
             <span className="text-[0.65rem] font-['Space_Mono'] uppercase tracking-[3px] text-[#fff]">Places visited</span>
             <span className="text-2xl font-extrabold text-[#e8ff47]">{placesVisited.count || 0}</span>
@@ -112,7 +112,7 @@ const TravelDashboard = ({ stats }: Props) => {
         </div>
 
         {/* Chart 2: Kilómetros por mes */}
-        <div className="bg-[#111118] border border-[#2a2a3a] rounded-sm p-7 relative overflow-hidden before:absolute before:top-0 before:left-0 before:w-[3px] before:h-full before:bg-[#47d4ff] animate-in fade-in slide-in-from-bottom-5 duration-700 delay-400">
+        <div className="bg-[#111118] border border-[#2a2a3a] rounded-sm p-7 relative overflow-hidden before:absolute before:top-0 before:left-0 before:w-[3px] before:h-full before:bg-[#47d4ff] animate-in duration-700 delay-400">
           <div className="flex justify-between items-center mb-6">
             <span className="text-[0.65rem] font-['Space_Mono'] uppercase tracking-[3px] text-[#fff]">Kilometers per month</span>
             <span className="text-2xl font-extrabold text-[#47d4ff]">{Math.round(totalDistance / chartData.length)}</span>
@@ -140,7 +140,7 @@ const TravelDashboard = ({ stats }: Props) => {
         </div>
 
         {/* Chart 3: Records */}
-        <div className="bg-[#111118] border border-[#2a2a3a] rounded-sm p-7 relative overflow-hidden before:absolute before:top-0 before:left-0 before:w-[3px] before:h-full before:bg-[#ff6b47] animate-in fade-in slide-in-from-bottom-5 duration-700 delay-500">
+        <div className="bg-[#111118] border border-[#2a2a3a] rounded-sm p-7 relative overflow-hidden before:absolute before:top-0 before:left-0 before:w-[3px] before:h-full before:bg-[#ff6b47] animate-in  duration-700 delay-500">
           <div className="flex justify-between items-center mb-6">
             <span className="text-[0.65rem] font-['Space_Mono'] uppercase tracking-[3px] text-[#fff]">Maximum values</span>
             <span className="text-2xl font-extrabold text-[#ff6b47]">Records</span>
@@ -180,7 +180,7 @@ const TravelDashboard = ({ stats }: Props) => {
         </div>
 
         {/* Chart 4: Most frequent routes */}
-        <div className="bg-[#111118] border border-[#2a2a3a] rounded-sm p-7 relative overflow-hidden before:absolute before:top-0 before:left-0 before:w-[3px] before:h-full before:bg-[#b847ff] animate-in fade-in slide-in-from-bottom-5 duration-700 delay-600">
+        <div className="bg-[#111118] border border-[#2a2a3a] rounded-sm p-7 relative overflow-hidden before:absolute before:top-0 before:left-0 before:w-[3px] before:h-full before:bg-[#b847ff] animate-in  duration-700 delay-600">
           <div className="flex justify-between items-center mb-8">
             <span className="text-[0.65rem] font-['Space_Mono'] uppercase tracking-[3px] text-[#fff]">Most frequent routes</span>
             <span className="text-2xl font-extrabold text-[#b847ff]">Top 5</span>
