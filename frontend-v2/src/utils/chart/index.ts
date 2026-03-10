@@ -61,19 +61,28 @@ export const useChartValue = (key: string, weightByField: ChartSource, topKeys: 
 }
 
 export const cleanUnusedBorders = (chartData: ChartData<"hour">) => {
-  // CLEAN FIRST EMPTY HOURS
-  const firstNotEmptyIndex = chartData.findIndex(h => !h.empty) - 1
-  if (firstNotEmptyIndex > 0) {
-    chartData = chartData.slice(firstNotEmptyIndex)
+  const firstNotEmptyIndex = chartData.findIndex(h => !h.empty)
+  const lastNotEmptyIndex = chartData.findLastIndex(h => !h.empty)
+  const validRangeSize = lastNotEmptyIndex - firstNotEmptyIndex
+
+  if (firstNotEmptyIndex < 0 && lastNotEmptyIndex < 0) {
+    return chartData
   }
 
-  // CLEAN LAST EMPTY HOURS
-  const lastNotEmptyIndex = chartData.findLastIndex(h => !h.empty) + 1
-  if (lastNotEmptyIndex < chartData.length - 1) {
-    chartData = chartData.slice(0, lastNotEmptyIndex + 1)
+  if (validRangeSize > 9) {
+    const p0 = Math.max(firstNotEmptyIndex, 0)
+    const p1 = Math.min(lastNotEmptyIndex + 1, 24)
+
+    return chartData.slice(p0, p1)
   }
 
-  return chartData
+  const emptyRequiredSlots = Math.round((9 - validRangeSize) / 2)
+  const p0 = Math.max(firstNotEmptyIndex - emptyRequiredSlots, 0)
+  const p1 = Math.min(lastNotEmptyIndex + emptyRequiredSlots + 1, 24)
+
+  console.log(p0, p1, emptyRequiredSlots)
+
+  return chartData.slice(p0, p1)
 }
 
 export const buildChartConfig = (topKeys: string[]) => {
