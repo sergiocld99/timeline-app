@@ -1,7 +1,7 @@
 "use client";
 
 import type { TravelStats } from "@/types/travel";
-import { renderNiceDate } from "@/utils";
+
 import { useMemo } from "react";
 import {
   Bar,
@@ -16,13 +16,14 @@ import {
   YAxis
 } from "recharts";
 
+import { renderNiceDate } from "@/utils";
+
 type Props = {
   stats: TravelStats;
 };
 
 const ACCENT1 = "#e8ff47";
 const ACCENT2 = "#47d4ff";
-const ACCENT3 = "#ff6b47";
 const ACCENT4 = "#b847ff";
 const BORDER = "#2a2a3a";
 const MUTED = "#6b6b80";

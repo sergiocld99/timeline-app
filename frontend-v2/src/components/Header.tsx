@@ -3,6 +3,7 @@
 import { Menu } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 import NavItem from "./client/NavItem";
 import ThemeToggle from "./client/ThemeToggle";
@@ -15,7 +16,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "./ui/sheet";
-import Link from "next/link";
 
 const NAV_ITEMS: { path: string; label: string }[] = [
   { path: "/creator", label: "Creator" },

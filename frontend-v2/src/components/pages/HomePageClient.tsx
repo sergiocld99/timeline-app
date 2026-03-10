@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
+
 import TravelService from "@/services/TravelService";
 import TravelDashboard from "@/components/TravelDashboard";
 import Header from "@/components/Header";
-import { Loader2 } from "lucide-react";
 import { useUser } from "@/contexts/UserContext";
 
 const HomePageClient = () => {
