@@ -7,6 +7,9 @@ services:
       - .env
     depends_on:
       - mongo
+    volumes:
+      - ./backend:/app
+      - /app/node_modules # Protege los módulos internos
 
   stats:
     build: ./statistics-service

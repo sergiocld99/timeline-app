@@ -3,7 +3,7 @@ import type { TravelWithFarthestPoint } from "@/types/travel"
 
 import { daysOfWeek } from "@/constants"
 import { convertToArgentineTime } from "@/utils"
-import { getChartHours, useChartValue, useDefaultValues } from "@/utils/chart"
+import { cleanUnusedBorders, getChartHours, useChartValue, useDefaultValues } from "@/utils/chart"
 
 const CHART_FIELD = 'zipcode'
 
@@ -18,7 +18,7 @@ const buildPlaceWeightByHour = (travels: TravelWithFarthestPoint[], topLocations
         if (!acc[hour.hour]) {
           acc[hour.hour] = useDefaultValues(topLocations)
         }
-  
+
         acc[hour.hour][farthestPoint[CHART_FIELD]] += hour.totalMinutes
       })
 
@@ -51,7 +51,7 @@ const buildPlaceWeightByDay = (travels: TravelWithFarthestPoint[], topLocations:
   return travels.reduce((acc, t) => {
     const dayOfWeek = convertToArgentineTime(new Date(t.startTime)).getDay()
     const normalizedDay = daysOfWeek[dayOfWeek]
-    
+
     if (!acc[normalizedDay]) {
       acc[normalizedDay] = useDefaultValues(topLocations)
     }
@@ -70,14 +70,16 @@ const buildPlaceWeightByDay = (travels: TravelWithFarthestPoint[], topLocations:
     return acc;
   }, {} as ChartSource)
 }
- 
+
 export const buildHourlyChartData = (travels: TravelWithFarthestPoint[], topKeys: string[]): ChartData<"hour"> => {
   const weightByHour = buildPlaceWeightByHour(travels, topKeys)
 
-  return getChartHours().map(hour => ({
+  const chartData = getChartHours().map(hour => ({
     hour,
     ...useChartValue(hour, weightByHour, topKeys)
   }));
+
+  return cleanUnusedBorders(chartData)
 }
 
 export const buildDailyChartData = (travels: TravelWithFarthestPoint[], topKeys: string[]): ChartData<"day"> => {

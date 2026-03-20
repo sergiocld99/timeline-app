@@ -1,5 +1,5 @@
 import type { ChartConfig } from "@/components/ui/chart";
-import type { ChartSource, HourAndMinutes } from "@/types/chart";
+import type { ChartData, ChartSource, HourAndMinutes } from "@/types/chart";
 
 import { extractTime } from "..";
 import { abbreviateWords } from "../strings";
@@ -44,7 +44,8 @@ export const useChartValue = (key: string, weightByField: ChartSource, topKeys: 
       yellow: 0,
       green: 0,
       blue: 0,
-      others: 0
+      others: 0,
+      empty: true
     }
   }
 
@@ -54,8 +55,32 @@ export const useChartValue = (key: string, weightByField: ChartSource, topKeys: 
     yellow: roundChartValue(weightByField[key][topKeys[2]] || 0),
     green: roundChartValue(weightByField[key][topKeys[3]] || 0),
     blue: roundChartValue(weightByField[key][topKeys[4]] || 0),
-    others: roundChartValue(weightByField[key].others || 0)
+    others: roundChartValue(weightByField[key].others || 0),
+    empty: false
   }
+}
+
+export const cleanUnusedBorders = (chartData: ChartData<"hour">) => {
+  const firstNotEmptyIndex = chartData.findIndex(h => !h.empty)
+  const lastNotEmptyIndex = chartData.findLastIndex(h => !h.empty)
+  const validRangeSize = lastNotEmptyIndex - firstNotEmptyIndex
+
+  if (firstNotEmptyIndex < 0 && lastNotEmptyIndex < 0) {
+    return chartData
+  }
+
+  if (validRangeSize > 9) {
+    const p0 = Math.max(firstNotEmptyIndex, 0)
+    const p1 = Math.min(lastNotEmptyIndex + 1, 24)
+
+    return chartData.slice(p0, p1)
+  }
+
+  const emptyRequiredSlots = Math.round((9 - validRangeSize) / 2)
+  const p0 = Math.max(firstNotEmptyIndex - emptyRequiredSlots, 0)
+  const p1 = Math.min(lastNotEmptyIndex + emptyRequiredSlots + 1, 24)
+
+  return chartData.slice(p0, p1)
 }
 
 export const buildChartConfig = (topKeys: string[]) => {

@@ -94,6 +94,8 @@ export const calculateTravelStats = (travels) => {
   }
 
   const placesVisited = new Set()
+  const monthlyStats = {};
+  const routeStats = {};
 
   let totalKm = 0;
   let totalMinutes = 0;
@@ -102,15 +104,57 @@ export const calculateTravelStats = (travels) => {
   let sumLongitude = 0;
   let validWeight = 0;
 
+  let maxDistanceTravel = null;
+  let maxDurationTravel = null;
+  let maxSpeedTravel = null;
+
   travels.forEach(t => {
     const distance = t.distance || 0;
     const duration = t.get ? t.get('duration') : t.duration || 0;
     const price = t.price || 0;
     const weight = t.get ? t.get('weight').percentage : t.weight?.percentage || 0
+    const speed = t.get ? t.get('speed') : t.speed || 0
 
     totalKm += distance;
     totalMinutes += duration;
     totalPrice += price;
+
+    // Monthly Stats
+    const date = new Date(t.startTime);
+    const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    if (!monthlyStats[monthKey]) {
+      monthlyStats[monthKey] = { km: 0, minutes: 0, count: 0, zipcodes: [] };
+    }
+    monthlyStats[monthKey].km += distance;
+    monthlyStats[monthKey].minutes += duration;
+    monthlyStats[monthKey].count += 1;
+
+    // Route Stats
+    if (t.origin && t.destination) {
+      const sortedLocations = [t.origin.name, t.destination.name].sort()
+      const routeKey = `${sortedLocations[0]} ↔ ${sortedLocations[1]}`;
+      routeStats[routeKey] = (routeStats[routeKey] || 0) + 1;
+
+      // extra monthly stats
+      if (!monthlyStats[monthKey].zipcodes.find(cp => cp === t.origin.zipcode)) {
+        monthlyStats[monthKey].zipcodes.push(t.origin.zipcode)
+      }
+
+      if (!monthlyStats[monthKey].zipcodes.find(cp => cp === t.destination.zipcode)) {
+        monthlyStats[monthKey].zipcodes.push(t.destination.zipcode)
+      }
+    }
+
+    // Records / Outliers
+    if (!maxDistanceTravel || distance > maxDistanceTravel.distance) {
+      maxDistanceTravel = t;
+    }
+    if (!maxDurationTravel || duration > (maxDurationTravel.get ? maxDurationTravel.get('duration') : maxDurationTravel.duration)) {
+      maxDurationTravel = t;
+    }
+    if (!maxSpeedTravel || speed > (maxSpeedTravel.get ? maxSpeedTravel.get('speed') : maxSpeedTravel.speed)) {
+      maxSpeedTravel = t;
+    }
 
     // Calculate average coordinates from all origins and destinations
     if (t.origin && t.origin.latitude != null && t.origin.longitude != null) {
@@ -137,12 +181,18 @@ export const calculateTravelStats = (travels) => {
   const totalHours = totalMinutes / 60
   const averageSpeed = totalHours > 0 ? totalKm / totalHours : 0;
 
+  // Format Top Routes
+  const topRoutes = Object.entries(routeStats)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 5)
+    .map(([route, count]) => ({ route, count }));
+
   return {
     count,
     totalDistance: Math.round(totalKm * 100) / 100, // Round to 2 decimals
     totalHours: Math.round(totalHours * 100) / 100,
     totalMinutes,
-    totalPrice,
+    totalPrice: Math.round(totalPrice * 100) / 100,
     averageLatitude: Math.round(averageLatitude * 10000) / 10000, // Round to 4 decimals
     averageLongitude: Math.round(averageLongitude * 10000) / 10000,
     averageSpeed: Math.round(averageSpeed * 100) / 100,
@@ -152,6 +202,28 @@ export const calculateTravelStats = (travels) => {
     placesVisited: {
       count: placesVisited.size,
       zipcodes: Array.from(placesVisited.values())
+    },
+    monthlyStats,
+    topRoutes,
+    records: {
+      maxDistance: maxDistanceTravel ? {
+        value: maxDistanceTravel.distance,
+        date: maxDistanceTravel.startTime,
+        origin: maxDistanceTravel.origin?.name,
+        destination: maxDistanceTravel.destination?.name
+      } : null,
+      maxDuration: maxDurationTravel ? {
+        value: maxDurationTravel.get ? maxDurationTravel.get('duration') : maxDurationTravel.duration,
+        date: maxDurationTravel.startTime,
+        origin: maxDurationTravel.origin?.name,
+        destination: maxDurationTravel.destination?.name
+      } : null,
+      maxSpeed: maxSpeedTravel ? {
+        value: Math.round(maxSpeedTravel.get ? maxSpeedTravel.get('speed') : maxSpeedTravel.speed),
+        date: maxSpeedTravel.startTime,
+        origin: maxSpeedTravel.origin?.name,
+        destination: maxSpeedTravel.destination?.name
+      } : null,
     }
   };
 };

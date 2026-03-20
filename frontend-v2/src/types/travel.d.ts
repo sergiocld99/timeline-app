@@ -72,6 +72,13 @@ export type TravelStats = {
     center: [number, number],
     zoom: number
   }
+  monthlyStats?: Record<string, { km: number, minutes: number, count: number, zipcodes: string[] }>
+  topRoutes?: { route: string, count: number }[]
+  records?: {
+    maxDistance: { value: number, date: string, origin: string, destination: string } | null
+    maxDuration: { value: number, date: string, origin: string, destination: string } | null
+    maxSpeed: { value: number, date: string, origin: string, destination: string } | null
+  }
 }
 
 export type TravelFindResult = {
