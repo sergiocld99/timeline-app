@@ -1,4 +1,4 @@
-import type { Visit } from "@/types/travel";
+import type { Visit } from "@/types/visit";;
 
 import { extractKeys, sortByDescendingValue } from "@/utils/kv";
 

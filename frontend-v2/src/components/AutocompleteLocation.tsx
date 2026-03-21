@@ -1,6 +1,6 @@
 "use client"
 
-import type { Location } from "@/types/travel"
+import type { Location } from "@/types/location";
 
 import { Check, ChevronsUpDown } from "lucide-react"
 import { useEffect, useRef, useState } from "react"

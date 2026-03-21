@@ -1,4 +1,4 @@
-import type { Travel } from "@/types/travel"
+import type { Travel } from "@/types/travel";
 
 import { AlertTriangleIcon } from "lucide-react"
 

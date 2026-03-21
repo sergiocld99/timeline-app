@@ -1,5 +1,6 @@
 import type { AxiosErrorResponse } from '@/types/commons';
-import type { Visit, Location } from '@/types/travel';
+import type { Location } from "@/types/location";
+import type { Visit } from "@/types/visit";;
 
 import { Loader2, Save, X, Eye, EyeOff, Trash2 } from 'lucide-react';
 import { useState } from 'react';

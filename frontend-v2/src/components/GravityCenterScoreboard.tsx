@@ -1,7 +1,8 @@
 "use client"
 
 import type { KnownCenter } from "@/types/center"
-import type { Travel, TravelsData, Visit, VisitsData } from "@/types/travel"
+import type { Travel, TravelsData } from "@/types/travel";
+import type { Visit, VisitsData } from "@/types/visit";
 
 import Link from "next/link"
 

@@ -1,6 +1,7 @@
 import type { KnownCenter } from "@/types/center"
 import type { MapLocation } from "@/types/map"
-import type { Location, Travel, TravelWithFarthestPoint } from "@/types/travel"
+import type { Travel, TravelWithFarthestPoint } from "@/types/travel";
+import type { Location } from "@/types/location";
 
 import { extractKeys, sortByDescendingValue } from "@/utils/kv"
 

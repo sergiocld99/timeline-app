@@ -1,4 +1,4 @@
-import type { Visit } from "@/types/travel";
+import type { Visit } from "@/types/visit";;
 
 import { extractDate, extractTime, getHoursAndMinutes } from "@/utils";
 

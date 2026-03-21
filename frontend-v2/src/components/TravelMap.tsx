@@ -3,7 +3,7 @@
 import "leaflet/dist/leaflet.css";
 
 import type { Center } from "@/types/map";
-import type { Travel } from "@/types/travel";
+import type { Travel } from "@/types/travel";;
 
 import L from "leaflet";
 import { useEffect, useMemo, useState } from "react";

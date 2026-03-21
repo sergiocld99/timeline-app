@@ -1,6 +1,6 @@
 "use client";
 
-import type { Location, LocationEditValues } from "@/types/travel";
+import type { Location, LocationEditValues } from "@/types/location";;
 
 import { Save, X } from 'lucide-react';
 import Link from "next/link";

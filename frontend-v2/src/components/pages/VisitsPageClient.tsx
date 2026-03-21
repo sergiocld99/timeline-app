@@ -1,7 +1,7 @@
 "use client";
 
 import type { FilteringData } from "@/types/stats";
-import type { Visit } from "@/types/travel";
+import type { Visit } from "@/types/visit";;
 
 import { useEffect, useState } from "react";
 

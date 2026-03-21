@@ -1,6 +1,6 @@
 "use client";
 
-import type { Travel } from "@/types/travel";
+import type { Travel } from "@/types/travel";;
 import type { FilteringData, StatsView } from "@/types/stats";
 
 import dynamic from "next/dynamic";

@@ -1,7 +1,7 @@
 "use client";
 
 import type { AxiosErrorResponse } from '@/types/commons';
-import type { Travel, TravelEditValues, TravelStats } from '@/types/travel';
+import type { Travel, TravelEditValues, TravelStats } from "@/types/travel";;
 
 import { Loader2, Save, X } from 'lucide-react';
 import { useState } from 'react';

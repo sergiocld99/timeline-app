@@ -1,5 +1,5 @@
 import type { StatByMode } from "@/types/stats";
-import type { Travel } from "@/types/travel";
+import type { Travel } from "@/types/travel";;
 
 /**
  * Calculate statistics grouped by mode of transport from an array of travels

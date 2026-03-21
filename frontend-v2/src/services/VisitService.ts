@@ -1,4 +1,4 @@
-import type { Visit } from "@/types/travel";
+import type { Visit } from "@/types/visit";;
 
 import axios from "axios";
 

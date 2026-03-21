@@ -1,4 +1,4 @@
-import type { Visit, VisitsData, VisitsStats } from "@/types/travel";
+import type { Visit, VisitsData, VisitsStats } from "@/types/visit";;
 
 import { useEffect, useState } from "react";
 

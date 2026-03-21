@@ -1,4 +1,4 @@
-import type { Travel, TravelStats } from '@/types/travel';
+import type { Travel, TravelStats } from "@/types/travel";;
 
 import { useQuery } from '@tanstack/react-query';
 

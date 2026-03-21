@@ -1,6 +1,6 @@
 import type { AxiosErrorResponse } from "@/types/commons";
 import type { User } from "@/types/user";
-import type { TravelFormData } from "@/types/travel";
+import type { TravelFormData } from "@/types/travel";;
 
 import { useState } from "react";
 import { useQueryClient, type QueryClient } from "@tanstack/react-query";

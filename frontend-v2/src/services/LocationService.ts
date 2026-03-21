@@ -1,5 +1,5 @@
 import type { FormData } from '@/types/commons';
-import type { Location } from '@/types/travel';
+import type { Location } from "@/types/location";;
 
 import axios from 'axios';
 

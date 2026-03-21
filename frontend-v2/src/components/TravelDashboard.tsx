@@ -1,6 +1,6 @@
 "use client";
 
-import type { TravelStats } from "@/types/travel";
+import type { TravelStats } from "@/types/travel";;
 
 import { useMemo } from "react";
 import {

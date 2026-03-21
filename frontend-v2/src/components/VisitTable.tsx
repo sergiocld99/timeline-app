@@ -1,6 +1,6 @@
 "use client";
 
-import type { Visit } from '@/types/travel';
+import type { Visit } from "@/types/visit";;
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 

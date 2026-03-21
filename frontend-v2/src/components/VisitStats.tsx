@@ -1,7 +1,7 @@
 "use client";
 
 import type { ChartData, ChartSource } from "@/types/chart";
-import type { Visit } from "@/types/travel";
+import type { Visit } from "@/types/visit";;
 import type { FilteringData } from "@/types/stats";
 
 import { BarChart } from "recharts";

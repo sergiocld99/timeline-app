@@ -1,23 +1,7 @@
 import type { HourPart } from "./chart"
 import type { Weighted } from "./commons"
 import type { Cross } from "./cross"
-
-export type Location = {
-  _id: string
-  name: string
-  latitude: number
-  longitude: number
-  zipcode: string
-  notes: string
-}
-
-export type LocationEditValues = {
-  name: string,
-  zipcode: string,
-  latitude: number,
-  longitude: number,
-  notes: string,
-}
+import type { Location } from "./location"
 
 export type Travel = Weighted & {
   _id: string
@@ -112,26 +96,4 @@ export type TravelFormData = {
   line: string;
   distance: string;
   price: string;
-}
-
-export type Visit = Weighted & {
-  _id: string
-  date: string
-  location: Location
-  arrivalTime: string
-  departureTime: string
-  durationMinutes: number
-  hourParts: HourPart[]
-}
-
-export type VisitsStats = {
-  averageLatitude: number
-  averageLongitude: number
-}
-
-export type VisitsData = {
-  visits: Visit[]
-  stats?: VisitsStats
-  dateFrom?: string
-  dateTo?: string
 }

@@ -1,4 +1,4 @@
-import type { Travel, TravelFindResult } from "@/types/travel";
+import type { Travel, TravelFindResult } from "@/types/travel";;
 
 import { useCallback, useEffect, useState } from "react"
 

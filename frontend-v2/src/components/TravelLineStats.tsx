@@ -1,4 +1,4 @@
-import type { Travel } from "@/types/travel"
+import type { Travel } from "@/types/travel";
 import type { ChartConfig } from "./ui/chart";
 import type { FilteringData } from "@/types/stats";
 

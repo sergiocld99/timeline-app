@@ -1,4 +1,4 @@
-import type { Location } from "@/types/travel";
+import type { Location } from "@/types/location";;
 
 import { MapPin } from "lucide-react";
 

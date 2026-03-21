@@ -1,4 +1,4 @@
-import type { Travel, TravelsData } from "@/types/travel";
+import type { Travel, TravelsData } from "@/types/travel";;
 
 import { useCallback, useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";

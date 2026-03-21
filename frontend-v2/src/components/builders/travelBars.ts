@@ -1,5 +1,5 @@
 import type { ChartData, ChartSource } from "@/types/chart"
-import type { TravelWithFarthestPoint } from "@/types/travel"
+import type { TravelWithFarthestPoint } from "@/types/travel";
 
 import { daysOfWeek } from "@/constants"
 import { convertToArgentineTime } from "@/utils"
