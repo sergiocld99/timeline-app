@@ -272,7 +272,7 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
             key={t._id}
             className={cn(
               "border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700",
-              t.crosses?.length > 0 && "bg-yellow-50/50 dark:bg-yellow-900/20"
+              t.crosses?.length > 0 && "bg-purple-50/50 dark:bg-purple-900/20"
             )}
           >
             <TableCell className="text-gray-900 dark:text-white">{t.extractedDate}</TableCell>
