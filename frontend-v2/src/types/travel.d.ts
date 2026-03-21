@@ -94,6 +94,7 @@ export type TravelsData = {
 }
 
 export type TravelEditValues = {
+  date: string;
   origin: string;
   destination: string;
   distance: string;

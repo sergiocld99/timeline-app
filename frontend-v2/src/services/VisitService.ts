@@ -39,6 +39,16 @@ class VisitService {
     }
   }
 
+  static async update(id: string, visitData: Partial<Visit>) {
+    try {
+      const response = await axios.put<Visit>(`${baseUrl}/${id}`, visitData);
+      return response.data;
+    } catch (error) {
+      console.error("Error updating visit:", error);
+      throw error;
+    }
+  }
+
   static async delete(id: string) {
     try {
       await axios.delete(`${baseUrl}/${id}`);

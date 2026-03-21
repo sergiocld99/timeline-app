@@ -45,7 +45,18 @@ const useVisits = () => {
       setError(error);
       throw error;
     });
-  }
+  };
+
+  const updateVisit = async (id: string, updates: Partial<Visit>) => {
+    try {
+      const updatedVisit = await VisitService.update(id, updates);
+      fetchVisits(dateFrom, dateTo, currentUser?.userId);
+      return updatedVisit;
+    } catch (error) {
+      setError(error);
+      throw error;
+    }
+  };
 
   useEffect(() => {
     if (!userLoading) {
@@ -53,7 +64,7 @@ const useVisits = () => {
     }
   }, [dateFrom, dateTo, currentUser, userLoading]);
 
-  return { visits, error, loading, refetch: fetchVisits, deleteVisit };
+  return { visits, error, loading, refetch: fetchVisits, deleteVisit, updateVisit };
 };
 
 export default useVisits;
