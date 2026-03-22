@@ -58,7 +58,9 @@ export const withWeight = (sourceArr, sortingField) => {
 
   return sourceArr.map(v => {
     const ratio = v.get(sortingField) / median
-    const hasCrosses = v.get('crosses').length > 0
+
+    // '?' because visits do not have crosses
+    const hasCrosses = v.get('crosses')?.length > 0
 
     v.set('weight', {
       color: hasCrosses ? '🟣' : getColorByRatio(ratio),
