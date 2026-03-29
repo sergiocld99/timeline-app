@@ -77,6 +77,7 @@ docker compose up --build -d
 
 This will start:
 - **MongoDB** on port `27017`
+- **Mongo Express** on port `8082` (Web UI for Database management and recovery)
 - **Backend API** on port `3000`
 - **Statistics Service** on port `8081`
 - **Frontend** on port `3002`
@@ -165,9 +166,23 @@ npm run lint     # Run ESLint
 ## 🐳 Docker Services
 
 - **mongo**: MongoDB database
+- **mongo-express**: Web-based MongoDB admin interface (Useful for recovering accidental user deletions)
 - **backend**: Express API server
 - **stats**: Quarkus Statistics microservice
 - **frontend-v2**: Next.js application
+
+## 🗄️ Database Management (Mongo Express)
+
+A Mongo Express instance is included in the Docker stack to provide a web-based administrative interface for the MongoDB database. 
+
+This is particularly useful for debugging or in emergency scenarios, such as **recovering from an accidental user deletion** or manually repairing records.
+
+**To access it:**
+1. Ensure the container is running: `docker compose up -d mongo-express`
+2. Open your browser and navigate to: **http://localhost:8082**
+3. Log in using the default credentials:
+   - **Username**: `admin`
+   - **Password**: `password`
 
 ## 📝 Notes
 
