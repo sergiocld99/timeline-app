@@ -18,7 +18,7 @@ export const getDateTo = (req) => {
   }
 
   let result = new Date(Date.now())
-  result.setHours(23,59,59,0);
+  result.setHours(23, 59, 59, 0);
 
   return result;
 }
@@ -32,7 +32,7 @@ export const getMedian = (sortedArr) => {
     return (sortedArr[len / 2 - 1] + sortedArr[len / 2]) / 2
   }
 
-  return sortedArr[(len-1) / 2]
+  return sortedArr[(len - 1) / 2]
 }
 
 const getColorByRatio = (ratio) => {
@@ -51,7 +51,7 @@ export const withWeight = (sourceArr, sortingField) => {
   }
 
   sourceArr.forEach(v => values.push(v.get(sortingField)))
-  values = values.sort((a,b) => a-b)
+  values = values.sort((a, b) => a - b)
 
   const median = getMedian(values)
   const sum = values.reduce((total, curr) => total + curr, 0)
@@ -59,8 +59,11 @@ export const withWeight = (sourceArr, sortingField) => {
   return sourceArr.map(v => {
     const ratio = v.get(sortingField) / median
 
+    // '?' because visits do not have crosses
+    const hasCrosses = v.get('crosses')?.length > 0
+
     v.set('weight', {
-      color: getColorByRatio(ratio),
+      color: hasCrosses ? '🟣' : getColorByRatio(ratio),
       percentage: 100 * v.get(sortingField) / sum
     }, { strict: false });
 
