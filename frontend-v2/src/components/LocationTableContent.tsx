@@ -77,11 +77,11 @@ const LocationTableContent = ({ locations, updateFn, deleteFn }: Props) => {
             notes: location.notes
           })
         }} />
-        <Link href={`/travels/from/${location._id}`} >
-          <DeparturesAction size="sm" />
-        </Link>
         <Link href={`/travels/to/${location._id}`} >
           <ArrivalsAction size="sm" />
+        </Link>
+        <Link href={`/travels/from/${location._id}`} >
+          <DeparturesAction size="sm" />
         </Link>
         <DeleteAction handleClick={() => {
           if (window.confirm(`Are you sure you want to delete "${location.name}"?`)) {

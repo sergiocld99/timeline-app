@@ -43,11 +43,11 @@ const LocationCommonViewer = ({ locationId, action }: Props) => {
                 <Link href={'/locations'} >
                   <BackAction />
                 </Link>
-                <Link href={`/travels/from/${locationId}`} >
-                  <DeparturesAction size="lg" />
-                </Link>
                 <Link href={`/travels/to/${locationId}`} >
                   <ArrivalsAction size="lg" />
+                </Link>
+                <Link href={`/travels/from/${locationId}`} >
+                  <DeparturesAction size="lg" />
                 </Link>
               </div>
             </CardContent>
