@@ -1,5 +1,7 @@
 "use client";
 
+import type { AxiosErrorResponse } from "@/types/commons";
+
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -60,7 +62,7 @@ export default function ProfilePage() {
       toast.success(`User ${u.name} created successfully`);
       setUserId("");
       setName("");
-      
+
       // Check if this is the first user and if there's guest data
       const wasFirstUser = users.length === 0;
       if (wasFirstUser) {
@@ -143,6 +145,23 @@ export default function ProfilePage() {
   const handleCancelEdit = () => {
     setEditingUserId(null);
     setEditName("");
+  };
+
+  const handleDelete = async (userIdNum: number) => {
+    if (confirm("Are you sure you want to delete this user?")) {
+      setIsSubmitting(true);
+      try {
+        await UserService.delete(userIdNum);
+        toast.success("User deleted successfully");
+        await refreshUsers();
+      } catch (e: unknown) {
+        const axiosError = e as AxiosErrorResponse
+        const errorMsg = axiosError.response?.data?.message || "Error deleting user";
+        toast.error(errorMsg);
+      } finally {
+        setIsSubmitting(false);
+      }
+    }
   };
 
   if (loading) {
@@ -265,6 +284,14 @@ export default function ProfilePage() {
                           >
                             Edit
                           </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => handleDelete(user.userId)}
+                            disabled={isSubmitting}
+                          >
+                            Delete
+                          </Button>
                         </div>
                       </>
                     )}
@@ -280,7 +307,7 @@ export default function ProfilePage() {
             <DialogHeader>
               <DialogTitle>Migrate Guest Data?</DialogTitle>
               <DialogDescription>
-                We found {guestDataInfo?.travelCount || 0} travels and {guestDataInfo?.visitCount || 0} visits 
+                We found {guestDataInfo?.travelCount || 0} travels and {guestDataInfo?.visitCount || 0} visits
                 that don&apos;t have a user assigned (guest mode data).
                 <br /><br />
                 Would you like to migrate all this data to <strong>{newUser?.name}</strong> (ID: {newUser?.userId})?
