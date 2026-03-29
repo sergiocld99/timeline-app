@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v0.8.0
+- COD8-001: Add Purple Weight for Travels with Crosses (#39) [23]
+
 ## v0.7.0
 - COD7-001: Provide Visit Hour Parts from Backend to enable filtering (#26) [105]
 - COD7-002: Add Search to Locations Page (#27) [64]
