@@ -2,6 +2,7 @@
 
 ## v0.8.0
 - COD8-001: Add Purple Weight for Travels with Crosses (#39) [23]
+- COD8-002: Mongo Express & Delete user with constraints (#40) [40]
 
 ## v0.7.0
 - COD7-001: Provide Visit Hour Parts from Backend to enable filtering (#26) [105]

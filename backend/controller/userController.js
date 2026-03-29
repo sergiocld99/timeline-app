@@ -61,18 +61,26 @@ export const updateUser = (req, res) => {
   });
 }
 
-export const deleteUser = (req, res) => {
+export const deleteUser = async (req, res) => {
   const { userId } = req.params;
   const userIdNum = parseInt(userId, 10);
 
-  User.findOneAndDelete({ userId: userIdNum }).then(deletedUser => {
+  try {
+    const travelCount = await Travel.countDocuments({ userId: userIdNum });
+    const visitCount = await Visit.countDocuments({ userId: userIdNum });
+
+    if (travelCount > 0 || visitCount > 0) {
+      return res.status(400).json({ message: 'Cannot delete user due to associated travels or visits' });
+    }
+
+    const deletedUser = await User.findOneAndDelete({ userId: userIdNum });
     if (!deletedUser) {
       return res.status(404).json({ message: 'User not found' });
     }
     res.status(204).send();
-  }).catch(err => {
+  } catch (err) {
     res.status(400).json({ message: 'Error deleting user', error: err.message });
-  });
+  }
 }
 
 export const checkGuestData = async (req, res) => {

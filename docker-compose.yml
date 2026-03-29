@@ -35,6 +35,18 @@ services:
     volumes:
       - mongo-data:/data/db
 
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - "8082:8081" # Usamos el puerto 8082 del lado del host porque el 8081 ya lo usa stats
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: password
+    depends_on:
+      - mongo
+
 volumes:
   mongo-data:
     driver: local
