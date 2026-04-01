@@ -1,4 +1,4 @@
-import type { Travel, TravelStats } from "@/types/travel";
+import type { Travel, TravelStats } from "@/types/travel";;
 
 import { extractTime, getEmojiForMode, getHoursAndMinutes } from "@/utils";
 import { cn } from "@/lib/utils";

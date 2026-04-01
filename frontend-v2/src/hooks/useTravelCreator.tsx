@@ -1,9 +1,9 @@
 import type { AxiosErrorResponse } from "@/types/commons";
 import type { User } from "@/types/user";
-import type { TravelFormData } from "@/types/travel";
+import type { TravelFormData } from "@/types/travel";;
 
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, type QueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import { useUser } from "@/contexts/UserContext";
@@ -24,7 +24,7 @@ const validateFields = (formData: TravelFormData): boolean => {
   return true;
 }
 
-const performCreationForAllUsers = async (formData: TravelFormData) => {
+const performCreationForAllUsers = async (formData: TravelFormData, queryClient: QueryClient) => {
   const users = await UserService.getAll();
 
   if (users.length === 0) {
@@ -50,15 +50,17 @@ const performCreationForAllUsers = async (formData: TravelFormData) => {
 
   if (errorCount === 0) {
     toast.success(`Travel created successfully for all ${successCount} users!`);
+    void queryClient.invalidateQueries({ queryKey: ['travel_stats'] });
   } else {
     toast.warning(`Travel creation failed for ${errorCount} users.`, { style: { background: 'red' } });
   }
 }
 
-const performCreationForCurrentUser = async (formData: TravelFormData, currentUser: User | null) => {
+const performCreationForCurrentUser = async (formData: TravelFormData, currentUser: User | null, queryClient: QueryClient) => {
   const userId = currentUser?.userId;
   await TravelService.create(formData, userId);
   const persisted = await VisitService.persistIfNeeded(formData.startTime.split('T')[0], userId);
+  void queryClient.invalidateQueries({ queryKey: ['travel_stats'] });
 
   if (persisted) {
     toast.success("Travel with visit added successfully!");
@@ -185,9 +187,9 @@ const useTravelCreator = () => {
 
     try {
       if (createForAllUsers) {
-        await performCreationForAllUsers(formData);
+        await performCreationForAllUsers(formData, queryClient);
       } else {
-        await performCreationForCurrentUser(formData, currentUser);
+        await performCreationForCurrentUser(formData, currentUser, queryClient);
       }
 
       setFormData({

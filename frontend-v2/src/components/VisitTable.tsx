@@ -1,6 +1,6 @@
 "use client";
 
-import type { Visit } from '@/types/travel';
+import type { Visit } from "@/types/visit";;
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -13,11 +13,12 @@ import VisitListContent from './mobile/VisitListContent';
 type Props = {
   visits: Visit[];
   onDelete: (id: string) => Promise<void>;
+  onUpdate: (id: string, updates: Partial<Visit>) => Promise<Visit>;
   onRemoveFilter: () => void;
   appliedFilter: string | null;
 };
 
-const VisitTable = ({ visits, onDelete, appliedFilter, onRemoveFilter }: Props) => {
+const VisitTable = ({ visits, onDelete, onUpdate, appliedFilter, onRemoveFilter }: Props) => {
   return (
     <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -32,7 +33,7 @@ const VisitTable = ({ visits, onDelete, appliedFilter, onRemoveFilter }: Props) 
           </div>
         )}
         <div className='hidden lg:block'>
-          <VisitTableContent visits={visits} onDelete={onDelete} />
+          <VisitTableContent visits={visits} onDelete={onDelete} onUpdate={onUpdate} />
         </div>
         <div className='lg:hidden'>
           <VisitListContent visits={visits} />

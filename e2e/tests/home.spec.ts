@@ -12,8 +12,8 @@ test('has title', async ({ page }) => {
 test('get started link', async ({ page }) => {
   await page.goto('/');
 
-  // Check if main content is visible
-  await expect(page.locator('main')).toBeVisible();
+  // Check dashboard title
+  await expect(page.locator('h1', { hasText: 'DASHBOARD' })).toBeVisible();
 
   // Take a screenshot for visual verification
   await page.screenshot({ path: 'test-results/homepage.png' });

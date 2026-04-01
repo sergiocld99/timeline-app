@@ -2,7 +2,7 @@
 
 import type { ChartConfig } from "@/components/ui/chart"
 import type { StatByModeChartData } from "@/types/stats"
-import type { Travel } from "@/types/travel"
+import type { Travel } from "@/types/travel";
 
 import { BadgeQuestionMarkIcon, BusIcon, CarIcon, CarTaxiFrontIcon, PersonStandingIcon, ShipIcon, TrainIcon } from "lucide-react";
 import { Label, Pie, PieChart } from 'recharts';

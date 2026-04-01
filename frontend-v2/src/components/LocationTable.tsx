@@ -1,6 +1,6 @@
 "use client";
 
-import type { Location } from "@/types/travel";
+import type { Location } from "@/types/location";;
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 

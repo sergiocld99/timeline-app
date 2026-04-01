@@ -1,6 +1,7 @@
-import type { Travel, TravelsData } from "@/types/travel";
+import type { Travel, TravelsData } from "@/types/travel";;
 
 import { useCallback, useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { useDateRange } from "@/contexts/DateRangeContext";
 import { useUser } from "@/contexts/UserContext";
@@ -12,6 +13,7 @@ const useTravels = (sortingField = 'duration', locFrom = '', locTo = '') => {
   const [travels, setTravels] = useState<TravelsData>({ travels: [] });
   const [error, setError] = useState<unknown>(null);
   const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
 
   const refetch = useCallback((crossIds?: string[]) => {
     setLoading(true);
@@ -30,14 +32,9 @@ const useTravels = (sortingField = 'duration', locFrom = '', locTo = '') => {
   const updateTravel = async (id: string, updates: Partial<Travel>) => {
     try {
       const updatedTravel = await TravelService.update(id, updates);
-      setTravels(prev => ({
-        ...prev,
-        travels: prev.travels.map(travel => travel._id === updatedTravel._id ? {
-          ...travel,
-          ...updatedTravel
-        } : travel)
-      }))
-      return updatedTravel
+      refetch();
+      void queryClient.invalidateQueries({ queryKey: ['travel_stats'] });
+      return updatedTravel;
     } catch (error) {
       setError(error);
       throw error;
@@ -47,6 +44,7 @@ const useTravels = (sortingField = 'duration', locFrom = '', locTo = '') => {
   const deleteTravel = async (id: string) => {
     try {
       await TravelService.delete(id);
+      void queryClient.invalidateQueries({ queryKey: ['travel_stats'] });
       setTravels(prev => ({ ...prev, travels: prev.travels.filter(travel => travel._id !== id) }));
     } catch (error) {
       setError(error);

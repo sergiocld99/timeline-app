@@ -1,7 +1,7 @@
 "use client";
 
 import type { AxiosErrorResponse } from '@/types/commons';
-import type { Travel, TravelEditValues, TravelStats } from '@/types/travel';
+import type { Travel, TravelEditValues, TravelStats } from "@/types/travel";;
 
 import { Loader2, Save, X } from 'lucide-react';
 import { useState } from 'react';
@@ -35,18 +35,20 @@ const columnHeaders = ['Date', 'Mode', 'From', 'To', 'Start', 'Distance', 'Durat
 
 const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, onRemoveCrosses }: Props) => {
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editValues, setEditValues] = useState<TravelEditValues>({ distance: '', duration: '', modeOfTransport: '', origin: '', destination: '', line: '' });
+  const [editValues, setEditValues] = useState<TravelEditValues>({ date: '', distance: '', duration: '', modeOfTransport: '', origin: '', destination: '', line: '' });
   const [isSaving, setIsSaving] = useState(false);
   const { locations } = useLocations()
 
   const resetEdition = () => {
     setEditingId(null);
-    setEditValues({ distance: '', duration: '', modeOfTransport: '', origin: '', destination: '', line: '' });
+    setEditValues({ date: '', distance: '', duration: '', modeOfTransport: '', origin: '', destination: '', line: '' });
   }
 
   const handleEdit = (travel: Travel) => {
     setEditingId(travel._id);
+    const datePart = travel.startTime.split('T')[0];
     setEditValues({
+      date: datePart,
       distance: travel.distance.toString(),
       duration: travel.duration.toString(),
       modeOfTransport: travel.modeOfTransport,
@@ -76,9 +78,18 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
         return;
       }
 
+      let newStartTime = travel.startTime;
+      if (travel.startTime.includes('T')) {
+        const timePart = travel.startTime.split('T')[1];
+        newStartTime = `${editValues.date}T${timePart}`;
+      }
+
+      const newEndTime = new Date(new Date(newStartTime).getTime() + duration * 60000).toISOString();
+
       await onUpdate(travel._id, {
+        startTime: newStartTime,
+        endTime: newEndTime,
         distance,
-        endTime: new Date(new Date(travel.startTime).getTime() + duration * 60000).toISOString(),
         modeOfTransport: editValues.modeOfTransport,
         origin: locations.find(l => l.name === editValues.origin),
         destination: locations.find(l => l.name === editValues.destination),
@@ -118,6 +129,30 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const renderEditableDate = (travel: Travel) => {
+    if (editingId === travel._id) {
+      return (
+        <Input
+          type="date"
+          value={editValues.date}
+          required={true}
+          onChange={(e) => handleInputChange('date', e.target.value)}
+          className="w-36 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+        />
+      );
+    }
+    
+    return (
+      <span
+        onClick={() => { handleEdit(travel); }}
+        className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 px-2 py-1 rounded transition-colors"
+        title="Click to edit"
+      >
+        {travel.extractedDate}
+      </span>
+    );
   };
 
   const renderEditableCell = (travel: Travel, field: 'distance' | 'duration', step: number) => {
@@ -217,8 +252,8 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
   const renderCrossesTabActionButtons = (travel: Travel) => {
     return (
       <div className="flex space-x-2">
-        <AddAction handleClick={() => { void onAddCrosses!(travel._id); }} />
-        <MinusAction handleClick={() => { void onRemoveCrosses!(travel._id); }} />
+        <AddAction handleClick={() => { void onAddCrosses?.(travel._id); }} />
+        <MinusAction handleClick={() => { void onRemoveCrosses?.(travel._id); }} />
       </div>
     )
   }
@@ -275,7 +310,7 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
               t.crosses?.length > 0 && "bg-purple-50/50 dark:bg-purple-900/20"
             )}
           >
-            <TableCell className="text-gray-900 dark:text-white">{t.extractedDate}</TableCell>
+            <TableCell className="text-gray-900 dark:text-white">{renderEditableDate(t)}</TableCell>
             <TableCell className="text-gray-900 dark:text-white">{renderEditableModeOfTransport(t)}</TableCell>
             <TableCell className="text-gray-900 dark:text-white">{renderEditableLocation(t, 'origin')}</TableCell>
             <TableCell className="text-gray-900 dark:text-white">{renderEditableLocation(t, 'destination')}</TableCell>

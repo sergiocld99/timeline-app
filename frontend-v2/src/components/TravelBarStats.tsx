@@ -1,4 +1,5 @@
-import type { Location, Travel } from "@/types/travel"
+import type { Travel } from "@/types/travel";
+import type { Location } from "@/types/location";
 import type { FilteringData } from "@/types/stats";
 
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";

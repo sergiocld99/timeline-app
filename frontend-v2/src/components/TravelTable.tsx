@@ -1,6 +1,6 @@
 "use client";
 
-import type { Travel, TravelStats } from '@/types/travel';
+import type { Travel, TravelStats } from "@/types/travel";;
 
 import { toast } from 'sonner';
 

@@ -1,7 +1,7 @@
 "use client";
 
 import type { FilteringData } from "@/types/stats";
-import type { Visit } from "@/types/travel";
+import type { Visit } from "@/types/visit";;
 
 import { useEffect, useState } from "react";
 
@@ -13,7 +13,7 @@ import { extractDate } from "@/utils";
 
 
 const VisitsPageClient = () => {
-  const { visits: visitsData, error, deleteVisit } = useVisits();
+  const { visits: visitsData, error, deleteVisit, updateVisit } = useVisits();
   const { visits } = visitsData;
 
   const [filteredVisits, setFilteredVisits] = useState<Visit[]>(visits);
@@ -63,6 +63,7 @@ const VisitsPageClient = () => {
         <VisitTable
           visits={filteredVisits}
           onDelete={deleteVisit}
+          onUpdate={updateVisit}
           onRemoveFilter={() => onFilter()}
           appliedFilter={appliedFilter}
         />

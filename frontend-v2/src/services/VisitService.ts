@@ -1,4 +1,4 @@
-import type { Visit } from "@/types/travel";
+import type { Visit } from "@/types/visit";;
 
 import axios from "axios";
 
@@ -36,6 +36,16 @@ class VisitService {
     } catch (error) {
       console.error("Error calculating and persisting visit:", error);
       return false;
+    }
+  }
+
+  static async update(id: string, visitData: Partial<Visit>) {
+    try {
+      const response = await axios.put<Visit>(`${baseUrl}/${id}`, visitData);
+      return response.data;
+    } catch (error) {
+      console.error("Error updating visit:", error);
+      throw error;
     }
   }
 

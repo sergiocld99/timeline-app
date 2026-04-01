@@ -1,4 +1,4 @@
-import type { Location } from "@/types/travel";
+import type { Location } from "@/types/location";;
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 

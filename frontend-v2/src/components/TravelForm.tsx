@@ -1,6 +1,6 @@
 "use client";
 
-import type { Location } from "@/types/travel";
+import type { Location } from "@/types/location";;
 
 import { AutocompleteLocation } from "@/components/AutocompleteLocation";
 import { StateCheckbox } from "@/components/StateCheckbox";
