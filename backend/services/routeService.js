@@ -7,7 +7,7 @@ export const calculateHome = (topRoutes) => {
 
     const appearances1 = topRoutes.filter(r => r.route.includes(competitor1))
     const appearances2 = topRoutes.filter(r => r.route.includes(competitor2))
-    return appearances1.length > appearances2.length ? competitor1 : competitor2
+    return appearances1.length >= appearances2.length ? competitor1 : competitor2
   }
 
   return null
