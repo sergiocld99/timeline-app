@@ -1,3 +1,4 @@
+import { calculateHome, ROUTE_SEPARATOR } from "./routeService.js";
 import { getHourParts } from "./timeService.js";
 
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -132,7 +133,7 @@ export const calculateTravelStats = (travels) => {
     // Route Stats
     if (t.origin && t.destination) {
       const sortedLocations = [t.origin.name, t.destination.name].sort()
-      const routeKey = `${sortedLocations[0]} ↔ ${sortedLocations[1]}`;
+      const routeKey = `${sortedLocations[0]}${ROUTE_SEPARATOR}${sortedLocations[1]}`;
       routeStats[routeKey] = (routeStats[routeKey] || 0) + 1;
 
       // extra monthly stats
@@ -182,10 +183,27 @@ export const calculateTravelStats = (travels) => {
   const averageSpeed = totalHours > 0 ? totalKm / totalHours : 0;
 
   // Format Top Routes
-  const topRoutes = Object.entries(routeStats)
+  let topRoutes = Object.entries(routeStats)
     .sort(([, a], [, b]) => b - a)
     .slice(0, 5)
     .map(([route, count]) => ({ route, count }));
+
+  const home = calculateHome(topRoutes)
+
+  // Rearrange route order
+  if (home) {
+    topRoutes = topRoutes.map(r => {
+      if (!r.route.includes(home)) {
+        return r;
+      }
+
+      const [loc1, loc2] = r.route.split(ROUTE_SEPARATOR)
+      const otherLocation = loc1 === home ? loc2 : loc1
+
+      r.route = `${home}${ROUTE_SEPARATOR}${otherLocation}`
+      return r
+    })
+  }
 
   return {
     count,
@@ -205,6 +223,7 @@ export const calculateTravelStats = (travels) => {
     },
     monthlyStats,
     topRoutes,
+    home,
     records: {
       maxDistance: maxDistanceTravel ? {
         value: maxDistanceTravel.distance,
