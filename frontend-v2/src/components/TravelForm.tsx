@@ -124,7 +124,7 @@ const TravelForm = ({ locations }: Props) => {
                 onChange={(e) => handleChange("distance", e.target.value)}
                 required
                 min="0"
-                step="0.1"
+                step="0.01"
                 className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
               />
             </div>
