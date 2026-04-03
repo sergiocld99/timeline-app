@@ -4,7 +4,7 @@ import type { FilteringData } from "@/types/stats";
 
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
 
-import { getChartHours } from "@/utils/chart";
+import { cleanUnusedBorders, getChartHours } from "@/utils/chart";
 import { roundDecimals } from "@/utils/numbers";
 
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
@@ -41,14 +41,23 @@ const buildHourlyChartData = (travels: Travel[]) => {
     others: travels.filter(t => !['car', 'bus', 'taxi', 'walking'].includes(t.modeOfTransport)),
   }
 
-  return getChartHours().map(hour => ({
-    hour,
-    car: getHourData(travelsByMode.car, hour),
-    bus: getHourData(travelsByMode.bus, hour),
-    taxi: getHourData(travelsByMode.taxi, hour),
-    walking: getHourData(travelsByMode.walking, hour),
-    others: getHourData(travelsByMode.others, hour),
-  }));
+  const chartData = getChartHours().map(hour => {
+    const modesData = {
+      car: getHourData(travelsByMode.car, hour),
+      bus: getHourData(travelsByMode.bus, hour),
+      taxi: getHourData(travelsByMode.taxi, hour),
+      walking: getHourData(travelsByMode.walking, hour),
+      others: getHourData(travelsByMode.others, hour),
+    }
+
+    return {
+      hour,
+      ...modesData,
+      empty: Object.values(modesData).every(v => v === null)
+    }
+  });
+
+  return cleanUnusedBorders(chartData);
 }
 
 const TravelLineStats = ({ travels, onFilter }: Props) => {
