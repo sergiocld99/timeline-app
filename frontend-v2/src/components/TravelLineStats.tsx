@@ -2,9 +2,9 @@ import type { Travel } from "@/types/travel";
 import type { ChartConfig } from "./ui/chart";
 import type { FilteringData } from "@/types/stats";
 
-import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 
-import { getChartHours } from "@/utils/chart";
+import { cleanUnusedBorders, getChartHours } from "@/utils/chart";
 import { roundDecimals } from "@/utils/numbers";
 
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
@@ -42,15 +42,24 @@ const buildHourlyChartData = (travels: Travel[]) => {
     others: travels.filter(t => !['car', 'bus', 'taxi', 'mixed', 'walking'].includes(t.modeOfTransport)),
   }
 
-  return getChartHours().map(hour => ({
-    hour,
-    car: getHourData(travelsByMode.car, hour),
-    bus: getHourData(travelsByMode.bus, hour),
-    taxi: getHourData(travelsByMode.taxi, hour),
-    mixed: getHourData(travelsByMode.mixed, hour),
-    walking: getHourData(travelsByMode.walking, hour),
-    others: getHourData(travelsByMode.others, hour),
-  }));
+  const chartData = getChartHours().map(hour => {
+    const modesData = {
+      car: getHourData(travelsByMode.car, hour),
+      bus: getHourData(travelsByMode.bus, hour),
+      taxi: getHourData(travelsByMode.taxi, hour),
+      mixed: getHourData(travelsByMode.mixed, hour),
+      walking: getHourData(travelsByMode.walking, hour),
+      others: getHourData(travelsByMode.others, hour),
+    }
+
+    return {
+      hour,
+      ...modesData,
+      empty: Object.values(modesData).every(v => v === null)
+    }
+  });
+
+  return cleanUnusedBorders(chartData);
 }
 
 const TravelLineStats = ({ travels, onFilter }: Props) => {
@@ -92,14 +101,14 @@ const TravelLineStats = ({ travels, onFilter }: Props) => {
       <CardHeader>
         <CardTitle>Speed in km/h</CardTitle>
       </CardHeader>
-      <CardContent className="h-[255px] flex items-center justify-center">
-        <ChartContainer config={chartConfig} className="min-h-[255px] max-h-[255px] w-9/10">
+      <CardContent className="h-[255px] flex items-center justify-center pt-4">
+        <ChartContainer config={chartConfig} className="min-h-[255px] max-h-[255px] w-full">
           <LineChart
             accessibilityLayer
             data={hourlyChartData}
             margin={{
-              left: 12,
-              right: 12,
+              left: -20,
+              right: 40,
               top: 12,
             }}
           >
@@ -112,6 +121,12 @@ const TravelLineStats = ({ travels, onFilter }: Props) => {
               tickMargin={8}
               tickFormatter={(value) => value.slice(0, 3)}
               onClick={(data) => handleHourClick(data?.value)}
+            />
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              tickFormatter={(value) => (value === 0 ? "" : value)}
             />
             <ChartTooltip
               cursor={false}
