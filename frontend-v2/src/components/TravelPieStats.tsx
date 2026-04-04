@@ -69,7 +69,7 @@ const getRecommendedChartIndex = (modeOfTransport: string) => {
     case 'bus':
       return 3
     case 'mixed':
-      return 1
+      return 6
     case 'car':
       return 5
     default:
