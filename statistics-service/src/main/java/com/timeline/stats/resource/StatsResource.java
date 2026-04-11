@@ -2,7 +2,9 @@ package com.timeline.stats.resource;
 
 import com.timeline.stats.dto.TravelStatsDTO;
 import com.timeline.stats.dto.StatsRequestDTO;
+import com.timeline.stats.dto.MapConfigDTO;
 import com.timeline.stats.service.StatsService;
+import com.timeline.stats.service.MapService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -21,6 +23,9 @@ public class StatsResource {
   @Inject
   StatsService statsService;
 
+  @Inject
+  MapService mapService;
+
   @GET
   @Path("/ping")
   @Operation(summary = "Health check endpoint")
@@ -38,7 +43,7 @@ public class StatsResource {
   @POST
   @Path("/travels/map-config")
   @Operation(summary = "Get map configuration from travels")
-  public com.timeline.stats.dto.MapConfigDTO getMapConfig(StatsRequestDTO request) {
-    return statsService.calculateBasicStatsFromIds(request.travels()).mapConfig;
+  public MapConfigDTO getMapConfig(StatsRequestDTO request) {
+    return mapService.calculateMapConfigFromIds(request.travels());
   }
 }

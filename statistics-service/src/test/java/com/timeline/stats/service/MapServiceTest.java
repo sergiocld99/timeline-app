@@ -1,6 +1,7 @@
 package com.timeline.stats.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -12,8 +13,8 @@ import org.junit.jupiter.api.Test;
 
 import com.timeline.stats.domain.Location;
 import com.timeline.stats.domain.Travel;
+import com.timeline.stats.dto.MapConfigDTO;
 import com.timeline.stats.dto.TravelDTO;
-import com.timeline.stats.dto.TravelStatsDTO;
 import com.timeline.stats.repository.TravelRepository;
 
 import io.quarkus.test.InjectMock;
@@ -21,10 +22,10 @@ import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 
 @QuarkusTest
-public class StatsServiceTest {
+public class MapServiceTest {
 
   @Inject
-  StatsService statsService;
+  MapService mapService;
 
   @InjectMock
   TravelRepository travelRepository;
@@ -34,7 +35,7 @@ public class StatsServiceTest {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void testCalculateBasicStatsFromWeighted() {
+  public void testCalculateMapConfig() {
     ObjectId travelId = new ObjectId();
     ObjectId originId = new ObjectId();
     ObjectId destinationId = new ObjectId();
@@ -64,35 +65,16 @@ public class StatsServiceTest {
 
     when(travelRepository.findByIds(any(List.class))).thenReturn(List.of(travel));
     when(placesService.getLocationsFromDTOs(any(List.class))).thenReturn(List.of(origin, destination));
-    when(placesService.getZipcodesFromLocations(any())).thenCallRealMethod();
 
-    TravelStatsDTO result = statsService.calculateBasicStatsFromIds(List.of(dto));
+    MapConfigDTO result = mapService.calculateMapConfigFromIds(List.of(dto));
 
-    // Assertions básicas (SDD - Validando lógica ponderada por tiempo)
-    assertEquals(1, result.count);
-    assertEquals(10.0, result.totalDistance);
-    assertEquals(60.0, result.totalMinutes);
-    assertEquals(20.0, result.averageLatitude, 0.001); // ( (10*60)+(30*60) ) / (60*2) = 20
-    assertEquals(30.0, result.averageLongitude, 0.001); // ( (20*60)+(40*60) ) / (60*2) = 30
-  }
+    assertNotNull(result, "mapConfig should not be null");
 
-  @Test
-  public void testCalculateBasicStatsByRange() {
-    Travel travel = new Travel();
-    travel.id = new ObjectId();
-    travel.origin = new ObjectId();
-    travel.destination = new ObjectId();
-    travel.distance = 10.0;
-    travel.duration = 60.0;
-    travel.startTime = Instant.now();
-    travel.endTime = travel.startTime.plusSeconds(3600);
+    // Centro = Promedio entre el punto más frecuente (10,20) y el centro de gravedad (20,30)
+    assertEquals(15.0, result.center.get(0), 0.001);
+    assertEquals(25.0, result.center.get(1), 0.001);
 
-    when(travelRepository.findByDateRangeAndUser(any(), any(), any())).thenReturn(List.of(travel));
-    when(placesService.getLocationsFromTravels(any())).thenReturn(List.of());
-    when(placesService.getZipcodesFromLocations(any())).thenReturn(java.util.Set.of());
-
-    TravelStatsDTO result = statsService.calculateBasicStats(Instant.now(), Instant.now(), 1);
-
-    assertEquals(1, result.count);
+    // Zoom para la distancia calculada
+    assertEquals(7, result.zoom);
   }
 }
