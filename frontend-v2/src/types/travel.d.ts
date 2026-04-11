@@ -98,3 +98,12 @@ export type TravelFormData = {
   distance: string;
   price: string;
 }
+
+export type TravelChangeFn = (field: keyof TravelEditValues, value: string) => void
+
+export type TravelEditProps = {
+  travel: Travel,
+  editingId: string | null,
+  editValues: TravelEditValues,
+  handleChange: TravelChangeFn
+}
