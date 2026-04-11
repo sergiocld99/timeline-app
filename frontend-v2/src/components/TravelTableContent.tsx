@@ -1,7 +1,7 @@
 "use client";
 
 import type { AxiosErrorResponse } from '@/types/commons';
-import type { Travel, TravelEditValues, TravelStats } from "@/types/travel";;
+import type { Travel, TravelEditValues, TravelStats } from "@/types/travel";
 
 import { Loader2, Save, X } from 'lucide-react';
 import { useState } from 'react';
@@ -16,6 +16,7 @@ import { renderWeight } from '@/utils/weight';
 import { cn } from '@/lib/utils';
 
 import TravelTableFooter from './TravelTableFooter';
+import MilestoneIcons, { getMilestones } from './TravelMilestones';
 import AddAction from './buttons/AddAction';
 import DeleteAction from './buttons/DeleteAction';
 import EditAction from './buttons/EditAction';
@@ -288,25 +289,6 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
     return <></>
   };
 
-  const getMilestones = (travel: Travel) => {
-    if (!stats?.records) {
-      return [];
-    }
-
-    const milestones = [];
-
-    if (stats.records.maxDistance?.date === travel.startTime) {
-      milestones.push({ icon: '🏆', text: 'Longest travel distance' });
-    }
-    if (stats.records.maxDuration?.date === travel.startTime) {
-      milestones.push({ icon: '⏱️', text: 'Longest travel time' });
-    }
-    if (stats.records.maxSpeed?.date === travel.startTime) {
-      milestones.push({ icon: '🏎️', text: 'Fastest travel' });
-    }
-
-    return milestones;
-  };
 
   const renderColumnHeaders = () => (
     columnHeaders.map((header) => (
@@ -323,7 +305,7 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
       </TableHeader>
       <TableBody>
         {travels.map((t) => {
-          const milestones = getMilestones(t);
+          const milestones = getMilestones(t, stats);
 
           return (
             <TableRow
@@ -337,15 +319,7 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
               <TableCell className="text-gray-900 dark:text-white">
                 <div className="flex items-center gap-2">
                   {renderEditableDate(t)}
-                  {milestones.length > 0 && (
-                    <div className="flex gap-1">
-                      {milestones.map((m, i) => (
-                        <span key={i} title={m.text} className="cursor-help text-base">
-                          {m.icon}
-                        </span>
-                      ))}
-                    </div>
-                  )}
+                  <MilestoneIcons milestones={milestones} />
                 </div>
               </TableCell>
               <TableCell className="text-gray-900 dark:text-white">{renderEditableModeOfTransport(t)}</TableCell>
