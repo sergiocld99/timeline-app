@@ -36,13 +36,13 @@ const ChangeMapView = ({ center, zoom }: { center: Center, zoom: number }) => {
   return null;
 }
 
-const TravelMap = ({ travels, isFiltered, stats: initialStats }: Props) => {
+const TravelMap = ({ travels, isFiltered, stats }: Props) => {
   const { mapConfig } = useMapConfig(travels);
   const [mapCenter, setMapCenter] = useState<[number, number]>([DEFAULT_LAT, DEFAULT_LNG])
   const [zoom, setZoom] = useState(DEFAULT_ZOOM)
 
-  const { count = 0, averageLatitude, averageLongitude } = initialStats || {}
-  const nearbyRadius = initialStats ? (initialStats.averageDistance * 2) : undefined
+  const { count = 0, averageLatitude, averageLongitude } = stats || {}
+  const nearbyRadius = stats ? (stats.averageDistance * 2) : undefined
 
   // Auxiliar variables
   const isStronglyFiltered = isFiltered && count < 5
