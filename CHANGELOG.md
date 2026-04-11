@@ -7,6 +7,7 @@
 - COD8-012: Add Mixed as new mode of transport (#49) [18]
 - COD8-013: Refactor buildChartConfig to dynamically label 'others' category (#51) [11] [IA: 4]
 - COD8-014: Bump up Axios to 1.15.0 (#51) [192]
+- COD8-018: New Java Map Service and Show Milestones (#52) [679]
 
 ## v0.7.0
 - COD7-001: Provide Visit Hour Parts from Backend to enable filtering (#26) [105]
