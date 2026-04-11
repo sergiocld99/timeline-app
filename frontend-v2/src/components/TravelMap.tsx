@@ -3,14 +3,14 @@
 import "leaflet/dist/leaflet.css";
 
 import type { Center } from "@/types/map";
-import type { Travel } from "@/types/travel";;
+import type { Travel, TravelStats } from "@/types/travel";
 
 import L from "leaflet";
 import { useEffect, useMemo, useState } from "react";
 import { MapContainer, TileLayer, useMap } from "react-leaflet";
 
 import useNearbyCenters from "@/hooks/useNearbyCenters";
-import { useTravelStats } from "@/hooks/useTravelStats";
+import { useMapConfig } from "@/hooks/useMapConfig";
 
 import { getUniqueLocations } from "./analize/travel";
 import { defaultMarker } from "./map/icons";
@@ -19,6 +19,7 @@ import { renderLocationMarkers } from "./render/map";
 type Props = {
   travels: Travel[];
   isFiltered?: boolean;
+  stats?: TravelStats;
 };
 
 const DEFAULT_ZOOM = 9
@@ -35,17 +36,16 @@ const ChangeMapView = ({ center, zoom }: { center: Center, zoom: number }) => {
   return null;
 }
 
-const TravelMap = ({ travels, isFiltered }: Props) => {
-  const { stats } = useTravelStats(travels);
+const TravelMap = ({ travels, isFiltered, stats: initialStats }: Props) => {
+  const { mapConfig } = useMapConfig(travels);
   const [mapCenter, setMapCenter] = useState<[number, number]>([DEFAULT_LAT, DEFAULT_LNG])
   const [zoom, setZoom] = useState(DEFAULT_ZOOM)
 
-  const { count = 0, averageLatitude, averageLongitude, mapConfig } = stats || {}
-  const nearbyRadius = stats ? (stats.averageDistance * 2) : undefined
+  const { count = 0, averageLatitude, averageLongitude } = initialStats || {}
+  const nearbyRadius = initialStats ? (initialStats.averageDistance * 2) : undefined
 
   // Auxiliar variables
   const isStronglyFiltered = isFiltered && count < 5
-  const areStatsReady = count === travels.length
 
   const { nearbyCenters } = useNearbyCenters({ latitude: averageLatitude, longitude: averageLongitude, radiusKm: nearbyRadius })
 
@@ -54,13 +54,13 @@ const TravelMap = ({ travels, isFiltered }: Props) => {
 
   // Calcular el centro y zoom para mostrar todos los markers (CSAPP-22)
   const viewpoint = useMemo(() => {
-    if (!areStatsReady || !mapConfig) return null;
+    if (!mapConfig) return null;
 
     return {
       center: mapConfig.center,
       zoom: isStronglyFiltered ? mapConfig.zoom - 1 : mapConfig.zoom
     };
-  }, [mapConfig, areStatsReady, isStronglyFiltered]);
+  }, [mapConfig, isStronglyFiltered]);
 
   useEffect(() => {
     if (viewpoint) {

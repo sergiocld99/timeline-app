@@ -79,6 +79,18 @@ class TravelService {
     }
   }
 
+  static async getMapConfig(travels: TravelDTO[]): Promise<{ center: [number, number], zoom: number } | null> {
+    const endpointV2 = `${v2BaseUrl}/stats/travels/map-config`
+
+    try {
+      const response = await axios.post<{ center: [number, number], zoom: number }>(endpointV2, { travels });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching map config:", error);
+      throw error;
+    }
+  }
+
   static async update(id: string, travelData: Partial<Travel>) {
     try {
       const response = await axios.put<Travel>(`${baseUrl}/${id}`, travelData);

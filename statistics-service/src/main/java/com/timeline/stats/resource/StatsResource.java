@@ -34,4 +34,11 @@ public class StatsResource {
   public TravelStatsDTO getTravelStatsFromWeighted(StatsRequestDTO request) {
     return statsService.calculateBasicStatsFromIds(request.travels());
   }
+
+  @POST
+  @Path("/travels/map-config")
+  @Operation(summary = "Get map configuration from travels")
+  public com.timeline.stats.dto.MapConfigDTO getMapConfig(StatsRequestDTO request) {
+    return statsService.calculateBasicStatsFromIds(request.travels()).mapConfig;
+  }
 }
