@@ -53,7 +53,7 @@ const TravelBarStats = ({ travels, onFilter, options, cardClassName = "w-8/10" }
   const { topKeys, otherKeys, shouldShowOthers } = calculateBestLocations(relevantTravels, 5)
   const hourlyChartData = buildHourlyChartData(relevantTravels, topKeys)
   const dailyChartData = buildDailyChartData(relevantTravels, topKeys)
-  const chartConfig = buildChartConfig(topKeys)
+  const chartConfig = buildChartConfig(topKeys, otherKeys)
 
   const handleZipcodeClick = (zipcode: string[]) => {
     onFilter({ type: 'zipcode', value: zipcode })
