@@ -37,8 +37,9 @@ const buildHourlyChartData = (travels: Travel[]) => {
     car: travels.filter(t => t.modeOfTransport === 'car'),
     bus: travels.filter(t => t.modeOfTransport === 'bus'),
     taxi: travels.filter(t => t.modeOfTransport === 'taxi'),
+    mixed: travels.filter(t => t.modeOfTransport === 'mixed'),
     walking: travels.filter(t => t.modeOfTransport === 'walking'),
-    others: travels.filter(t => !['car', 'bus', 'taxi', 'walking'].includes(t.modeOfTransport)),
+    others: travels.filter(t => !['car', 'bus', 'taxi', 'mixed', 'walking'].includes(t.modeOfTransport)),
   }
 
   const chartData = getChartHours().map(hour => {
@@ -46,6 +47,7 @@ const buildHourlyChartData = (travels: Travel[]) => {
       car: getHourData(travelsByMode.car, hour),
       bus: getHourData(travelsByMode.bus, hour),
       taxi: getHourData(travelsByMode.taxi, hour),
+      mixed: getHourData(travelsByMode.mixed, hour),
       walking: getHourData(travelsByMode.walking, hour),
       others: getHourData(travelsByMode.others, hour),
     }
@@ -73,6 +75,10 @@ const TravelLineStats = ({ travels, onFilter }: Props) => {
     bus: {
       label: "bus",
       color: "var(--chart-3)",
+    },
+    mixed: {
+      label: "mixed",
+      color: "var(--chart-6)",
     },
     walking: {
       label: "walking",
@@ -126,7 +132,7 @@ const TravelLineStats = ({ travels, onFilter }: Props) => {
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
-            {['car', 'bus', 'taxi', 'walking', 'others'].map(key => (
+            {['car', 'bus', 'taxi', 'mixed', 'walking', 'others'].map(key => (
               <Line
                 key={key}
                 dataKey={key}

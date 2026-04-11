@@ -90,6 +90,8 @@ export const getEmojiForMode = (mode: string) => {
       return '⛴️';
     case 'walking':
       return '🚶';
+    case 'mixed':
+      return '🛸';
     default:
       return '🤔'
   }

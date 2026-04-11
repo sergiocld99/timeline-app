@@ -4,7 +4,7 @@ import type { ChartConfig } from "@/components/ui/chart"
 import type { StatByModeChartData } from "@/types/stats"
 import type { Travel } from "@/types/travel";
 
-import { BadgeQuestionMarkIcon, BusIcon, CarIcon, CarTaxiFrontIcon, PersonStandingIcon, ShipIcon, TrainIcon } from "lucide-react";
+import { BadgeQuestionMarkIcon, BusIcon, CarIcon, CarTaxiFrontIcon, PersonStandingIcon, RocketIcon, ShipIcon, TrainIcon } from "lucide-react";
 import { Label, Pie, PieChart } from 'recharts';
 
 import { Card, CardContent } from '@/components/ui/card';
@@ -48,6 +48,10 @@ const config = {
     label: "Walking",
     icon: PersonStandingIcon
   },
+  mixed: {
+    label: "Mixed",
+    icon: RocketIcon
+  },
   other: {
     label: "Other",
     icon: BadgeQuestionMarkIcon
@@ -64,6 +68,8 @@ const getRecommendedChartIndex = (modeOfTransport: string) => {
       return 2
     case 'bus':
       return 3
+    case 'mixed':
+      return 6
     case 'car':
       return 5
     default:

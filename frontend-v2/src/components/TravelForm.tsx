@@ -93,6 +93,7 @@ const TravelForm = ({ locations }: Props) => {
                   <SelectItem value="train">🚉 Train</SelectItem>
                   <SelectItem value="subway">🚇 Subway</SelectItem>
                   <SelectItem value="ferry">⛴️ Ferry</SelectItem>
+                  <SelectItem value="mixed" title="Travel with 2 modes of transport: one with greater distance and one with greater duration">🛸 Mixed</SelectItem>
                   <SelectItem value="walking">🚶🏽 Walking</SelectItem>
                   <SelectItem value="other">Other</SelectItem>
                 </SelectContent>

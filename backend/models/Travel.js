@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const acceptedModesOfTransport = ['car', 'taxi', 'bus', 'train', 'subway', 'ferry', 'walking', 'other'];
+const acceptedModesOfTransport = ['car', 'taxi', 'bus', 'train', 'subway', 'ferry', 'walking', 'mixed', 'other'];
 
 const TravelSchema = new mongoose.Schema({
     userId: { type: Number, required: false },

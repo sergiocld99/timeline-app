@@ -143,7 +143,7 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
         />
       );
     }
-    
+
     return (
       <span
         onClick={() => { handleEdit(travel); }}
@@ -201,7 +201,7 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
 
   const renderEditableModeOfTransport = (travel: Travel) => {
     if (editingId === travel._id) {
-      const eligibleModes = ['car', 'taxi', 'bus', 'train', 'subway', 'ferry', 'walking']
+      const eligibleModes = ['car', 'taxi', 'bus', 'train', 'subway', 'ferry', 'mixed', 'walking']
       const eligibleValues = eligibleModes.map(mode => ({ value: mode, label: getEmojiForMode(mode) }))
 
       return (
