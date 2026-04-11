@@ -288,6 +288,26 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
     return <></>
   };
 
+  const getMilestones = (travel: Travel) => {
+    if (!stats?.records) {
+      return [];
+    }
+
+    const milestones = [];
+
+    if (stats.records.maxDistance?.date === travel.startTime) {
+      milestones.push({ icon: '🏆', text: 'Longest travel distance' });
+    }
+    if (stats.records.maxDuration?.date === travel.startTime) {
+      milestones.push({ icon: '⏱️', text: 'Longest travel time' });
+    }
+    if (stats.records.maxSpeed?.date === travel.startTime) {
+      milestones.push({ icon: '🏎️', text: 'Fastest travel' });
+    }
+
+    return milestones;
+  };
+
   const renderColumnHeaders = () => (
     columnHeaders.map((header) => (
       <TableHead key={header} className="text-gray-700 dark:text-gray-300">{header}</TableHead>
@@ -302,26 +322,44 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
         </TableRow>
       </TableHeader>
       <TableBody>
-        {travels.map((t) => (
-          <TableRow
-            key={t._id}
-            className={cn(
-              "border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700",
-              t.crosses?.length > 0 && "bg-purple-50/50 dark:bg-purple-900/20"
-            )}
-          >
-            <TableCell className="text-gray-900 dark:text-white">{renderEditableDate(t)}</TableCell>
-            <TableCell className="text-gray-900 dark:text-white">{renderEditableModeOfTransport(t)}</TableCell>
-            <TableCell className="text-gray-900 dark:text-white">{renderEditableLocation(t, 'origin')}</TableCell>
-            <TableCell className="text-gray-900 dark:text-white">{renderEditableLocation(t, 'destination')}</TableCell>
-            <TableCell className="text-gray-900 dark:text-white">{extractTime(t.startTime)}</TableCell>
-            <TableCell className="text-gray-900 dark:text-white">{renderEditableCell(t, 'distance', 0.1)}</TableCell>
-            <TableCell className="text-gray-900 dark:text-white">{renderEditableCell(t, 'duration', 1)}</TableCell>
-            <TableCell className="text-gray-900 dark:text-white">{t.speed.toFixed(1)} km/h</TableCell>
-            <TableCell className="text-gray-900 dark:text-white">{renderWeight(t)}</TableCell>
-            <TableCell>{renderActionButtons(t)}</TableCell>
-          </TableRow>
-        ))}
+        {travels.map((t) => {
+          const milestones = getMilestones(t);
+
+          return (
+            <TableRow
+              key={t._id}
+              className={cn(
+                "border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors",
+                t.crosses?.length > 0 && "bg-purple-50/50 dark:bg-purple-900/20",
+                milestones.length > 0 && "bg-yellow-50/50 dark:bg-yellow-900/30"
+              )}
+            >
+              <TableCell className="text-gray-900 dark:text-white">
+                <div className="flex items-center gap-2">
+                  {renderEditableDate(t)}
+                  {milestones.length > 0 && (
+                    <div className="flex gap-1">
+                      {milestones.map((m, i) => (
+                        <span key={i} title={m.text} className="cursor-help text-base">
+                          {m.icon}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </TableCell>
+              <TableCell className="text-gray-900 dark:text-white">{renderEditableModeOfTransport(t)}</TableCell>
+              <TableCell className="text-gray-900 dark:text-white">{renderEditableLocation(t, 'origin')}</TableCell>
+              <TableCell className="text-gray-900 dark:text-white">{renderEditableLocation(t, 'destination')}</TableCell>
+              <TableCell className="text-gray-900 dark:text-white">{extractTime(t.startTime)}</TableCell>
+              <TableCell className="text-gray-900 dark:text-white">{renderEditableCell(t, 'distance', 0.1)}</TableCell>
+              <TableCell className="text-gray-900 dark:text-white">{renderEditableCell(t, 'duration', 1)}</TableCell>
+              <TableCell className="text-gray-900 dark:text-white">{t.speed.toFixed(1)} km/h</TableCell>
+              <TableCell className="text-gray-900 dark:text-white">{renderWeight(t)}</TableCell>
+              <TableCell>{renderActionButtons(t)}</TableCell>
+            </TableRow>
+          );
+        })}
       </TableBody>
       <TravelTableFooter travels={travels} stats={stats} />
     </Table>

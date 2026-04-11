@@ -58,6 +58,7 @@ export type TravelStats = {
   }
   monthlyStats?: Record<string, { km: number, minutes: number, count: number, zipcodes: string[] }>
   topRoutes?: { route: string, count: number }[]
+  home?: string
   records?: {
     maxDistance: { value: number, date: string, origin: string, destination: string } | null
     maxDuration: { value: number, date: string, origin: string, destination: string } | null
