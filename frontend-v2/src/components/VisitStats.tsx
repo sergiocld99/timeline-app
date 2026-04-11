@@ -63,10 +63,10 @@ const buildDailyChartData = (visits: Visit[], topLocations: string[]): ChartData
 }
 
 const VisitStats = ({ visits, onFilter }: Props) => {
-  const { topKeys: topLocations, shouldShowOthers } = calculateBestLocations(visits, 5)
+  const { topKeys: topLocations, otherKeys, shouldShowOthers } = calculateBestLocations(visits, 5)
   const hourlyChartData = buildHourlyChartData(visits, topLocations)
   const dailyChartData = buildDailyChartData(visits, topLocations)
-  const chartConfig = buildChartConfig(topLocations)
+  const chartConfig = buildChartConfig(topLocations, otherKeys)
 
   return (
     <Card className="w-8/10 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
