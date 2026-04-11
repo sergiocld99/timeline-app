@@ -5,6 +5,8 @@
 - COD8-010: Add Travel and Visit Date Edition & Refactor travel.d.ts (#38) [1054]
 - COD8-011: Backend - Calculate home and reorder route keys (#42) [26]
 - COD8-012: Add Mixed as new mode of transport (#49) [18]
+- COD8-013: Refactor buildChartConfig to dynamically label 'others' category (#51) [11] [IA: 4]
+- COD8-014: Bump up Axios to 1.15.0 (#51) [192]
 
 ## v0.7.0
 - COD7-001: Provide Visit Hour Parts from Backend to enable filtering (#26) [105]
