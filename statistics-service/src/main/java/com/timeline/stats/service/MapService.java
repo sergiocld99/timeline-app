@@ -48,62 +48,69 @@ public class MapService {
   }
 
   public MapConfigDTO calculateMapConfigFromContext(StatsContextDTO context) {
+    Location mostFrequentLocation = findMostFrequentLocation(context.locatedTravels);
+
+    if (mostFrequentLocation == null) {
+      return null;
+    }
+
+    Location mostDistantLocation = findMostDistantLocation(mostFrequentLocation, context.locations);
+
+    return calculateMapConfig(mostFrequentLocation, mostDistantLocation);
+  }
+
+  private Location findMostFrequentLocation(List<LocatedTravelDTO> locatedTravels) {
     Map<String, Integer> frequencyMap = new HashMap<>();
-    Location mostFrequentLocation = null;
+    Location mostFrequent = null;
     int maxFrequency = 0;
 
-    double totalLatitude = 0;
-    double totalLongitude = 0;
-    double totalMinutes = 0;
-
-    for (LocatedTravelDTO locatedTravel : context.locatedTravels) {
-      Travel travel = locatedTravel.travel();
+    for (LocatedTravelDTO locatedTravel : locatedTravels) {
       Location originRef = locatedTravel.origin();
       Location destRef = locatedTravel.destination();
 
-      travel.enrich();
-      double duration = travel.duration != null ? travel.duration : 0;
-      totalMinutes += duration;
-
       if (originRef != null) {
-        totalLatitude += originRef.latitude * duration;
-        totalLongitude += originRef.longitude * duration;
-
         int freq = frequencyMap.getOrDefault(originRef.id.toString(), 0) + 1;
         frequencyMap.put(originRef.id.toString(), freq);
         if (freq > maxFrequency) {
           maxFrequency = freq;
-          mostFrequentLocation = originRef;
+          mostFrequent = originRef;
         }
       }
 
       if (destRef != null) {
-        totalLatitude += destRef.latitude * duration;
-        totalLongitude += destRef.longitude * duration;
-
         int freq = frequencyMap.getOrDefault(destRef.id.toString(), 0) + 1;
         frequencyMap.put(destRef.id.toString(), freq);
         if (freq > maxFrequency) {
           maxFrequency = freq;
-          mostFrequentLocation = destRef;
+          mostFrequent = destRef;
         }
       }
     }
-
-    if (mostFrequentLocation != null && totalMinutes > 0) {
-      double averageLatitude = totalLatitude / (totalMinutes * 2);
-      double averageLongitude = totalLongitude / (totalMinutes * 2);
-      return calculateMapConfig(mostFrequentLocation, averageLatitude, averageLongitude);
-    }
-
-    return null;
+    return mostFrequent;
   }
 
-  private MapConfigDTO calculateMapConfig(Location mostFrequent, double avgLat, double avgLng) {
-    double centerLat = (mostFrequent.latitude + avgLat) / 2.0;
-    double centerLng = (mostFrequent.longitude + avgLng) / 2.0;
+  private Location findMostDistantLocation(Location reference, List<Location> locations) {
+    Location mostDistant = reference;
+    double maxDistance = 0;
 
-    double distanceKm = GeoUtils.calculateDistanceKm(mostFrequent.latitude, avgLat, mostFrequent.longitude, avgLng);
+    for (Location loc : locations) {
+      double dist = GeoUtils.calculateDistanceKm(
+          reference.latitude, loc.latitude,
+          reference.longitude, loc.longitude);
+      
+      if (dist > maxDistance) {
+        maxDistance = dist;
+        mostDistant = loc;
+      }
+    }
+    return mostDistant;
+  }
+
+  private MapConfigDTO calculateMapConfig(Location pointA, Location pointB) {
+    double centerLat = (pointA.latitude + pointB.latitude) / 2.0;
+    double centerLng = (pointA.longitude + pointB.longitude) / 2.0;
+
+    double distanceKm = GeoUtils.calculateDistanceKm(pointA.latitude, pointB.latitude, pointA.longitude, pointB.longitude);
     int zoom = GeoUtils.getZoomByDistance(distanceKm);
 
     return new MapConfigDTO(Arrays.asList(centerLat, centerLng), zoom);

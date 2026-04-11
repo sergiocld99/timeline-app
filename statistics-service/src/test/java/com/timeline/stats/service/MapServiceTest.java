@@ -70,11 +70,11 @@ public class MapServiceTest {
 
     assertNotNull(result, "mapConfig should not be null");
 
-    // Centro = Promedio entre el punto más frecuente (10,20) y el centro de gravedad (20,30)
-    assertEquals(15.0, result.center.get(0), 0.001);
-    assertEquals(25.0, result.center.get(1), 0.001);
+    // Centro = Midpoint entre el más frecuente (10,20) y el más lejano (30,40)
+    assertEquals(20.0, result.center.get(0), 0.001);
+    assertEquals(30.0, result.center.get(1), 0.001);
 
-    // Zoom para la distancia calculada
+    // Zoom para la distancia calculada (> 140km)
     assertEquals(7, result.zoom);
   }
 }
