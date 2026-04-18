@@ -58,6 +58,7 @@ export type TravelStats = {
   }
   monthlyStats?: Record<string, { km: number, minutes: number, count: number, zipcodes: string[] }>
   topRoutes?: { route: string, count: number }[]
+  home?: string
   records?: {
     maxDistance: { value: number, date: string, origin: string, destination: string } | null
     maxDuration: { value: number, date: string, origin: string, destination: string } | null
@@ -96,4 +97,13 @@ export type TravelFormData = {
   line: string;
   distance: string;
   price: string;
+}
+
+export type TravelChangeFn = (field: keyof TravelEditValues, value: string) => void
+
+export type TravelEditProps = {
+  travel: Travel,
+  editingId: string | null,
+  editValues: TravelEditValues,
+  handleChange: TravelChangeFn
 }

@@ -95,6 +95,8 @@ export const calculateTravelStats = (travels) => {
   }
 
   const placesVisited = new Set()
+  const uniqueDaysSet = new Set()
+  const uniqueRoutesSet = new Set()
   const monthlyStats = {};
   const routeStats = {};
 
@@ -120,8 +122,11 @@ export const calculateTravelStats = (travels) => {
     totalMinutes += duration;
     totalPrice += price;
 
-    // Monthly Stats
+    // Unique Days
     const date = new Date(t.startTime);
+    uniqueDaysSet.add(date.toISOString().split('T')[0]);
+
+    // Monthly Stats
     const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
     if (!monthlyStats[monthKey]) {
       monthlyStats[monthKey] = { km: 0, minutes: 0, count: 0, zipcodes: [] };
@@ -143,6 +148,12 @@ export const calculateTravelStats = (travels) => {
 
       if (!monthlyStats[monthKey].zipcodes.find(cp => cp === t.destination.zipcode)) {
         monthlyStats[monthKey].zipcodes.push(t.destination.zipcode)
+      }
+
+      // Unique Routes Set (using zipcodes consistent with statistics-service)
+      if (t.origin.zipcode && t.destination.zipcode) {
+        const routeZipcodes = [t.origin.zipcode, t.destination.zipcode].sort();
+        uniqueRoutesSet.add(routeZipcodes.join('-'));
       }
     }
 
@@ -217,6 +228,8 @@ export const calculateTravelStats = (travels) => {
     averageDistance: Math.round(averageDistance * 100) / 100,
     averageDuration: Math.round(averageDuration * 100) / 100,
     averagePrice: Math.round(averagePrice * 100) / 100,
+    uniqueDays: uniqueDaysSet.size,
+    uniqueRoutes: uniqueRoutesSet.size,
     placesVisited: {
       count: placesVisited.size,
       zipcodes: Array.from(placesVisited.values())

@@ -16,7 +16,6 @@ public class TravelStatsDTO {
   public PlacesVisitedDTO placesVisited;
   public long uniqueDays;
   public long uniqueRoutes;
-  public MapConfigDTO mapConfig;
 
   public TravelStatsDTO() {
   }

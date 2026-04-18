@@ -14,16 +14,11 @@ import jakarta.inject.Inject;
 
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-
-import com.timeline.stats.dto.MapConfigDTO;
-import com.timeline.stats.utils.GeoUtils;
 
 /**
  * Service for calculating travel statistics
@@ -60,10 +55,6 @@ public class StatsService {
     int travelCount = context.locatedTravels.size();
     StatsTotalsDTO totals = new StatsTotalsDTO();
 
-    Map<String, Integer> frequencyMap = new HashMap<>();
-    Location mostFrequentLocation = null;
-    int maxFrequency = 0;
-
     for (LocatedTravelDTO locatedTravel : context.locatedTravels) {
       Travel travel = locatedTravel.travel();
       Location originRef = locatedTravel.origin();
@@ -76,24 +67,10 @@ public class StatsService {
 
       if (originRef != null) {
         totals.addCoordinateAccumulation(originRef.latitude, originRef.longitude, travel.duration);
-
-        int freq = frequencyMap.getOrDefault(originRef.id.toString(), 0) + 1;
-        frequencyMap.put(originRef.id.toString(), freq);
-        if (freq > maxFrequency) {
-          maxFrequency = freq;
-          mostFrequentLocation = originRef;
-        }
       }
 
       if (destRef != null) {
         totals.addCoordinateAccumulation(destRef.latitude, destRef.longitude, travel.duration);
-
-        int freq = frequencyMap.getOrDefault(destRef.id.toString(), 0) + 1;
-        frequencyMap.put(destRef.id.toString(), freq);
-        if (freq > maxFrequency) {
-          maxFrequency = freq;
-          mostFrequentLocation = destRef;
-        }
       }
 
       // UNIQUE ROUTE
@@ -104,27 +81,15 @@ public class StatsService {
       }
     }
 
-    TravelStatsDTO stats = new TravelStatsDTO(travelCount, totals, placesVisited, uniqueDays.size(),
-        uniqueRoutes.size());
-
-    if (mostFrequentLocation != null && stats.averageLatitude != 0) {
-      stats.mapConfig = calculateMapConfig(mostFrequentLocation, stats.averageLatitude, stats.averageLongitude);
-    }
-
-    return stats;
-  }
-
-  private MapConfigDTO calculateMapConfig(Location mostFrequent, double avgLat, double avgLng) {
-    double centerLat = (mostFrequent.latitude + avgLat) / 2.0;
-    double centerLng = (mostFrequent.longitude + avgLng) / 2.0;
-
-    double distanceKm = GeoUtils.calculateDistanceKm(mostFrequent.latitude, avgLat, mostFrequent.longitude, avgLng);
-    int zoom = GeoUtils.getZoomByDistance(distanceKm);
-
-    return new MapConfigDTO(Arrays.asList(centerLat, centerLng), zoom);
+    return new TravelStatsDTO(travelCount, totals, placesVisited, uniqueDays.size(), uniqueRoutes.size());
   }
 
   public TravelStatsDTO calculateBasicStatsFromIds(List<TravelDTO> dtos) {
+    StatsContextDTO context = getContextFromIds(dtos);
+    return calculateBasicStatsFromContext(context);
+  }
+
+  public StatsContextDTO getContextFromIds(List<TravelDTO> dtos) {
     CompletableFuture<List<Travel>> travelsFuture = CompletableFuture
         .supplyAsync(() -> travelRepository.findByIds(dtos.stream().map(t -> t.id()).toList()));
 
@@ -135,7 +100,6 @@ public class StatsService {
     List<Travel> travels = travelsFuture.join();
     List<Location> locations = locationsFuture.join();
 
-    StatsContextDTO context = new StatsContextDTO(travels, locations);
-    return calculateBasicStatsFromContext(context);
+    return new StatsContextDTO(travels, locations);
   }
 }

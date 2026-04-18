@@ -17,3 +17,8 @@ export type GravityCenter = {
   lat?: number;
   lng?: number;
 }
+
+export interface MapConfig {
+  center: Center;
+  zoom: number;
+}
