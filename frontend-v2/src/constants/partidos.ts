@@ -136,3 +136,5 @@ export const BUENOS_AIRES_PARTIDOS = [
   "Villarino",
   "Zárate"
 ];
+
+export const PARTIDO_FILTER_PREFIX = "PARTIDO:";

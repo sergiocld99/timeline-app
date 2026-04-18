@@ -8,6 +8,7 @@ import LocationTable from "@/components/LocationTable";
 import useLocations from "@/hooks/useLocations";
 import { Input } from "@/components/ui/input";
 import { getSortedPartidos } from "@/utils/partidos";
+import { PARTIDO_FILTER_PREFIX } from "@/constants/partidos";
 
 const LocationsPageClient = () => {
   const { locations, error, update, remove, loading } = useLocations();
@@ -16,7 +17,7 @@ const LocationsPageClient = () => {
   const { top: topPartidosNames } = useMemo(() => getSortedPartidos(locations), [locations]);
 
   const topPartidos = useMemo(() => 
-    topPartidosNames.map(name => ({ label: `B - ${name}`, value: `PARTIDO:${name}` }))
+    topPartidosNames.map(name => ({ label: `B - ${name}`, value: `${PARTIDO_FILTER_PREFIX}${name}` }))
   , [topPartidosNames]);
 
   const filterOptions = useMemo(() => [
@@ -30,8 +31,8 @@ const LocationsPageClient = () => {
 
     // Filter by prefix or partido
     if (filterValue) {
-      if (filterValue.startsWith('PARTIDO:')) {
-        const partidoName = filterValue.replace('PARTIDO:', '');
+      if (filterValue.startsWith(PARTIDO_FILTER_PREFIX)) {
+        const partidoName = filterValue.replace(PARTIDO_FILTER_PREFIX, '');
         result = result.filter((loc) => loc.partido === partidoName);
       } else {
         result = result.filter((loc) =>
