@@ -30,7 +30,6 @@ export const PartidoCell = ({
         onValueChange={onChange}
         options={sortedPartidos}
         className="w-36"
-        placeholder="Select..."
       />
     );
   }
