@@ -5,6 +5,7 @@ export type Location = {
   longitude: number
   zipcode: string
   notes: string
+  partido?: string
 }
 
 export type LocationEditValues = {
@@ -13,4 +14,5 @@ export type LocationEditValues = {
   latitude: number,
   longitude: number,
   notes: string,
+  partido?: string,
 }
