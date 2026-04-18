@@ -7,26 +7,37 @@ import QuickFilters from "@/components/QuickFilters";
 import LocationTable from "@/components/LocationTable";
 import useLocations from "@/hooks/useLocations";
 import { Input } from "@/components/ui/input";
+import { getSortedPartidos } from "@/utils/partidos";
 
 const LocationsPageClient = () => {
   const { locations, error, update, remove, loading } = useLocations();
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedPrefix, setSelectedPrefix] = useState<string | null>(null);
+  const [filterValue, setFilterValue] = useState<string | null>(null);
+  const { top: topPartidosNames } = useMemo(() => getSortedPartidos(locations), [locations]);
 
-  const prefixes = [
-    { label: "B - Buenos Aires Provincia", value: "B" },
+  const topPartidos = useMemo(() => 
+    topPartidosNames.map(name => ({ label: `B - ${name}`, value: `PARTIDO:${name}` }))
+  , [topPartidosNames]);
+
+  const filterOptions = useMemo(() => [
+    ...topPartidos,
     { label: "C - Capital Federal", value: "C" },
     { label: "U - Uruguay", value: "U" },
-  ];
+  ], [topPartidos]);
 
   const filteredLocations = useMemo(() => {
     let result = locations;
 
-    // Filter by prefix
-    if (selectedPrefix) {
-      result = result.filter((loc) =>
-        loc.zipcode && loc.zipcode.toUpperCase().startsWith(selectedPrefix)
-      );
+    // Filter by prefix or partido
+    if (filterValue) {
+      if (filterValue.startsWith('PARTIDO:')) {
+        const partidoName = filterValue.replace('PARTIDO:', '');
+        result = result.filter((loc) => loc.partido === partidoName);
+      } else {
+        result = result.filter((loc) =>
+          loc.zipcode && loc.zipcode.toUpperCase().startsWith(filterValue)
+        );
+      }
     }
 
     // Filter by search term
@@ -36,9 +47,10 @@ const LocationsPageClient = () => {
     return result.filter((loc) =>
       loc.name.toLowerCase().includes(term) ||
       (loc.zipcode && loc.zipcode.toLowerCase().includes(term)) ||
-      (loc.notes && loc.notes.toLowerCase().includes(term))
+      (loc.notes && loc.notes.toLowerCase().includes(term)) ||
+      (loc.partido && loc.partido.toLowerCase().includes(term))
     );
-  }, [locations, searchTerm, selectedPrefix]);
+  }, [locations, searchTerm, filterValue]);
 
   if (error) {
     return (
@@ -65,9 +77,9 @@ const LocationsPageClient = () => {
           </div>
 
           <QuickFilters
-            options={prefixes}
-            selectedValue={selectedPrefix}
-            onSelect={setSelectedPrefix}
+            options={filterOptions}
+            selectedValue={filterValue}
+            onSelect={setFilterValue}
           />
         </div>
 

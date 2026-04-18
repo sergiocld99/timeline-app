@@ -1,17 +1,19 @@
 "use client";
 
-import type { Location, LocationEditValues } from "@/types/location";;
+import type { Location, LocationEditValues } from "@/types/location";
 
 import { Save, X } from 'lucide-react';
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { toast } from "sonner";
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { getSortedPartidos } from "@/utils/partidos";
 import { cn } from "@/lib/utils";
 import { roundDecimals } from "@/utils/numbers";
-import { Button } from '@/components/ui/button';
 
 import ArrivalsAction from "./buttons/ArrivalsAction";
 import DeleteAction from "./buttons/DeleteAction";
@@ -24,11 +26,13 @@ type Props = {
   deleteFn: (id: string) => Promise<void>;
 }
 
-const columnHeaders = ['Name', 'Latitude', 'Longitude', 'Zipcode', 'Notes', 'Actions'];
+const columnHeaders = ['Name', 'Latitude', 'Longitude', 'Zipcode', 'Partido', 'Notes', 'Actions'];
 
 const LocationTableContent = ({ locations, updateFn, deleteFn }: Props) => {
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editValues, setEditValues] = useState<LocationEditValues>({ name: '', zipcode: '', latitude: 0, longitude: 0, notes: '' });
+  const [editValues, setEditValues] = useState<LocationEditValues>({ name: '', zipcode: '', latitude: 0, longitude: 0, notes: '', partido: '' });
+
+  const sortedPartidos = useMemo(() => getSortedPartidos(locations).all, [locations]);
 
   const renderColumnHeaders = () => (
     columnHeaders.map((header) => (
@@ -38,7 +42,7 @@ const LocationTableContent = ({ locations, updateFn, deleteFn }: Props) => {
 
   const resetEditValues = () => {
     setEditingId(null);
-    setEditValues({ name: '', zipcode: '', latitude: 0, longitude: 0, notes: '' })
+    setEditValues({ name: '', zipcode: '', latitude: 0, longitude: 0, notes: '', partido: '' })
   }
 
   const renderActionButtons = (location: Location) => {
@@ -74,7 +78,8 @@ const LocationTableContent = ({ locations, updateFn, deleteFn }: Props) => {
             zipcode: location.zipcode,
             latitude: roundDecimals(location.latitude, 4),
             longitude: roundDecimals(location.longitude, 4),
-            notes: location.notes
+            notes: location.notes,
+            partido: location.partido || ''
           })
         }} />
         <Link href={`/travels/to/${location._id}`} >
@@ -97,7 +102,7 @@ const LocationTableContent = ({ locations, updateFn, deleteFn }: Props) => {
     );
   }
 
-  const renderEditableCell = (location: Location, field: 'name' | 'notes' | 'zipcode', customClassName = 'w-80') => {
+  const renderEditableCell = (location: Location, field: 'name' | 'notes' | 'zipcode', customClassName = 'w-48') => {
     if (editingId === location._id) {
       return (
         <Input
@@ -119,7 +124,7 @@ const LocationTableContent = ({ locations, updateFn, deleteFn }: Props) => {
           type="number"
           value={editValues[field]}
           onChange={(e) => setEditValues(prev => ({ ...prev, [field]: e.target.value }))}
-          className="w-30 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+          className="w-28 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
         />
       );
     }
@@ -137,11 +142,34 @@ const LocationTableContent = ({ locations, updateFn, deleteFn }: Props) => {
       <TableBody>
         {locations.map((l) => (
           <TableRow key={l._id} className="border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
-            <TableCell className="font-medium text-gray-900 dark:text-white">{renderEditableCell(l, 'name')}</TableCell>
+            <TableCell className="font-medium text-gray-900 dark:text-white">{renderEditableCell(l, 'name', 'w-44')}</TableCell>
             <TableCell className="text-gray-700 dark:text-gray-300">{renderEditableCoordinate(l, 'latitude')}</TableCell>
             <TableCell className="text-gray-700 dark:text-gray-300">{renderEditableCoordinate(l, 'longitude')}</TableCell>
-            <TableCell className="text-gray-700 dark:text-gray-300">{renderEditableCell(l, 'zipcode', 'w-30')}</TableCell>
-            <TableCell className="text-gray-700 dark:text-gray-300">{renderEditableCell(l, 'notes')}</TableCell>
+            <TableCell className="text-gray-700 dark:text-gray-300">{renderEditableCell(l, 'zipcode', 'w-24')}</TableCell>
+            <TableCell className="text-gray-700 dark:text-gray-300">
+              {editingId === l._id ? (
+                l.zipcode.toUpperCase().startsWith('B') ? (
+                  <Select
+                    value={editValues.partido}
+                    onValueChange={(value) => setEditValues(prev => ({ ...prev, partido: value }))}
+                  >
+                    <SelectTrigger className="w-36 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
+                      <SelectValue placeholder="Select..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {sortedPartidos.map((p: string) => (
+                        <SelectItem key={p} value={p}>{p}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <span className="text-gray-400">-</span>
+                )
+              ) : (
+                l.partido || (l.zipcode.toUpperCase().startsWith('B') ? '' : '-')
+              )}
+            </TableCell>
+            <TableCell className="text-gray-700 dark:text-gray-300">{renderEditableCell(l, 'notes', 'w-64')}</TableCell>
             <TableCell>{renderActionButtons(l)}</TableCell>
           </TableRow>
         ))}

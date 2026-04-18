@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { MapPin } from "lucide-react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -13,6 +13,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import LocationService from "@/services/LocationService";
+import { getSortedPartidos } from "@/utils/partidos";
+import useLocations from "@/hooks/useLocations";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 // Import MapPicker dynamically to avoid SSR issues with Leaflet
 const MapPicker = dynamic(() => import("@/components/MapPicker"), {
@@ -26,12 +29,17 @@ const MapPicker = dynamic(() => import("@/components/MapPicker"), {
 
 const LocationForm = () => {
   const queryClient = useQueryClient();
+  const { locations } = useLocations();
+  
+  const sortedPartidos = useMemo(() => getSortedPartidos(locations).all, [locations]);
+
   const [formData, setFormData] = useState({
     name: "",
     latitude: "",
     longitude: "",
     zipcode: "",
     notes: "",
+    partido: "",
   });
   const [isMapOpen, setIsMapOpen] = useState(false);
 
@@ -45,6 +53,7 @@ const LocationForm = () => {
         longitude: "",
         zipcode: "",
         notes: "",
+        partido: "",
       });
       queryClient.invalidateQueries({ queryKey: ['locations'] });
     },
@@ -150,6 +159,25 @@ const LocationForm = () => {
               className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
             />
           </div>
+
+          {formData.zipcode.toUpperCase().startsWith('B') && (
+            <div className="space-y-2">
+              <Label htmlFor="partido" className="text-gray-700 dark:text-gray-300">Partido</Label>
+              <Select
+                value={formData.partido}
+                onValueChange={(value) => setFormData(prev => ({ ...prev, partido: value }))}
+              >
+                <SelectTrigger className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
+                  <SelectValue placeholder="Select a partido" />
+                </SelectTrigger>
+                <SelectContent>
+                  {sortedPartidos.map((p: string) => (
+                    <SelectItem key={p} value={p}>{p}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
           <div className="space-y-2">
             <Label htmlFor="notes" className="text-gray-700 dark:text-gray-300">Notes</Label>
