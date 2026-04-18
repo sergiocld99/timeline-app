@@ -1,6 +1,6 @@
 import type { Location } from "@/types/location";
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { PartidoSelector } from "../selectors/PartidoSelector";
 
 type Props = {
   location: Location;
@@ -25,18 +25,13 @@ export const PartidoCell = ({
     }
 
     return (
-      <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className="w-36 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
-          <SelectValue placeholder="Select..." />
-        </SelectTrigger>
-        <SelectContent>
-          {sortedPartidos.map((p) => (
-            <SelectItem key={p} value={p}>
-              {p}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <PartidoSelector
+        value={value || ""}
+        onValueChange={onChange}
+        sortedPartidos={sortedPartidos}
+        className="w-36"
+        placeholder="Select..."
+      />
     );
   }
 

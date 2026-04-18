@@ -15,7 +15,8 @@ import { Textarea } from "@/components/ui/textarea";
 import LocationService from "@/services/LocationService";
 import { getSortedPartidos } from "@/utils/partidos";
 import useLocations from "@/hooks/useLocations";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+import { PartidoSelector } from "./selectors/PartidoSelector";
 
 // Import MapPicker dynamically to avoid SSR issues with Leaflet
 const MapPicker = dynamic(() => import("@/components/MapPicker"), {
@@ -163,19 +164,11 @@ const LocationForm = () => {
           {formData.zipcode.toUpperCase().startsWith('B') && (
             <div className="space-y-2">
               <Label htmlFor="partido" className="text-gray-700 dark:text-gray-300">Partido</Label>
-              <Select
+              <PartidoSelector
                 value={formData.partido}
                 onValueChange={(value) => setFormData(prev => ({ ...prev, partido: value }))}
-              >
-                <SelectTrigger className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
-                  <SelectValue placeholder="Select a partido" />
-                </SelectTrigger>
-                <SelectContent>
-                  {sortedPartidos.map((p: string) => (
-                    <SelectItem key={p} value={p}>{p}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                sortedPartidos={sortedPartidos}
+              />
             </div>
           )}
 
