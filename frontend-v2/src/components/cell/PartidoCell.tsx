@@ -1,10 +1,8 @@
 import type { Location } from "@/types/location";
 
-import React from "react";
-
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-interface PartidoCellProps {
+type Props = {
   location: Location;
   isEditing: boolean;
   value?: string;
@@ -12,13 +10,13 @@ interface PartidoCellProps {
   sortedPartidos: string[];
 }
 
-export const PartidoCell: React.FC<PartidoCellProps> = ({
+export const PartidoCell = ({
   location,
   isEditing,
   value,
   onChange,
   sortedPartidos
-}) => {
+}: Props) => {
   const isBuenosAires = location.zipcode?.toUpperCase().startsWith('B');
 
   if (isEditing) {

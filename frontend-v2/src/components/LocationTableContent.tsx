@@ -17,7 +17,7 @@ import { roundDecimals } from "@/utils/numbers";
 import ArrivalsAction from "./buttons/ArrivalsAction";
 import DeleteAction from "./buttons/DeleteAction";
 import DeparturesAction from "./buttons/DeparturesAction";
-import { PartidoCell } from "./cells/PartidoCell";
+import { PartidoCell } from "./cell/PartidoCell";
 import EditAction from "./buttons/EditAction";
 
 type Props = {
