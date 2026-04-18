@@ -9,7 +9,6 @@ import { toast } from "sonner";
 
 import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getSortedPartidos } from "@/utils/partidos";
 import { cn } from "@/lib/utils";
@@ -18,6 +17,7 @@ import { roundDecimals } from "@/utils/numbers";
 import ArrivalsAction from "./buttons/ArrivalsAction";
 import DeleteAction from "./buttons/DeleteAction";
 import DeparturesAction from "./buttons/DeparturesAction";
+import { PartidoCell } from "./cells/PartidoCell";
 import EditAction from "./buttons/EditAction";
 
 type Props = {
@@ -146,28 +146,14 @@ const LocationTableContent = ({ locations, updateFn, deleteFn }: Props) => {
             <TableCell className="text-gray-700 dark:text-gray-300">{renderEditableCoordinate(l, 'latitude')}</TableCell>
             <TableCell className="text-gray-700 dark:text-gray-300">{renderEditableCoordinate(l, 'longitude')}</TableCell>
             <TableCell className="text-gray-700 dark:text-gray-300">{renderEditableCell(l, 'zipcode', 'w-24')}</TableCell>
-            <TableCell className="text-gray-700 dark:text-gray-300">
-              {editingId === l._id ? (
-                l.zipcode.toUpperCase().startsWith('B') ? (
-                  <Select
-                    value={editValues.partido}
-                    onValueChange={(value) => setEditValues(prev => ({ ...prev, partido: value }))}
-                  >
-                    <SelectTrigger className="w-36 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
-                      <SelectValue placeholder="Select..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {sortedPartidos.map((p: string) => (
-                        <SelectItem key={p} value={p}>{p}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                ) : (
-                  <span className="text-gray-400">-</span>
-                )
-              ) : (
-                l.partido || (l.zipcode.toUpperCase().startsWith('B') ? '' : '-')
-              )}
+            <TableCell>
+              <PartidoCell
+                location={l}
+                isEditing={editingId === l._id}
+                value={editValues.partido}
+                onChange={(value) => setEditValues(prev => ({ ...prev, partido: value }))}
+                sortedPartidos={sortedPartidos}
+              />
             </TableCell>
             <TableCell className="text-gray-700 dark:text-gray-300">{renderEditableCell(l, 'notes', 'w-64')}</TableCell>
             <TableCell>{renderActionButtons(l)}</TableCell>
