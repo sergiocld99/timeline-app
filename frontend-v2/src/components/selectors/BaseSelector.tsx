@@ -4,17 +4,17 @@ import { cn } from "@/lib/utils";
 type Props = {
   value: string;
   onValueChange: (value: string) => void;
-  sortedPartidos: string[];
+  options: string[];
   className?: string;
   placeholder?: string;
 }
 
-export const PartidoSelector = ({
+export const BaseSelector = ({
   value,
   onValueChange,
-  sortedPartidos,
+  options,
   className,
-  placeholder = "Select a partido"
+  placeholder = "Select..."
 }: Props) => {
   return (
     <Select value={value} onValueChange={onValueChange}>
@@ -22,9 +22,9 @@ export const PartidoSelector = ({
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
-        {sortedPartidos.map((p) => (
-          <SelectItem key={p} value={p}>
-            {p}
+        {options.map((opt) => (
+          <SelectItem key={opt} value={opt}>
+            {opt}
           </SelectItem>
         ))}
       </SelectContent>

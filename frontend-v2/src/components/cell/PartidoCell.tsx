@@ -1,6 +1,6 @@
 import type { Location } from "@/types/location";
 
-import { PartidoSelector } from "../selectors/PartidoSelector";
+import { BaseSelector } from "../selectors/BaseSelector";
 
 type Props = {
   location: Location;
@@ -25,10 +25,10 @@ export const PartidoCell = ({
     }
 
     return (
-      <PartidoSelector
+      <BaseSelector
         value={value || ""}
         onValueChange={onChange}
-        sortedPartidos={sortedPartidos}
+        options={sortedPartidos}
         className="w-36"
         placeholder="Select..."
       />

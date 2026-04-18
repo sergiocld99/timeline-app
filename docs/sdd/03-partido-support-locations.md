@@ -14,7 +14,7 @@ Enable association of a "Partido" (district) to locations with postal codes star
 | :--- | :--- |
 | `backend` | Updated `Location` model and `locationController` to persist the `partido` field. |
 | `frontend` | Updated Types, added `BUENOS_AIRES_PARTIDOS` constants, and created `getSortedPartidos` utility. |
-| `frontend-ui` | Updated `LocationForm`, `LocationTableContent`, and `LocationsPageClient` to support the new field and dynamic filtering. Created `PartidoCell` component to encapsulate logic. |
+| `frontend-ui` | Updated `LocationForm`, `LocationTableContent`, and `LocationsPageClient` to support the new field and dynamic filtering. Created `BaseSelector` and `PartidoCell` components to encapsulate logic. |
 
 ## 🛠️ Implementation Details
 - **Logic**: The top 3 partidos are calculated on the fly from the current locations list. They are used to render the main filter tabs and prioritized at the top of the selection dropdowns.

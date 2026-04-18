@@ -16,7 +16,7 @@ import LocationService from "@/services/LocationService";
 import { getSortedPartidos } from "@/utils/partidos";
 import useLocations from "@/hooks/useLocations";
 
-import { PartidoSelector } from "./selectors/PartidoSelector";
+import { BaseSelector } from "./selectors/BaseSelector";
 
 // Import MapPicker dynamically to avoid SSR issues with Leaflet
 const MapPicker = dynamic(() => import("@/components/MapPicker"), {
@@ -164,10 +164,10 @@ const LocationForm = () => {
           {formData.zipcode.toUpperCase().startsWith('B') && (
             <div className="space-y-2">
               <Label htmlFor="partido" className="text-gray-700 dark:text-gray-300">Partido</Label>
-              <PartidoSelector
+              <BaseSelector
                 value={formData.partido}
                 onValueChange={(value) => setFormData(prev => ({ ...prev, partido: value }))}
-                sortedPartidos={sortedPartidos}
+                options={sortedPartidos}
               />
             </div>
           )}
