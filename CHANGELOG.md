@@ -1,6 +1,8 @@
 # CHANGELOG
+## v0.9.0
+- COD9-003: Add Partido for Locations with B-Prefix zipcodes (#57) [388]
 
-## v0.8.0
+## v0.8.0 (2026-04-17)
 - COD8-001: Add Purple Weight for Travels with Crosses (#39) [23]
 - COD8-010: Add Travel and Visit Date Edition & Refactor travel.d.ts (#38) [1054]
 - COD8-011: Backend - Calculate home and reorder route keys (#42) [26]
@@ -9,7 +11,7 @@
 - COD8-014: Bump up Axios to 1.15.0 (#51) [192]
 - COD8-021: New Java Map Service and Show Milestones (#52) [758]
 
-## v0.7.0
+## v0.7.0 (2026-03-20)
 - COD7-001: Provide Visit Hour Parts from Backend to enable filtering (#26) [105]
 - COD7-002: Add Search to Locations Page (#27) [64]
 - COD7-003: Add Collision Control on Travel Creation (#29) [101]

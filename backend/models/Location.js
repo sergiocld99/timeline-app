@@ -6,6 +6,7 @@ const LocationSchema = new mongoose.Schema({
     latitude: { type: Number, required: true },
     longitude: { type: Number, required: true },
     zipcode: { type: String },
+    partido: { type: String },
 });
 
 LocationSchema.index({ name: 1, latitude: 1 }, { unique: true });
