@@ -90,7 +90,8 @@ const useTravelCreator = () => {
     modeOfTransport: "car",
     line: "",
     distance: "",
-    price: ""
+    price: "",
+    crosses: []
   });
 
   const handleChangeOnSameDay = (name: keyof TravelFormData, value: string) => {
@@ -124,8 +125,8 @@ const useTravelCreator = () => {
     return false
   }
 
-  const handleChange = async (name: keyof TravelFormData, value: string) => {
-    if (isSameDay) {
+  const handleChange = async (name: keyof TravelFormData, value: string | string[]) => {
+    if (isSameDay && typeof value === 'string') {
       try {
         const updated = handleChangeOnSameDay(name, value)
 
@@ -138,7 +139,7 @@ const useTravelCreator = () => {
     }
 
     // Auto-complete distance based on last travel only when changing destination
-    if (name === 'destination') {
+    if (name === 'destination' && typeof value === 'string') {
       const { origin, distance } = formData
       const destination = value
 
@@ -199,6 +200,7 @@ const useTravelCreator = () => {
         startTime: formData.endTime,
         line: "",
         distance: "",
+        crosses: [],
       });
     } catch (error) {
       const axiosError = error as AxiosErrorResponse;

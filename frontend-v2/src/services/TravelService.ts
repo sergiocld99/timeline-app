@@ -1,5 +1,4 @@
-import type { FormData } from '@/types/commons';
-import type { TravelDTO, TravelFindResult } from "@/types/travel";;
+import type { TravelDTO, TravelFindResult, TravelFormData } from "@/types/travel";
 
 import axios from 'axios';
 
@@ -19,7 +18,7 @@ type FetchCustomParams = {
 }
 
 class TravelService {
-  static async create(formData: FormData, userId?: number) {
+  static async create(formData: TravelFormData, userId?: number) {
     const travelData = {
       ...formData,
       userId
