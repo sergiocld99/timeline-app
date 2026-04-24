@@ -4,8 +4,8 @@
 
 ## 🎨 Cambios del Frontend
 ### Core
+- **Creator**:
 - **Locations**: 
-- **Crosses**: 
 - **Travels**: 
 - **Visits**: 
 
