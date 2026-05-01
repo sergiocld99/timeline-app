@@ -25,7 +25,7 @@ type Props = {
   placesVisitedCount: number;
 };
 
-const MONTH_NAMES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisitedCount }: Props) => {
   const chartData = useMemo(() => {
