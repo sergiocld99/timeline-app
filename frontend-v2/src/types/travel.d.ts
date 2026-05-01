@@ -34,6 +34,33 @@ export type TravelDTO = {
   destination: string
 }
 
+export type MonthlyStatItem = {
+  km: number;
+  minutes: number;
+  count: number;
+  zipcodes: string[];
+}
+
+export type MonthlyStats = Record<string, MonthlyStatItem>;
+
+export type TravelRecordItem = {
+  value: number;
+  date: string;
+  origin: string;
+  destination: string;
+}
+
+export type TravelRecords = {
+  maxDistance: TravelRecordItem | null;
+  maxDuration: TravelRecordItem | null;
+  maxSpeed: TravelRecordItem | null;
+}
+
+export type TopRoute = {
+  route: string;
+  count: number;
+}
+
 export type TravelStats = {
   count: number
   totalDistance: number
@@ -56,14 +83,10 @@ export type TravelStats = {
     center: [number, number],
     zoom: number
   }
-  monthlyStats?: Record<string, { km: number, minutes: number, count: number, zipcodes: string[] }>
-  topRoutes?: { route: string, count: number }[]
+  monthlyStats?: MonthlyStats
+  topRoutes?: TopRoute[]
   home?: string
-  records?: {
-    maxDistance: { value: number, date: string, origin: string, destination: string } | null
-    maxDuration: { value: number, date: string, origin: string, destination: string } | null
-    maxSpeed: { value: number, date: string, origin: string, destination: string } | null
-  }
+  records?: TravelRecords
 }
 
 export type TravelFindResult = {

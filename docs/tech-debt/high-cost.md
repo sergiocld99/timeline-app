@@ -3,5 +3,4 @@
 
 # Files to Refactor
 - TravelTableContent (276)
-- TravelDashboard (209)
 - TravelService.ts (159)
