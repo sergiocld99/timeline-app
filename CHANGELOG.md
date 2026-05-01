@@ -2,6 +2,9 @@
 ## v0.9.0
 - COD9-003: Add Partido for Locations with B-Prefix zipcodes (#57) [388]
 - COD9-004: Select Crosses in Travel Creator (#59) [140]
+- COD9-011: Optimize Travel Dashboard analytics and modularize components (#60) [1160]
+  - **Backend**: New `statsOnly` query parameter to reduce payload size.
+  - **Frontend**: Modular Dashboard refactor; Year-over-Year Comparison chart; new `useDashQuery` hook.
 
 ## v0.8.0 (2026-04-17)
 - COD8-001: Add Purple Weight for Travels with Crosses (#39) [23]
