@@ -36,12 +36,16 @@ export const useDashQuery = () => {
     queryKey: ["home_stats_prev", dateFrom, currentUser],
     queryFn: async () => {
       if (!dateFrom) return null;
-      const prevDate = new Date(dateFrom);
-      prevDate.setFullYear(prevDate.getFullYear() - 1);
+      
+      const prevDateFrom = new Date(dateFrom);
+      prevDateFrom.setFullYear(prevDateFrom.getFullYear() - 1);
+      
+      const prevDateTo = new Date();
+      prevDateTo.setFullYear(prevDateTo.getFullYear() - 1);
       
       const res = await TravelService.getAll({ 
-        dateFrom: prevDate.toISOString(),
-        dateTo: dateFrom, // Fetch until the start of the current period
+        dateFrom: prevDateFrom.toISOString(),
+        dateTo: prevDateTo.toISOString(),
         userId: currentUser?.userId,
         statsOnly: true
       });
