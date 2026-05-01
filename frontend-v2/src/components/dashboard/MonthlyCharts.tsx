@@ -20,27 +20,37 @@ import { ACCENT1, ACCENT2, BORDER, MUTED } from "@/constants/colors";
 
 type Props = {
   monthlyStats: MonthlyStats;
+  prevMonthlyStats?: MonthlyStats;
   totalDistance: number;
   placesVisitedCount: number;
 };
 
 const MONTH_NAMES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 
-const MonthlyCharts = ({ monthlyStats, totalDistance, placesVisitedCount }: Props) => {
+const MonthlyCharts = ({ monthlyStats, prevMonthlyStats, totalDistance, placesVisitedCount }: Props) => {
   const chartData = useMemo(() => {
-    return Object.entries(monthlyStats)
+    const mainData = Object.entries(monthlyStats)
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([key, data]) => {
         const month = key.split('-')[1];
         const monthIndex = parseInt(month) - 1;
+
+        // Find corresponding data in prevMonthlyStats
+        // Key format is YYYY-MM
+        const currentYear = parseInt(key.split('-')[0]);
+        const prevKey = `${currentYear - 1}-${month}`;
+        const prevData = prevMonthlyStats?.[prevKey];
+
         return {
           month: `${MONTH_NAMES[monthIndex]}`,
           ...data,
           km: Math.round(data.km),
+          prevKm: prevData ? Math.round(prevData.km) : undefined,
           places: data.zipcodes.length,
         };
       });
-  }, [monthlyStats]);
+    return mainData;
+  }, [monthlyStats, prevMonthlyStats]);
   return (
     <>
       {/* Chart 1: Places per month */}
@@ -64,10 +74,10 @@ const MonthlyCharts = ({ monthlyStats, totalDistance, placesVisitedCount }: Prop
               />
               <Bar dataKey="places" radius={[2, 2, 0, 0]}>
                 {chartData.map((entry, index) => (
-                  <Cell 
-                    key={`cell-${index}`} 
-                    fill={ACCENT1} 
-                    fillOpacity={0.3 + (entry.places / Math.max(...chartData.map(d => d.places), 1)) * 0.7} 
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={ACCENT1}
+                    fillOpacity={0.3 + (entry.places / Math.max(...chartData.map(d => d.places), 1)) * 0.7}
                   />
                 ))}
               </Bar>
@@ -98,9 +108,30 @@ const MonthlyCharts = ({ monthlyStats, totalDistance, placesVisitedCount }: Prop
               <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: MUTED, fontFamily: 'Space Mono' }} />
               <Tooltip
                 contentStyle={{ backgroundColor: '#18181f', border: `1px solid ${BORDER}`, borderRadius: 2 }}
-                itemStyle={{ color: '#f0f0f8', fontSize: 10, fontFamily: 'Space Mono' }}
+                itemStyle={{ fontSize: 10, fontFamily: 'Space Mono' }}
               />
-              <Line type="monotone" dataKey="km" stroke={ACCENT2} strokeWidth={2.5} dot={{ fill: ACCENT2, r: 4 }} activeDot={{ r: 7 }} />
+              <Line
+                type="monotone"
+                name="Previous Year"
+                dataKey="prevKm"
+                stroke={MUTED}
+                strokeWidth={1.5}
+                strokeDasharray="5 5"
+                dot={{ fill: MUTED, r: 4 }}
+                activeDot={{ r: 7 }}
+              />
+              <Line
+                type="monotone"
+                name="Current Year"
+                dataKey="km"
+                stroke={ACCENT2}
+                strokeWidth={2.5}
+                dot={{ fill: ACCENT2, r: 4 }}
+                activeDot={{ r: 7 }}
+                isAnimationActive={true}
+                animationDuration={1500}
+                animationBegin={0}
+              />
             </LineChart>
           </ResponsiveContainer>
         </div>

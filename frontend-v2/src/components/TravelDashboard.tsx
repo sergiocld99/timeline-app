@@ -11,9 +11,10 @@ import FrequentRoutes from "./dashboard/FrequentRoutes";
 
 type Props = {
   stats: TravelStats;
+  prevStats?: TravelStats;
 };
 
-const TravelDashboard = ({ stats }: Props) => {
+const TravelDashboard = ({ stats, prevStats }: Props) => {
   const {
     monthlyStats = {},
     topRoutes = [],
@@ -23,7 +24,6 @@ const TravelDashboard = ({ stats }: Props) => {
     totalHours,
     placesVisited
   } = stats;
-
 
   return (
     <div className="bg-[#0a0a0f] text-[#f0f0f8] font-['Syne'] min-h-screen p-6 md:p-12 relative overflow-hidden">
@@ -44,7 +44,9 @@ const TravelDashboard = ({ stats }: Props) => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 relative z-10">
         <MonthlyCharts 
+          key={`charts-${Object.keys(monthlyStats).length}-${!!prevStats}`}
           monthlyStats={monthlyStats} 
+          prevMonthlyStats={prevStats?.monthlyStats}
           totalDistance={totalDistance} 
           placesVisitedCount={placesVisited.count || 0}
         />
