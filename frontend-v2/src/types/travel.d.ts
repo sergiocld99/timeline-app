@@ -97,6 +97,7 @@ export type TravelFormData = {
   line: string;
   distance: string;
   price: string;
+  crosses: string[];
 }
 
 export type TravelChangeFn = (field: keyof TravelEditValues, value: string) => void

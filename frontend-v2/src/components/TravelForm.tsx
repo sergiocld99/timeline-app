@@ -1,8 +1,10 @@
 "use client";
 
-import type { Location } from "@/types/location";;
+import type { Location } from "@/types/location";
+import type { Cross } from "@/types/cross";
 
 import { AutocompleteLocation } from "@/components/AutocompleteLocation";
+import { AutocompleteCrosses } from "@/components/AutocompleteCrosses";
 import { StateCheckbox } from "@/components/StateCheckbox";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,9 +15,10 @@ import useTravelCreator from "@/hooks/useTravelCreator";
 
 type Props = {
   locations: Location[]
+  crosses: Cross[]
 };
 
-const TravelForm = ({ locations }: Props) => {
+const TravelForm = ({ locations, crosses }: Props) => {
   const {
     formData, handleChange, handleSubmit,
     createForAllUsers, setCreateForAllUsers,
@@ -141,6 +144,16 @@ const TravelForm = ({ locations }: Props) => {
                 min="0"
                 step="0.01"
                 className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+              />
+            </div>
+
+            <div className="space-y-2 md:col-span-full">
+              <Label htmlFor="crosses" className="text-gray-700 dark:text-gray-300">Crosses (optional)</Label>
+              <AutocompleteCrosses
+                crosses={crosses}
+                value={formData.crosses}
+                onValueChange={(value) => handleChange("crosses", value)}
+                placeholder="Select crosses for this route"
               />
             </div>
           </div>

@@ -3,9 +3,11 @@
 import LocationForm from "@/components/LocationForm";
 import TravelForm from "@/components/TravelForm";
 import useLocations from "@/hooks/useLocations";
+import useCrosses from "@/hooks/useCrosses";
 
 const CreatorPageClient = () => {
   const { locations } = useLocations();
+  const { crosses } = useCrosses();
 
   return (
     <main className="py-8 bg-gray-50 dark:bg-gray-900 min-h-screen gap-8 px-8">
@@ -14,7 +16,7 @@ const CreatorPageClient = () => {
           <LocationForm />
         </div>
         <div className="w-full lg:w-2/3">
-          <TravelForm locations={locations} />
+          <TravelForm locations={locations} crosses={crosses} />
         </div>
       </div>
     </main>

@@ -40,10 +40,15 @@ export const useTravelStats = (travels: Travel[], initialStats?: TravelStats) =>
     },
     // Si tenemos stats iniciales que coinciden con la cantidad de viajes, los usamos como data inicial
     initialData: (initialStats && travels.length === initialStats.count) ? initialStats : undefined,
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
   });
 
+  // Si tenemos stats iniciales válidos, los priorizamos siempre sobre el fetch para no perder los 'records'
+  const shouldUseInitial = initialStats && travels.length === initialStats.count;
+
   // Si travels está vacío, devolvemos EMPTY_STATS inmediatamente
-  const stats = travels.length === 0 ? EMPTY_STATS : data;
+  const stats = travels.length === 0 ? EMPTY_STATS : (shouldUseInitial ? initialStats : data);
 
   return { stats, isLoading };
 };
