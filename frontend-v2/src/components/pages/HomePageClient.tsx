@@ -25,9 +25,11 @@ const HomePageClient = () => {
     queryKey: ["home_stats", dateFrom, currentUser],
     queryFn: async () => {
       if (!dateFrom) return null;
-      // We call getAll but with a large range to get the stats
-      // The backend returns { travels, stats }
-      const res = await TravelService.getAll({ dateFrom, userId: currentUser?.userId });
+      const res = await TravelService.getAll({ 
+        dateFrom, 
+        userId: currentUser?.userId,
+        statsOnly: true
+      });
       return res.stats;
     },
     enabled: !!dateFrom && !userLoading,
