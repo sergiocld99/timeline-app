@@ -66,13 +66,11 @@ export type TravelStats = {
   totalDistance: number
   totalHours: number
   totalMinutes: number
-  totalPrice: number
   averageLatitude: number
   averageLongitude: number
   averageSpeed: number
   averageDistance: number
   averageDuration: number
-  averagePrice: number
   uniqueDays?: number
   uniqueRoutes?: number
   placesVisited: Partial<{

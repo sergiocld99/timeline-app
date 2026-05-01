@@ -102,7 +102,6 @@ export const calculateTravelStats = (travels) => {
 
   let totalKm = 0;
   let totalMinutes = 0;
-  let totalPrice = 0;
   let sumLatitude = 0;
   let sumLongitude = 0;
   let validWeight = 0;
@@ -114,13 +113,11 @@ export const calculateTravelStats = (travels) => {
   travels.forEach(t => {
     const distance = t.distance || 0;
     const duration = t.get ? t.get('duration') : t.duration || 0;
-    const price = t.price || 0;
     const weight = t.get ? t.get('weight').percentage : t.weight?.percentage || 0
     const speed = t.get ? t.get('speed') : t.speed || 0
 
     totalKm += distance;
     totalMinutes += duration;
-    totalPrice += price;
 
     // Unique Days
     const date = new Date(t.startTime);
@@ -188,7 +185,6 @@ export const calculateTravelStats = (travels) => {
   const averageLongitude = validWeight > 0 ? sumLongitude / validWeight : 0;
   const averageDistance = count > 0 ? totalKm / count : 0;
   const averageDuration = count > 0 ? totalMinutes / count : 0;
-  const averagePrice = count > 0 ? totalPrice / count : 0;
 
   const totalHours = totalMinutes / 60
   const averageSpeed = totalHours > 0 ? totalKm / totalHours : 0;
@@ -221,13 +217,11 @@ export const calculateTravelStats = (travels) => {
     totalDistance: Math.round(totalKm * 100) / 100, // Round to 2 decimals
     totalHours: Math.round(totalHours * 100) / 100,
     totalMinutes,
-    totalPrice: Math.round(totalPrice * 100) / 100,
     averageLatitude: Math.round(averageLatitude * 10000) / 10000, // Round to 4 decimals
     averageLongitude: Math.round(averageLongitude * 10000) / 10000,
     averageSpeed: Math.round(averageSpeed * 100) / 100,
     averageDistance: Math.round(averageDistance * 100) / 100,
     averageDuration: Math.round(averageDuration * 100) / 100,
-    averagePrice: Math.round(averagePrice * 100) / 100,
     uniqueDays: uniqueDaysSet.size,
     uniqueRoutes: uniqueRoutesSet.size,
     placesVisited: {
