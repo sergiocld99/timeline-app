@@ -1,6 +1,6 @@
 "use client";
 
-import type { MonthlyStats } from "@/types/travel";
+import type { MonthlyStats, TravelStats } from "@/types/travel";
 
 import { useMemo } from "react";
 import {
@@ -20,14 +20,14 @@ import { ACCENT1, ACCENT2, BORDER, MUTED } from "@/constants/colors";
 
 type Props = {
   monthlyStats: MonthlyStats;
-  prevMonthlyStats?: MonthlyStats;
+  prevStats?: TravelStats;
   totalDistance: number;
   placesVisitedCount: number;
 };
 
 const MONTH_NAMES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 
-const MonthlyCharts = ({ monthlyStats, prevMonthlyStats, totalDistance, placesVisitedCount }: Props) => {
+const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisitedCount }: Props) => {
   const chartData = useMemo(() => {
     const mainData = Object.entries(monthlyStats)
       .sort(([a], [b]) => a.localeCompare(b))
@@ -39,7 +39,7 @@ const MonthlyCharts = ({ monthlyStats, prevMonthlyStats, totalDistance, placesVi
         // Key format is YYYY-MM
         const currentYear = parseInt(key.split('-')[0]);
         const prevKey = `${currentYear - 1}-${month}`;
-        const prevData = prevMonthlyStats?.[prevKey];
+        const prevData = prevStats?.monthlyStats?.[prevKey];
 
         return {
           month: `${MONTH_NAMES[monthIndex]}`,
@@ -50,15 +50,29 @@ const MonthlyCharts = ({ monthlyStats, prevMonthlyStats, totalDistance, placesVi
         };
       });
     return mainData;
-  }, [monthlyStats, prevMonthlyStats]);
+  }, [monthlyStats, prevStats]);
+
+  const prevAverage = useMemo(() => {
+    if (!prevStats) return null;
+    const prevMonthlyStats = prevStats.monthlyStats || {};
+    const monthsCount = Object.keys(prevMonthlyStats).length;
+    if (monthsCount === 0) return null;
+    return Math.round(prevStats.totalDistance / monthsCount);
+  }, [prevStats]);
+
   return (
     <>
       {/* Chart 1: Places per month */}
       <div className="bg-[#111118] border border-[#2a2a3a] rounded-sm p-7 relative overflow-hidden before:absolute before:top-0 before:left-0 before:w-[3px] before:h-full before:bg-[#e8ff47] animate-in duration-700 delay-200">
         <div className="flex justify-between items-center mb-6">
           <span className="text-[0.65rem] font-['Space_Mono'] uppercase tracking-[3px] text-[#fff]">Places visited</span>
-          <span className="text-2xl font-extrabold text-[#e8ff47]">
+          <span className="text-2xl font-extrabold text-[#e8ff47] flex items-baseline">
             {placesVisitedCount}
+            {prevStats?.placesVisited?.count && (
+              <span className="text-[1rem] ml-2 font-['Space_Mono'] text-[#5a5a70] tracking-[1px]" style={{ color: MUTED }}>
+                / {prevStats.placesVisited.count}
+              </span>
+            )}
           </span>
         </div>
         <div className="h-[220px]">
@@ -90,8 +104,13 @@ const MonthlyCharts = ({ monthlyStats, prevMonthlyStats, totalDistance, placesVi
       <div className="bg-[#111118] border border-[#2a2a3a] rounded-sm p-7 relative overflow-hidden before:absolute before:top-0 before:left-0 before:w-[3px] before:h-full before:bg-[#47d4ff] animate-in duration-700 delay-400">
         <div className="flex justify-between items-center mb-6">
           <span className="text-[0.65rem] font-['Space_Mono'] uppercase tracking-[3px] text-[#fff]">Kilometers per month</span>
-          <span className="text-2xl font-extrabold text-[#47d4ff]">
+          <span className="text-2xl font-extrabold text-[#47d4ff] flex items-baseline">
             {chartData.length > 0 ? Math.round(totalDistance / chartData.length) : 0}
+            {prevAverage !== null && (
+              <span className="text-[1rem] ml-2 font-['Space_Mono'] text-[#5a5a70] tracking-[1px]" style={{ color: MUTED }}>
+                / {prevAverage}
+              </span>
+            )}
           </span>
         </div>
         <div className="h-[220px]">

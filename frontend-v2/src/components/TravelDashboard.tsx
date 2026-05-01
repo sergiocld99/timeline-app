@@ -46,7 +46,7 @@ const TravelDashboard = ({ stats, prevStats }: Props) => {
         <MonthlyCharts 
           key={`charts-${Object.keys(monthlyStats).length}-${!!prevStats}`}
           monthlyStats={monthlyStats} 
-          prevMonthlyStats={prevStats?.monthlyStats}
+          prevStats={prevStats}
           totalDistance={totalDistance} 
           placesVisitedCount={placesVisited.count || 0}
         />
