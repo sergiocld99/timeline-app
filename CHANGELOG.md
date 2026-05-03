@@ -6,6 +6,7 @@
   - **Backend**: New `statsOnly` query parameter to reduce payload size.
   - **Frontend**: Modular Dashboard refactor; Year-over-Year Comparison chart; new `useDashQuery` hook.
 - COD9-013: Remove totalPrice and averagePrice from Travel Stats (#60) [120]
+- COD9-015: Show all zipcodes in ticker (#60) [229]
 
 ## v0.8.0 (2026-04-17)
 - COD8-001: Add Purple Weight for Travels with Crosses (#39) [23]
