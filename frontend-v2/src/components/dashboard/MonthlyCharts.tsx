@@ -18,6 +18,8 @@ import {
 
 import { ACCENT1, ACCENT2, BORDER, MUTED } from "@/constants/colors";
 
+import ZipcodeTicker from "./ZipcodeTicker";
+
 type Props = {
   monthlyStats: MonthlyStats;
   prevStats?: TravelStats;
@@ -64,9 +66,12 @@ const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisitedCo
     <>
       {/* Chart 1: Places per month */}
       <div className="bg-[#111118] border border-[#2a2a3a] rounded-sm p-7 relative overflow-hidden before:absolute before:top-0 before:left-0 before:w-[3px] before:h-full before:bg-[#e8ff47] animate-in duration-700 delay-200">
-        <div className="flex justify-between items-center mb-6">
-          <span className="text-[0.65rem] font-['Space_Mono'] uppercase tracking-[3px] text-[#fff]">Places visited</span>
-          <span className="text-2xl font-extrabold text-[#e8ff47] flex items-baseline">
+        <div className="flex justify-between items-start mb-6">
+          <div className="flex flex-col gap-1.5">
+            <span className="text-[0.65rem] font-['Space_Mono'] uppercase tracking-[3px] text-[#fff]">Places visited</span>
+            {prevStats?.placesVisited?.count && <ZipcodeTicker monthlyStats={monthlyStats} prevStats={prevStats} />}
+          </div>
+          <span className="text-2xl font-extrabold text-[#e8ff47] flex items-baseline leading-none">
             {placesVisitedCount}
             {prevStats?.placesVisited?.count && (
               <span className="text-[1rem] ml-2 font-['Space_Mono'] text-[#5a5a70] tracking-[1px]" style={{ color: MUTED }}>
