@@ -1,15 +1,16 @@
 "use client";
 
-import type { MonthlyStats, TravelStats } from "@/types/travel";
+import type { MonthlyStats, PlacesVisited } from "@/types/travel";
 
 import { useEffect, useMemo, useState } from "react";
 
 type Props = {
   monthlyStats: MonthlyStats;
-  prevStats?: TravelStats;
+  currentPlaces: PlacesVisited;
+  previousPlaces?: PlacesVisited;
 };
 
-const ZipcodeTicker = ({ monthlyStats, prevStats }: Props) => {
+const ZipcodeTicker = ({ monthlyStats, currentPlaces, previousPlaces }: Props) => {
   const currentZipcodes = useMemo(() => {
     const all = new Set<string>();
     Object.values(monthlyStats).forEach(item => {
@@ -20,11 +21,11 @@ const ZipcodeTicker = ({ monthlyStats, prevStats }: Props) => {
 
   const allZipcodes = useMemo(() => {
     const combined = new Set(currentZipcodes);
-    if (prevStats?.placesVisited?.zipcodes) {
-      prevStats.placesVisited.zipcodes.forEach(z => combined.add(z));
+    if (previousPlaces?.zipcodes) {
+      previousPlaces.zipcodes.forEach(z => combined.add(z));
     }
     return Array.from(combined).sort();
-  }, [currentZipcodes, prevStats]);
+  }, [currentZipcodes, previousPlaces]);
 
   // Append first item at the end for seamless looping
   const displayList = useMemo(() => {
@@ -80,7 +81,8 @@ const ZipcodeTicker = ({ monthlyStats, prevStats }: Props) => {
       >
         {displayList.map((zip, i) => {
           const isVisited = currentZipcodes.has(zip);
-          const isFrequent = isVisited && prevStats?.placesVisited?.zipcodes?.includes(zip);
+          const isFrequent = isVisited && previousPlaces?.zipcodes?.includes(zip);
+          const name = isVisited ? currentPlaces.names?.[zip] : previousPlaces?.names?.[zip];
 
           return (
             <div
@@ -89,7 +91,7 @@ const ZipcodeTicker = ({ monthlyStats, prevStats }: Props) => {
             >
               <span className="scale-75 origin-left">{isVisited ? '✅' : '❌'}</span>
               <span className={isFrequent ? 'text-[#e8ff47]' : 'text-[#fff]'}>
-                {zip}
+                {zip} - {name}
               </span>
             </div>
           );

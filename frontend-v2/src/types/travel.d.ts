@@ -43,6 +43,12 @@ export type MonthlyStatItem = {
 
 export type MonthlyStats = Record<string, MonthlyStatItem>;
 
+export type PlacesVisited = {
+  count: number,
+  zipcodes: string[],
+  names?: Record<string, string>
+}
+
 export type TravelRecordItem = {
   value: number;
   date: string;
@@ -73,10 +79,7 @@ export type TravelStats = {
   averageDuration: number
   uniqueDays?: number
   uniqueRoutes?: number
-  placesVisited: Partial<{
-    count: number,
-    zipcodes: string[]
-  }>
+  placesVisited: PlacesVisited
   mapConfig?: {
     center: [number, number],
     zoom: number

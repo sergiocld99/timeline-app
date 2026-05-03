@@ -1,6 +1,6 @@
 "use client";
 
-import type { MonthlyStats, TravelStats } from "@/types/travel";
+import type { MonthlyStats, PlacesVisited, TravelStats } from "@/types/travel";
 
 import { useMemo } from "react";
 import {
@@ -24,12 +24,12 @@ type Props = {
   monthlyStats: MonthlyStats;
   prevStats?: TravelStats;
   totalDistance: number;
-  placesVisitedCount: number;
+  placesVisited: PlacesVisited;
 };
 
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisitedCount }: Props) => {
+const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }: Props) => {
   const chartData = useMemo(() => {
     const mainData = Object.entries(monthlyStats)
       .sort(([a], [b]) => a.localeCompare(b))
@@ -69,10 +69,10 @@ const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisitedCo
         <div className="flex justify-between items-start mb-6">
           <div className="flex flex-col gap-1.5">
             <span className="text-[0.65rem] font-['Space_Mono'] uppercase tracking-[3px] text-[#fff]">Places visited</span>
-            {prevStats?.placesVisited?.count && <ZipcodeTicker monthlyStats={monthlyStats} prevStats={prevStats} />}
+            {prevStats?.placesVisited?.count && <ZipcodeTicker monthlyStats={monthlyStats} previousPlaces={prevStats?.placesVisited} currentPlaces={placesVisited} />}
           </div>
           <span className="text-2xl font-extrabold text-[#e8ff47] flex items-baseline leading-none">
-            {placesVisitedCount}
+            {placesVisited.count}
             {prevStats?.placesVisited?.count && (
               <span className="text-[1rem] ml-2 font-['Space_Mono'] text-[#5a5a70] tracking-[1px]" style={{ color: MUTED }}>
                 / {prevStats.placesVisited.count}

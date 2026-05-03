@@ -43,12 +43,12 @@ const TravelDashboard = ({ stats, prevStats }: Props) => {
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 relative z-10">
-        <MonthlyCharts 
+        <MonthlyCharts
           key={`charts-${Object.keys(monthlyStats).length}-${!!prevStats}`}
-          monthlyStats={monthlyStats} 
+          monthlyStats={monthlyStats}
           prevStats={prevStats}
-          totalDistance={totalDistance} 
-          placesVisitedCount={placesVisited.count || 0}
+          totalDistance={totalDistance}
+          placesVisited={placesVisited}
         />
         <DashboardRecords records={records} />
         <FrequentRoutes topRoutes={topRoutes} />
