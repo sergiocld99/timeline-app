@@ -28,7 +28,7 @@ const FrequentRoutes = ({ topRoutes }: Props) => {
           <div key={i} className="flex flex-col gap-2">
             <div className="flex justify-between items-center font-['Space_Mono'] text-[0.65rem]">
               <span className="text-[#f0f0f8]">{route.route}</span>
-              <span className="font-bold" style={{ color: routeColors[i] }}>{route.count}</span>
+              <span className="font-bold" style={{ color: routeColors[i], fontSize: '0.8rem' }}>{route.count}</span>
             </div>
             <div className="h-[6px] bg-[#2a2a3a] rounded-full overflow-hidden">
               <div
