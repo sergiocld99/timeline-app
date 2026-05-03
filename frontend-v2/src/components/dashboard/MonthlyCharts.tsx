@@ -69,7 +69,7 @@ const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }
         <div className="flex justify-between items-start mb-6">
           <div className="flex flex-col gap-1.5">
             <span className="text-[0.65rem] font-['Space_Mono'] uppercase tracking-[3px] text-[#fff]">Places visited</span>
-            {prevStats?.placesVisited?.count && <ZipcodeTicker monthlyStats={monthlyStats} previousPlaces={prevStats?.placesVisited} currentPlaces={placesVisited} />}
+            <ZipcodeTicker monthlyStats={monthlyStats} previousPlaces={prevStats?.placesVisited} currentPlaces={placesVisited} />
           </div>
           <span className="text-2xl font-extrabold text-[#e8ff47] flex items-baseline leading-none">
             {placesVisited.count}

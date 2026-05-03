@@ -11,6 +11,8 @@ type Props = {
 };
 
 const ZipcodeTicker = ({ monthlyStats, currentPlaces, previousPlaces }: Props) => {
+  const showComparison = previousPlaces?.zipcodes?.length;
+
   const currentZipcodes = useMemo(() => {
     const all = new Set<string>();
     Object.values(monthlyStats).forEach(item => {
@@ -49,7 +51,7 @@ const ZipcodeTicker = ({ monthlyStats, currentPlaces, previousPlaces }: Props) =
 
     const interval = setInterval(() => {
       setIndex((prev) => prev + 1);
-    }, 10000);
+    }, 7000);
 
     return () => clearInterval(interval);
   }, [allZipcodes.length]);
@@ -89,7 +91,7 @@ const ZipcodeTicker = ({ monthlyStats, currentPlaces, previousPlaces }: Props) =
               key={`${zip}-${i}`}
               className="flex items-center gap-2 text-[0.8rem] h-5 font-['Space_Mono']"
             >
-              <span className="scale-75 origin-left">{isVisited ? '✅' : '❌'}</span>
+              {showComparison ? <span className="scale-75 origin-left">{isVisited ? '✅' : '❌'}</span> : null}
               <span className={isFrequent ? 'text-[#e8ff47]' : 'text-[#fff]'}>
                 {zip} - {name}
               </span>
