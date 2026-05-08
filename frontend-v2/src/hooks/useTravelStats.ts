@@ -10,12 +10,10 @@ const EMPTY_STATS: TravelStats = {
   averageSpeed: 0,
   totalMinutes: 0,
   totalHours: 0,
-  totalPrice: 0,
   averageLatitude: 0,
   averageLongitude: 0,
   averageDistance: 0,
   averageDuration: 0,
-  averagePrice: 0,
   placesVisited: { count: 0, zipcodes: [] }
 };
 
