@@ -2,7 +2,7 @@
 
 import type { MonthlyStats, PlacesVisited, TravelStats } from "@/types/travel";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -30,6 +30,7 @@ type Props = {
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }: Props) => {
+  const [activeZipcode, setActiveZipcode] = useState<string | null>(null);
   const chartData = useMemo(() => {
     const mainData = Object.entries(monthlyStats)
       .sort(([a], [b]) => a.localeCompare(b))
@@ -69,7 +70,12 @@ const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }
         <div className="flex justify-between items-start mb-6">
           <div className="flex flex-col gap-1.5">
             <span className="text-[0.65rem] font-['Space_Mono'] uppercase tracking-[3px] text-[#fff]">Places visited</span>
-            <ZipcodeTicker monthlyStats={monthlyStats} previousPlaces={prevStats?.placesVisited} currentPlaces={placesVisited} />
+            <ZipcodeTicker 
+              monthlyStats={monthlyStats} 
+              previousPlaces={prevStats?.placesVisited} 
+              currentPlaces={placesVisited} 
+              onActiveZipcodeChange={setActiveZipcode}
+            />
           </div>
           <span className="text-2xl font-extrabold text-[#e8ff47] flex items-baseline leading-none">
             {placesVisited.count}
@@ -92,13 +98,17 @@ const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }
                 itemStyle={{ color: '#f0f0f8', fontSize: 10, fontFamily: 'Space Mono' }}
               />
               <Bar dataKey="places" radius={[2, 2, 0, 0]}>
-                {chartData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={ACCENT1}
-                    fillOpacity={0.3 + (entry.places / Math.max(...chartData.map(d => d.places), 1)) * 0.7}
-                  />
-                ))}
+                {chartData.map((entry, index) => {
+                  const isHighlighted = activeZipcode ? entry.zipcodes.includes(activeZipcode) : true;
+                  return (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={isHighlighted ? ACCENT1 : MUTED}
+                      fillOpacity={isHighlighted ? (0.3 + (entry.places / Math.max(...chartData.map(d => d.places), 1)) * 0.7) : 0.15}
+                      className="transition-all duration-500 ease-in-out"
+                    />
+                  );
+                })}
               </Bar>
             </BarChart>
           </ResponsiveContainer>

@@ -8,9 +8,10 @@ type Props = {
   monthlyStats: MonthlyStats;
   currentPlaces: PlacesVisited;
   previousPlaces?: PlacesVisited;
+  onActiveZipcodeChange?: (zipcode: string | null) => void;
 };
 
-const ZipcodeTicker = ({ monthlyStats, currentPlaces, previousPlaces }: Props) => {
+const ZipcodeTicker = ({ monthlyStats, currentPlaces, previousPlaces, onActiveZipcodeChange }: Props) => {
   const showComparison = previousPlaces?.zipcodes?.length;
 
   const currentZipcodes = useMemo(() => {
@@ -72,6 +73,12 @@ const ZipcodeTicker = ({ monthlyStats, currentPlaces, previousPlaces }: Props) =
       return () => clearTimeout(timer);
     }
   }, [index, displayList.length, isTransitioning]);
+
+  useEffect(() => {
+    if (onActiveZipcodeChange && displayList.length > 0) {
+      onActiveZipcodeChange(displayList[index]);
+    }
+  }, [index, displayList, onActiveZipcodeChange]);
 
   if (!isMounted || allZipcodes.length === 0) return null;
 
