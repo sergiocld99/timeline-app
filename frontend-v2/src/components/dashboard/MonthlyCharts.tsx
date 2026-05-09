@@ -16,7 +16,7 @@ import {
   YAxis
 } from "recharts";
 
-import { ACCENT1, ACCENT2, BORDER, MUTED } from "@/constants/colors";
+import { ACCENT1, ACCENT2, BORDER, MUTED, WARNING } from "@/constants/colors";
 
 import ZipcodeTicker from "./ZipcodeTicker";
 
@@ -50,6 +50,7 @@ const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }
           km: Math.round(data.km),
           prevKm: prevData ? Math.round(prevData.km) : undefined,
           places: data.zipcodes.length,
+          prevZipcodes: prevData?.zipcodes || [],
         };
       });
     return mainData;
@@ -100,11 +101,24 @@ const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }
               <Bar dataKey="places" radius={[2, 2, 0, 0]}>
                 {chartData.map((entry, index) => {
                   const isHighlighted = activeZipcode ? entry.zipcodes.includes(activeZipcode) : true;
+                  const isPrevHighlighted = !isHighlighted && activeZipcode ? entry.prevZipcodes.includes(activeZipcode) : false;
+                  
+                  let fill = MUTED;
+                  let opacity = 0.15;
+                  
+                  if (isHighlighted) {
+                    fill = ACCENT1;
+                    opacity = 0.3 + (entry.places / Math.max(...chartData.map(d => d.places), 1)) * 0.7;
+                  } else if (isPrevHighlighted) {
+                    fill = WARNING; // Reddish color for previous year visits
+                    opacity = 0.4;
+                  }
+
                   return (
                     <Cell
                       key={`cell-${index}`}
-                      fill={isHighlighted ? ACCENT1 : MUTED}
-                      fillOpacity={isHighlighted ? (0.3 + (entry.places / Math.max(...chartData.map(d => d.places), 1)) * 0.7) : 0.15}
+                      fill={fill}
+                      fillOpacity={opacity}
                       className="transition-all duration-500 ease-in-out"
                     />
                   );
