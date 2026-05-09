@@ -16,7 +16,8 @@ import {
   YAxis
 } from "recharts";
 
-import { ACCENT1, ACCENT2, BORDER, MUTED, WARNING } from "@/constants/colors";
+import { ACCENT1, ACCENT2, BORDER, MUTED } from "@/constants/colors";
+import { getMonthlyBarStyling } from "@/utils/chart/monthly";
 
 import ZipcodeTicker from "./ZipcodeTicker";
 
@@ -55,6 +56,10 @@ const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }
       });
     return mainData;
   }, [monthlyStats, prevStats]);
+
+  const maxPlaces = useMemo(() => 
+    Math.max(...chartData.map(d => d.places), 1),
+  [chartData]);
 
   const prevAverage = useMemo(() => {
     if (!prevStats) return null;
@@ -100,19 +105,7 @@ const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }
               />
               <Bar dataKey="places" radius={[2, 2, 0, 0]}>
                 {chartData.map((entry, index) => {
-                  const isHighlighted = activeZipcode ? entry.zipcodes.includes(activeZipcode) : true;
-                  const isPrevHighlighted = !isHighlighted && activeZipcode ? entry.prevZipcodes.includes(activeZipcode) : false;
-                  
-                  let fill = MUTED;
-                  let opacity = 0.15;
-                  
-                  if (isHighlighted) {
-                    fill = ACCENT1;
-                    opacity = 0.3 + (entry.places / Math.max(...chartData.map(d => d.places), 1)) * 0.7;
-                  } else if (isPrevHighlighted) {
-                    fill = WARNING; // Reddish color for previous year visits
-                    opacity = 0.4;
-                  }
+                  const { fill, opacity } = getMonthlyBarStyling(entry, activeZipcode, maxPlaces);
 
                   return (
                     <Cell
