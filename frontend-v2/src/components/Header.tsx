@@ -18,7 +18,7 @@ import {
   SheetTrigger,
 } from "./ui/sheet";
 
-const NAV_ITEMS: { path: any; labelKey: string }[] = [
+const NAV_ITEMS: { path: string; labelKey: string }[] = [
   { path: "/creator", labelKey: "creator" },
   { path: "/crosses", labelKey: "crosses" },
   { path: "/locations", labelKey: "locations" },
@@ -49,7 +49,7 @@ const Header = () => {
           <div className="hidden lg:flex items-center space-x-4">
             <nav className="flex space-x-4">
               {NAV_ITEMS.map(({ path, labelKey }) => (
-                <NavItem key={path} path={path} label={t(labelKey as any)} />
+                <NavItem key={path} path={path} label={t(labelKey)} />
               ))}
             </nav>
             <div className="flex items-center space-x-2">
@@ -78,7 +78,7 @@ const Header = () => {
                 <nav className="flex flex-col gap-1 pt-4 [&_a]:w-full [&_button]:w-full [&_button]:justify-start">
                   {NAV_ITEMS.map(({ path, labelKey }) => (
                     <div key={path} onClick={() => setOpen(false)}>
-                      <NavItem path={path} label={t(labelKey as any)} />
+                      <NavItem path={path} label={t(labelKey)} />
                     </div>
                   ))}
                 </nav>
