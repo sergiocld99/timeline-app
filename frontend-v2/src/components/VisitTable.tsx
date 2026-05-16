@@ -1,10 +1,8 @@
 "use client";
 
-import type { Visit } from "@/types/visit";;
-import { useTranslations } from "next-intl";
+import type { Visit } from "@/types/visit";
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { translateDay } from '@/utils/date';
 
 import DateRangeSelector from './DateRangeSelector';
 import RemoveFilterBtn from './buttons/RemoveFilterBtn';
@@ -21,17 +19,11 @@ type Props = {
 };
 
 const VisitTable = ({ visits, onDelete, onUpdate, appliedFilter, onRemoveFilter }: Props) => {
-  const t = useTranslations();
   return (
     <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-gray-900 dark:text-white">Visits</CardTitle>
-        {appliedFilter && onRemoveFilter && (
-          <RemoveFilterBtn
-            handleClick={onRemoveFilter}
-            filterName={translateDay(appliedFilter, t)}
-          />
-        )}
+        {appliedFilter && onRemoveFilter && <RemoveFilterBtn handleClick={onRemoveFilter} filterName={appliedFilter} />}
       </CardHeader>
       <CardContent className="space-y-6">
         <DateRangeSelector />

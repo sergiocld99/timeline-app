@@ -9,9 +9,7 @@ import GravityCenterScoreboard from "@/components/GravityCenterScoreboard";
 import VisitStats from "@/components/VisitStats";
 import VisitTable from "@/components/VisitTable";
 import useVisits from "@/hooks/useVisits";
-import { daysOfWeek } from "@/constants";
-import { convertToArgentineTime } from "@/utils";
-
+import { extractDate } from "@/utils/date";
 
 const VisitsPageClient = () => {
   const { visits: visitsData, error, deleteVisit, updateVisit } = useVisits();
@@ -24,7 +22,7 @@ const VisitsPageClient = () => {
     const { type, value } = data || {}
 
     if (type === 'day' && value) {
-      setFilteredVisits(visits.filter(v => daysOfWeek[convertToArgentineTime(new Date(v.date)).getDay()] === value))
+      setFilteredVisits(visits.filter(v => extractDate(v.date).slice(0, 3) === value))
       setAppliedFilter(value)
       return
     }

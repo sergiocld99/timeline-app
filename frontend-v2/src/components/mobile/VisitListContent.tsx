@@ -1,9 +1,7 @@
-import type { Visit } from "@/types/visit";;
-
-import { useTranslations } from "next-intl";
+import type { Visit } from "@/types/visit";
 
 import { extractTime, getHoursAndMinutes } from "@/utils";
-import { renderNiceDate } from "@/utils/date";
+import { extractDate } from "@/utils/date";
 
 import { Item, ItemContent, ItemDescription, ItemMedia, ItemTitle } from "../ui/item";
 import { renderPoint } from "../render/coordinates";
@@ -14,7 +12,6 @@ type Props = {
 }
 
 const VisitListContent = ({ visits }: Props) => {
-  const t = useTranslations();
   const totalMinutes = visits.reduce((sum, visit) => sum + visit.durationMinutes, 0);
   const totalPercentage = visits.reduce((sum, visit) => sum + visit.weight.percentage, 0);
   const totalLat = visits.reduce((sum, visit) => sum + visit.location.latitude * visit.weight.percentage, 0) / totalPercentage;
@@ -29,9 +26,7 @@ const VisitListContent = ({ visits }: Props) => {
               {visit.weight.color}
             </ItemMedia>
             <ItemContent>
-              <ItemTitle>
-                {renderNiceDate(visit.date, t)} • {getHoursAndMinutes(visit.durationMinutes)}
-              </ItemTitle>
+              <ItemTitle>{extractDate(visit.date)} • {getHoursAndMinutes(visit.durationMinutes)}</ItemTitle>
               <ItemDescription>
                 {renderLocationWithZipcode(visit.location)} <br /> {extractTime(visit.arrivalTime)} - {extractTime(visit.departureTime)}
               </ItemDescription>
@@ -42,7 +37,7 @@ const VisitListContent = ({ visits }: Props) => {
 
       <Item variant="muted">
         <ItemContent>
-          <ItemTitle>{t("Visits.visitsCount", { count: visits.length })} • {getHoursAndMinutes(totalMinutes)}</ItemTitle>
+          <ItemTitle>{visits.length} visits • {getHoursAndMinutes(totalMinutes)}</ItemTitle>
           <ItemDescription>
             {totalLat && totalLong && renderPoint(totalLat, totalLong) || ""}
           </ItemDescription>

@@ -1,4 +1,5 @@
 import type { TranslationFn } from "@/types/i18n";
+
 import { convertToArgentineTime } from "@/utils";
 import { daysOfWeek } from "@/constants";
 
@@ -17,10 +18,10 @@ export const getDaysSince = (date: Date, base: Date) => {
   return msDiff / msPerDay
 }
 
-export const extractDate = (dateTime: string | Date, t: TranslationFn) => {
+export const extractDate = (dateTime: string | Date, t?: TranslationFn) => {
   const date = new Date(dateTime);
   const dayOfWeekEn = daysOfWeek[convertToArgentineTime(date).getDay()];
-  const dayOfWeek = t(`DaysShort.${dayOfWeekEn}`);
+  const dayOfWeek = t ? t(`DaysShort.${dayOfWeekEn}`) : dayOfWeekEn;
 
   const dateStr = typeof dateTime === 'string' ? dateTime : dateTime.toISOString();
   const parts = dateStr.split('T')[0].split('-');
