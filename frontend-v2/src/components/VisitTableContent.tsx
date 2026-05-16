@@ -9,7 +9,9 @@ import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableFooter, TableHeader, TableRow } from '@/components/ui/table';
-import { extractDate, extractTime, getHoursAndMinutes } from '@/utils';
+import { useTranslations, useFormatter } from "next-intl";
+import { extractTime, getHoursAndMinutes } from '@/utils';
+import { renderNiceDate } from "@/utils/date";
 import { renderTotalWeightsCell, renderWeight } from '@/utils/weight';
 
 import { renderPointWithCopyBtn } from './render/coordinates';
@@ -25,6 +27,8 @@ type Props = {
 }
 
 const VisitTableContent = ({ visits, onDelete, onUpdate }: Props) => {
+  const t = useTranslations("Travels");
+  const format = useFormatter();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValues, setEditValues] = useState<{ date: string }>({ date: '' });
   const [isSaving, setIsSaving] = useState(false);
@@ -110,7 +114,7 @@ const VisitTableContent = ({ visits, onDelete, onUpdate }: Props) => {
         className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 px-2 py-1 rounded transition-colors"
         title="Click to edit"
       >
-        {extractDate(visit.date)}
+        {renderNiceDate(visit.date, format)}
       </span>
     );
   };

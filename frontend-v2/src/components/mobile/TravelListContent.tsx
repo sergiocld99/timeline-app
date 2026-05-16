@@ -4,6 +4,7 @@ import { useTranslations, useFormatter } from "next-intl";
 
 import { extractTime, getEmojiForMode, getHoursAndMinutes } from "@/utils";
 import { cn } from "@/lib/utils";
+import { renderNiceDate } from "@/utils/date";
 
 import { Item, ItemContent, ItemDescription, ItemMedia, ItemTitle } from "../ui/item";
 import { renderPoint } from "../render/coordinates";
@@ -45,12 +46,7 @@ const TravelListContent = ({ travels, stats }: Props) => {
             </ItemMedia>
             <ItemContent>
               <ItemTitle>
-                {format.dateTime(new Date(travel.startTime), {
-                  weekday: 'short',
-                  day: '2-digit',
-                  month: '2-digit',
-                  year: '2-digit'
-                })} • {travel.distance} km
+                {renderNiceDate(travel.startTime, format)} • {travel.distance} km
               </ItemTitle>
               <ItemDescription>
                 {t("tableHeaders.from")}: {travel.origin.name} ({extractTime(travel.startTime)}) <br /> 

@@ -12,3 +12,12 @@ export const getDaysSince = (date: Date, base: Date) => {
 
   return msDiff / msPerDay
 }
+
+export const renderNiceDate = (date: string | Date, format: { dateTime: (date: Date, options: Intl.DateTimeFormatOptions) => string }) => {
+  return format.dateTime(new Date(date), {
+    weekday: 'short',
+    day: '2-digit',
+    month: '2-digit',
+    year: '2-digit'
+  });
+};

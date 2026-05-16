@@ -3,6 +3,7 @@ import type { Visit } from "@/types/visit";;
 import { useTranslations, useFormatter } from "next-intl";
 
 import { extractTime, getHoursAndMinutes } from "@/utils";
+import { renderNiceDate } from "@/utils/date";
 
 import { Item, ItemContent, ItemDescription, ItemMedia, ItemTitle } from "../ui/item";
 import { renderPoint } from "../render/coordinates";
@@ -30,12 +31,7 @@ const VisitListContent = ({ visits }: Props) => {
             </ItemMedia>
             <ItemContent>
               <ItemTitle>
-                {format.dateTime(new Date(visit.date), {
-                  weekday: 'short',
-                  day: '2-digit',
-                  month: '2-digit',
-                  year: '2-digit'
-                })} • {getHoursAndMinutes(visit.durationMinutes)}
+                {renderNiceDate(visit.date, format)} • {getHoursAndMinutes(visit.durationMinutes)}
               </ItemTitle>
               <ItemDescription>
                 {renderLocationWithZipcode(visit.location)} <br /> {extractTime(visit.arrivalTime)} - {extractTime(visit.departureTime)}

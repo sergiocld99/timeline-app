@@ -7,6 +7,7 @@ import { AlertTriangleIcon } from "lucide-react"
 
 import { Card, CardContent } from "@/components/ui/card"
 import { usePresentialCheck } from "@/hooks/usePresentialCheck"
+import { renderNiceDate } from "@/utils/date"
 
 const PresentialWorkAlert = () => {
   const t = useTranslations("PresentialAlert");
@@ -14,14 +15,7 @@ const PresentialWorkAlert = () => {
   const { awarenessData, loading } = usePresentialCheck()
   const { isBeforeThreshold, lastTravel, daysSince } = awarenessData
 
-  const formatDate = (dateStr: string) => {
-    return format.dateTime(new Date(dateStr), {
-      weekday: 'short',
-      day: '2-digit',
-      month: '2-digit',
-      year: '2-digit'
-    });
-  };
+  const formatDate = (dateStr: string) => renderNiceDate(dateStr, format);
 
   const renderLastTravelInfo = (travel: Travel, days: number) => {
     return (

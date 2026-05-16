@@ -2,6 +2,9 @@ import type { Travel, TravelEditProps } from "@/types/travel"
 
 import { useTranslations, useFormatter } from "next-intl"
 
+import { renderNiceDate } from "@/utils/date";
+
+
 
 import { Input } from "../ui/input";
 
@@ -27,21 +30,16 @@ const DateCell = ({ editProps, handleEdit }: Props) => {
     );
   }
 
-  const formattedDate = format.dateTime(new Date(travel.startTime), {
-    weekday: 'short',
-    day: '2-digit',
-    month: '2-digit',
-    year: '2-digit'
-  });
-
   return (
-    <span
+    <div
       onClick={() => { handleEdit(travel); }}
       className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 px-2 py-1 rounded transition-colors"
       title={t("tooltips.clickToEdit")}
     >
-      {formattedDate}
-    </span>
+      <span className="text-sm font-medium text-gray-900 dark:text-white">
+        {renderNiceDate(travel.startTime, format)}
+      </span>
+    </div>
   );
 }
 
