@@ -10,11 +10,17 @@
     "currentYear": "Año Actual",
     "maximumValues": "Valores máximos",
     "records": "Récords",
-    "longestTravelDistance": "Viaje más largo (distancia)",
-    "longestTravelTime": "Viaje más largo (tiempo)",
+    "longestTravelDistance": "Viaje de mayor distancia",
+    "longestTravelTime": "Viaje de mayor duración",
     "fastestTravel": "Viaje más rápido",
     "frequentRoutes": "Rutas Frecuentes",
     "mostUsedRoutes": "Rutas más usadas",
+    "mostFrequentRoutes": "Rutas más frecuentes",
+    "top5": "Top 5",
     "noRoutesMessage": "No se encontraron rutas para este período."
+  },
+  "MonthsShort": {
+    "1": "Ene", "2": "Feb", "3": "Mar", "4": "Abr", "5": "May", "6": "Jun",
+    "7": "Jul", "8": "Ago", "9": "Sep", "10": "Oct", "11": "Nov", "12": "Dic"
   }
 }

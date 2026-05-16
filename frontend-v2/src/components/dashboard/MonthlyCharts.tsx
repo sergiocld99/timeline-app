@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import type { MonthlyStats, PlacesVisited, TravelStats } from "@/types/travel";
 
 import { useMemo, useState } from "react";
@@ -31,6 +33,9 @@ type Props = {
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }: Props) => {
+  const t = useTranslations("Dashboard");
+  const tMonths = useTranslations("MonthsShort");
+
   const [activeZipcode, setActiveZipcode] = useState<string | null>(null);
   const chartData = useMemo(() => {
     const mainData = Object.entries(monthlyStats)
@@ -44,9 +49,11 @@ const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }
         const currentYear = parseInt(key.split('-')[0]);
         const prevKey = `${currentYear - 1}-${month}`;
         const prevData = prevStats?.monthlyStats?.[prevKey];
+        
+        const monthKey = parseInt(month).toString();
 
         return {
-          month: `${MONTH_NAMES[monthIndex]}`,
+          month: tMonths(monthKey as any),
           ...data,
           km: Math.round(data.km),
           prevKm: prevData ? Math.round(prevData.km) : undefined,
@@ -75,7 +82,7 @@ const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }
       <div className="bg-[#111118] border border-[#2a2a3a] rounded-sm p-7 relative overflow-hidden before:absolute before:top-0 before:left-0 before:w-[3px] before:h-full before:bg-[#e8ff47] animate-in duration-700 delay-200">
         <div className="flex justify-between items-start mb-6">
           <div className="flex flex-col gap-1.5">
-            <span className="text-[0.65rem] font-['Space_Mono'] uppercase tracking-[3px] text-[#fff]">Places visited</span>
+            <span className="text-[0.65rem] font-['Space_Mono'] uppercase tracking-[3px] text-[#fff]">{t("placesVisited")}</span>
             <ZipcodeTicker 
               monthlyStats={monthlyStats} 
               previousPlaces={prevStats?.placesVisited} 
@@ -125,7 +132,7 @@ const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }
       {/* Chart 2: Kilómetros por mes */}
       <div className="bg-[#111118] border border-[#2a2a3a] rounded-sm p-7 relative overflow-hidden before:absolute before:top-0 before:left-0 before:w-[3px] before:h-full before:bg-[#47d4ff] animate-in duration-700 delay-400">
         <div className="flex justify-between items-center mb-6">
-          <span className="text-[0.65rem] font-['Space_Mono'] uppercase tracking-[3px] text-[#fff]">Kilometers per month</span>
+          <span className="text-[0.65rem] font-['Space_Mono'] uppercase tracking-[3px] text-[#fff]">{t("kilometersPerMonth")}</span>
           <span className="text-2xl font-extrabold text-[#47d4ff] flex items-baseline">
             {chartData.length > 0 ? Math.round(totalDistance / chartData.length) : 0}
             {prevAverage !== null && (
@@ -153,7 +160,7 @@ const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }
               />
               <Line
                 type="monotone"
-                name="Previous Year"
+                name={t("previousYear")}
                 dataKey="prevKm"
                 stroke={MUTED}
                 strokeWidth={1.5}
@@ -163,7 +170,7 @@ const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }
               />
               <Line
                 type="monotone"
-                name="Current Year"
+                name={t("currentYear")}
                 dataKey="km"
                 stroke={ACCENT2}
                 strokeWidth={2.5}
