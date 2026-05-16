@@ -106,7 +106,8 @@
     "edit": "Edit",
     "delete": "Delete",
     "apply": "Apply",
-    "export": "Export"
+    "export": "Export",
+    "removeFilter": "Remove Filter: {filterName}"
   },
   "MonthsShort": {
     "1": "Jan",

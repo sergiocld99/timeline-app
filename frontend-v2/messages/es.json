@@ -106,7 +106,8 @@
     "edit": "Editar",
     "delete": "Eliminar",
     "apply": "Aplicar",
-    "export": "Exportar"
+    "export": "Exportar",
+    "removeFilter": "Quitar filtro: {filterName}"
   },
   "MonthsShort": {
     "1": "Ene",

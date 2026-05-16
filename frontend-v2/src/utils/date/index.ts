@@ -27,3 +27,13 @@ export const renderNiceDate = (dateTime: string | Date, format: DateFormatter) =
 
   return `${dayOfWeek} ${parts[2]}/${parts[1]}/${shortYear}`;
 };
+
+export const translateDay = (day: string, format: DateFormatter) => {
+  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const dayIndex = daysOfWeek.indexOf(day);
+  if (dayIndex !== -1) {
+    const date = new Date(2024, 0, 7 + dayIndex); // 2024-01-07 is Sunday
+    return format.dateTime(date, { weekday: 'short' });
+  }
+  return day;
+};
