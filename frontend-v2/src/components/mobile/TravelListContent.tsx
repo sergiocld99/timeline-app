@@ -1,5 +1,7 @@
 import type { Travel, TravelStats } from "@/types/travel";;
 
+import { useTranslations, useFormatter } from "next-intl";
+
 import { extractTime, getEmojiForMode, getHoursAndMinutes } from "@/utils";
 import { cn } from "@/lib/utils";
 
@@ -12,6 +14,9 @@ type Props = {
 }
 
 const TravelListContent = ({ travels, stats }: Props) => {
+  const t = useTranslations("Travels");
+  const format = useFormatter();
+
   const {
     averageLatitude: totalLat,
     averageLongitude: totalLong,
@@ -39,9 +44,17 @@ const TravelListContent = ({ travels, stats }: Props) => {
               </div>
             </ItemMedia>
             <ItemContent>
-              <ItemTitle>{travel.extractedDate} • {travel.distance} km</ItemTitle>
+              <ItemTitle>
+                {format.dateTime(new Date(travel.startTime), {
+                  weekday: 'short',
+                  day: '2-digit',
+                  month: '2-digit',
+                  year: '2-digit'
+                })} • {travel.distance} km
+              </ItemTitle>
               <ItemDescription>
-                From: {travel.origin.name} ({extractTime(travel.startTime)}) <br /> To: {travel.destination.name} ({extractTime(travel.endTime)})
+                {t("tableHeaders.from")}: {travel.origin.name} ({extractTime(travel.startTime)}) <br /> 
+                {t("tableHeaders.to")}: {travel.destination.name} ({extractTime(travel.endTime)})
               </ItemDescription>
             </ItemContent>
           </Item>
@@ -50,7 +63,7 @@ const TravelListContent = ({ travels, stats }: Props) => {
 
       <Item variant="muted">
         <ItemContent>
-          <ItemTitle>{placesVisited?.count || 0} places • {totalDistance.toFixed(0)} km • {getHoursAndMinutes(totalMinutes)}</ItemTitle>
+          <ItemTitle>{t("footer.placesCount", { count: placesVisited?.count || 0 })} • {totalDistance.toFixed(0)} km • {getHoursAndMinutes(totalMinutes)}</ItemTitle>
           <ItemDescription>
             {totalLat && totalLong && renderPoint(totalLat, totalLong) || ""}
           </ItemDescription>

@@ -19,6 +19,7 @@
 
 ## ✅ Checklist antes del Merge
 - [ ] Actualicé el Changelog con el formato correcto.
+- [ ] Verifiqué la vista mobile de los cambios.
 - [ ] Actualicé la Documentación de la API.
 - [ ] Los tests E2E de Playwright pasan localmente.
 - [ ] Asigné el milestone según el impacto del cambio.

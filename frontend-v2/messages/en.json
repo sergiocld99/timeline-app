@@ -60,7 +60,7 @@
       "travelsCount": "{count, plural, =1 {# travel} other {# travels}}",
       "routesCount": "{count, plural, =1 {# route} other {# routes}}",
       "daysCount": "{count, plural, =1 {# day} other {# days}}",
-      "placesCount": "{count} places"
+      "placesCount": "{count, plural, =1 {# place} other {# places}}"
     }
   },
   "TravelMap": {
@@ -125,5 +125,8 @@
     "travels": "Travels",
     "visits": "Visits",
     "menu": "Menu"
+  },
+  "Visits": {
+    "visitsCount": "{count, plural, =1 {# visit} other {# visits}}"
   }
 }
