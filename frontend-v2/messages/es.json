@@ -17,7 +17,8 @@
     "mostUsedRoutes": "Rutas más usadas",
     "mostFrequentRoutes": "Rutas más frecuentes",
     "top5": "Top 5",
-    "noRoutesMessage": "No se encontraron rutas para este período."
+    "noRoutesMessage": "No se encontraron rutas para este período.",
+    "errorLoadingStats": "Error al cargar las estadísticas."
   },
   "MonthsShort": {
     "1": "Ene",
@@ -34,7 +35,7 @@
     "12": "Dic"
   },
   "Navigation": {
-    "creator": "Creador",
+    "creator": "Crear",
     "crosses": "Cruces",
     "locations": "Lugares",
     "travels": "Viajes",

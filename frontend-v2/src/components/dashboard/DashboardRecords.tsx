@@ -1,10 +1,8 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useFormatter } from "next-intl";
 
 import type { TravelRecords } from "@/types/travel";
-
-import { renderNiceDate } from "@/utils";
 
 type Props = {
   records?: TravelRecords
@@ -12,6 +10,17 @@ type Props = {
 
 const DashboardRecords = ({ records }: Props) => {
   const t = useTranslations("Dashboard");
+  const format = useFormatter();
+
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return format.dateTime(date, {
+      weekday: 'short',
+      day: '2-digit',
+      month: '2-digit',
+      year: '2-digit'
+    });
+  };
 
   return (
     <div className="bg-[#111118] border border-[#2a2a3a] rounded-sm p-7 relative overflow-hidden before:absolute before:top-0 before:left-0 before:w-[3px] before:h-full before:bg-[#ff6b47] animate-in duration-700 delay-500">
@@ -27,7 +36,7 @@ const DashboardRecords = ({ records }: Props) => {
               <div className="text-lg font-bold text-[#f0f0f8]">{records.maxDistance.origin} → {records.maxDistance.destination}</div>
               <div className="text-xl font-bold text-[#ff6b47]">{records.maxDistance.value} km</div>
             </div>
-            <div className="text-[0.65rem] text-[#fff]">{renderNiceDate(records.maxDistance.date)}</div>
+            <div className="text-[0.65rem] text-[#fff]">{formatDate(records.maxDistance.date)}</div>
           </div>
         )}
         {records?.maxDuration && (

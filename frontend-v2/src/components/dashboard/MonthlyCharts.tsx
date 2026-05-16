@@ -110,7 +110,7 @@ const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }
                 contentStyle={{ backgroundColor: '#18181f', border: `1px solid ${BORDER}`, borderRadius: 2 }}
                 itemStyle={{ color: '#f0f0f8', fontSize: 10, fontFamily: 'Space Mono' }}
               />
-              <Bar dataKey="places" radius={[2, 2, 0, 0]}>
+              <Bar name={t("placesVisited")} dataKey="places" radius={[2, 2, 0, 0]}>
                 {chartData.map((entry, index) => {
                   const { fill, opacity } = getMonthlyBarStyling(entry, activeZipcode, maxPlaces);
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { useDashQuery } from "@/hooks/useDashQuery";
 import TravelDashboard from "@/components/TravelDashboard";
@@ -8,6 +9,7 @@ import Header from "@/components/Header";
 
 const HomePageClient = () => {
   const { data, prevData, isLoading, error } = useDashQuery();
+  const t = useTranslations("Dashboard");
 
   return (
     <>
@@ -19,7 +21,7 @@ const HomePageClient = () => {
       )}
       {error && (
         <div className="bg-[#0a0a0f] min-h-screen flex items-center justify-center text-red-500">
-          Error loading statistics.
+          {t("errorLoadingStats")}
         </div>
       )}
       {data && <TravelDashboard stats={data} prevStats={prevData || undefined} />}
