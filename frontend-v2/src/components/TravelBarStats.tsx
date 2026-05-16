@@ -56,7 +56,7 @@ const TravelBarStats = ({ travels, onFilter, options, cardClassName = "w-8/10" }
   const { topKeys, otherKeys, shouldShowOthers } = calculateBestLocations(relevantTravels, 5)
   const hourlyChartData = buildHourlyChartData(relevantTravels, topKeys)
   const dailyChartData = buildDailyChartData(relevantTravels, topKeys)
-  const chartConfig = buildChartConfig(topKeys, otherKeys)
+  const chartConfig = buildChartConfig(topKeys, otherKeys, t("Charts.modes.others"))
 
   const handleZipcodeClick = (zipcode: string[]) => {
     onFilter({ type: 'zipcode', value: zipcode })
@@ -83,7 +83,7 @@ const TravelBarStats = ({ travels, onFilter, options, cardClassName = "w-8/10" }
               tickFormatter={(value) => value.slice(0, 3)}
               onClick={(data) => handleHourClick(data?.value)}
             />
-            <ChartTooltip content={<ChartTooltipContent />} />
+            <ChartTooltip content={<ChartTooltipContent labelFormatter={(value) => `${value}hs`} />} />
             <ChartLegend content={<ChartLegendContent />} />
             {topKeys.at(0) && <Bar
               dataKey="red"
@@ -134,7 +134,7 @@ const TravelBarStats = ({ travels, onFilter, options, cardClassName = "w-8/10" }
               tickFormatter={(value) => translateDay(value, t)}
               onClick={(data) => handleDayClick(data?.value)}
             />
-            <ChartTooltip content={<ChartTooltipContent />} />
+            <ChartTooltip content={<ChartTooltipContent labelFormatter={(value) => translateDay(value, t)} />} />
             {topKeys.at(0) && <Bar
               dataKey="red"
               stackId="a"
