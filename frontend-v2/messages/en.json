@@ -18,7 +18,50 @@
     "mostFrequentRoutes": "Most frequent routes",
     "top5": "Top 5",
     "noRoutesMessage": "No top routes found for this period.",
-    "errorLoadingStats": "Error loading statistics."
+    "errorLoadingStats": "Error loading statistics.",
+    "loadingMap": "Loading map...",
+    "others": "Others"
+  },
+  "PresentialAlert": {
+    "lastTravel": "The last travel to work was {days} days ago. You visited {destination} on {date}",
+    "noTravel": "You did not travel to work in the last 90 days"
+  },
+  "Common": {
+    "loading": "Loading..."
+  },
+  "Travels": {
+    "title": "Travels",
+    "noTravelsFound": "No travels found for the selected date range :/",
+    "exportCsv": "Export CSV",
+    "tableHeaders": {
+      "date": "Date",
+      "mode": "Mode",
+      "from": "From",
+      "to": "To",
+      "start": "Start",
+      "distance": "Distance",
+      "duration": "Duration",
+      "speed": "Speed",
+      "weight": "Weight",
+      "actions": "Actions"
+    },
+    "messages": {
+      "updateSuccess": "Travel updated successfully!",
+      "deleteSuccess": "Travel deleted successfully!",
+      "deleteError": "Failed to delete travel",
+      "invalidNumbers": "Please enter valid positive numbers for distance and duration",
+      "durationExceeded": "Travel duration cannot exceed 24 hours (1440 minutes)",
+      "exportError": "Error exporting CSV:"
+    },
+    "tooltips": {
+      "clickToEdit": "Click to edit"
+    },
+    "footer": {
+      "travelsCount": "{count, plural, =1 {# travel} other {# travels}}",
+      "routesCount": "{count, plural, =1 {# route} other {# routes}}",
+      "daysCount": "{count, plural, =1 {# day} other {# days}}",
+      "placesCount": "{count} places"
+    }
   },
   "MonthsShort": {
     "1": "Jan",

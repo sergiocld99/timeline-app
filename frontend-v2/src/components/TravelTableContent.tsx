@@ -4,6 +4,7 @@ import type { AxiosErrorResponse } from '@/types/commons';
 import type { Travel, TravelEditProps, TravelEditValues, TravelStats } from "@/types/travel";
 
 import { Loader2, Save, X } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -34,9 +35,10 @@ type Props = {
   onRemoveCrosses?: (travelId: string) => Promise<void>;
 };
 
-const columnHeaders = ['Date', 'Mode', 'From', 'To', 'Start', 'Distance', 'Duration', 'Speed', 'Weight', 'Actions'];
+const COLUMN_KEYS = ['date', 'mode', 'from', 'to', 'start', 'distance', 'duration', 'speed', 'weight', 'actions'];
 
 const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, onRemoveCrosses }: Props) => {
+  const t = useTranslations("Travels");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValues, setEditValues] = useState<TravelEditValues>({ date: '', distance: '', duration: '', modeOfTransport: '', origin: '', destination: '', line: '' });
   const [isSaving, setIsSaving] = useState(false);
@@ -70,14 +72,14 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
       const duration = parseFloat(editValues.duration);
 
       if (isNaN(distance) || isNaN(duration) || distance <= 0 || duration <= 0) {
-        toast.error('Please enter valid positive numbers for distance and duration');
+        toast.error(t("messages.invalidNumbers"));
         return;
       }
 
       // Validar que la duración no exceda 24 horas (1440 minutos)
       const maxDurationMinutes = 24 * 60; // 1440 minutos
       if (duration > maxDurationMinutes) {
-        toast.error('Travel duration cannot exceed 24 hours (1440 minutes)');
+        toast.error(t("messages.durationExceeded"));
         return;
       }
 
@@ -99,7 +101,7 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
         line: editValues.line
       });
 
-      toast.success('Travel updated successfully!', { style: { background: 'green' } });
+      toast.success(t("messages.updateSuccess"), { style: { background: 'green' } });
 
       resetEdition()
     } catch (error) {
@@ -125,10 +127,10 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
     try {
       setIsSaving(true);
       await onDelete(travel._id);
-      toast.success('Travel deleted successfully!');
+      toast.success(t("messages.deleteSuccess"));
     } catch (error) {
       console.error('Error deleting travel:', error);
-      toast.error('Failed to delete travel');
+      toast.error(t("messages.deleteError"));
     } finally {
       setIsSaving(false);
     }
@@ -152,7 +154,7 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
       <span
         onClick={() => { handleEdit(travel); }}
         className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 px-2 py-1 rounded transition-colors"
-        title="Click to edit"
+        title={t("tooltips.clickToEdit")}
       >
         {field === 'distance' ? `${travel.distance} km` : `${travel.duration} min`}
       </span>
@@ -213,8 +215,8 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
 
 
   const renderColumnHeaders = () => (
-    columnHeaders.map((header) => (
-      <TableHead key={header} className="text-gray-700 dark:text-gray-300">{header}</TableHead>
+    COLUMN_KEYS.map((key) => (
+      <TableHead key={key} className="text-gray-700 dark:text-gray-300">{t(`tableHeaders.${key}` as any)}</TableHead>
     ))
   );
 

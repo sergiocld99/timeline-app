@@ -18,7 +18,50 @@
     "mostFrequentRoutes": "Rutas más frecuentes",
     "top5": "Top 5",
     "noRoutesMessage": "No se encontraron rutas para este período.",
-    "errorLoadingStats": "Error al cargar las estadísticas."
+    "errorLoadingStats": "Error al cargar las estadísticas.",
+    "loadingMap": "Cargando mapa...",
+    "others": "Otros"
+  },
+  "PresentialAlert": {
+    "lastTravel": "El último viaje al trabajo fue hace {days} días. Visitaste {destination} el {date}",
+    "noTravel": "No viajaste al trabajo en los últimos 90 días"
+  },
+  "Common": {
+    "loading": "Cargando..."
+  },
+  "Travels": {
+    "title": "Viajes",
+    "noTravelsFound": "No se encontraron viajes para el rango de fechas seleccionado :/",
+    "exportCsv": "Exportar CSV",
+    "tableHeaders": {
+      "date": "Fecha",
+      "mode": "Modo",
+      "from": "Desde",
+      "to": "Hasta",
+      "start": "Inicio",
+      "distance": "Distancia",
+      "duration": "Duración",
+      "speed": "Velocidad",
+      "weight": "Peso",
+      "actions": "Acciones"
+    },
+    "messages": {
+      "updateSuccess": "¡Viaje actualizado con éxito!",
+      "deleteSuccess": "¡Viaje eliminado con éxito!",
+      "deleteError": "Error al eliminar el viaje",
+      "invalidNumbers": "Por favor ingresa números positivos válidos para distancia y duración",
+      "durationExceeded": "La duración del viaje no puede exceder las 24 horas (1440 minutos)",
+      "exportError": "Error al exportar CSV:"
+    },
+    "tooltips": {
+      "clickToEdit": "Click para editar"
+    },
+    "footer": {
+      "travelsCount": "{count, plural, =1 {# viaje} other {# viajes}}",
+      "routesCount": "{count, plural, =1 {# ruta} other {# rutas}}",
+      "daysCount": "{count, plural, =1 {# día} other {# días}}",
+      "placesCount": "{count} lugares"
+    }
   },
   "MonthsShort": {
     "1": "Ene",

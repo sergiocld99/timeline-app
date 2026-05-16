@@ -2,6 +2,7 @@
 
 import type { Travel, TravelStats } from "@/types/travel";;
 
+import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -28,6 +29,7 @@ type Props = {
 };
 
 const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTravel, onAddCrosses, onRemoveCrosses, onRemoveFilter, appliedFilter }: Props) => {
+  const t = useTranslations("Travels");
   const { dateFrom, dateTo } = useDateRange();
   const { currentUser } = useUser();
   const { stats } = useTravelStats(travels, initialStats);
@@ -37,7 +39,7 @@ const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTra
       const userId = currentUser?.userId;
       await TravelService.exportCsv(dateFrom, dateTo, userId);
     } catch (error) {
-      toast.error('Error exporting CSV:')
+      toast.error(t("messages.exportError"))
       console.error(error)
     }
   };
@@ -45,7 +47,7 @@ const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTra
   return (
     <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-gray-900 dark:text-white">Travels</CardTitle>
+        <CardTitle className="text-gray-900 dark:text-white">{t("title")}</CardTitle>
         {appliedFilter && onRemoveFilter && <RemoveFilterBtn handleClick={onRemoveFilter} filterName={appliedFilter} />}
         <ExportButton handleClick={handleExportCsv} />
       </CardHeader>
@@ -53,7 +55,7 @@ const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTra
         <DateRangeSelector />
         {travels.length === 0 && (
           <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-            No travels found for the selected date range :/
+            {t("noTravelsFound")}
           </div>
         )}
         <div className="hidden lg:block">

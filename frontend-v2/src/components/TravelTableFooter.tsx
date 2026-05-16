@@ -1,4 +1,8 @@
-import type { Travel, TravelStats } from "@/types/travel";;
+import type { Travel, TravelStats } from "@/types/travel";
+
+import { useTranslations } from "next-intl";
+
+;
 
 import { getHoursAndMinutes } from "@/utils";
 import { renderTotalWeightsCell } from "@/utils/weight";
@@ -11,24 +15,25 @@ type Props = {
   stats?: TravelStats;
 }
 
-const renderFirstTotalCell = (length: number, uniqueRoutes?: number, uniqueDays?: number) => {
-  return (
-    <div>
-      <p>
-        {length} {length === 1 ? "travel" : "travels"}
-      </p>
-      {uniqueRoutes && <p>
-        <span className="text-gray-500 dark:text-gray-400"> {uniqueRoutes} {uniqueRoutes === 1 ? "route" : "routes"}</span>
-      </p>}
-      {uniqueDays && <p>
-        <span className="text-gray-500 dark:text-gray-400"> {uniqueDays} {uniqueDays === 1 ? "day" : "days"}</span>
-      </p>}
-    </div>
-  )
-}
-
 const TravelTableFooter = ({ travels, stats }: Props) => {
+  const t = useTranslations("Travels.footer");
   const { averageLatitude: totalLat, averageLongitude: totalLong, totalDistance = 0, totalMinutes = 0, placesVisited, uniqueDays, uniqueRoutes } = stats || {}
+
+  const renderFirstTotalCell = (length: number, routesCount?: number, daysCount?: number) => {
+    return (
+      <div>
+        <p>
+          {t("travelsCount", { count: length })}
+        </p>
+        {routesCount && <p>
+          <span className="text-gray-500 dark:text-gray-400"> {t("routesCount", { count: routesCount })}</span>
+        </p>}
+        {daysCount && <p>
+          <span className="text-gray-500 dark:text-gray-400"> {t("daysCount", { count: daysCount })}</span>
+        </p>}
+      </div>
+    )
+  }
 
   return (
     <TableFooter>
@@ -42,7 +47,7 @@ const TravelTableFooter = ({ travels, stats }: Props) => {
           {renderPointWithCopyBtn(totalLat, totalLong)}
         </TableCell>
         <TableCell className="font-medium text-gray-900 dark:text-white" colSpan={2}>
-          {`${placesVisited?.count || 0} places`}
+          {t("placesCount", { count: placesVisited?.count || 0 })}
         </TableCell>
         <TableCell className="font-medium text-gray-900 dark:text-white">
           {`${totalDistance?.toFixed(0)} km`}
