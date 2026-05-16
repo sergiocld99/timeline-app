@@ -20,7 +20,25 @@
     "noRoutesMessage": "No se encontraron rutas para este período."
   },
   "MonthsShort": {
-    "1": "Ene", "2": "Feb", "3": "Mar", "4": "Abr", "5": "May", "6": "Jun",
-    "7": "Jul", "8": "Ago", "9": "Sep", "10": "Oct", "11": "Nov", "12": "Dic"
+    "1": "Ene",
+    "2": "Feb",
+    "3": "Mar",
+    "4": "Abr",
+    "5": "May",
+    "6": "Jun",
+    "7": "Jul",
+    "8": "Ago",
+    "9": "Sep",
+    "10": "Oct",
+    "11": "Nov",
+    "12": "Dic"
+  },
+  "Navigation": {
+    "creator": "Creador",
+    "crosses": "Cruces",
+    "locations": "Lugares",
+    "travels": "Viajes",
+    "visits": "Visitas",
+    "menu": "Menú"
   }
 }
