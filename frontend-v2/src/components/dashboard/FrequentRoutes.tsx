@@ -1,9 +1,8 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-
 import type { TopRoute } from "@/types/travel";
 
+import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 
 import { ACCENT4 } from "@/constants/colors";

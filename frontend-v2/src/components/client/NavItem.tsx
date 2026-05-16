@@ -1,7 +1,6 @@
 "use client"
 
 import { Link, usePathname } from "@/i18n/routing"
-
 import { Button } from "@/components/ui/button"
 
 type Props = {

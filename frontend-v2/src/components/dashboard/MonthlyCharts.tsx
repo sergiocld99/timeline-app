@@ -1,9 +1,8 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-
 import type { MonthlyStats, PlacesVisited, TravelStats } from "@/types/travel";
 
+import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import {
   Bar,
@@ -30,7 +29,7 @@ type Props = {
   placesVisited: PlacesVisited;
 };
 
-const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
 
 const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }: Props) => {
   const t = useTranslations("Dashboard");
@@ -42,8 +41,7 @@ const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([key, data]) => {
         const month = key.split('-')[1];
-        const monthIndex = parseInt(month) - 1;
-
+        
         // Find corresponding data in prevMonthlyStats
         // Key format is YYYY-MM
         const currentYear = parseInt(key.split('-')[0]);
@@ -53,7 +51,7 @@ const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }
         const monthKey = parseInt(month).toString();
 
         return {
-          month: tMonths(monthKey as any),
+          month: tMonths(monthKey),
           ...data,
           km: Math.round(data.km),
           prevKm: prevData ? Math.round(prevData.km) : undefined,
@@ -62,7 +60,7 @@ const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }
         };
       });
     return mainData;
-  }, [monthlyStats, prevStats]);
+  }, [monthlyStats, prevStats, tMonths]);
 
   const maxPlaces = useMemo(() => 
     Math.max(...chartData.map(d => d.places), 1),

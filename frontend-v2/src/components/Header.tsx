@@ -3,6 +3,7 @@
 import { Menu } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+
 import { Link, usePathname } from "@/i18n/routing";
 
 import NavItem from "./client/NavItem";

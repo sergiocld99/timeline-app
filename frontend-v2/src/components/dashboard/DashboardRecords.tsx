@@ -1,8 +1,9 @@
 "use client";
 
+import type { TravelRecords } from "@/types/travel";
+
 import { useTranslations, useFormatter } from "next-intl";
 
-import type { TravelRecords } from "@/types/travel";
 
 type Props = {
   records?: TravelRecords
@@ -46,7 +47,7 @@ const DashboardRecords = ({ records }: Props) => {
               <div className="text-lg font-bold text-[#f0f0f8]">{records.maxDuration.origin} → {records.maxDuration.destination}</div>
               <div className="text-xl font-bold text-[#ff6b47]">{records.maxDuration.value} min</div>
             </div>
-            <div className="text-[0.65rem] text-[#fff]">{renderNiceDate(records.maxDuration.date)}</div>
+            <div className="text-[0.65rem] text-[#fff]">{formatDate(records.maxDuration.date)}</div>
           </div>
         )}
         {records?.maxSpeed && (
@@ -56,7 +57,7 @@ const DashboardRecords = ({ records }: Props) => {
               <div className="text-lg font-bold text-[#f0f0f8]">{records.maxSpeed.origin} → {records.maxSpeed.destination}</div>
               <div className="text-xl font-bold text-[#ff6b47]">{records.maxSpeed.value} km/h</div>
             </div>
-            <div className="text-[0.65rem] text-[#fff]">{renderNiceDate(records.maxSpeed.date)}</div>
+            <div className="text-[0.65rem] text-[#fff]">{formatDate(records.maxSpeed.date)}</div>
           </div>
         )}
       </div>
