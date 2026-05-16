@@ -1,11 +1,10 @@
-import type { Travel, TravelStats } from "@/types/travel";
 
 interface Milestone {
   icon: string;
   text: string;
 }
 
-export const getMilestones = (travel: Travel, stats?: TravelStats): Milestone[] => {
+export const getMilestones = (travel: Travel, t: any, stats?: TravelStats): Milestone[] => {
   if (!stats?.records) {
     return [];
   }
@@ -13,13 +12,13 @@ export const getMilestones = (travel: Travel, stats?: TravelStats): Milestone[] 
   const milestones: Milestone[] = [];
 
   if (stats.records.maxDistance?.date === travel.startTime) {
-    milestones.push({ icon: '🏆', text: 'Longest travel distance' });
+    milestones.push({ icon: '🏆', text: t("longestDistance") });
   }
   if (stats.records.maxDuration?.date === travel.startTime) {
-    milestones.push({ icon: '⏱️', text: 'Longest travel time' });
+    milestones.push({ icon: '⏱️', text: t("longestDuration") });
   }
   if (stats.records.maxSpeed?.date === travel.startTime) {
-    milestones.push({ icon: '🏎️', text: 'Fastest travel' });
+    milestones.push({ icon: '🏎️', text: t("fastestTravel") });
   }
 
   return milestones;

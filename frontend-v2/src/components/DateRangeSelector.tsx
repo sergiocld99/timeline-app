@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -15,6 +16,7 @@ import PreviousMonthBtn from "./buttons/PreviousMonthBtn";
 import PreviousWeekBtn from "./buttons/PreviousWeekBtn";
 
 const DateRangeSelector = () => {
+  const t = useTranslations("DateRange");
   const { dateFrom: contextDateFrom, dateTo: contextDateTo, updateDateRange } = useDateRange();
   const [dateFrom, setDateFrom] = useState(contextDateFrom);
   const [dateTo, setDateTo] = useState(contextDateTo);
@@ -53,7 +55,7 @@ const DateRangeSelector = () => {
 
   const handleApply = () => {
     if (new Date(dateFrom) > new Date(dateTo)) {
-      alert("La fecha de inicio no puede ser posterior a la fecha de fin.");
+      alert(t("invalidRange"));
       return;
     }
     updateDateRange(dateFrom, dateTo);
@@ -64,7 +66,7 @@ const DateRangeSelector = () => {
   return (
     <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardHeader>
-        <CardTitle className="text-gray-900 dark:text-white">Date Range</CardTitle>
+        <CardTitle className="text-gray-900 dark:text-white">{t("title")}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col lg:flex-row items-center gap-4">
@@ -81,7 +83,7 @@ const DateRangeSelector = () => {
           </div>
 
           <div className="space-y-2 flex-1">
-            <Label htmlFor="date_from" className="text-gray-700 dark:text-gray-300">From</Label>
+            <Label htmlFor="date_from" className="text-gray-700 dark:text-gray-300">{t("from")}</Label>
             <Input
               type="datetime-local"
               name="date_from"
@@ -93,7 +95,7 @@ const DateRangeSelector = () => {
           </div>
 
           <div className="space-y-2 flex-1">
-            <Label htmlFor="date_to" className="text-gray-700 dark:text-gray-300">To</Label>
+            <Label htmlFor="date_to" className="text-gray-700 dark:text-gray-300">{t("to")}</Label>
             <Input
               type="datetime-local"
               name="date_to"

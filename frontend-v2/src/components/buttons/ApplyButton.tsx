@@ -1,10 +1,12 @@
 import type { ButtonProps } from "@/types/props";
 
 import { Check } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 
 const ApplyButton = ({ handleClick, disabled }: ButtonProps) => {
+  const t = useTranslations("Actions");
   return (
     <Button
       type="button"
@@ -13,7 +15,7 @@ const ApplyButton = ({ handleClick, disabled }: ButtonProps) => {
       className="bg-green-600 hover:bg-green-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
     >
       <Check className="h-4 w-4 mr-2" />
-      Apply
+      {t("apply")}
     </Button>
   )
 }

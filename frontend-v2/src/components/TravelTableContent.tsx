@@ -39,6 +39,7 @@ const COLUMN_KEYS = ['date', 'mode', 'from', 'to', 'start', 'distance', 'duratio
 
 const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, onRemoveCrosses }: Props) => {
   const t = useTranslations("Travels");
+  const tMilestones = useTranslations("Milestones");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValues, setEditValues] = useState<TravelEditValues>({ date: '', distance: '', duration: '', modeOfTransport: '', origin: '', destination: '', line: '' });
   const [isSaving, setIsSaving] = useState(false);
@@ -216,7 +217,7 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
 
   const renderColumnHeaders = () => (
     COLUMN_KEYS.map((key) => (
-      <TableHead key={key} className="text-gray-700 dark:text-gray-300">{t(`tableHeaders.${key}` as any)}</TableHead>
+      <TableHead key={key} className="text-gray-700 dark:text-gray-300">{t(`tableHeaders.${key}`)}</TableHead>
     ))
   );
 
@@ -238,7 +239,7 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
       </TableHeader>
       <TableBody>
         {travels.map((t) => {
-          const milestones = getMilestones(t, stats);
+          const milestones = getMilestones(t, tMilestones, stats);
           const editProps = getEditProps(t);
 
           return (

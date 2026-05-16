@@ -63,6 +63,47 @@
       "placesCount": "{count} lugares"
     }
   },
+  "TravelMap": {
+    "noLocations": "No hay ubicaciones para mostrar",
+    "kmFromCenter": "{distance} km del centro"
+  },
+  "Charts": {
+    "speedInKmH": "Velocidad en km/h",
+    "km": "Km",
+    "minutes": "Minutos",
+    "travels": "Viajes",
+    "kmH": "Km/h",
+    "modeOfTransport": "Modo de transporte",
+    "modes": {
+      "car": "Auto",
+      "taxi": "Taxi",
+      "bus": "Colectivo",
+      "subway": "Subte",
+      "train": "Tren",
+      "ferry": "Ferry",
+      "walking": "Caminando",
+      "mixed": "Mixto",
+      "others": "Otros",
+      "other": "Otro"
+    }
+  },
+  "DateRange": {
+    "title": "Rango de fechas",
+    "from": "Desde",
+    "to": "Hasta",
+    "invalidRange": "La fecha de inicio no puede ser posterior a la fecha de fin."
+  },
+  "Milestones": {
+    "longestDistance": "Mayor distancia recorrida",
+    "longestDuration": "Viaje más largo (tiempo)",
+    "fastestTravel": "Viaje más rápido"
+  },
+  "Actions": {
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "apply": "Aplicar",
+    "export": "Exportar"
+  },
   "MonthsShort": {
     "1": "Ene",
     "2": "Feb",

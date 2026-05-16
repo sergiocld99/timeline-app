@@ -2,8 +2,6 @@ import type { Travel, TravelStats } from "@/types/travel";
 
 import { useTranslations } from "next-intl";
 
-;
-
 import { getHoursAndMinutes } from "@/utils";
 import { renderTotalWeightsCell } from "@/utils/weight";
 

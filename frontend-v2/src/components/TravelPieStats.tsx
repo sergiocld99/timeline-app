@@ -6,57 +6,11 @@ import type { Travel } from "@/types/travel";
 
 import { BadgeQuestionMarkIcon, BusIcon, CarIcon, CarTaxiFrontIcon, PersonStandingIcon, RocketIcon, ShipIcon, TrainIcon } from "lucide-react";
 import { Label, Pie, PieChart } from 'recharts';
+import { useTranslations } from "next-intl";
 
 import { Card, CardContent } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { calculateStatsByMode } from '@/utils/travelStats';
-
-
-type Props = {
-  travels: Travel[]
-}
-
-const config = {
-  modeOfTransport: {
-    label: "Mode of Transport",
-  },
-  car: {
-    label: "Car",
-    icon: CarIcon
-  },
-  taxi: {
-    label: "Taxi",
-    icon: CarTaxiFrontIcon
-  },
-  bus: {
-    label: "Bus",
-    icon: BusIcon
-  },
-  subway: {
-    label: "Subway",
-    icon: TrainIcon
-  },
-  train: {
-    label: "Train",
-    icon: TrainIcon
-  },
-  ferry: {
-    label: "Ferry",
-    icon: ShipIcon
-  },
-  walking: {
-    label: "Walking",
-    icon: PersonStandingIcon
-  },
-  mixed: {
-    label: "Mixed",
-    icon: RocketIcon
-  },
-  other: {
-    label: "Other",
-    icon: BadgeQuestionMarkIcon
-  },
-} satisfies ChartConfig
 
 const getRecommendedChartIndex = (modeOfTransport: string) => {
   switch (modeOfTransport) {
@@ -111,8 +65,55 @@ const getLabel = (total: number, label: string) => {
   )
 }
 
+type Props = {
+  travels: Travel[]
+}
+
 const TravelPieStats = ({ travels }: Props) => {
+  const t = useTranslations("Charts");
   const stats = calculateStatsByMode(travels);
+
+  const chartConfig = {
+    modeOfTransport: {
+      label: t("modeOfTransport"),
+    },
+    car: {
+      label: t("modes.car"),
+      icon: CarIcon
+    },
+    taxi: {
+      label: t("modes.taxi"),
+      icon: CarTaxiFrontIcon
+    },
+    bus: {
+      label: t("modes.bus"),
+      icon: BusIcon
+    },
+    subway: {
+      label: t("modes.subway"),
+      icon: TrainIcon
+    },
+    train: {
+      label: t("modes.train"),
+      icon: TrainIcon
+    },
+    ferry: {
+      label: t("modes.ferry"),
+      icon: ShipIcon
+    },
+    walking: {
+      label: t("modes.walking"),
+      icon: PersonStandingIcon
+    },
+    mixed: {
+      label: t("modes.mixed"),
+      icon: RocketIcon
+    },
+    other: {
+      label: t("modes.other"),
+      icon: BadgeQuestionMarkIcon
+    },
+  } satisfies ChartConfig
 
   const chartData: StatByModeChartData[] = stats.map((stat) => ({
     ...stat,
@@ -128,35 +129,35 @@ const TravelPieStats = ({ travels }: Props) => {
   return (
     <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardContent className="h-[300px] flex items-center justify-center">
-        <ChartContainer config={config} className="min-h-[200px] max-h-[300px] max-w-[250px]">
+        <ChartContainer config={chartConfig} className="min-h-[200px] max-h-[300px] max-w-[250px]">
           <PieChart>
             <ChartTooltip content={<ChartTooltipContent />} />
             <Pie data={chartData} dataKey="totalKm" nameKey="modeOfTransport" innerRadius={60} strokeWidth={5}>
-              {getLabel(totalKm, "Km")}
+              {getLabel(totalKm, t("km"))}
             </Pie>
           </PieChart>
         </ChartContainer>
-        <ChartContainer config={config} className="min-h-[200px] max-h-[300px] max-w-[250px]">
+        <ChartContainer config={chartConfig} className="min-h-[200px] max-h-[300px] max-w-[250px]">
           <PieChart>
             <ChartTooltip content={<ChartTooltipContent />} />
             <Pie data={chartData} dataKey="totalMinutes" nameKey="modeOfTransport" innerRadius={60} strokeWidth={5}>
-              {getLabel(totalMinutes, "Minutes")}
+              {getLabel(totalMinutes, t("minutes"))}
             </Pie>
           </PieChart>
         </ChartContainer>
-        <ChartContainer config={config} className="min-h-[200px] max-h-[300px] max-w-[250px]">
+        <ChartContainer config={chartConfig} className="min-h-[200px] max-h-[300px] max-w-[250px]">
           <PieChart>
             <ChartTooltip content={<ChartTooltipContent />} />
             <Pie data={chartData} dataKey="count" nameKey="modeOfTransport" innerRadius={60} strokeWidth={5}>
-              {getLabel(totalTravels, "Travels")}
+              {getLabel(totalTravels, t("travels"))}
             </Pie>
           </PieChart>
         </ChartContainer>
-        <ChartContainer config={config} className="min-h-[200px] max-h-[300px] max-w-[250px]">
+        <ChartContainer config={chartConfig} className="min-h-[200px] max-h-[300px] max-w-[250px]">
           <PieChart>
             <ChartTooltip content={<ChartTooltipContent />} />
             <Pie data={chartData} dataKey="averageSpeed" nameKey="modeOfTransport" innerRadius={60} strokeWidth={5}>
-              {getLabel(averageSpeed, "Km/h")}
+              {getLabel(averageSpeed, t("kmH"))}
             </Pie>
           </PieChart>
         </ChartContainer>
