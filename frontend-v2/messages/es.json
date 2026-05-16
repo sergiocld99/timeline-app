@@ -131,9 +131,6 @@
     "visits": "Visitas",
     "menu": "Menú"
   },
-  "Visits": {
-    "visitsCount": "{count, plural, =1 {# visita} other {# visitas}}"
-  },
   "DaysShort": {
     "Sun": "Dom",
     "Mon": "Lun",
