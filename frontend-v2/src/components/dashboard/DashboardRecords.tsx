@@ -6,7 +6,6 @@ import { useTranslations, useFormatter } from "next-intl";
 
 import { renderNiceDate } from "@/utils/date";
 
-
 type Props = {
   records?: TravelRecords
 };

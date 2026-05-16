@@ -1,3 +1,5 @@
+import type { DateFormatter } from "@/types/i18n";
+
 export const isAfter = (date: Date, threshold: Date) => {
   return date.getTime() > threshold.getTime()
 }
@@ -13,7 +15,7 @@ export const getDaysSince = (date: Date, base: Date) => {
   return msDiff / msPerDay
 }
 
-export const renderNiceDate = (date: string | Date, format: { dateTime: (date: Date, options: Intl.DateTimeFormatOptions) => string }) => {
+export const renderNiceDate = (date: string | Date, format: DateFormatter) => {
   return format.dateTime(new Date(date), {
     weekday: 'short',
     day: '2-digit',

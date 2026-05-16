@@ -5,11 +5,11 @@ import type { Visit } from "@/types/visit";;
 import { Loader2, Save, X, Eye, EyeOff, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { useFormatter } from "next-intl";
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableFooter, TableHeader, TableRow } from '@/components/ui/table';
-import { useTranslations, useFormatter } from "next-intl";
 import { extractTime, getHoursAndMinutes } from '@/utils';
 import { renderNiceDate } from "@/utils/date";
 import { renderTotalWeightsCell, renderWeight } from '@/utils/weight';
@@ -27,7 +27,6 @@ type Props = {
 }
 
 const VisitTableContent = ({ visits, onDelete, onUpdate }: Props) => {
-  const t = useTranslations("Travels");
   const format = useFormatter();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValues, setEditValues] = useState<{ date: string }>({ date: '' });
@@ -66,7 +65,7 @@ const VisitTableContent = ({ visits, onDelete, onUpdate }: Props) => {
 
     try {
       setIsSaving(true);
-      
+
       let newArrivalTime = visit.arrivalTime;
       if (visit.arrivalTime.includes('T')) {
         const timePart = visit.arrivalTime.split('T')[1];
