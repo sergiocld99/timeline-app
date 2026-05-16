@@ -9,7 +9,7 @@ const getKey = (lat: number, lng: number, index = 0) => {
   return `${lat.toFixed(4)}-${lng.toFixed(4)}-${index}`
 }
 
-const createLocationPopupContent = (location: MapLocation, t: any) => {
+const createLocationPopupContent = (location: MapLocation, t: (key: string, values?: Record<string, string | number>) => string) => {
   const title = (location.frecuency > 0 ? `${location.frecuency}x ` : '').concat(location.name)
 
   return (
@@ -37,7 +37,7 @@ const getMarkerIcon = (location: MapLocation) => {
   return defaultMarker
 }
 
-export const renderLocationMarkers = (locations: MapLocation[], t: any) => {
+export const renderLocationMarkers = (locations: MapLocation[], t: (key: string, values?: Record<string, string | number>) => string) => {
   return locations.map((location, index) => {
     const popupContent = createLocationPopupContent(location, t)
     const icon = getMarkerIcon(location)

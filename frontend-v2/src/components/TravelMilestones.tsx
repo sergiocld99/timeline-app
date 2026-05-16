@@ -1,10 +1,11 @@
+import type { Travel, TravelStats } from "@/types/travel"
 
 interface Milestone {
   icon: string;
   text: string;
 }
 
-export const getMilestones = (travel: Travel, t: any, stats?: TravelStats): Milestone[] => {
+export const getMilestones = (travel: Travel, t: (key: string) => string, stats?: TravelStats): Milestone[] => {
   if (!stats?.records) {
     return [];
   }
