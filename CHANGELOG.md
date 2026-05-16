@@ -1,7 +1,5 @@
 # CHANGELOG
 ## v0.9.0
-- COD9-020: Implement i18n support for Dashboard and Travels pages (#64) [367]
-  - **Frontend**: Full internationalization (EN/ES) for Dashboard and Travels; Refactored routing to use locale segments; pluralization support in tables; localized date formatting and map markers.
 - COD9-003: Add Partido for Locations with B-Prefix zipcodes (#57) [388]
 - COD9-004: Select Crosses in Travel Creator (#59) [140]
 - COD9-012: Optimize Travel Dashboard analytics and modularize components (#60) [1236]
@@ -10,6 +8,9 @@
 - COD9-013: Remove totalPrice and averagePrice from Travel Stats (#60) [120]
 - COD9-015: Show all zipcodes in ticker (#60) [229]
 - COD9-016: Places highlighting by active zipcode on ticker (#62) [61]
+
+### Internationalization
+- COD9-036: Implement i18n support for Dashboard and Travels pages (#64) [3687]
 
 ## v0.8.0 (2026-04-17)
 - COD8-001: Add Purple Weight for Travels with Crosses (#39) [23]
