@@ -1,3 +1,4 @@
+import type { TranslationFn } from "@/types/i18n";
 import type { Travel, TravelStats } from "@/types/travel"
 
 interface Milestone {
@@ -5,7 +6,7 @@ interface Milestone {
   text: string;
 }
 
-export const getMilestones = (travel: Travel, t: (key: string) => string, stats?: TravelStats): Milestone[] => {
+export const getMilestones = (travel: Travel, t: TranslationFn, stats?: TravelStats): Milestone[] => {
   if (!stats?.records) {
     return [];
   }

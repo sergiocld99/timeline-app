@@ -1,3 +1,4 @@
+import type { TranslationFn } from "@/types/i18n"
 import type { MapLocation } from "@/types/map"
 
 import { Marker, Popup } from "react-leaflet"
@@ -9,7 +10,7 @@ const getKey = (lat: number, lng: number, index = 0) => {
   return `${lat.toFixed(4)}-${lng.toFixed(4)}-${index}`
 }
 
-const createLocationPopupContent = (location: MapLocation, t: (key: string, values?: Record<string, string | number>) => string) => {
+const createLocationPopupContent = (location: MapLocation, t: TranslationFn) => {
   const title = (location.frecuency > 0 ? `${location.frecuency}x ` : '').concat(location.name)
 
   return (
@@ -37,7 +38,7 @@ const getMarkerIcon = (location: MapLocation) => {
   return defaultMarker
 }
 
-export const renderLocationMarkers = (locations: MapLocation[], t: (key: string, values?: Record<string, string | number>) => string) => {
+export const renderLocationMarkers = (locations: MapLocation[], t: TranslationFn) => {
   return locations.map((location, index) => {
     const popupContent = createLocationPopupContent(location, t)
     const icon = getMarkerIcon(location)
