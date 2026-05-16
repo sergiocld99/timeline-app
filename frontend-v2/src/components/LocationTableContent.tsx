@@ -3,10 +3,10 @@
 import type { Location, LocationEditValues } from "@/types/location";
 
 import { Save, X } from 'lucide-react';
-import Link from "next/link";
 import { useState, useMemo } from "react";
 import { toast } from "sonner";
 
+import { Link } from "@/i18n/routing";
 import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";

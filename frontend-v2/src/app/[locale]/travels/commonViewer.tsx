@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link"
-
+import { Link } from "@/i18n/routing"
 import ArrivalsAction from "@/components/buttons/ArrivalsAction"
 import BackAction from "@/components/buttons/BackAction"
 import DeparturesAction from "@/components/buttons/DeparturesAction"
