@@ -1,4 +1,9 @@
-import "./globals.css";
+import "../globals.css";
+
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages } from "next-intl/server";
+import { notFound } from "next/navigation";
+import { routing } from "@/i18n/routing";
 
 import type { Metadata } from "next";
 
@@ -36,31 +41,43 @@ export const metadata: Metadata = {
   description: "Track your travels, visits, and locations",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
+  params,
 }: Readonly<{
   children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }>) {
+  const { locale } = await params;
+
+  if (!routing.locales.includes(locale as any)) {
+    notFound();
+  }
+
+  const messages = await getMessages();
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${spaceMono.variable} ${syne.variable} antialiased`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <UserProvider>
-            <QueryProvider>
-              <DateRangeProvider>
-                {children}
-                <Toaster />
-              </DateRangeProvider>
-            </QueryProvider>
-          </UserProvider>
-        </ThemeProvider>
+        <NextIntlClientProvider messages={messages}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <UserProvider>
+              <QueryProvider>
+                <DateRangeProvider>
+                  {children}
+                  <Toaster />
+                </DateRangeProvider>
+              </QueryProvider>
+            </UserProvider>
+          </ThemeProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

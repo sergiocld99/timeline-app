@@ -1,0 +1,20 @@
+{
+  "Dashboard": {
+    "title": "PANEL",
+    "travels": "Viajes",
+    "totalKm": "km totales",
+    "totalHours": "horas totales",
+    "placesVisited": "Lugares visitados",
+    "kilometersPerMonth": "Kilómetros por mes",
+    "previousYear": "Año Anterior",
+    "currentYear": "Año Actual",
+    "maximumValues": "Valores máximos",
+    "records": "Récords",
+    "longestTravelDistance": "Viaje más largo (distancia)",
+    "longestTravelTime": "Viaje más largo (tiempo)",
+    "fastestTravel": "Viaje más rápido",
+    "frequentRoutes": "Rutas Frecuentes",
+    "mostUsedRoutes": "Rutas más usadas",
+    "noRoutesMessage": "No se encontraron rutas para este período."
+  }
+}

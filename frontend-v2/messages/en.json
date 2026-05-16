@@ -1,0 +1,20 @@
+{
+  "Dashboard": {
+    "title": "DASHBOARD",
+    "travels": "Travels",
+    "totalKm": "total km",
+    "totalHours": "total hours",
+    "placesVisited": "Places visited",
+    "kilometersPerMonth": "Kilometers per month",
+    "previousYear": "Previous Year",
+    "currentYear": "Current Year",
+    "maximumValues": "Maximum values",
+    "records": "Records",
+    "longestTravelDistance": "Longest travel distance",
+    "longestTravelTime": "Longest travel time",
+    "fastestTravel": "Fastest travel",
+    "frequentRoutes": "Frequent Routes",
+    "mostUsedRoutes": "Most used routes",
+    "noRoutesMessage": "No top routes found for this period."
+  }
+}
