@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { getHoursAndMinutes } from "@/utils";
 import { renderTotalWeightsCell } from "@/utils/weight";
 
-import { renderPointWithCopyBtn } from "./render/coordinates";
+import { PointWithCopyBtn } from "./render/coordinates";
 import { TableCell, TableFooter, TableRow } from "./ui/table";
 
 type Props = {
@@ -42,7 +42,7 @@ const TravelTableFooter = ({ travels, stats }: Props) => {
           </div>
         </TableCell>
         <TableCell className="text-gray-900 dark:text-white" colSpan={2}>
-          {renderPointWithCopyBtn(totalLat, totalLong)}
+          <PointWithCopyBtn latitude={totalLat} longitude={totalLong} />
         </TableCell>
         <TableCell className="font-medium text-gray-900 dark:text-white" colSpan={2}>
           {t("placesCount", { count: placesVisited?.count || 0 })}

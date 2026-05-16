@@ -14,7 +14,7 @@ import { extractTime, getHoursAndMinutes } from '@/utils';
 import { renderNiceDate } from "@/utils/date";
 import { renderTotalWeightsCell, renderWeight } from '@/utils/weight';
 
-import { renderPointWithCopyBtn } from './render/coordinates';
+import { PointWithCopyBtn } from './render/coordinates';
 import { renderLocationWithZipcode } from './render/location';
 
 
@@ -200,7 +200,7 @@ const VisitTableContent = ({ visits, onDelete, onUpdate }: Props) => {
       <TableFooter>
         <TableRow className="border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
           <TableCell className="font-medium text-gray-900 dark:text-white">Total</TableCell>
-          <TableCell className="text-gray-900 dark:text-white" colSpan={3}>{renderPointWithCopyBtn(totalLat, totalLong)}</TableCell>
+          <TableCell className="text-gray-900 dark:text-white" colSpan={3}><PointWithCopyBtn latitude={totalLat} longitude={totalLong} /></TableCell>
           <TableCell className="font-medium text-gray-900 dark:text-white">{getHoursAndMinutes(totalMinutes)}</TableCell>
           <TableCell className="text-gray-900 dark:text-white">{renderTotalWeightsCell(visibleVisits)}</TableCell>
         </TableRow>

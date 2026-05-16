@@ -27,7 +27,11 @@
     "noTravel": "No viajaste al trabajo en los últimos 90 días"
   },
   "Common": {
-    "loading": "Cargando..."
+    "loading": "Cargando...",
+    "messages": {
+      "copied": "¡Coordenadas copiadas al portapapeles!",
+      "copyError": "Error al copiar las coordenadas"
+    }
   },
   "Travels": {
     "title": "Viajes",

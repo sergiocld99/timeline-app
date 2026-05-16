@@ -27,7 +27,11 @@
     "noTravel": "You did not travel to work in the last 90 days"
   },
   "Common": {
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "messages": {
+      "copied": "Coordinates copied to clipboard!",
+      "copyError": "Failed to copy coordinates"
+    }
   },
   "Travels": {
     "title": "Travels",
