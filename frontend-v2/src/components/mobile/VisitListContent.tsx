@@ -1,6 +1,6 @@
 import type { Visit } from "@/types/visit";;
 
-import { useTranslations, useFormatter } from "next-intl";
+import { useTranslations } from "next-intl";
 
 import { extractTime, getHoursAndMinutes } from "@/utils";
 import { renderNiceDate } from "@/utils/date";
@@ -14,8 +14,7 @@ type Props = {
 }
 
 const VisitListContent = ({ visits }: Props) => {
-  const t = useTranslations("Visits");
-  const format = useFormatter();
+  const t = useTranslations();
   const totalMinutes = visits.reduce((sum, visit) => sum + visit.durationMinutes, 0);
   const totalPercentage = visits.reduce((sum, visit) => sum + visit.weight.percentage, 0);
   const totalLat = visits.reduce((sum, visit) => sum + visit.location.latitude * visit.weight.percentage, 0) / totalPercentage;
@@ -31,7 +30,7 @@ const VisitListContent = ({ visits }: Props) => {
             </ItemMedia>
             <ItemContent>
               <ItemTitle>
-                {renderNiceDate(visit.date, format)} • {getHoursAndMinutes(visit.durationMinutes)}
+                {renderNiceDate(visit.date, t)} • {getHoursAndMinutes(visit.durationMinutes)}
               </ItemTitle>
               <ItemDescription>
                 {renderLocationWithZipcode(visit.location)} <br /> {extractTime(visit.arrivalTime)} - {extractTime(visit.departureTime)}
@@ -43,7 +42,7 @@ const VisitListContent = ({ visits }: Props) => {
 
       <Item variant="muted">
         <ItemContent>
-          <ItemTitle>{t("visitsCount", { count: visits.length })} • {getHoursAndMinutes(totalMinutes)}</ItemTitle>
+          <ItemTitle>{t("Visits.visitsCount", { count: visits.length })} • {getHoursAndMinutes(totalMinutes)}</ItemTitle>
           <ItemDescription>
             {totalLat && totalLong && renderPoint(totalLat, totalLong) || ""}
           </ItemDescription>

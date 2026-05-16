@@ -1,6 +1,6 @@
-import type { DateFormatter } from "@/types/i18n";
-
+import type { TranslationFn } from "@/types/i18n";
 import { convertToArgentineTime } from "@/utils";
+import { daysOfWeek } from "@/constants";
 
 export const isAfter = (date: Date, threshold: Date) => {
   return date.getTime() > threshold.getTime()
@@ -17,9 +17,10 @@ export const getDaysSince = (date: Date, base: Date) => {
   return msDiff / msPerDay
 }
 
-export const renderNiceDate = (dateTime: string | Date, format: DateFormatter) => {
+export const extractDate = (dateTime: string | Date, t: TranslationFn) => {
   const date = new Date(dateTime);
-  const dayOfWeek = format.dateTime(convertToArgentineTime(date), { weekday: 'short' });
+  const dayOfWeekEn = daysOfWeek[convertToArgentineTime(date).getDay()];
+  const dayOfWeek = t(`DaysShort.${dayOfWeekEn}`);
 
   const dateStr = typeof dateTime === 'string' ? dateTime : dateTime.toISOString();
   const parts = dateStr.split('T')[0].split('-');
@@ -28,12 +29,13 @@ export const renderNiceDate = (dateTime: string | Date, format: DateFormatter) =
   return `${dayOfWeek} ${parts[2]}/${parts[1]}/${shortYear}`;
 };
 
-export const translateDay = (day: string, format: DateFormatter) => {
-  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const dayIndex = daysOfWeek.indexOf(day);
-  if (dayIndex !== -1) {
-    const date = new Date(2024, 0, 7 + dayIndex); // 2024-01-07 is Sunday
-    return format.dateTime(date, { weekday: 'short' });
+export const renderNiceDate = (dateTime: string | Date, t: TranslationFn) => {
+  return extractDate(dateTime, t);
+};
+
+export const translateDay = (day: string, t: TranslationFn) => {
+  if (daysOfWeek.includes(day)) {
+    return t(`DaysShort.${day}`);
   }
   return day;
 };

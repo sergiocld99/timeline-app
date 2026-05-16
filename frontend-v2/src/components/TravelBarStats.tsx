@@ -2,7 +2,7 @@ import type { Travel } from "@/types/travel";
 import type { Location } from "@/types/location";
 import type { FilteringData } from "@/types/stats";
 
-import { useFormatter } from "next-intl";
+import { useTranslations } from "next-intl";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
 import { buildChartConfig } from "@/utils/chart"
@@ -49,7 +49,7 @@ const enrichWithFarthestPoint = (t: Travel, home?: Location) => {
 }
 
 const TravelBarStats = ({ travels, onFilter, options, cardClassName = "w-8/10" }: Props) => {
-  const format = useFormatter();
+  const t = useTranslations();
   const home = calculateHome(travels, options)
   const relevantTravels = travels.map(t => enrichWithFarthestPoint(t, home))
 
@@ -131,7 +131,7 @@ const TravelBarStats = ({ travels, onFilter, options, cardClassName = "w-8/10" }
               className="hover:cursor-pointer"
               dataKey="day"
               tickMargin={10}
-              tickFormatter={(value) => translateDay(value, format)}
+              tickFormatter={(value) => translateDay(value, t)}
               onClick={(data) => handleDayClick(data?.value)}
             />
             <ChartTooltip content={<ChartTooltipContent />} />

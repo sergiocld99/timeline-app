@@ -1,6 +1,6 @@
 import type { Travel, TravelEditProps } from "@/types/travel"
 
-import { useTranslations, useFormatter } from "next-intl"
+import { useTranslations } from "next-intl"
 
 import { renderNiceDate } from "@/utils/date";
 
@@ -12,8 +12,7 @@ type Props = {
 }
 
 const DateCell = ({ editProps, handleEdit }: Props) => {
-  const t = useTranslations("Travels");
-  const format = useFormatter();
+  const t = useTranslations();
   const { travel, editingId, editValues, handleChange } = editProps
 
   if (editingId === travel._id) {
@@ -32,10 +31,10 @@ const DateCell = ({ editProps, handleEdit }: Props) => {
     <div
       onClick={() => { handleEdit(travel); }}
       className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 px-2 py-1 rounded transition-colors"
-      title={t("tooltips.clickToEdit")}
+      title={t("Travels.tooltips.clickToEdit")}
     >
       <span className="text-sm font-medium text-gray-900 dark:text-white">
-        {renderNiceDate(travel.startTime, format)}
+        {renderNiceDate(travel.startTime, t)}
       </span>
     </div>
   );

@@ -2,7 +2,7 @@
 
 import type { Travel } from "@/types/travel";
 
-import { useTranslations, useFormatter } from "next-intl";
+import { useTranslations } from "next-intl";
 import { AlertTriangleIcon } from "lucide-react"
 
 import { Card, CardContent } from "@/components/ui/card"
@@ -10,17 +10,16 @@ import { usePresentialCheck } from "@/hooks/usePresentialCheck"
 import { renderNiceDate } from "@/utils/date"
 
 const PresentialWorkAlert = () => {
-  const t = useTranslations("PresentialAlert");
-  const format = useFormatter();
+  const t = useTranslations();
   const { awarenessData, loading } = usePresentialCheck()
   const { isBeforeThreshold, lastTravel, daysSince } = awarenessData
 
-  const formatDate = (dateStr: string) => renderNiceDate(dateStr, format);
+  const formatDate = (dateStr: string) => renderNiceDate(dateStr, t);
 
   const renderLastTravelInfo = (travel: Travel, days: number) => {
     return (
       <p>
-        {t.rich("lastTravel", {
+        {t.rich("PresentialAlert.lastTravel", {
           days: Math.floor(days),
           destination: travel.destination.name,
           date: formatDate(travel.endTime),
@@ -32,7 +31,7 @@ const PresentialWorkAlert = () => {
   }
 
   const renderDefaultMessage = () => {
-    return t("noTravel")
+    return t("PresentialAlert.noTravel")
   }
 
   return !loading && isBeforeThreshold && (

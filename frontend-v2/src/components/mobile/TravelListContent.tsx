@@ -1,6 +1,6 @@
 import type { Travel, TravelStats } from "@/types/travel";;
 
-import { useTranslations, useFormatter } from "next-intl";
+import { useTranslations } from "next-intl";
 
 import { extractTime, getEmojiForMode, getHoursAndMinutes } from "@/utils";
 import { cn } from "@/lib/utils";
@@ -15,8 +15,7 @@ type Props = {
 }
 
 const TravelListContent = ({ travels, stats }: Props) => {
-  const t = useTranslations("Travels");
-  const format = useFormatter();
+  const t = useTranslations();
 
   const {
     averageLatitude: totalLat,
@@ -46,11 +45,11 @@ const TravelListContent = ({ travels, stats }: Props) => {
             </ItemMedia>
             <ItemContent>
               <ItemTitle>
-                {renderNiceDate(travel.startTime, format)} • {travel.distance} km
+                {renderNiceDate(travel.startTime, t)} • {travel.distance} km
               </ItemTitle>
               <ItemDescription>
-                {t("tableHeaders.from")}: {travel.origin.name} ({extractTime(travel.startTime)}) <br /> 
-                {t("tableHeaders.to")}: {travel.destination.name} ({extractTime(travel.endTime)})
+                {t("Travels.tableHeaders.from")}: {travel.origin.name} ({extractTime(travel.startTime)}) <br /> 
+                {t("Travels.tableHeaders.to")}: {travel.destination.name} ({extractTime(travel.endTime)})
               </ItemDescription>
             </ItemContent>
           </Item>
@@ -59,7 +58,7 @@ const TravelListContent = ({ travels, stats }: Props) => {
 
       <Item variant="muted">
         <ItemContent>
-          <ItemTitle>{t("footer.placesCount", { count: placesVisited?.count || 0 })} • {totalDistance.toFixed(0)} km • {getHoursAndMinutes(totalMinutes)}</ItemTitle>
+          <ItemTitle>{t("Travels.footer.placesCount", { count: placesVisited?.count || 0 })} • {totalDistance.toFixed(0)} km • {getHoursAndMinutes(totalMinutes)}</ItemTitle>
           <ItemDescription>
             {totalLat && totalLong && renderPoint(totalLat, totalLong) || ""}
           </ItemDescription>
