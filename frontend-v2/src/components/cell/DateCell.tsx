@@ -4,8 +4,6 @@ import { useTranslations, useFormatter } from "next-intl"
 
 import { renderNiceDate } from "@/utils/date";
 
-
-
 import { Input } from "../ui/input";
 
 type Props = {
