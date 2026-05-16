@@ -1,6 +1,6 @@
 # CHANGELOG
 ## v0.9.0
-- COD9-020: Implement i18n support for Dashboard and Travels pages (#65) [367]
+- COD9-020: Implement i18n support for Dashboard and Travels pages (#64) [367]
   - **Frontend**: Full internationalization (EN/ES) for Dashboard and Travels; Refactored routing to use locale segments; pluralization support in tables; localized date formatting and map markers.
 - COD9-003: Add Partido for Locations with B-Prefix zipcodes (#57) [388]
 - COD9-004: Select Crosses in Travel Creator (#59) [140]
