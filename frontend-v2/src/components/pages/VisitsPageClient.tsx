@@ -4,6 +4,7 @@ import type { FilteringData } from "@/types/stats";
 import type { Visit } from "@/types/visit";;
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 import GravityCenterScoreboard from "@/components/GravityCenterScoreboard";
 import VisitStats from "@/components/VisitStats";
@@ -12,6 +13,7 @@ import useVisits from "@/hooks/useVisits";
 import { extractDate } from "@/utils/date";
 
 const VisitsPageClient = () => {
+  const t = useTranslations("Visits");
   const { visits: visitsData, error, deleteVisit, updateVisit } = useVisits();
   const { visits } = visitsData;
 
@@ -46,7 +48,7 @@ const VisitsPageClient = () => {
     return (
       <main className="mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center text-red-600 dark:text-red-400">
-          Error loading visits. Please try refreshing the page.
+          {t("errorLoading")}
         </div>
       </main>
     );

@@ -3,6 +3,9 @@
 import type { KnownCenter } from "@/types/center"
 import type { Travel, TravelsData } from "@/types/travel";
 import type { Visit, VisitsData } from "@/types/visit";
+import type { TranslationFn } from "@/types/i18n";
+
+import { useTranslations } from "next-intl"
 
 import { Link } from "@/i18n/routing"
 import useNearbyCenters from "@/hooks/useNearbyCenters"
@@ -15,7 +18,7 @@ type Props = {
   visitsData?: VisitsData
 }
 
-const renderNearbyCenter = (kc: KnownCenter, index: number, travels: Travel[], visits: Visit[]) => {
+const renderNearbyCenter = (kc: KnownCenter, index: number, travels: Travel[], visits: Visit[], t: TranslationFn) => {
   const rank = index + 1
   const distanceFormatted = kc.distanceKm.toFixed(1)
 
@@ -39,13 +42,14 @@ const renderNearbyCenter = (kc: KnownCenter, index: number, travels: Travel[], v
         <span className="font-bold">{shortcutName(kc.name, 24)}</span>
       </div>
       <div className="text-sm text-muted-foreground mt-1">
-        {kc.zipcode} - {distanceFormatted} km away
+        {kc.zipcode} - {t("away", { distance: distanceFormatted })}
       </div>
     </Link>
   )
 }
 
 const GravityCenterScoreboard = ({ travelsData, visitsData }: Props) => {
+  const t = useTranslations("Visits")
   const { averageLatitude, averageLongitude } = travelsData?.stats || visitsData?.stats || {}
   const travels = travelsData?.travels || []
   const visits = visitsData?.visits || []
@@ -56,7 +60,7 @@ const GravityCenterScoreboard = ({ travelsData, visitsData }: Props) => {
   return (
     <Card className="w-2/10 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardContent className="h-[300px] flex flex-col items-start justify-center p-6">
-        {nearbyCenters.length > 0 && nearbyCenters.map((nc, index) => renderNearbyCenter(nc, index, travels, visits))}
+        {nearbyCenters.length > 0 && nearbyCenters.map((nc, index) => renderNearbyCenter(nc, index, travels, visits, t))}
       </CardContent>
     </Card>
   )

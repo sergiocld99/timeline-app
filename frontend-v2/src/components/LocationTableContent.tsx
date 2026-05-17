@@ -5,6 +5,7 @@ import type { Location, LocationEditValues } from "@/types/location";
 import { Save, X } from 'lucide-react';
 import { useState, useMemo } from "react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 import { Link } from "@/i18n/routing";
 import { Button } from '@/components/ui/button';
@@ -26,13 +27,22 @@ type Props = {
   deleteFn: (id: string) => Promise<void>;
 }
 
-const columnHeaders = ['Name', 'Latitude', 'Longitude', 'Zipcode', 'Partido', 'Notes', 'Actions'];
-
 const LocationTableContent = ({ locations, updateFn, deleteFn }: Props) => {
+  const t = useTranslations("Locations");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValues, setEditValues] = useState<LocationEditValues>({ name: '', zipcode: '', latitude: 0, longitude: 0, notes: '', partido: '' });
 
   const sortedPartidos = useMemo(() => getSortedPartidos(locations).all, [locations]);
+
+  const columnHeaders = [
+    t('tableHeaders.name'),
+    t('tableHeaders.latitude'),
+    t('tableHeaders.longitude'),
+    t('tableHeaders.zipcode'),
+    t('tableHeaders.partido'),
+    t('tableHeaders.notes'),
+    t('tableHeaders.actions')
+  ];
 
   const renderColumnHeaders = () => (
     columnHeaders.map((header) => (
@@ -53,9 +63,9 @@ const LocationTableContent = ({ locations, updateFn, deleteFn }: Props) => {
             onClick={() => {
               updateFn(location._id, editValues)
                 .then(() => {
-                  toast.success('Location updated!')
+                  toast.success(t("messages.updateSuccess"))
                   resetEditValues()
-                }).catch(() => toast.error('Failed to update location'))
+                }).catch(() => toast.error(t("messages.updateError")))
             }}
             size="sm"
             className="bg-green-600 hover:bg-green-700"
@@ -89,11 +99,11 @@ const LocationTableContent = ({ locations, updateFn, deleteFn }: Props) => {
           <DeparturesAction size="sm" />
         </Link>
         <DeleteAction handleClick={() => {
-          if (window.confirm(`Are you sure you want to delete "${location.name}"?`)) {
+          if (window.confirm(t("messages.deleteConfirm", { name: location.name }))) {
             deleteFn(location._id)
-              .then(() => toast.success('Location deleted successfully'))
+              .then(() => toast.success(t("messages.deleteSuccess")))
               .catch((err) => {
-                const message = err.response?.data?.message || err.message || 'Failed to delete location';
+                const message = err.response?.data?.message || err.message || t("messages.deleteError");
                 toast.error(message);
               });
           }

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,8 @@ import { useUser } from "@/contexts/UserContext";
 import UserService from "@/services/UserService";
 
 export default function ProfilePage() {
+  const t = useTranslations("Profile");
+  const tCommon = useTranslations("Common");
   const { users, refreshUsers, loading } = useUser();
   const [userId, setUserId] = useState("");
   const [name, setName] = useState("");
@@ -37,27 +40,23 @@ export default function ProfilePage() {
   const [guestDataInfo, setGuestDataInfo] = useState<{ travelCount: number; visitCount: number } | null>(null);
   const [isMigrating, setIsMigrating] = useState(false);
 
-  // useEffect(() => {
-  //   refreshUsers();
-  // }, []);
-
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!userId || !name) {
-      toast.error("User ID and name are required");
+      toast.error(t("messages.userIdNameRequired"));
       return;
     }
 
     const userIdNum = parseInt(userId, 10);
     if (isNaN(userIdNum)) {
-      toast.error("User ID must be a number");
+      toast.error(t("messages.userIdNumber"));
       return;
     }
 
     setIsSubmitting(true);
 
     UserService.create(userIdNum, name).then(async (u) => {
-      toast.success(`User ${u.name} created successfully`);
+      toast.success(t("messages.createSuccess", { name: u.name }));
       setUserId("");
       setName("");
       
@@ -81,7 +80,7 @@ export default function ProfilePage() {
         await refreshUsers();
       }
     }).catch(() => {
-      toast.error("Error creating user");
+      toast.error(t("messages.createError"));
     }).finally(() => {
       setIsSubmitting(false);
     });
@@ -94,14 +93,14 @@ export default function ProfilePage() {
     try {
       const result = await UserService.migrateGuestData(newUser.userId);
       toast.success(
-        `Migration complete! ${result.travelsMigrated} travels and ${result.visitsMigrated} visits migrated to ${newUser.name}.`
+        t("messages.migrationSuccess", { travels: result.travelsMigrated, visits: result.visitsMigrated, name: newUser.name })
       );
       setShowMigrationDialog(false);
       setNewUser(null);
       setGuestDataInfo(null);
       await refreshUsers();
     } catch (error) {
-      toast.error("Error migrating data. Please try again.");
+      toast.error(t("messages.migrationError"));
       console.error("Migration error:", error);
     } finally {
       setIsMigrating(false);
@@ -122,19 +121,19 @@ export default function ProfilePage() {
 
   const handleUpdate = async (userIdNum: number) => {
     if (!editName) {
-      toast.error("Name is required");
+      toast.error(t("messages.nameRequired"));
       return;
     }
 
     setIsSubmitting(true);
 
     UserService.update(userIdNum, editName).then(u => {
-      toast.success(`User ${u.name} edited successfully`)
+      toast.success(t("messages.updateSuccess", { name: u.name }));
       setEditingUserId(null)
       setEditName("")
       void refreshUsers()
     }).catch(() => {
-      toast.error("Error updating user")
+      toast.error(t("messages.updateError"))
     }).finally(() => {
       setIsSubmitting(false)
     })
@@ -150,7 +149,7 @@ export default function ProfilePage() {
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <Header />
         <div className="max-w-4xl mx-auto px-4 py-8">
-          <div className="text-center">Loading...</div>
+          <div className="text-center">{tCommon("loading")}</div>
         </div>
       </div>
     );
@@ -161,21 +160,21 @@ export default function ProfilePage() {
       <Header />
       <div className="max-w-4xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">
-          User Management
+          {t("title")}
         </h1>
 
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle>Create New User</CardTitle>
+            <CardTitle>{t("createNewUser")}</CardTitle>
             <CardDescription>
-              Add a new user with a unique numeric ID and name
+              {t("createUserDescription")}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleCreate} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-4">
-                  <Label htmlFor="userId">User ID</Label>
+                  <Label htmlFor="userId">{t("userId")}</Label>
                   <Input
                     id="userId"
                     type="number"
@@ -186,7 +185,7 @@ export default function ProfilePage() {
                   />
                 </div>
                 <div className="space-y-4">
-                  <Label htmlFor="name">Name</Label>
+                  <Label htmlFor="name">{t("name")}</Label>
                   <Input
                     id="name"
                     type="text"
@@ -198,7 +197,7 @@ export default function ProfilePage() {
                 </div>
               </div>
               <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Creating..." : "Create User"}
+                {isSubmitting ? t("creating") : t("createUser")}
               </Button>
             </form>
           </CardContent>
@@ -206,14 +205,14 @@ export default function ProfilePage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Existing Users</CardTitle>
+            <CardTitle>{t("existingUsers")}</CardTitle>
             <CardDescription>
-              Manage existing users in the system
+              {t("existingUsersDescription")}
             </CardDescription>
           </CardHeader>
           <CardContent>
             {users.length === 0 ? (
-              <p className="text-muted-foreground">No users found. Create one above.</p>
+              <p className="text-muted-foreground">{t("noUsers")}</p>
             ) : (
               <div className="space-y-4">
                 {users.map((user) => (
@@ -224,7 +223,7 @@ export default function ProfilePage() {
                     {editingUserId === user.userId ? (
                       <div className="flex items-center gap-4 flex-1">
                         <div className="flex-1">
-                          <Label>Name</Label>
+                          <Label>{t("name")}</Label>
                           <Input
                             value={editName}
                             onChange={(e) => setEditName(e.target.value)}
@@ -237,7 +236,7 @@ export default function ProfilePage() {
                             onClick={() => handleUpdate(user.userId)}
                             disabled={isSubmitting}
                           >
-                            Save
+                            {t("save")}
                           </Button>
                           <Button
                             size="sm"
@@ -245,7 +244,7 @@ export default function ProfilePage() {
                             onClick={handleCancelEdit}
                             disabled={isSubmitting}
                           >
-                            Cancel
+                            {t("cancel")}
                           </Button>
                         </div>
                       </div>
@@ -263,7 +262,7 @@ export default function ProfilePage() {
                             onClick={() => handleEdit(user)}
                             disabled={isSubmitting}
                           >
-                            Edit
+                            {t("edit")}
                           </Button>
                         </div>
                       </>
@@ -278,14 +277,16 @@ export default function ProfilePage() {
         <Dialog open={showMigrationDialog} onOpenChange={setShowMigrationDialog}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Migrate Guest Data?</DialogTitle>
+              <DialogTitle>{t("migrationTitle")}</DialogTitle>
               <DialogDescription>
-                We found {guestDataInfo?.travelCount || 0} travels and {guestDataInfo?.visitCount || 0} visits 
-                that don&apos;t have a user assigned (guest mode data).
-                <br /><br />
-                Would you like to migrate all this data to <strong>{newUser?.name}</strong> (ID: {newUser?.userId})?
-                <br /><br />
-                This action cannot be undone, but you can always reassign data later if needed.
+                {t.rich("migrationDescription", {
+                  travelCount: guestDataInfo?.travelCount || 0,
+                  visitCount: guestDataInfo?.visitCount || 0,
+                  name: newUser?.name || "",
+                  userId: newUser?.userId || 0,
+                  strong: (chunks) => <strong>{chunks}</strong>,
+                  br: () => <br />
+                })}
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
@@ -294,13 +295,13 @@ export default function ProfilePage() {
                 onClick={handleSkipMigration}
                 disabled={isMigrating}
               >
-                Skip
+                {t("skip")}
               </Button>
               <Button
                 onClick={handleMigrate}
                 disabled={isMigrating}
               >
-                {isMigrating ? "Migrating..." : "Yes, Migrate Data"}
+                {isMigrating ? t("migrating") : t("migrateData")}
               </Button>
             </DialogFooter>
           </DialogContent>

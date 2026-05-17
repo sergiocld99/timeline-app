@@ -6,10 +6,12 @@ import type { FilteringData } from "@/types/stats";
 
 import { BarChart } from "recharts";
 import { Bar, CartesianGrid, XAxis } from "recharts";
+import { useTranslations } from "next-intl";
 
 import { daysOfWeek } from "@/constants";
 import { convertToArgentineTime } from "@/utils";
 import { buildChartConfig, cleanUnusedBorders, getChartHours, useChartValue, useDefaultValues } from "@/utils/chart";
+import { translateDay } from "@/utils/date";
 
 import { calculateBestLocations } from "./analize/visit";
 import { Card, CardContent } from "./ui/card";
@@ -63,10 +65,12 @@ const buildDailyChartData = (visits: Visit[], topLocations: string[]): ChartData
 }
 
 const VisitStats = ({ visits, onFilter }: Props) => {
+  const t = useTranslations();
+  const tCharts = useTranslations("Charts");
   const { topKeys: topLocations, otherKeys, shouldShowOthers } = calculateBestLocations(visits, 5)
   const hourlyChartData = buildHourlyChartData(visits, topLocations)
   const dailyChartData = buildDailyChartData(visits, topLocations)
-  const chartConfig = buildChartConfig(topLocations, otherKeys)
+  const chartConfig = buildChartConfig(topLocations, otherKeys, tCharts("modes.others"))
 
   return (
     <Card className="w-8/10 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
@@ -122,10 +126,10 @@ const VisitStats = ({ visits, onFilter }: Props) => {
               className="hover:cursor-pointer"
               dataKey="day"
               tickMargin={10}
-              tickFormatter={(value) => value.slice(0, 3)}
+              tickFormatter={(value) => translateDay(value, t)}
               onClick={(e) => onFilter({ type: 'day', value: e?.value })}
             />
-            <ChartTooltip content={<ChartTooltipContent />} />
+            <ChartTooltip content={<ChartTooltipContent labelFormatter={(value) => translateDay(value, t)} />} />
             {topLocations.at(0) && <Bar
               dataKey="red"
               stackId="a"
