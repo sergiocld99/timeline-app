@@ -12,6 +12,7 @@
 
 ### Internationalization
 - COD9-046: Implement i18n support for Dashboard and Travels pages (#64) [4693]
+- COD9-066: Implement i18n support for rest of the pages (#67) [2264]
 
 ## v0.8.0 (2026-04-17)
 - COD8-001: Add Purple Weight for Travels with Crosses (#39) [23]
