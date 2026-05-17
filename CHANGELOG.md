@@ -8,6 +8,7 @@
 - COD9-013: Remove totalPrice and averagePrice from Travel Stats (#60) [120]
 - COD9-015: Show all zipcodes in ticker (#60) [229]
 - COD9-016: Places highlighting by active zipcode on ticker (#62) [61]
+- COD9-017: Collapse Travel Table Content (#65) [109]
 
 ### Internationalization
 - COD9-046: Implement i18n support for Dashboard and Travels pages (#64) [4693]
