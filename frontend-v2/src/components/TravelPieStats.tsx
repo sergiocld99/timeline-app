@@ -77,7 +77,7 @@ const getRecommendedChartIndex = (modeOfTransport: string) => {
   }
 }
 
-const getLabel = (total: number, label: string) => {
+const getLabel = (total: number | string, label: string) => {
   return (
     <Label
       content={({ viewBox }) => {
@@ -94,7 +94,7 @@ const getLabel = (total: number, label: string) => {
                 y={viewBox.cy}
                 className="fill-foreground text-3xl font-bold"
               >
-                {total.toLocaleString()}
+                {typeof total === 'number' ? total.toLocaleString() : total}
               </tspan>
               <tspan
                 x={viewBox.cx}
@@ -116,14 +116,14 @@ const TravelPieStats = ({ travels }: Props) => {
 
   const chartData: StatByModeChartData[] = stats.map((stat) => ({
     ...stat,
-    averageSpeed: Math.round(60 * stat.totalKm / stat.totalMinutes),
+    averageSpeed: Number((60 * stat.totalKm / stat.totalMinutes).toFixed(1)),
     fill: `var(--chart-${getRecommendedChartIndex(stat.modeOfTransport)})`
   }))
 
   const totalKm = Math.round(stats.reduce((acc, stat) => acc + stat.totalKm, 0))
   const totalMinutes = stats.reduce((acc, stat) => acc + stat.totalMinutes, 0)
   const totalTravels = stats.reduce((acc, stat) => acc + stat.count, 0)
-  const averageSpeed = Math.round(60 * totalKm / totalMinutes)
+  const averageSpeed = (60 * totalKm / totalMinutes).toFixed(1)
 
   return (
     <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">

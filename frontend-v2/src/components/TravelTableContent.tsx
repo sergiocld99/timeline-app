@@ -32,7 +32,7 @@ type Props = {
   isCollapsed?: boolean;
 };
 
-const columnHeaders = ['Date', 'Mode', 'From', 'To', 'Schedule', 'Distance', 'Duration', 'Speed', 'Weight', 'Actions'];
+const columnHeaders = ['Date', 'Mode', 'From', 'To', 'Schedule', 'Distance', 'Duration', 'Weight', 'Actions'];
 
 const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, onRemoveCrosses, isCollapsed }: Props) => {
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -245,7 +245,6 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
                   </TableCell>
                   <TableCell className="text-gray-900 dark:text-white">{renderEditableCell(t, 'distance', 0.1)}</TableCell>
                   <TableCell className="text-gray-900 dark:text-white">{renderEditableCell(t, 'duration', 1)}</TableCell>
-                  <TableCell className="text-gray-900 dark:text-white">{t.speed.toFixed(1)} km/h</TableCell>
                   <TableCell className="text-gray-900 dark:text-white">{renderWeight(t)}</TableCell>
                   <TableCell>{renderActionButtons(t)}</TableCell>
                 </TableRow>

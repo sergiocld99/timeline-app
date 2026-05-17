@@ -50,9 +50,6 @@ const TravelTableFooter = ({ travels, stats }: Props) => {
         <TableCell className="font-medium text-gray-900 dark:text-white">
           {getHoursAndMinutes(totalMinutes)}
         </TableCell>
-        <TableCell className="font-medium text-gray-900 dark:text-white">
-          {`${(stats?.averageSpeed || 0).toFixed(1)} km/h`}
-        </TableCell>
         <TableCell className="text-gray-900 dark:text-white">{renderTotalWeightsCell(travels)}</TableCell>
         <TableCell></TableCell>
       </TableRow>
