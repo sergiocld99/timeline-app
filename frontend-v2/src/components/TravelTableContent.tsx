@@ -35,7 +35,7 @@ type Props = {
   isCollapsed?: boolean;
 };
 
-const columnHeaders = ['Date', 'Mode', 'From', 'To', 'Start', 'Distance', 'Duration', 'Speed', 'Weight', 'Actions'];
+const columnHeaders = ['Date', 'Mode', 'From', 'To', 'Schedule', 'Distance', 'Duration', 'Speed', 'Weight', 'Actions'];
 
 const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, onRemoveCrosses, isCollapsed }: Props) => {
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -260,7 +260,11 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
                   <TableCell className="text-gray-900 dark:text-white"><TransportModeCell editProps={editProps} /></TableCell>
                   <TableCell className="text-gray-900 dark:text-white">{renderEditableLocation(editProps, 'origin')}</TableCell>
                   <TableCell className="text-gray-900 dark:text-white">{renderEditableLocation(editProps, 'destination')}</TableCell>
-                  <TableCell className="text-gray-900 dark:text-white">{extractTime(t.startTime)}</TableCell>
+                  <TableCell className="text-gray-900 dark:text-white font-mono text-sm whitespace-nowrap">
+                    <span>{extractTime(t.startTime)}</span>
+                    <span className="text-gray-400 dark:text-gray-500 mx-1.5">→</span>
+                    <span className="text-gray-500 dark:text-gray-400 font-medium">{extractTime(t.endTime)}</span>
+                  </TableCell>
                   <TableCell className="text-gray-900 dark:text-white">{renderEditableCell(t, 'distance', 0.1)}</TableCell>
                   <TableCell className="text-gray-900 dark:text-white">{renderEditableCell(t, 'duration', 1)}</TableCell>
                   <TableCell className="text-gray-900 dark:text-white">{t.speed.toFixed(1)} km/h</TableCell>
