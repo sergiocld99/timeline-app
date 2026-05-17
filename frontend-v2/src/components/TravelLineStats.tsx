@@ -3,6 +3,7 @@ import type { ChartConfig } from "./ui/chart";
 import type { FilteringData } from "@/types/stats";
 
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import { useTranslations } from "next-intl";
 
 import { cleanUnusedBorders, getChartHours } from "@/utils/chart";
 import { roundDecimals } from "@/utils/numbers";
@@ -63,29 +64,30 @@ const buildHourlyChartData = (travels: Travel[]) => {
 }
 
 const TravelLineStats = ({ travels, onFilter }: Props) => {
+  const t = useTranslations("Charts");
   const chartConfig = {
     car: {
-      label: "car",
+      label: t("modes.car"),
       color: "var(--chart-5)",
     },
     taxi: {
-      label: "taxi",
+      label: t("modes.taxi"),
       color: "var(--chart-4)",
     },
     bus: {
-      label: "bus",
+      label: t("modes.bus"),
       color: "var(--chart-3)",
     },
     mixed: {
-      label: "mixed",
+      label: t("modes.mixed"),
       color: "var(--chart-6)",
     },
     walking: {
-      label: "walking",
+      label: t("modes.walking"),
       color: "var(--chart-2)",
     },
     others: {
-      label: "others",
+      label: t("modes.others"),
       color: "var(--chart-1)"
     }
   } satisfies ChartConfig
@@ -99,7 +101,7 @@ const TravelLineStats = ({ travels, onFilter }: Props) => {
   return (
     <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardHeader>
-        <CardTitle>Speed in km/h</CardTitle>
+        <CardTitle>{t("speedInKmH")}</CardTitle>
       </CardHeader>
       <CardContent className="h-[255px] flex items-center justify-center pt-4">
         <ChartContainer config={chartConfig} className="min-h-[255px] max-h-[255px] w-full">

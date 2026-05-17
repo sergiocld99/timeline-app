@@ -1,28 +1,38 @@
+"use client";
+
 import type { Travel } from "@/types/travel";
 
+import { useTranslations } from "next-intl";
 import { AlertTriangleIcon } from "lucide-react"
 
 import { Card, CardContent } from "@/components/ui/card"
 import { usePresentialCheck } from "@/hooks/usePresentialCheck"
-import { renderNiceDate } from "@/utils"
-
-const renderLastTravelInfo = (t: Travel, daysSince: number) => {
-  return (
-    <p>The last travel to work was <span></span>
-      <strong>{Math.floor(daysSince)} days ago. </strong>
-      You visited {t.destination.name} on <span></span>
-      <strong>{renderNiceDate(t.endTime)}</strong>
-    </p>
-  )
-}
-
-const renderDefaultMessage = () => {
-  return 'You did not travelled to work in the last 90 days'
-}
+import { renderNiceDate } from "@/utils/date"
 
 const PresentialWorkAlert = () => {
+  const t = useTranslations();
   const { awarenessData, loading } = usePresentialCheck()
   const { isBeforeThreshold, lastTravel, daysSince } = awarenessData
+
+  const formatDate = (dateStr: string) => renderNiceDate(dateStr, t);
+
+  const renderLastTravelInfo = (travel: Travel, days: number) => {
+    return (
+      <p>
+        {t.rich("PresentialAlert.lastTravel", {
+          days: Math.floor(days),
+          destination: travel.destination.name,
+          date: formatDate(travel.endTime),
+          span: (chunks) => <span>{chunks}</span>,
+          strong: (chunks) => <strong>{chunks}</strong>
+        })}
+      </p>
+    )
+  }
+
+  const renderDefaultMessage = () => {
+    return t("PresentialAlert.noTravel")
+  }
 
   return !loading && isBeforeThreshold && (
     <Card className="w-full bg-yellow dark:bg-yellow-800 border-yellow-200 dark:border-yellow-700 py-0">

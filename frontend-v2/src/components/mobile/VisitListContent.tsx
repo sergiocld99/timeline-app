@@ -1,6 +1,7 @@
-import type { Visit } from "@/types/visit";;
+import type { Visit } from "@/types/visit";
 
-import { extractDate, extractTime, getHoursAndMinutes } from "@/utils";
+import { extractTime, getHoursAndMinutes } from "@/utils";
+import { extractDate } from "@/utils/date";
 
 import { Item, ItemContent, ItemDescription, ItemMedia, ItemTitle } from "../ui/item";
 import { renderPoint } from "../render/coordinates";

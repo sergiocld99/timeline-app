@@ -9,8 +9,7 @@ import GravityCenterScoreboard from "@/components/GravityCenterScoreboard";
 import VisitStats from "@/components/VisitStats";
 import VisitTable from "@/components/VisitTable";
 import useVisits from "@/hooks/useVisits";
-import { extractDate } from "@/utils";
-
+import { extractDate } from "@/utils/date";
 
 const VisitsPageClient = () => {
   const { visits: visitsData, error, deleteVisit, updateVisit } = useVisits();

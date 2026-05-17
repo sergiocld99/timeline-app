@@ -1,0 +1,143 @@
+{
+  "Dashboard": {
+    "title": "PANEL",
+    "travels": "Viajes",
+    "totalKm": "km totales",
+    "totalHours": "horas totales",
+    "placesVisited": "Lugares visitados",
+    "kilometersPerMonth": "Kilómetros por mes",
+    "previousYear": "Año Anterior",
+    "currentYear": "Año Actual",
+    "maximumValues": "Valores máximos",
+    "records": "Récords",
+    "longestTravelDistance": "Viaje de mayor distancia",
+    "longestTravelTime": "Viaje de mayor duración",
+    "fastestTravel": "Viaje más rápido",
+    "frequentRoutes": "Rutas Frecuentes",
+    "mostUsedRoutes": "Rutas más usadas",
+    "mostFrequentRoutes": "Rutas más frecuentes",
+    "top5": "Top 5",
+    "noRoutesMessage": "No se encontraron rutas para este período.",
+    "errorLoadingStats": "Error al cargar las estadísticas.",
+    "loadingMap": "Cargando mapa...",
+    "others": "Otros"
+  },
+  "PresentialAlert": {
+    "lastTravel": "El último viaje al trabajo fue hace {days} días. Visitaste {destination} el {date}",
+    "noTravel": "No viajaste al trabajo en los últimos 90 días"
+  },
+  "Common": {
+    "loading": "Cargando...",
+    "messages": {
+      "copied": "¡Coordenadas copiadas al portapapeles!",
+      "copyError": "Error al copiar las coordenadas"
+    }
+  },
+  "Travels": {
+    "title": "Viajes",
+    "noTravelsFound": "No se encontraron viajes para el rango de fechas seleccionado :/",
+    "exportCsv": "Exportar CSV",
+    "tableHeaders": {
+      "date": "Fecha",
+      "mode": "Modo",
+      "from": "Desde",
+      "to": "Hasta",
+      "start": "Inicio",
+      "distance": "Distancia",
+      "duration": "Duración",
+      "speed": "Velocidad",
+      "weight": "Peso",
+      "actions": "Acciones"
+    },
+    "messages": {
+      "updateSuccess": "¡Viaje actualizado con éxito!",
+      "deleteSuccess": "¡Viaje eliminado con éxito!",
+      "deleteError": "Error al eliminar el viaje",
+      "invalidNumbers": "Por favor ingresa números positivos válidos para distancia y duración",
+      "durationExceeded": "La duración del viaje no puede exceder las 24 horas (1440 minutos)",
+      "exportError": "Error al exportar CSV:"
+    },
+    "tooltips": {
+      "clickToEdit": "Click para editar"
+    },
+    "footer": {
+      "travelsCount": "{count, plural, =1 {# viaje} other {# viajes}}",
+      "routesCount": "{count, plural, =1 {# ruta} other {# rutas}}",
+      "daysCount": "{count, plural, =1 {# día} other {# días}}",
+      "placesCount": "{count, plural, =1 {# lugar} other {# lugares}}"
+    }
+  },
+  "TravelMap": {
+    "noLocations": "No hay ubicaciones para mostrar",
+    "kmFromCenter": "{distance} km del centro"
+  },
+  "Charts": {
+    "speedInKmH": "Velocidad en km/h",
+    "km": "Km",
+    "minutes": "Minutos",
+    "travels": "Viajes",
+    "kmH": "Km/h",
+    "modeOfTransport": "Modo de transporte",
+    "modes": {
+      "car": "Auto",
+      "taxi": "Taxi",
+      "bus": "Colectivo",
+      "subway": "Subte",
+      "train": "Tren",
+      "ferry": "Ferry",
+      "walking": "Caminando",
+      "mixed": "Mixto",
+      "others": "Otros",
+      "other": "Otro"
+    }
+  },
+  "DateRange": {
+    "title": "Rango de fechas",
+    "from": "Desde",
+    "to": "Hasta",
+    "invalidRange": "La fecha de inicio no puede ser posterior a la fecha de fin."
+  },
+  "Milestones": {
+    "longestDistance": "Mayor distancia recorrida",
+    "longestDuration": "Mayor duración",
+    "fastestTravel": "Viaje más rápido"
+  },
+  "Actions": {
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "apply": "Aplicar",
+    "export": "Exportar",
+    "removeFilter": "Quitar filtro: {filterName}"
+  },
+  "MonthsShort": {
+    "1": "Ene",
+    "2": "Feb",
+    "3": "Mar",
+    "4": "Abr",
+    "5": "May",
+    "6": "Jun",
+    "7": "Jul",
+    "8": "Ago",
+    "9": "Sep",
+    "10": "Oct",
+    "11": "Nov",
+    "12": "Dic"
+  },
+  "Navigation": {
+    "creator": "Crear",
+    "crosses": "Cruces",
+    "locations": "Lugares",
+    "travels": "Viajes",
+    "visits": "Visitas",
+    "menu": "Menú"
+  },
+  "DaysShort": {
+    "Sun": "Dom",
+    "Mon": "Lun",
+    "Tue": "Mar",
+    "Wed": "Mié",
+    "Thu": "Jue",
+    "Fri": "Vie",
+    "Sat": "Sáb"
+  }
+}

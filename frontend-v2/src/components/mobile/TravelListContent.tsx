@@ -1,7 +1,10 @@
 import type { Travel, TravelStats } from "@/types/travel";;
 
+import { useTranslations } from "next-intl";
+
 import { extractTime, getEmojiForMode, getHoursAndMinutes } from "@/utils";
 import { cn } from "@/lib/utils";
+import { renderNiceDate } from "@/utils/date";
 
 import { Item, ItemContent, ItemDescription, ItemMedia, ItemTitle } from "../ui/item";
 import { renderPoint } from "../render/coordinates";
@@ -12,6 +15,8 @@ type Props = {
 }
 
 const TravelListContent = ({ travels, stats }: Props) => {
+  const t = useTranslations();
+
   const {
     averageLatitude: totalLat,
     averageLongitude: totalLong,
@@ -39,9 +44,12 @@ const TravelListContent = ({ travels, stats }: Props) => {
               </div>
             </ItemMedia>
             <ItemContent>
-              <ItemTitle>{travel.extractedDate} • {travel.distance} km</ItemTitle>
+              <ItemTitle>
+                {renderNiceDate(travel.startTime, t)} • {travel.distance} km
+              </ItemTitle>
               <ItemDescription>
-                From: {travel.origin.name} ({extractTime(travel.startTime)}) <br /> To: {travel.destination.name} ({extractTime(travel.endTime)})
+                {t("Travels.tableHeaders.from")}: {travel.origin.name} ({extractTime(travel.startTime)}) <br /> 
+                {t("Travels.tableHeaders.to")}: {travel.destination.name} ({extractTime(travel.endTime)})
               </ItemDescription>
             </ItemContent>
           </Item>
@@ -50,7 +58,7 @@ const TravelListContent = ({ travels, stats }: Props) => {
 
       <Item variant="muted">
         <ItemContent>
-          <ItemTitle>{placesVisited?.count || 0} places • {totalDistance.toFixed(0)} km • {getHoursAndMinutes(totalMinutes)}</ItemTitle>
+          <ItemTitle>{t("Travels.footer.placesCount", { count: placesVisited?.count || 0 })} • {totalDistance.toFixed(0)} km • {getHoursAndMinutes(totalMinutes)}</ItemTitle>
           <ItemDescription>
             {totalLat && totalLong && renderPoint(totalLat, totalLong) || ""}
           </ItemDescription>

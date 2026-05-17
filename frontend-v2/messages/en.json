@@ -1,0 +1,143 @@
+{
+  "Dashboard": {
+    "title": "DASHBOARD",
+    "travels": "Travels",
+    "totalKm": "total km",
+    "totalHours": "total hours",
+    "placesVisited": "Places visited",
+    "kilometersPerMonth": "Kilometers per month",
+    "previousYear": "Previous Year",
+    "currentYear": "Current Year",
+    "maximumValues": "Maximum values",
+    "records": "Records",
+    "longestTravelDistance": "Longest travel distance",
+    "longestTravelTime": "Longest travel time",
+    "fastestTravel": "Fastest travel",
+    "frequentRoutes": "Frequent Routes",
+    "mostUsedRoutes": "Most used routes",
+    "mostFrequentRoutes": "Most frequent routes",
+    "top5": "Top 5",
+    "noRoutesMessage": "No top routes found for this period.",
+    "errorLoadingStats": "Error loading statistics.",
+    "loadingMap": "Loading map...",
+    "others": "Others"
+  },
+  "PresentialAlert": {
+    "lastTravel": "The last travel to work was {days} days ago. You visited {destination} on {date}",
+    "noTravel": "You did not travel to work in the last 90 days"
+  },
+  "Common": {
+    "loading": "Loading...",
+    "messages": {
+      "copied": "Coordinates copied to clipboard!",
+      "copyError": "Failed to copy coordinates"
+    }
+  },
+  "Travels": {
+    "title": "Travels",
+    "noTravelsFound": "No travels found for the selected date range :/",
+    "exportCsv": "Export CSV",
+    "tableHeaders": {
+      "date": "Date",
+      "mode": "Mode",
+      "from": "From",
+      "to": "To",
+      "start": "Start",
+      "distance": "Distance",
+      "duration": "Duration",
+      "speed": "Speed",
+      "weight": "Weight",
+      "actions": "Actions"
+    },
+    "messages": {
+      "updateSuccess": "Travel updated successfully!",
+      "deleteSuccess": "Travel deleted successfully!",
+      "deleteError": "Failed to delete travel",
+      "invalidNumbers": "Please enter valid positive numbers for distance and duration",
+      "durationExceeded": "Travel duration cannot exceed 24 hours (1440 minutes)",
+      "exportError": "Error exporting CSV:"
+    },
+    "tooltips": {
+      "clickToEdit": "Click to edit"
+    },
+    "footer": {
+      "travelsCount": "{count, plural, =1 {# travel} other {# travels}}",
+      "routesCount": "{count, plural, =1 {# route} other {# routes}}",
+      "daysCount": "{count, plural, =1 {# day} other {# days}}",
+      "placesCount": "{count, plural, =1 {# place} other {# places}}"
+    }
+  },
+  "TravelMap": {
+    "noLocations": "No travel locations to display",
+    "kmFromCenter": "{distance} km from center"
+  },
+  "Charts": {
+    "speedInKmH": "Speed in km/h",
+    "km": "Km",
+    "minutes": "Minutes",
+    "travels": "Travels",
+    "kmH": "Km/h",
+    "modeOfTransport": "Mode of Transport",
+    "modes": {
+      "car": "Car",
+      "taxi": "Taxi",
+      "bus": "Bus",
+      "subway": "Subway",
+      "train": "Train",
+      "ferry": "Ferry",
+      "walking": "Walking",
+      "mixed": "Mixed",
+      "others": "Others",
+      "other": "Other"
+    }
+  },
+  "DateRange": {
+    "title": "Date Range",
+    "from": "From",
+    "to": "To",
+    "invalidRange": "Start date cannot be later than end date."
+  },
+  "Milestones": {
+    "longestDistance": "Longest travel distance",
+    "longestDuration": "Longest travel time",
+    "fastestTravel": "Fastest travel"
+  },
+  "Actions": {
+    "edit": "Edit",
+    "delete": "Delete",
+    "apply": "Apply",
+    "export": "Export",
+    "removeFilter": "Remove Filter: {filterName}"
+  },
+  "MonthsShort": {
+    "1": "Jan",
+    "2": "Feb",
+    "3": "Mar",
+    "4": "Apr",
+    "5": "May",
+    "6": "Jun",
+    "7": "Jul",
+    "8": "Aug",
+    "9": "Sep",
+    "10": "Oct",
+    "11": "Nov",
+    "12": "Dec"
+  },
+  "Navigation": {
+    "creator": "Creator",
+    "crosses": "Crosses",
+    "locations": "Locations",
+    "travels": "Travels",
+    "visits": "Visits",
+    "menu": "Menu"
+  },
+  "DaysShort": {
+    "Sun": "Sun",
+    "Mon": "Mon",
+    "Tue": "Tue",
+    "Wed": "Wed",
+    "Thu": "Thu",
+    "Fri": "Fri",
+    "Sat": "Sat"
+  }
+}

@@ -9,12 +9,12 @@ import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableFooter, TableHeader, TableRow } from '@/components/ui/table';
-import { extractDate, extractTime, getHoursAndMinutes } from '@/utils';
+import { extractTime, getHoursAndMinutes } from '@/utils';
+import { extractDate } from "@/utils/date";
 import { renderTotalWeightsCell, renderWeight } from '@/utils/weight';
 
-import { renderPointWithCopyBtn } from './render/coordinates';
+import { PointWithCopyBtn } from './render/coordinates';
 import { renderLocationWithZipcode } from './render/location';
-
 
 const columnHeaders = ['Date', 'Location', 'Arrival', 'Departure', 'Duration', 'Weight', 'Actions'];
 
@@ -62,7 +62,7 @@ const VisitTableContent = ({ visits, onDelete, onUpdate }: Props) => {
 
     try {
       setIsSaving(true);
-      
+
       let newArrivalTime = visit.arrivalTime;
       if (visit.arrivalTime.includes('T')) {
         const timePart = visit.arrivalTime.split('T')[1];
@@ -197,7 +197,7 @@ const VisitTableContent = ({ visits, onDelete, onUpdate }: Props) => {
       <TableFooter>
         <TableRow className="border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
           <TableCell className="font-medium text-gray-900 dark:text-white">Total</TableCell>
-          <TableCell className="text-gray-900 dark:text-white" colSpan={3}>{renderPointWithCopyBtn(totalLat, totalLong)}</TableCell>
+          <TableCell className="text-gray-900 dark:text-white" colSpan={3}><PointWithCopyBtn latitude={totalLat} longitude={totalLong} /></TableCell>
           <TableCell className="font-medium text-gray-900 dark:text-white">{getHoursAndMinutes(totalMinutes)}</TableCell>
           <TableCell className="text-gray-900 dark:text-white">{renderTotalWeightsCell(visibleVisits)}</TableCell>
         </TableRow>

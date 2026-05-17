@@ -4,8 +4,7 @@ import type { KnownCenter } from "@/types/center"
 import type { Travel, TravelsData } from "@/types/travel";
 import type { Visit, VisitsData } from "@/types/visit";
 
-import Link from "next/link"
-
+import { Link } from "@/i18n/routing"
 import useNearbyCenters from "@/hooks/useNearbyCenters"
 import { shortcutName } from "@/utils/strings"
 

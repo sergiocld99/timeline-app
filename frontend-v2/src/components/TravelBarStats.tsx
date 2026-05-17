@@ -2,9 +2,11 @@ import type { Travel } from "@/types/travel";
 import type { Location } from "@/types/location";
 import type { FilteringData } from "@/types/stats";
 
+import { useTranslations } from "next-intl";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
 import { buildChartConfig } from "@/utils/chart"
+import { translateDay } from "@/utils/date";
 
 import { calculateBestLocations } from "./analize/travel";
 import { buildDailyChartData, buildHourlyChartData } from "./builders/travelBars";
@@ -47,13 +49,14 @@ const enrichWithFarthestPoint = (t: Travel, home?: Location) => {
 }
 
 const TravelBarStats = ({ travels, onFilter, options, cardClassName = "w-8/10" }: Props) => {
+  const t = useTranslations();
   const home = calculateHome(travels, options)
   const relevantTravels = travels.map(t => enrichWithFarthestPoint(t, home))
 
   const { topKeys, otherKeys, shouldShowOthers } = calculateBestLocations(relevantTravels, 5)
   const hourlyChartData = buildHourlyChartData(relevantTravels, topKeys)
   const dailyChartData = buildDailyChartData(relevantTravels, topKeys)
-  const chartConfig = buildChartConfig(topKeys, otherKeys)
+  const chartConfig = buildChartConfig(topKeys, otherKeys, t("Charts.modes.others"))
 
   const handleZipcodeClick = (zipcode: string[]) => {
     onFilter({ type: 'zipcode', value: zipcode })
@@ -80,7 +83,7 @@ const TravelBarStats = ({ travels, onFilter, options, cardClassName = "w-8/10" }
               tickFormatter={(value) => value.slice(0, 3)}
               onClick={(data) => handleHourClick(data?.value)}
             />
-            <ChartTooltip content={<ChartTooltipContent />} />
+            <ChartTooltip content={<ChartTooltipContent labelFormatter={(value) => `${value}hs`} />} />
             <ChartLegend content={<ChartLegendContent />} />
             {topKeys.at(0) && <Bar
               dataKey="red"
@@ -128,10 +131,10 @@ const TravelBarStats = ({ travels, onFilter, options, cardClassName = "w-8/10" }
               className="hover:cursor-pointer"
               dataKey="day"
               tickMargin={10}
-              tickFormatter={(value) => value.slice(0, 3)}
+              tickFormatter={(value) => translateDay(value, t)}
               onClick={(data) => handleDayClick(data?.value)}
             />
-            <ChartTooltip content={<ChartTooltipContent />} />
+            <ChartTooltip content={<ChartTooltipContent labelFormatter={(value) => translateDay(value, t)} />} />
             {topKeys.at(0) && <Bar
               dataKey="red"
               stackId="a"

@@ -9,6 +9,9 @@
 - COD9-015: Show all zipcodes in ticker (#60) [229]
 - COD9-016: Places highlighting by active zipcode on ticker (#62) [61]
 
+### Internationalization
+- COD9-046: Implement i18n support for Dashboard and Travels pages (#64) [4693]
+
 ## v0.8.0 (2026-04-17)
 - COD8-001: Add Purple Weight for Travels with Crosses (#39) [23]
 - COD8-010: Add Travel and Visit Date Edition & Refactor travel.d.ts (#38) [1054]
