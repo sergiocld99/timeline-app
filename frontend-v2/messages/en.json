@@ -107,7 +107,18 @@
     "delete": "Delete",
     "apply": "Apply",
     "export": "Export",
-    "removeFilter": "Remove Filter: {filterName}"
+    "removeFilter": "Remove Filter: {filterName}",
+    "add": "Add",
+    "remove": "Remove",
+    "search": "Search",
+    "arrivals": "Arrivals",
+    "departures": "Departures",
+    "nextWeek": "Next week",
+    "previousWeek": "Previous week",
+    "nextMonth": "Next month",
+    "previousMonth": "Previous month",
+    "goBack": "Go back",
+    "copyCoordinates": "Copy coordinates"
   },
   "MonthsShort": {
     "1": "Jan",
