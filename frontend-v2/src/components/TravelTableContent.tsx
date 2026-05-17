@@ -15,12 +15,9 @@ import { extractTime } from '@/utils';
 import { renderWeight } from '@/utils/weight';
 import { cn } from '@/lib/utils';
 
+import { TravelActionDropdown } from './TravelActionDropdown';
 import TravelTableFooter from './TravelTableFooter';
 import MilestoneIcons, { getMilestones } from './TravelMilestones';
-import AddAction from './buttons/AddAction';
-import DeleteAction from './buttons/DeleteAction';
-import EditAction from './buttons/EditAction';
-import MinusAction from './buttons/MinusAction';
 import DateCell from './cell/DateCell';
 import TransportModeCell from './cell/TransportModeCell';
 import LocationCell from './cell/LocationCell';
@@ -164,24 +161,6 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
     return <LocationCell editProps={editProps} field={field} locations={locations} />
   }
 
-  const renderTravelsTabActionButtons = (travel: Travel) => {
-    return (
-      <div className="flex space-x-2">
-        <EditAction handleClick={() => { void handleEdit(travel); }} />
-        <DeleteAction handleClick={() => { void handleDelete(travel); }} />
-      </div>
-    );
-  }
-
-  const renderCrossesTabActionButtons = (travel: Travel) => {
-    return (
-      <div className="flex space-x-2">
-        <AddAction handleClick={() => { void onAddCrosses?.(travel._id); }} />
-        <MinusAction handleClick={() => { void onRemoveCrosses?.(travel._id); }} />
-      </div>
-    )
-  }
-
   const renderActionButtons = (travel: Travel) => {
     if (editingId === travel._id) {
       return (
@@ -201,15 +180,14 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
       );
     }
 
-    if (onAddCrosses && onRemoveCrosses) {
-      return renderCrossesTabActionButtons(travel)
-    }
-
-    if (onUpdate && onDelete) {
-      return renderTravelsTabActionButtons(travel)
-    }
-
-    return <></>
+    return (
+      <TravelActionDropdown
+        onEdit={() => handleEdit(travel)}
+        onDelete={onDelete ? () => { void handleDelete(travel); } : undefined}
+        onAddCrosses={onAddCrosses ? () => { void onAddCrosses(travel._id); } : undefined}
+        onRemoveCrosses={onRemoveCrosses ? () => { void onRemoveCrosses(travel._id); } : undefined}
+      />
+    );
   };
 
 
