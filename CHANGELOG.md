@@ -9,6 +9,7 @@
 - COD9-015: Show all zipcodes in ticker (#60) [229]
 - COD9-016: Places highlighting by active zipcode on ticker (#62) [61]
 - COD9-017: Collapse Travel Table Content (#65) [109]
+- COD9-018: Replace Start with Schedule Column (#68) [5]
 
 ## v0.8.0 (2026-04-17)
 - COD8-001: Add Purple Weight for Travels with Crosses (#39) [23]
