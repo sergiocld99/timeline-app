@@ -9,9 +9,10 @@ import { renderPoint } from "../render/coordinates";
 type Props = {
   travels: Travel[];
   stats?: TravelStats;
+  isCollapsed?: boolean;
 }
 
-const TravelListContent = ({ travels, stats }: Props) => {
+const TravelListContent = ({ travels, stats, isCollapsed }: Props) => {
   const {
     averageLatitude: totalLat,
     averageLongitude: totalLong,
@@ -22,7 +23,7 @@ const TravelListContent = ({ travels, stats }: Props) => {
 
   return (
     <div className="flex flex-col gap-4">
-      {travels.map((travel) => (
+      {!isCollapsed && travels.map((travel) => (
         <div key={travel._id} className="flex flex-col gap-2">
           <Item
             variant="outline"
