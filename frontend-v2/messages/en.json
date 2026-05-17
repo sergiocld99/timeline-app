@@ -201,6 +201,8 @@
     "longitude": "Longitude",
     "crosses": "Crosses",
     "noCrosses": "No crosses to show",
+    "searchPlaceholder": "Search crosses...",
+    "noCrossesFound": "No crosses found.",
     "messages": {
       "crossAddedSuccess": "Cross \"{name}\" added successfully!",
       "crossAddedError": "Failed to add cross: {error}",
@@ -275,6 +277,8 @@
     "createUserDescription": "Add a new user with a unique numeric ID and name",
     "userId": "User ID",
     "name": "Name",
+    "userIdPlaceholder": "e.g., 2",
+    "namePlaceholder": "e.g., John Doe",
     "creating": "Creating...",
     "createUser": "Create User",
     "existingUsers": "Existing Users",
@@ -299,5 +303,17 @@
       "updateSuccess": "User {name} edited successfully",
       "updateError": "Error updating user"
     }
+  },
+  "Themes": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "toggleTheme": "Toggle theme"
+  },
+  "UserDropdown": {
+    "guest": "Guest",
+    "guestMode": "Guest Mode",
+    "loggedInAs": "Logged in as {name}",
+    "manageUsers": "Manage Users"
   }
 }

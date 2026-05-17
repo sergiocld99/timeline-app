@@ -180,7 +180,7 @@ export default function ProfilePage() {
                     type="number"
                     value={userId}
                     onChange={(e) => setUserId(e.target.value)}
-                    placeholder="e.g., 2"
+                    placeholder={t("userIdPlaceholder")}
                     required
                   />
                 </div>
@@ -191,7 +191,7 @@ export default function ProfilePage() {
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="e.g., John Doe"
+                    placeholder={t("namePlaceholder")}
                     required
                   />
                 </div>

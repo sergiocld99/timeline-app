@@ -201,6 +201,8 @@
     "longitude": "Longitud",
     "crosses": "Cruces",
     "noCrosses": "No hay cruces para mostrar",
+    "searchPlaceholder": "Buscar cruces...",
+    "noCrossesFound": "No se encontraron cruces.",
     "messages": {
       "crossAddedSuccess": "¡Cruce \"{name}\" agregado con éxito!",
       "crossAddedError": "Error al agregar el cruce: {error}",
@@ -275,6 +277,8 @@
     "createUserDescription": "Agrega un nuevo usuario con un ID numérico único y un nombre",
     "userId": "ID de Usuario",
     "name": "Nombre",
+    "userIdPlaceholder": "ej. 2",
+    "namePlaceholder": "ej. Juan Pérez",
     "creating": "Creando...",
     "createUser": "Crear Usuario",
     "existingUsers": "Usuarios Existentes",
@@ -299,5 +303,17 @@
       "updateSuccess": "Usuario {name} editado con éxito",
       "updateError": "Error al actualizar el usuario"
     }
+  },
+  "Themes": {
+    "light": "Claro",
+    "dark": "Oscuro",
+    "system": "Sistema",
+    "toggleTheme": "Cambiar tema"
+  },
+  "UserDropdown": {
+    "guest": "Invitado",
+    "guestMode": "Modo Invitado",
+    "loggedInAs": "Sesión iniciada como {name}",
+    "manageUsers": "Administrar Usuarios"
   }
 }
