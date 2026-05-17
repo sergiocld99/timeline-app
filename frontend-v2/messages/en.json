@@ -87,6 +87,7 @@
       "ferry": "Ferry",
       "walking": "Walking",
       "mixed": "Mixed",
+      "mixedTooltip": "Travel with 2 modes of transport: one with greater distance and one with greater duration",
       "others": "Others",
       "other": "Other"
     }

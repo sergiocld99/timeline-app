@@ -87,6 +87,7 @@
       "ferry": "Ferry",
       "walking": "Caminando",
       "mixed": "Mixto",
+      "mixedTooltip": "Viaje con 2 medios de transporte: uno con mayor distancia y otro con mayor duración",
       "others": "Otros",
       "other": "Otro"
     }

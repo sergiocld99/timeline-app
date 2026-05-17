@@ -8,11 +8,11 @@ import { useTranslations } from "next-intl";
 import { AutocompleteLocation } from "@/components/AutocompleteLocation";
 import { AutocompleteCrosses } from "@/components/AutocompleteCrosses";
 import { StateCheckbox } from "@/components/StateCheckbox";
+import TransportModeSelect from "@/components/TransportModeSelect";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import useTravelCreator from "@/hooks/useTravelCreator";
 
 type Props = {
@@ -22,7 +22,6 @@ type Props = {
 
 const TravelForm = ({ locations, crosses }: Props) => {
   const t = useTranslations("Creator");
-  const tModes = useTranslations("Charts.modes");
   const {
     formData, handleChange, handleSubmit,
     createForAllUsers, setCreateForAllUsers,
@@ -87,25 +86,10 @@ const TravelForm = ({ locations, crosses }: Props) => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="space-y-2">
-              <Label htmlFor="modeOfTransport" className="text-gray-700 dark:text-gray-300">{t("modeOfTransport")}</Label>
-              <Select value={formData.modeOfTransport} onValueChange={(value) => handleChange("modeOfTransport", value)}>
-                <SelectTrigger className="w-full bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="car">🚘 {tModes("car")}</SelectItem>
-                  <SelectItem value="taxi">🚖 {tModes("taxi")}</SelectItem>
-                  <SelectItem value="bus">🚍 {tModes("bus")}</SelectItem>
-                  <SelectItem value="train">🚉 {tModes("train")}</SelectItem>
-                  <SelectItem value="subway">🚇 {tModes("subway")}</SelectItem>
-                  <SelectItem value="ferry">⛴️ {tModes("ferry")}</SelectItem>
-                  <SelectItem value="mixed" title="Travel with 2 modes of transport: one with greater distance and one with greater duration">🛸 {tModes("mixed")}</SelectItem>
-                  <SelectItem value="walking">🚶🏽 {tModes("walking")}</SelectItem>
-                  <SelectItem value="other">{tModes("other")}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <TransportModeSelect
+              value={formData.modeOfTransport}
+              onChange={(value) => handleChange("modeOfTransport", value)}
+            />
 
             {formData.modeOfTransport === 'bus' && (
               <div className="space-y-2">
