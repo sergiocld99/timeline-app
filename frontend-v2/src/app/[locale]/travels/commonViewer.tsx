@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl"
+
 import { Link } from "@/i18n/routing"
 import ArrivalsAction from "@/components/buttons/ArrivalsAction"
 import BackAction from "@/components/buttons/BackAction"
@@ -16,14 +18,17 @@ type Props = {
 }
 
 const LocationCommonViewer = ({ locationId, action }: Props) => {
+  const t = useTranslations("Locations")
+  const tCommon = useTranslations("Common")
   const { locations, loading } = useLocations()
   const { travels: travelsData } = useTravels('', action === 'from' ? locationId : '', action === 'to' ? locationId : '')
   const { travels, stats } = travelsData
 
   const targetLocation = locations.find(loc => loc._id === locationId)
 
-  const locationName = loading ? 'Loading...' : targetLocation?.name || `Unknown location`
+  const locationName = loading ? tCommon('loading') : targetLocation?.name || t("viewer.unknownLocation")
   const travelField = action === 'from' ? 'origin' : 'destination'
+  const travelsLabel = action === 'from' ? t("viewer.travelsFrom") : t("viewer.travelsTo")
 
   return (
     <main className="mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
@@ -32,7 +37,7 @@ const LocationCommonViewer = ({ locationId, action }: Props) => {
           <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
             <CardHeader>
               <CardTitle className="text-gray-900 dark:text-white">
-                <span>Travels {action}</span>
+                <span>{travelsLabel}</span>
                 <br />
                 <span>{locationName}</span>
               </CardTitle>

@@ -4,6 +4,7 @@ import type { Location } from "@/types/location";
 
 import { Check, ChevronsUpDown } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
+import { useTranslations } from "next-intl"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -22,6 +23,7 @@ export function AutocompleteLocation({
   onValueChange,
   placeholder = "Select location...",
 }: AutocompleteLocationProps) {
+  const t = useTranslations("Locations");
   const [open, setOpen] = useState(false)
   const [searchValue, setSearchValue] = useState("")
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -73,7 +75,7 @@ export function AutocompleteLocation({
     <div className="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg">
       <div className="p-2">
         <Input
-          placeholder="Search locations..."
+          placeholder={t("searchPlaceholder")}
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
           className="h-9 mb-2"
@@ -83,7 +85,7 @@ export function AutocompleteLocation({
       <div className="max-h-60 overflow-auto">
         {filteredLocations.length === 0 ? (
           <div className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">
-            No location found.
+            {t("noLocationsFound")}
           </div>
         ) : (
           filteredLocations.map((location) => renderFilteredLocation(location))

@@ -5,6 +5,7 @@ import type { Visit } from "@/types/visit";;
 import { Loader2, Save, X, Eye, EyeOff, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { useTranslations } from "next-intl";
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -16,8 +17,6 @@ import { renderTotalWeightsCell, renderWeight } from '@/utils/weight';
 import { PointWithCopyBtn } from './render/coordinates';
 import { renderLocationWithZipcode } from './render/location';
 
-const columnHeaders = ['Date', 'Location', 'Arrival', 'Departure', 'Duration', 'Weight', 'Actions'];
-
 type Props = {
   visits: Visit[];
   onDelete: (id: string) => Promise<void>;
@@ -25,6 +24,8 @@ type Props = {
 }
 
 const VisitTableContent = ({ visits, onDelete, onUpdate }: Props) => {
+  const t = useTranslations("Visits");
+  const tRoot = useTranslations();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValues, setEditValues] = useState<{ date: string }>({ date: '' });
   const [isSaving, setIsSaving] = useState(false);
@@ -36,11 +37,21 @@ const VisitTableContent = ({ visits, onDelete, onUpdate }: Props) => {
   const totalLat = visibleVisits.reduce((sum, visit) => sum + visit.location.latitude * visit.weight.percentage, 0) / totalPercentage;
   const totalLong = visibleVisits.reduce((sum, visit) => sum + visit.location.longitude * visit.weight.percentage, 0) / totalPercentage;
 
+  const columnHeaders = [
+    t('tableHeaders.date'),
+    t('tableHeaders.location'),
+    t('tableHeaders.arrival'),
+    t('tableHeaders.departure'),
+    t('tableHeaders.duration'),
+    t('tableHeaders.weight'),
+    t('tableHeaders.actions')
+  ];
+
   const handleDelete = (visit: Visit) => {
     onDelete(visit._id).then(() => {
-      toast.success('Visit deleted');
+      toast.success(t("messages.deleteSuccess"));
     }).catch(() => {
-      toast.error('Failed to delete visit');
+      toast.error(t("messages.deleteError"));
     });
   }
 
@@ -77,11 +88,11 @@ const VisitTableContent = ({ visits, onDelete, onUpdate }: Props) => {
         departureTime: newDepartureTime,
         location: visit.location._id as unknown as Location
       });
-      toast.success('Visit updated successfully!', { style: { background: 'green' } });
+      toast.success(t("messages.updateSuccess"), { style: { background: 'green' } });
       setEditingId(null);
     } catch (error) {
       const axiosError = error as AxiosErrorResponse;
-      toast.error(axiosError.response?.data?.message || 'Failed to update visit', { style: { background: 'red' } });
+      toast.error(axiosError.response?.data?.message || t("messages.updateError"), { style: { background: 'red' } });
     } finally {
       setIsSaving(false);
     }
@@ -108,9 +119,9 @@ const VisitTableContent = ({ visits, onDelete, onUpdate }: Props) => {
       <span
         onClick={() => { handleEdit(visit); }}
         className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 px-2 py-1 rounded transition-colors"
-        title="Click to edit"
+        title={t("tableHeaders.clickToEdit")}
       >
-        {extractDate(visit.date)}
+        {extractDate(visit.date, tRoot)}
       </span>
     );
   };
@@ -146,7 +157,7 @@ const VisitTableContent = ({ visits, onDelete, onUpdate }: Props) => {
           onClick={() => { void handleDelete(visit); }}
           size="sm"
           variant="outline"
-          title="Delete visit"
+          title={t("tableHeaders.deleteVisit")}
           className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
         >
           <Trash2 className="h-4 w-4" />
@@ -155,7 +166,7 @@ const VisitTableContent = ({ visits, onDelete, onUpdate }: Props) => {
           onClick={() => { handleToggleExclude(visit._id); }}
           size="sm"
           variant="outline"
-          title="Exclude from weight calculation"
+          title={excludedVisits.includes(visit._id) ? t("tableHeaders.includeWeight") : t("tableHeaders.excludeWeight")}
           className='text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50 dark:hover:bg-yellow-900/20'
         >
           {
