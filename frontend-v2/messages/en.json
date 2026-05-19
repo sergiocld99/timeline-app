@@ -43,6 +43,7 @@
       "from": "From",
       "to": "To",
       "start": "Start",
+      "schedule": "Schedule",
       "distance": "Distance",
       "duration": "Duration",
       "speed": "Speed",

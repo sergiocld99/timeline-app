@@ -9,6 +9,7 @@
 - COD9-015: Show all zipcodes in ticker (#60) [229]
 - COD9-016: Places highlighting by active zipcode on ticker (#62) [61]
 - COD9-017: Collapse Travel Table Content (#65) [109]
+- COD9-018: Refactor Schedule and Actions columns (#68) [203]
 
 ### Internationalization
 - COD9-046: Implement i18n support for Dashboard and Travels pages (#64) [4693]

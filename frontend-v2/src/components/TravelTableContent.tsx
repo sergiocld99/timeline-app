@@ -16,12 +16,9 @@ import { extractTime } from '@/utils';
 import { renderWeight } from '@/utils/weight';
 import { cn } from '@/lib/utils';
 
+import { TravelActionDropdown } from './TravelActionDropdown';
 import TravelTableFooter from './TravelTableFooter';
 import MilestoneIcons, { getMilestones } from './TravelMilestones';
-import AddAction from './buttons/AddAction';
-import DeleteAction from './buttons/DeleteAction';
-import EditAction from './buttons/EditAction';
-import MinusAction from './buttons/MinusAction';
 import DateCell from './cell/DateCell';
 import TransportModeCell from './cell/TransportModeCell';
 import LocationCell from './cell/LocationCell';
@@ -36,7 +33,7 @@ type Props = {
   isCollapsed?: boolean;
 };
 
-const COLUMN_KEYS = ['date', 'mode', 'from', 'to', 'start', 'distance', 'duration', 'speed', 'weight', 'actions'];
+const COLUMN_KEYS = ['date', 'mode', 'from', 'to', 'schedule', 'distance', 'duration', 'weight', 'actions'];
 
 const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, onRemoveCrosses, isCollapsed }: Props) => {
   const t = useTranslations("Travels");
@@ -167,24 +164,6 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
     return <LocationCell editProps={editProps} field={field} locations={locations} />
   }
 
-  const renderTravelsTabActionButtons = (travel: Travel) => {
-    return (
-      <div className="flex space-x-2">
-        <EditAction handleClick={() => { void handleEdit(travel); }} />
-        <DeleteAction handleClick={() => { void handleDelete(travel); }} />
-      </div>
-    );
-  }
-
-  const renderCrossesTabActionButtons = (travel: Travel) => {
-    return (
-      <div className="flex space-x-2">
-        <AddAction handleClick={() => { void onAddCrosses?.(travel._id); }} />
-        <MinusAction handleClick={() => { void onRemoveCrosses?.(travel._id); }} />
-      </div>
-    )
-  }
-
   const renderActionButtons = (travel: Travel) => {
     if (editingId === travel._id) {
       return (
@@ -204,15 +183,14 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
       );
     }
 
-    if (onAddCrosses && onRemoveCrosses) {
-      return renderCrossesTabActionButtons(travel)
-    }
-
-    if (onUpdate && onDelete) {
-      return renderTravelsTabActionButtons(travel)
-    }
-
-    return <></>
+    return (
+      <TravelActionDropdown
+        onEdit={() => handleEdit(travel)}
+        onDelete={onDelete ? () => { void handleDelete(travel); } : undefined}
+        onAddCrosses={onAddCrosses ? () => { void onAddCrosses(travel._id); } : undefined}
+        onRemoveCrosses={onRemoveCrosses ? () => { void onRemoveCrosses(travel._id); } : undefined}
+      />
+    );
   };
 
 
@@ -263,10 +241,13 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
                   <TableCell className="text-gray-900 dark:text-white"><TransportModeCell editProps={editProps} /></TableCell>
                   <TableCell className="text-gray-900 dark:text-white">{renderEditableLocation(editProps, 'origin')}</TableCell>
                   <TableCell className="text-gray-900 dark:text-white">{renderEditableLocation(editProps, 'destination')}</TableCell>
-                  <TableCell className="text-gray-900 dark:text-white">{extractTime(t.startTime)}</TableCell>
+                  <TableCell className="text-gray-900 dark:text-white font-mono text-sm whitespace-nowrap">
+                    <span>{extractTime(t.startTime)}</span>
+                    <span className="text-gray-400 dark:text-gray-500 mx-1.5">→</span>
+                    <span className="text-gray-500 dark:text-gray-400 font-medium">{extractTime(t.endTime)}</span>
+                  </TableCell>
                   <TableCell className="text-gray-900 dark:text-white">{renderEditableCell(t, 'distance', 0.1)}</TableCell>
                   <TableCell className="text-gray-900 dark:text-white">{renderEditableCell(t, 'duration', 1)}</TableCell>
-                  <TableCell className="text-gray-900 dark:text-white">{t.speed.toFixed(1)} km/h</TableCell>
                   <TableCell className="text-gray-900 dark:text-white">{renderWeight(t)}</TableCell>
                   <TableCell>{renderActionButtons(t)}</TableCell>
                 </TableRow>
