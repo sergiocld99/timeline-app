@@ -66,7 +66,8 @@ test('can create and delete travel', async ({ page }) => {
   const deletePromise = page.waitForResponse(response =>
     response.url().includes('/travels') && response.request().method() === 'DELETE' && response.status() === 204
   );
-  await page.getByRole('button', { name: 'Delete' }).click()
+  await page.getByRole('button', { name: 'Open menu' }).click()
+  await page.getByRole('menuitem', { name: 'Delete' }).click()
   await deletePromise;
 
   await expect(page.locator('td').filter({ hasText: '0 travels' })).toBeVisible()

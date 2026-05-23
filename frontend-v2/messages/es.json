@@ -312,6 +312,11 @@
     "system": "Sistema",
     "toggleTheme": "Cambiar tema"
   },
+  "Languages": {
+    "en": "Inglés",
+    "es": "Español",
+    "toggleLanguage": "Cambiar idioma"
+  },
   "UserDropdown": {
     "guest": "Invitado",
     "guestMode": "Modo Invitado",
