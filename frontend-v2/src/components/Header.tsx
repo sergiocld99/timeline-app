@@ -1,12 +1,14 @@
 "use client";
 
 import { Menu } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import Link from "next/link";
+
+import { Link, usePathname } from "@/i18n/routing";
 
 import NavItem from "./client/NavItem";
 import ThemeToggle from "./client/ThemeToggle";
+import LanguageToggle from "./client/LanguageToggle";
 import UserDropdown from "./client/UserDropdown";
 import { Button } from "./ui/button";
 import {
@@ -17,17 +19,18 @@ import {
   SheetTrigger,
 } from "./ui/sheet";
 
-const NAV_ITEMS: { path: string; label: string }[] = [
-  { path: "/creator", label: "Creator" },
-  { path: "/crosses", label: "Crosses" },
-  { path: "/locations", label: "Locations" },
-  { path: "/travels", label: "Travels" },
-  { path: "/visits", label: "Visits" },
+const NAV_ITEMS: { path: string; labelKey: string }[] = [
+  { path: "/creator", labelKey: "creator" },
+  { path: "/crosses", labelKey: "crosses" },
+  { path: "/locations", labelKey: "locations" },
+  { path: "/travels", labelKey: "travels" },
+  { path: "/visits", labelKey: "visits" },
 ];
 
 const Header = () => {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const t = useTranslations("Navigation");
 
   useEffect(() => {
     setOpen(false);
@@ -46,13 +49,14 @@ const Header = () => {
           {/* Desktop: nav + user + theme */}
           <div className="hidden lg:flex items-center space-x-4">
             <nav className="flex space-x-4">
-              {NAV_ITEMS.map(({ path, label }) => (
-                <NavItem key={path} path={path} label={label} />
+              {NAV_ITEMS.map(({ path, labelKey }) => (
+                <NavItem key={path} path={path} label={t(labelKey)} />
               ))}
             </nav>
             <div className="flex items-center space-x-2">
               <UserDropdown />
               <ThemeToggle />
+              <LanguageToggle />
             </div>
           </div>
 
@@ -71,12 +75,12 @@ const Header = () => {
               </SheetTrigger>
               <SheetContent side="left" className="w-[280px] sm:w-[320px]">
                 <SheetHeader>
-                  <SheetTitle>Menu</SheetTitle>
+                  <SheetTitle>{t("menu")}</SheetTitle>
                 </SheetHeader>
                 <nav className="flex flex-col gap-1 pt-4 [&_a]:w-full [&_button]:w-full [&_button]:justify-start">
-                  {NAV_ITEMS.map(({ path, label }) => (
+                  {NAV_ITEMS.map(({ path, labelKey }) => (
                     <div key={path} onClick={() => setOpen(false)}>
-                      <NavItem path={path} label={label} />
+                      <NavItem path={path} label={t(labelKey)} />
                     </div>
                   ))}
                 </nav>

@@ -32,10 +32,17 @@ jobs:
           BASE_REF: ${{ github.base_ref }}
         run: |
           # Obtener la lista de archivos cambiados respecto a la rama base
-          FILES=$(git diff --name-only origin/$BASE_REF...HEAD)
-          
-          # Contar archivos (excluyendo líneas vacías)
-          COUNT=$(echo "$FILES" | grep -v '^$' | wc -l | xargs)
+          FILES=$(git diff origin/$BASE_REF...HEAD --name-only)
+          STATS=$(git diff origin/$BASE_REF...HEAD --stat)
+          NUM_ARR=($(echo "$STATS" | tail -n 1 | grep -oE '[0-9]+'))
+          PRODUCT=1
+
+          for num in "${NUM_ARR[@]}"; do
+            PRODUCT=$((PRODUCT * num))
+          done
+
+          SIZE=$(awk "BEGIN { print int(sqrt($PRODUCT)) }")
+          echo "The size of this PR is $SIZE"
           
           # Verificar si CHANGELOG.md está en la lista (1 si existe, 0 si no)
           if echo "$FILES" | grep -qx "CHANGELOG.md"; then
@@ -43,17 +50,14 @@ jobs:
           else
             CHANGELOG_CHANGED=0
           fi
-          
-          echo "Total changed files: $COUNT"
-          echo "CHANGELOG changed: $CHANGELOG_CHANGED"
 
-          # Validación de CHANGELOG (Solo si >= 3 archivos)
-          if [ "$COUNT" -ge 3 ]; then
+          # Validación de CHANGELOG (Solo en size >= 100)
+          if [ "$SIZE" -ge 100 ]; then
             if [ "$CHANGELOG_CHANGED" -eq 0 ]; then
-              echo "::error file=CHANGELOG.md::CHANGELOG.md debe estar actualizado para PRs con 3 o más archivos (detectados $COUNT archivos)."
+              echo "::error file=CHANGELOG.md::CHANGELOG.md debe actualizarse por el tamaño del PR $SIZE >= 100"
               exit 1
             fi
             echo "Validación de CHANGELOG: OK"
           else
-            echo "Saltando validación de CHANGELOG (solo $COUNT archivos)."
+            echo "Saltando validación de CHANGELOG"
           fi

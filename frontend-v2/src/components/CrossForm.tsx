@@ -1,10 +1,14 @@
 "use client";
 
+import type { Cross } from "@/types/cross";
+import type { AxiosErrorResponse } from "@/types/commons";
+
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import { MapPin } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import CrossService from "@/services/CrossService";
@@ -14,18 +18,23 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 
+const MapLoading = () => {
+  const tCommon = useTranslations("Common");
+  return (
+    <div className="h-[400px] w-full bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
+      <p className="text-gray-500 dark:text-gray-400">{tCommon("loading")}</p>
+    </div>
+  );
+};
 
 // Import MapPicker dynamically to avoid SSR issues with Leaflet
 const MapPicker = dynamic(() => import("@/components/MapPicker"), {
   ssr: false,
-  loading: () => (
-    <div className="h-[400px] w-full bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
-      <p className="text-gray-500 dark:text-gray-400">Loading map...</p>
-    </div>
-  ),
+  loading: MapLoading,
 });
 
 const CrossForm = () => {
+  const t = useTranslations("Crosses");
   const queryClient = useQueryClient();
   const [formData, setFormData] = useState({
     name: "",
@@ -34,10 +43,10 @@ const CrossForm = () => {
   });
   const [isMapOpen, setIsMapOpen] = useState(false);
 
-  const mutation = useMutation({
+  const mutation = useMutation<Cross, AxiosErrorResponse, typeof formData>({
     mutationFn: (newCross: typeof formData) => CrossService.create(newCross),
     onSuccess: (data) => {
-      toast.success(`Cross "${data.name}" added successfully!`);
+      toast.success(t("messages.crossAddedSuccess", { name: data.name }));
       setFormData({
         name: "",
         latitude: "",
@@ -46,7 +55,7 @@ const CrossForm = () => {
       queryClient.invalidateQueries({ queryKey: ["crosses"] });
     },
     onError: (err) => {
-      toast.error(`Failed to add cross: ${err}`);
+      toast.error(t("messages.crossAddedError", { error: err.response?.data?.message || err.message || "Unknown error" }));
     },
   });
 
@@ -74,12 +83,12 @@ const CrossForm = () => {
   return (
     <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardHeader>
-        <CardTitle className="text-gray-900 dark:text-white">Add Cross</CardTitle>
+        <CardTitle className="text-gray-900 dark:text-white">{t("addCross")}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name" className="text-gray-700 dark:text-gray-300">Name</Label>
+            <Label htmlFor="name" className="text-gray-700 dark:text-gray-300">{t("name")}</Label>
             <Input
               id="name"
               name="name"
@@ -92,7 +101,7 @@ const CrossForm = () => {
           </div>
 
           <div className="flex items-center justify-between pt-2">
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Coordinates</span>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t("coordinates")}</span>
             <Button
               type="button"
               variant="outline"
@@ -101,13 +110,13 @@ const CrossForm = () => {
               className="flex items-center gap-2 h-8"
             >
               <MapPin className="h-4 w-4" />
-              Pick on Map
+              {t("pickOnMap")}
             </Button>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="latitude" className="text-gray-700 dark:text-gray-300">Latitude</Label>
+              <Label htmlFor="latitude" className="text-gray-700 dark:text-gray-300">{t("latitude")}</Label>
               <Input
                 id="latitude"
                 name="latitude"
@@ -122,7 +131,7 @@ const CrossForm = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="longitude" className="text-gray-700 dark:text-gray-300">Longitude</Label>
+              <Label htmlFor="longitude" className="text-gray-700 dark:text-gray-300">{t("longitude")}</Label>
               <Input
                 id="longitude"
                 name="longitude"
@@ -138,14 +147,14 @@ const CrossForm = () => {
           </div>
 
           <Button type="submit" className="w-full">
-            Add Cross
+            {t("addCross")}
           </Button>
         </form>
 
         <Dialog open={isMapOpen} onOpenChange={setIsMapOpen}>
           <DialogContent className="sm:max-w-[600px]">
             <DialogHeader>
-              <DialogTitle>Pick Location on Map</DialogTitle>
+              <DialogTitle>{t("addCross")}</DialogTitle>
             </DialogHeader>
             <div className="py-4">
               <MapPicker

@@ -85,7 +85,7 @@ export const cleanUnusedBorders = <T extends { empty: boolean }>(chartData: T[])
   return chartData.slice(p0, p1)
 }
 
-export const buildChartConfig = (topKeys: string[], otherKeys: string[] = []) => {
+export const buildChartConfig = (topKeys: string[], otherKeys: string[] = [], othersLabel = 'Others') => {
   const chartConfig = {
     red: {
       label: abbreviateWords(topKeys[0]),
@@ -108,7 +108,7 @@ export const buildChartConfig = (topKeys: string[], otherKeys: string[] = []) =>
       color: "var(--chart-4)",
     },
     others: {
-      label: otherKeys.length === 1 ? abbreviateWords(otherKeys[0]) : 'Others',
+      label: otherKeys.length === 1 ? abbreviateWords(otherKeys[0]) : othersLabel,
       color: "var(--chart-1)",
     }
   } satisfies ChartConfig

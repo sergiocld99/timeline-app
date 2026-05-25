@@ -6,6 +6,7 @@ import type { Center } from "@/types/map";
 import type { Travel, TravelStats } from "@/types/travel";
 
 import L from "leaflet";
+import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 import { MapContainer, TileLayer, useMap } from "react-leaflet";
 
@@ -37,6 +38,7 @@ const ChangeMapView = ({ center, zoom }: { center: Center, zoom: number }) => {
 }
 
 const TravelMap = ({ travels, isFiltered, stats }: Props) => {
+  const t = useTranslations("TravelMap");
   const { mapConfig } = useMapConfig(travels);
   const [mapCenter, setMapCenter] = useState<[number, number]>([DEFAULT_LAT, DEFAULT_LNG])
   const [zoom, setZoom] = useState(DEFAULT_ZOOM)
@@ -77,7 +79,7 @@ const TravelMap = ({ travels, isFiltered, stats }: Props) => {
   if (uniqueLocations.length === 0) {
     return (
       <div className="w-2/10 h-87 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
-        <p className="text-gray-500 dark:text-gray-400">No travel locations to display</p>
+        <p className="text-gray-500 dark:text-gray-400">{t("noLocations")}</p>
       </div>
     );
   }
@@ -96,7 +98,7 @@ const TravelMap = ({ travels, isFiltered, stats }: Props) => {
         />
 
         <ChangeMapView center={mapCenter} zoom={zoom} />
-        {renderLocationMarkers(uniqueLocations)}
+        {renderLocationMarkers(uniqueLocations, t)}
       </MapContainer>
     </div>
   );

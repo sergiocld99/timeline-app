@@ -1,8 +1,9 @@
 "use client"
 
 import { User } from "lucide-react";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
 
+import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -15,6 +16,7 @@ import {
 import { useUser } from "@/contexts/UserContext";
 
 const UserDropdown = () => {
+  const t = useTranslations("UserDropdown");
   const { currentUser, users, setCurrentUser, loading } = useUser();
 
   const handleUserSelect = (user: typeof currentUser) => {
@@ -31,14 +33,14 @@ const UserDropdown = () => {
           {currentUser ? (
             <span className="text-sm font-medium text-green-300">{currentUser.name}</span>
           ) : (
-            <span className="text-sm text-muted-foreground text-orange-300">{loading ? "" : "Guest"}</span>
+            <span className="text-sm text-muted-foreground text-orange-300">{loading ? "" : t("guest")}</span>
           )}
           <span className="sr-only">User menu</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>
-          {currentUser ? `Logged in as ${currentUser.name}` : "Guest Mode"}
+          {currentUser ? t("loggedInAs", { name: currentUser.name }) : t("guestMode")}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         {users.map((user) => (
@@ -53,7 +55,7 @@ const UserDropdown = () => {
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <Link href="/profile">
-            Manage Users
+            {t("manageUsers")}
           </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>

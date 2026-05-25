@@ -4,6 +4,7 @@ import type { Travel } from "@/types/travel";;
 import type { FilteringData, StatsView } from "@/types/stats";
 
 import dynamic from "next/dynamic";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 import PresentialWorkAlert from "@/components/PresentialWorkAlert";
@@ -17,17 +18,23 @@ import CircularViewBtn from "../buttons/CircularViewBtn";
 import LineViewBtn from "../buttons/LineViewBtn";
 import TravelLineStats from "../TravelLineStats";
 
+const MapLoading = () => {
+  const t = useTranslations("Dashboard");
+  return (
+    <div className="w-2/10 h-87 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
+      <p className="text-gray-500 dark:text-gray-400">{t("loadingMap")}</p>
+    </div>
+  );
+};
+
 // Importar el mapa dinámicamente para evitar problemas de SSR con Leaflet
 const TravelMap = dynamic(() => import("@/components/TravelMap"), {
   ssr: false,
-  loading: () => (
-    <div className="w-2/10 h-87 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
-      <p className="text-gray-500 dark:text-gray-400">Loading map...</p>
-    </div>
-  ),
+  loading: () => <MapLoading />,
 });
 
 const TravelsPageClient = () => {
+  const tDashboard = useTranslations("Dashboard");
   const { travels: travelsData, updateTravel, deleteTravel } = useTravels();
   const { travels, stats } = travelsData;
 
@@ -39,7 +46,7 @@ const TravelsPageClient = () => {
     const { type, value } = data || {}
 
     if (type === 'zipcode' && value) {
-      const displayName = value.length === 1 ? value[0] : value.length < 10 ? value.join(", ") : "Others"
+      const displayName = value.length === 1 ? value[0] : value.length < 10 ? value.join(", ") : tDashboard("others")
 
       setFilteredTravels(travels.filter(t => value.includes(t.origin.zipcode) || value.includes(t.destination.zipcode)));
       setAppliedFilter(displayName);

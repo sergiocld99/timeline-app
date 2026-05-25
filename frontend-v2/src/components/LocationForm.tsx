@@ -5,6 +5,7 @@ import { MapPin } from "lucide-react";
 import { useState, useMemo } from "react";
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,20 +19,26 @@ import useLocations from "@/hooks/useLocations";
 
 import { BaseSelector } from "./selectors/BaseSelector";
 
+const MapLoading = () => {
+  const t = useTranslations("Common");
+  return (
+    <div className="h-[400px] w-full bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
+      <p className="text-gray-500 dark:text-gray-400">{t("loading")}</p>
+    </div>
+  );
+};
+
 // Import MapPicker dynamically to avoid SSR issues with Leaflet
 const MapPicker = dynamic(() => import("@/components/MapPicker"), {
   ssr: false,
-  loading: () => (
-    <div className="h-[400px] w-full bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
-      <p className="text-gray-500 dark:text-gray-400">Loading map...</p>
-    </div>
-  ),
+  loading: MapLoading,
 });
 
 const LocationForm = () => {
+  const t = useTranslations("Creator");
   const queryClient = useQueryClient();
   const { locations } = useLocations();
-  
+
   const sortedPartidos = useMemo(() => getSortedPartidos(locations).all, [locations]);
 
   const [formData, setFormData] = useState({
@@ -47,7 +54,7 @@ const LocationForm = () => {
   const mutation = useMutation({
     mutationFn: (newLocation: typeof formData) => LocationService.create(newLocation),
     onSuccess: (data) => {
-      toast.success(`Location "${data.name}" added successfully!`);
+      toast.success(t("messages.locationAddedSuccess", { name: data.name }));
       setFormData({
         name: "",
         latitude: "",
@@ -60,7 +67,7 @@ const LocationForm = () => {
     },
     onError: (error) => {
       console.error("There was an error adding the location!", error);
-      toast.error("Failed to add location. Please try again.");
+      toast.error(t("messages.locationAddedError"));
     }
   });
 
@@ -87,12 +94,12 @@ const LocationForm = () => {
   return (
     <Card className="w-full max-w-2xl mx-auto bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardHeader>
-        <CardTitle className="text-gray-900 dark:text-white">Add Location</CardTitle>
+        <CardTitle className="text-gray-900 dark:text-white">{t("addLocation")}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name" className="text-gray-700 dark:text-gray-300">Name</Label>
+            <Label htmlFor="name" className="text-gray-700 dark:text-gray-300">{t("locationName")}</Label>
             <Input
               id="name"
               name="name"
@@ -105,7 +112,7 @@ const LocationForm = () => {
           </div>
 
           <div className="flex items-center justify-between pt-2">
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Coordinates</span>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t("coordinates")}</span>
             <Button
               type="button"
               variant="outline"
@@ -114,13 +121,13 @@ const LocationForm = () => {
               className="flex items-center gap-2 h-8"
             >
               <MapPin className="h-4 w-4" />
-              Pick on Map
+              {t("pickOnMap")}
             </Button>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="latitude" className="text-gray-700 dark:text-gray-300">Latitude</Label>
+              <Label htmlFor="latitude" className="text-gray-700 dark:text-gray-300">{t("latitude")}</Label>
               <Input
                 id="latitude"
                 name="latitude"
@@ -135,7 +142,7 @@ const LocationForm = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="longitude" className="text-gray-700 dark:text-gray-300">Longitude</Label>
+              <Label htmlFor="longitude" className="text-gray-700 dark:text-gray-300">{t("longitude")}</Label>
               <Input
                 id="longitude"
                 name="longitude"
@@ -151,7 +158,7 @@ const LocationForm = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="zipcode" className="text-gray-700 dark:text-gray-300">Zipcode</Label>
+            <Label htmlFor="zipcode" className="text-gray-700 dark:text-gray-300">{t("zipcode")}</Label>
             <Input
               id="zipcode"
               name="zipcode"
@@ -163,7 +170,7 @@ const LocationForm = () => {
 
           {formData.zipcode.toUpperCase().startsWith('B') && (
             <div className="space-y-2">
-              <Label htmlFor="partido" className="text-gray-700 dark:text-gray-300">Partido</Label>
+              <Label htmlFor="partido" className="text-gray-700 dark:text-gray-300">{t("partido")}</Label>
               <BaseSelector
                 value={formData.partido}
                 onValueChange={(value) => setFormData(prev => ({ ...prev, partido: value }))}
@@ -173,7 +180,7 @@ const LocationForm = () => {
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="notes" className="text-gray-700 dark:text-gray-300">Notes</Label>
+            <Label htmlFor="notes" className="text-gray-700 dark:text-gray-300">{t("notes")}</Label>
             <Textarea
               id="notes"
               name="notes"
@@ -185,14 +192,14 @@ const LocationForm = () => {
           </div>
 
           <Button type="submit" className="w-full">
-            Save Location
+            {t("saveLocation")}
           </Button>
         </form>
 
         <Dialog open={isMapOpen} onOpenChange={setIsMapOpen}>
           <DialogContent className="sm:max-w-[600px]">
             <DialogHeader>
-              <DialogTitle>Pick Location on Map</DialogTitle>
+              <DialogTitle>{t("pickLocationOnMap")}</DialogTitle>
             </DialogHeader>
             <div className="py-4">
               <MapPicker
