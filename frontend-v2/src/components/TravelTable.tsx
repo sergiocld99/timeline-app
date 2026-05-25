@@ -31,7 +31,7 @@ type Props = {
   onDeleteTravel?: (id: string) => Promise<void>;
   onAddCrosses?: (travelId: string) => Promise<void>;
   onRemoveCrosses?: (travelId: string) => Promise<void>;
-  onFilter: (data?: FilteringByCross) => void;
+  onFilter?: (data?: FilteringByCross) => void;
   onRemoveFilter?: () => void;
   appliedFilter?: string | null;
 };
@@ -77,7 +77,7 @@ const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTra
         </div>
         <div className="flex items-center gap-2">
           <Select value={selectedCrossId} onValueChange={(value) => {
-            onFilter({ type: 'cross', value: value === FILTER_ALL ? '' : value })
+            onFilter?.({ type: 'cross', value: value === FILTER_ALL ? '' : value })
             setSelectedCrossId(value)
           }}>
             <SelectTrigger className="w-[180px] bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white h-9">
