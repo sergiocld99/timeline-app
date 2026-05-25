@@ -37,6 +37,8 @@
     "title": "Travels",
     "noTravelsFound": "No travels found for the selected date range :/",
     "exportCsv": "Export CSV",
+    "filterByCross": "Filter by cross...",
+    "allCrosses": "All crosses",
     "tableHeaders": {
       "date": "Date",
       "mode": "Mode",

@@ -65,6 +65,12 @@ const TravelsPageClient = () => {
       return;
     }
 
+    if (type === 'cross' && value) {
+      setFilteredTravels(travels.filter(t => t.crosses?.some(c => c._id === value)))
+      setAppliedFilter(null);
+      return;
+    }
+
     setFilteredTravels(travels);
     setAppliedFilter(null);
   };
@@ -96,6 +102,7 @@ const TravelsPageClient = () => {
           stats={stats}
           onUpdateTravel={updateTravel}
           onDeleteTravel={deleteTravel}
+          onFilter={onFilter}
           onRemoveFilter={() => onFilter()}
           appliedFilter={appliedFilter}
         />

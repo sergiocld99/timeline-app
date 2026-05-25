@@ -28,4 +28,9 @@ type FilteringByTime = {
   value: string | undefined | null
 }
 
-export type FilteringData = FilteringByZipcode | FilteringByTime
+type FilteringByCross = {
+  type: 'cross'
+  value: string
+}
+
+export type FilteringData = FilteringByZipcode | FilteringByTime | FilteringByCross
