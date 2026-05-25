@@ -8,7 +8,7 @@ import type { Travel, TravelStats } from "@/types/travel";
 import L from "leaflet";
 import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
-import { MapContainer, TileLayer, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, useMap, Circle } from "react-leaflet";
 
 import useNearbyCenters from "@/hooks/useNearbyCenters";
 import { useMapConfig } from "@/hooks/useMapConfig";
@@ -43,8 +43,8 @@ const TravelMap = ({ travels, isFiltered, stats }: Props) => {
   const [mapCenter, setMapCenter] = useState<[number, number]>([DEFAULT_LAT, DEFAULT_LNG])
   const [zoom, setZoom] = useState(DEFAULT_ZOOM)
 
-  const { count = 0, averageLatitude, averageLongitude } = stats || {}
-  const nearbyRadius = stats ? (stats.averageDistance * 2) : undefined
+  const { count = 0, averageLatitude, averageLongitude, averageDistance } = stats || {}
+  const nearbyRadius = averageDistance ? (averageDistance * 2) : undefined
 
   // Auxiliar variables
   const isStronglyFiltered = isFiltered && count < 5
@@ -98,6 +98,19 @@ const TravelMap = ({ travels, isFiltered, stats }: Props) => {
         />
 
         <ChangeMapView center={mapCenter} zoom={zoom} />
+        {stats && averageLatitude && averageLongitude && averageDistance && (
+          <Circle
+            center={[averageLatitude, averageLongitude]}
+            radius={averageDistance * 1000}
+            pathOptions={{
+              color: "#3b82f6",
+              fillColor: "#3b82f6",
+              fillOpacity: 0.15,
+              weight: 2,
+              dashArray: "5, 5"
+            }}
+          />
+        )}
         {renderLocationMarkers(uniqueLocations, t)}
       </MapContainer>
     </div>
