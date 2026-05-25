@@ -1,7 +1,7 @@
 "use client";
 
-import LocationCommonViewer from "@/app/travels/commonViewer";
 import { DateRangeProvider } from "@/contexts/DateRangeContext";
+import LocationCommonViewer from "@/app/[locale]/travels/commonViewer";
 
 type Props = {
   locationId: string;

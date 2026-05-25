@@ -11,6 +11,10 @@
 - COD9-017: Collapse Travel Table Content (#65) [109]
 - COD9-018: Refactor Schedule and Actions columns (#68) [203]
 
+### Internationalization
+- COD9-046: Implement i18n support for Dashboard and Travels pages (#64) [4693]
+- COD9-066: Implement i18n support for rest of the pages (#67) [2264]
+
 ## v0.8.0 (2026-04-17)
 - COD8-001: Add Purple Weight for Travels with Crosses (#39) [23]
 - COD8-010: Add Travel and Visit Date Edition & Refactor travel.d.ts (#38) [1054]

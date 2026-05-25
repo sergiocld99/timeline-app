@@ -1,0 +1,326 @@
+{
+  "Dashboard": {
+    "title": "DASHBOARD",
+    "travels": "Travels",
+    "totalKm": "total km",
+    "totalHours": "total hours",
+    "placesVisited": "Places visited",
+    "kilometersPerMonth": "Kilometers per month",
+    "previousYear": "Previous Year",
+    "currentYear": "Current Year",
+    "maximumValues": "Maximum values",
+    "records": "Records",
+    "longestTravelDistance": "Longest travel distance",
+    "longestTravelTime": "Longest travel time",
+    "fastestTravel": "Fastest travel",
+    "frequentRoutes": "Frequent Routes",
+    "mostUsedRoutes": "Most used routes",
+    "mostFrequentRoutes": "Most frequent routes",
+    "top5": "Top 5",
+    "noRoutesMessage": "No top routes found for this period.",
+    "errorLoadingStats": "Error loading statistics.",
+    "loadingMap": "Loading map...",
+    "others": "Others"
+  },
+  "PresentialAlert": {
+    "lastTravel": "The last travel to work was {days} days ago. You visited {destination} on {date}",
+    "noTravel": "You did not travel to work in the last 90 days"
+  },
+  "Common": {
+    "loading": "Loading...",
+    "messages": {
+      "copied": "Coordinates copied to clipboard!",
+      "copyError": "Failed to copy coordinates"
+    }
+  },
+  "Travels": {
+    "title": "Travels",
+    "noTravelsFound": "No travels found for the selected date range :/",
+    "exportCsv": "Export CSV",
+    "tableHeaders": {
+      "date": "Date",
+      "mode": "Mode",
+      "from": "From",
+      "to": "To",
+      "start": "Start",
+      "schedule": "Schedule",
+      "distance": "Distance",
+      "duration": "Duration",
+      "speed": "Speed",
+      "weight": "Weight",
+      "actions": "Actions"
+    },
+    "messages": {
+      "updateSuccess": "Travel updated successfully!",
+      "deleteSuccess": "Travel deleted successfully!",
+      "deleteError": "Failed to delete travel",
+      "invalidNumbers": "Please enter valid positive numbers for distance and duration",
+      "durationExceeded": "Travel duration cannot exceed 24 hours (1440 minutes)",
+      "exportError": "Error exporting CSV:"
+    },
+    "tooltips": {
+      "clickToEdit": "Click to edit"
+    },
+    "footer": {
+      "travelsCount": "{count, plural, =1 {# travel} other {# travels}}",
+      "routesCount": "{count, plural, =1 {# route} other {# routes}}",
+      "daysCount": "{count, plural, =1 {# day} other {# days}}",
+      "placesCount": "{count, plural, =1 {# place} other {# places}}"
+    }
+  },
+  "TravelMap": {
+    "noLocations": "No travel locations to display",
+    "kmFromCenter": "{distance} km from center"
+  },
+  "Charts": {
+    "speedInKmH": "Speed in km/h",
+    "km": "Km",
+    "minutes": "Minutes",
+    "travels": "Travels",
+    "kmH": "Km/h",
+    "modeOfTransport": "Mode of Transport",
+    "modes": {
+      "car": "Car",
+      "taxi": "Taxi",
+      "bus": "Bus",
+      "subway": "Subway",
+      "train": "Train",
+      "ferry": "Ferry",
+      "walking": "Walking",
+      "mixed": "Mixed",
+      "mixedTooltip": "Travel with 2 modes of transport: one with greater distance and one with greater duration",
+      "others": "Others",
+      "other": "Other"
+    }
+  },
+  "DateRange": {
+    "title": "Date Range",
+    "from": "From",
+    "to": "To",
+    "invalidRange": "Start date cannot be later than end date."
+  },
+  "Milestones": {
+    "longestDistance": "Longest travel distance",
+    "longestDuration": "Longest travel time",
+    "fastestTravel": "Fastest travel"
+  },
+  "Actions": {
+    "edit": "Edit",
+    "delete": "Delete",
+    "apply": "Apply",
+    "export": "Export",
+    "removeFilter": "Remove Filter: {filterName}",
+    "add": "Add",
+    "remove": "Remove",
+    "search": "Search",
+    "arrivals": "Arrivals",
+    "departures": "Departures",
+    "nextWeek": "Next week",
+    "previousWeek": "Previous week",
+    "nextMonth": "Next month",
+    "previousMonth": "Previous month",
+    "goBack": "Go back",
+    "copyCoordinates": "Copy coordinates"
+  },
+  "MonthsShort": {
+    "1": "Jan",
+    "2": "Feb",
+    "3": "Mar",
+    "4": "Apr",
+    "5": "May",
+    "6": "Jun",
+    "7": "Jul",
+    "8": "Aug",
+    "9": "Sep",
+    "10": "Oct",
+    "11": "Nov",
+    "12": "Dec"
+  },
+  "Navigation": {
+    "creator": "Creator",
+    "crosses": "Crosses",
+    "locations": "Locations",
+    "travels": "Travels",
+    "visits": "Visits",
+    "menu": "Menu"
+  },
+  "DaysShort": {
+    "Sun": "Sun",
+    "Mon": "Mon",
+    "Tue": "Tue",
+    "Wed": "Wed",
+    "Thu": "Thu",
+    "Fri": "Fri",
+    "Sat": "Sat"
+  },
+  "Creator": {
+    "addLocation": "Add Location",
+    "addTravel": "Add Travel",
+    "locationName": "Name",
+    "coordinates": "Coordinates",
+    "pickOnMap": "Pick on Map",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "zipcode": "Zipcode",
+    "partido": "Partido",
+    "notes": "Notes",
+    "saveLocation": "Save Location",
+    "pickLocationOnMap": "Pick Location on Map",
+    "origin": "Origin",
+    "destination": "Destination",
+    "selectOrigin": "Select Origin",
+    "selectDestination": "Select Destination",
+    "startTime": "Start Time",
+    "endTime": "End Time",
+    "modeOfTransport": "Mode of Transport",
+    "busLine": "Bus Line",
+    "busLinePlaceholder": "e.g. 152, 60, etc.",
+    "distanceKm": "Distance (km)",
+    "priceOptional": "Price (optional)",
+    "crossesOptional": "Crosses (optional)",
+    "selectCrossesPlaceholder": "Select crosses for this route",
+    "startsAndFinishesSameDay": "Starts and finishes on the same day",
+    "createForAllUsers": "Create travel for all registered users",
+    "createTravel": "Create Travel",
+    "messages": {
+      "locationAddedSuccess": "Location \"{name}\" added successfully!",
+      "locationAddedError": "Failed to add location. Please try again.",
+      "validationOriginDestinationRequired": "Origin and destination are required.",
+      "validationOriginDestinationDifferent": "Origin and destination should be different.",
+      "noUsersFound": "No users found.",
+      "travelCreatedAllUsersSuccess": "Travel created successfully for all {count} users!",
+      "travelCreatedAllUsersError": "Travel creation failed for {count} users.",
+      "travelWithVisitSuccess": "Travel with visit added successfully!",
+      "travelSuccess": "Travel added successfully"
+    }
+  },
+  "Crosses": {
+    "addCross": "Add Cross",
+    "pickOnMap": "Pick on Map",
+    "coordinates": "Coordinates",
+    "name": "Name",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "crosses": "Crosses",
+    "noCrosses": "No crosses to show",
+    "searchPlaceholder": "Search crosses...",
+    "noCrossesFound": "No crosses found.",
+    "messages": {
+      "crossAddedSuccess": "Cross \"{name}\" added successfully!",
+      "crossAddedError": "Failed to add cross: {error}",
+      "noAdditionNeeded": "No addition needed for this travel",
+      "addedCrossesSuccess": "After addition, travel has {count} crosses, wanted {wanted}",
+      "addedCrossesError": "Failed to add crosses: {error}",
+      "noDeletionNeeded": "No deletion needed for this travel",
+      "removedCrossesSuccess": "After deletion, travel has {count} crosses, wanted {wanted}",
+      "removedCrossesError": "Failed to remove crosses: {error}"
+    }
+  },
+  "Locations": {
+    "title": "Locations",
+    "searchPlaceholder": "Search locations...",
+    "loading": "Loading locations...",
+    "errorLoading": "Error loading locations. Please try refreshing the page.",
+    "noLocationsFoundMatching": "No locations found matching \"{searchTerm}\"",
+    "noLocationsFound": "No location found.",
+    "noLocationsCreated": "No locations created yet. Add your first location in the Creator page!",
+    "tableHeaders": {
+      "name": "Name",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "zipcode": "Zipcode",
+      "partido": "Partido",
+      "notes": "Notes",
+      "actions": "Actions"
+    },
+    "messages": {
+      "updateSuccess": "Location updated!",
+      "updateError": "Failed to update location",
+      "deleteConfirm": "Are you sure you want to delete \"{name}\"?",
+      "deleteSuccess": "Location deleted successfully",
+      "deleteError": "Failed to delete location"
+    },
+    "viewer": {
+      "travelsFrom": "Travels from",
+      "travelsTo": "Travels to",
+      "unknownLocation": "Unknown location"
+    }
+  },
+  "Visits": {
+    "title": "Visits",
+    "loading": "Loading visits...",
+    "errorLoading": "Error loading visits. Please try refreshing the page.",
+    "noVisitsFound": "No visits found for the selected date range.",
+    "away": "{distance} km away",
+    "visitsCount": "{count, plural, =1 {# visit} other {# visits}}",
+    "tableHeaders": {
+      "date": "Date",
+      "location": "Location",
+      "arrival": "Arrival",
+      "departure": "Departure",
+      "duration": "Duration",
+      "weight": "Weight",
+      "actions": "Actions",
+      "clickToEdit": "Click to edit",
+      "deleteVisit": "Delete visit",
+      "excludeWeight": "Exclude from weight calculation",
+      "includeWeight": "Include in weight calculation"
+    },
+    "messages": {
+      "deleteSuccess": "Visit deleted",
+      "deleteError": "Failed to delete visit",
+      "updateSuccess": "Visit updated successfully!",
+      "updateError": "Failed to update visit"
+    }
+  },
+  "Profile": {
+    "title": "User Management",
+    "createNewUser": "Create New User",
+    "createUserDescription": "Add a new user with a unique numeric ID and name",
+    "userId": "User ID",
+    "name": "Name",
+    "userIdPlaceholder": "e.g., 2",
+    "namePlaceholder": "e.g., John Doe",
+    "creating": "Creating...",
+    "createUser": "Create User",
+    "existingUsers": "Existing Users",
+    "existingUsersDescription": "Manage existing users in the system",
+    "noUsers": "No users found. Create one above.",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "migrationTitle": "Migrate Guest Data?",
+    "migrationDescription": "We found {travelCount} travels and {visitCount} visits that don't have a user assigned (guest mode data).\n\nWould you like to migrate all this data to {name} (ID: {userId})?\n\nThis action cannot be undone, but you can always reassign data later if needed.",
+    "skip": "Skip",
+    "migrateData": "Yes, Migrate Data",
+    "migrating": "Migrating...",
+    "messages": {
+      "userIdNameRequired": "User ID and name are required",
+      "userIdNumber": "User ID must be a number",
+      "createSuccess": "User {name} created successfully",
+      "createError": "Error creating user",
+      "migrationSuccess": "Migration complete! {travels} travels and {visits} visits migrated to {name}.",
+      "migrationError": "Error migrating data. Please try again.",
+      "nameRequired": "Name is required",
+      "updateSuccess": "User {name} edited successfully",
+      "updateError": "Error updating user"
+    }
+  },
+  "Themes": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "toggleTheme": "Toggle theme"
+  },
+  "Languages": {
+    "en": "English",
+    "es": "Spanish",
+    "toggleLanguage": "Toggle language"
+  },
+  "UserDropdown": {
+    "guest": "Guest",
+    "guestMode": "Guest Mode",
+    "loggedInAs": "Logged in as {name}",
+    "manageUsers": "Manage Users"
+  }
+}

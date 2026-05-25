@@ -4,6 +4,8 @@ import type { CheckedState } from "@radix-ui/react-checkbox";
 import type { Cross } from "@/types/cross";
 import type { ReactNode } from "react";
 
+import { useTranslations } from "next-intl";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox"
 import {
@@ -33,7 +35,8 @@ const renderCheckbox = (id: string, onCheckedChange: (checked: CheckedState) => 
 )
 
 const CrossTable = ({ data, onCheckOR, onCheckEdit, isMobile = false }: Props) => {
-  const columnHeaders = !isMobile ? ['Name', 'Latitude', 'Longitude', 'OR', 'EDIT'] : ['Name', 'OR'];
+  const t = useTranslations("Crosses");
+  const columnHeaders = !isMobile ? [t('name'), t('latitude'), t('longitude'), 'OR', 'EDIT'] : [t('name'), 'OR'];
 
   const renderColumnHeaders = () => (
     columnHeaders.map((header) => (
@@ -44,7 +47,7 @@ const CrossTable = ({ data, onCheckOR, onCheckEdit, isMobile = false }: Props) =
   return (
     <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardHeader>
-        <CardTitle className="text-gray-900 dark:text-white">Crosses</CardTitle>
+        <CardTitle className="text-gray-900 dark:text-white">{t("crosses")}</CardTitle>
       </CardHeader>
       <CardContent>
         <Table>
@@ -67,7 +70,7 @@ const CrossTable = ({ data, onCheckOR, onCheckEdit, isMobile = false }: Props) =
         </Table>
         {data.length === 0 && (
           <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-            No crosses to show
+            {t("noCrosses")}
           </div>
         )}
       </CardContent>

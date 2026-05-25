@@ -4,6 +4,7 @@ import type { Travel, TravelStats } from "@/types/travel";;
 
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
@@ -12,6 +13,7 @@ import { useDateRange } from '@/contexts/DateRangeContext';
 import { useUser } from '@/contexts/UserContext';
 import { useTravelStats } from '@/hooks/useTravelStats';
 import TravelService from '@/services/TravelService';
+import { translateDay } from '@/utils/date';
 
 import ExportButton from './buttons/ExportButton';
 import RemoveFilterBtn from './buttons/RemoveFilterBtn';
@@ -31,6 +33,7 @@ type Props = {
 };
 
 const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTravel, onAddCrosses, onRemoveCrosses, onRemoveFilter, appliedFilter }: Props) => {
+  const t = useTranslations();
   const { dateFrom, dateTo } = useDateRange();
   const { currentUser } = useUser();
   const { stats } = useTravelStats(travels, initialStats);
@@ -41,7 +44,7 @@ const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTra
       const userId = currentUser?.userId;
       await TravelService.exportCsv(dateFrom, dateTo, userId);
     } catch (error) {
-      toast.error('Error exporting CSV:')
+      toast.error(t("Travels.messages.exportError"))
       console.error(error)
     }
   };
@@ -58,10 +61,15 @@ const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTra
           >
             {isCollapsed ? <ChevronDown className="h-5 w-5" /> : <ChevronUp className="h-5 w-5" />}
           </Button>
-          <CardTitle className="text-gray-900 dark:text-white">Travels</CardTitle>
+          <CardTitle className="text-gray-900 dark:text-white">{t("Travels.title")}</CardTitle>
         </div>
         <div className="flex items-center gap-2">
-          {appliedFilter && onRemoveFilter && <RemoveFilterBtn handleClick={onRemoveFilter} filterName={appliedFilter} />}
+          {appliedFilter && onRemoveFilter && (
+            <RemoveFilterBtn 
+              handleClick={onRemoveFilter} 
+              filterName={translateDay(appliedFilter, t)} 
+            />
+          )}
           <ExportButton handleClick={handleExportCsv} />
         </div>
       </CardHeader>
@@ -69,7 +77,7 @@ const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTra
         <DateRangeSelector />
         {travels.length === 0 && (
           <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-            No travels found for the selected date range :/
+            {t("Travels.noTravelsFound")}
           </div>
         )}
         <div className="hidden lg:block">

@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
 import CopyButton from "../buttons/CopyButton";
@@ -6,7 +7,12 @@ export const renderPoint = (latitude: number, longitude: number) => {
   return `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`
 }
 
-export const handleCopyCoordinates = async (latitude: number, longitude: number) => {
+export const handleCopyCoordinates = async (
+  latitude: number, 
+  longitude: number, 
+  successMsg = 'Coordinates copied to clipboard!', 
+  errorMsg = 'Failed to copy coordinates'
+) => {
   const coordinates = renderPoint(latitude, longitude);
 
   // Fallback for insecure contexts (HTTP)
@@ -27,13 +33,13 @@ export const handleCopyCoordinates = async (latitude: number, longitude: number)
       const successful = document.execCommand('copy');
       document.body.removeChild(textArea);
       if (successful) {
-        toast.success('Coordinates copied to clipboard!');
-      } else {
-        toast.error('Failed to copy coordinates');
-      }
-    } catch (err) {
-      console.error('Fallback: Oops, unable to copy', err);
-      toast.error('Failed to copy coordinates');
+    toast.success(successMsg);
+  } else {
+    toast.error(errorMsg);
+  }
+} catch (err) {
+  console.error('Fallback: Oops, unable to copy', err);
+  toast.error(errorMsg);
       document.body.removeChild(textArea);
     }
   };
@@ -45,20 +51,22 @@ export const handleCopyCoordinates = async (latitude: number, longitude: number)
 
   try {
     await navigator.clipboard.writeText(coordinates);
-    toast.success('Coordinates copied to clipboard!');
+    toast.success(successMsg);
   } catch (error) {
     console.error('Failed to copy coordinates:', error);
     fallbackCopy(coordinates);
   }
 };
 
-export const renderPointWithCopyBtn = (latitude?: number, longitude?: number) => {
-  if (!latitude || !longitude || isNaN(latitude) || isNaN(longitude)) return ""
+export const PointWithCopyBtn = ({ latitude, longitude }: { latitude?: number; longitude?: number }) => {
+  const t = useTranslations("Common.messages");
+
+  if (!latitude || !longitude || isNaN(latitude) || isNaN(longitude)) return null
 
   return (
     <div className="flex items-center gap-2">
       <span>{renderPoint(latitude, longitude)}</span>
-      {latitude && longitude && (<CopyButton handleClick={() => handleCopyCoordinates(latitude, longitude)} />)}
+      <CopyButton handleClick={() => handleCopyCoordinates(latitude, longitude, t("copied"), t("copyError"))} />
     </div>
   )
 }

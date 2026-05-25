@@ -1,19 +1,19 @@
 import { PlaneLandingIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
-
-const BUTTON_TITLE = "Arrivals"
 
 type Props = {
   size: "sm" | "lg"
 }
 
 const ArrivalsAction = ({ size }: Props) => {
+  const t = useTranslations("Actions");
   return (
     <Button
       size={size}
       variant="outline"
-      title={BUTTON_TITLE}
+      title={t("arrivals")}
     >
       <PlaneLandingIcon className="h-4 w-4" />
     </Button>
