@@ -32,8 +32,9 @@ jobs:
           BASE_REF: ${{ github.base_ref }}
         run: |
           # Obtener la lista de archivos cambiados respecto a la rama base
-          FILES=$(git diff origin/$BASE_REF...HEAD --stat)
-          NUM_ARR=($(echo "$FILES" | tail -n 1 | grep -oE '[0-9]+'))
+          FILES=$(git diff origin/$BASE_REF...HEAD --name-only)
+          STATS=$(git diff origin/$BASE_REF...HEAD --stat)
+          NUM_ARR=($(echo "$STATS" | tail -n 1 | grep -oE '[0-9]+'))
           PRODUCT=1
 
           for num in "${NUM_ARR[@]}"; do
