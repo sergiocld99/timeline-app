@@ -7,7 +7,7 @@ import type { Travel, TravelStats } from "@/types/travel";
 
 import L from "leaflet";
 import { useEffect, useMemo, useState } from "react";
-import { MapContainer, TileLayer, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, useMap, Circle } from "react-leaflet";
 
 import useNearbyCenters from "@/hooks/useNearbyCenters";
 import { useMapConfig } from "@/hooks/useMapConfig";
@@ -96,6 +96,19 @@ const TravelMap = ({ travels, isFiltered, stats }: Props) => {
         />
 
         <ChangeMapView center={mapCenter} zoom={zoom} />
+        {stats && averageLatitude !== undefined && averageLongitude !== undefined && stats.averageDistance > 0 && (
+          <Circle
+            center={[averageLatitude, averageLongitude]}
+            radius={stats.averageDistance * 1000}
+            pathOptions={{
+              color: "#3b82f6",
+              fillColor: "#3b82f6",
+              fillOpacity: 0.15,
+              weight: 2,
+              dashArray: "5, 5"
+            }}
+          />
+        )}
         {renderLocationMarkers(uniqueLocations)}
       </MapContainer>
     </div>
