@@ -43,8 +43,8 @@ const TravelMap = ({ travels, isFiltered, stats }: Props) => {
   const [mapCenter, setMapCenter] = useState<[number, number]>([DEFAULT_LAT, DEFAULT_LNG])
   const [zoom, setZoom] = useState(DEFAULT_ZOOM)
 
-  const { count = 0, averageLatitude, averageLongitude } = stats || {}
-  const nearbyRadius = stats ? (stats.averageDistance * 2) : undefined
+  const { count = 0, averageLatitude, averageLongitude, averageDistance } = stats || {}
+  const nearbyRadius = averageDistance ? (averageDistance * 2) : undefined
 
   // Auxiliar variables
   const isStronglyFiltered = isFiltered && count < 5
@@ -98,10 +98,10 @@ const TravelMap = ({ travels, isFiltered, stats }: Props) => {
         />
 
         <ChangeMapView center={mapCenter} zoom={zoom} />
-        {stats && averageLatitude !== undefined && averageLongitude !== undefined && stats.averageDistance > 0 && (
+        {stats && averageLatitude && averageLongitude && averageDistance && (
           <Circle
             center={[averageLatitude, averageLongitude]}
-            radius={stats.averageDistance * 1000}
+            radius={averageDistance * 1000}
             pathOptions={{
               color: "#3b82f6",
               fillColor: "#3b82f6",
