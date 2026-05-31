@@ -37,6 +37,8 @@
     "title": "Viajes",
     "noTravelsFound": "No se encontraron viajes para el rango de fechas seleccionado :/",
     "exportCsv": "Exportar CSV",
+    "filterByCross": "Filtrar por cruce...",
+    "allCrosses": "Todos los cruces",
     "tableHeaders": {
       "date": "Fecha",
       "mode": "Modo",

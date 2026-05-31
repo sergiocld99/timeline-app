@@ -1,9 +1,10 @@
 "use client";
 
-import type { Travel, TravelStats } from "@/types/travel";;
+import type { Travel, TravelStats } from "@/types/travel";
+import type { FilteringByCross } from "@/types/stats";
 
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 
@@ -20,6 +21,7 @@ import RemoveFilterBtn from './buttons/RemoveFilterBtn';
 import DateRangeSelector from './DateRangeSelector';
 import TravelTableContent from './TravelTableContent';
 import TravelListContent from './mobile/TravelListContent';
+import CrossSelector, { FILTER_ALL } from "./CrossSelector";
 
 type Props = {
   travels: Travel[];
@@ -28,16 +30,19 @@ type Props = {
   onDeleteTravel?: (id: string) => Promise<void>;
   onAddCrosses?: (travelId: string) => Promise<void>;
   onRemoveCrosses?: (travelId: string) => Promise<void>;
+  onFilter?: (data?: FilteringByCross) => void;
   onRemoveFilter?: () => void;
   appliedFilter?: string | null;
 };
 
-const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTravel, onAddCrosses, onRemoveCrosses, onRemoveFilter, appliedFilter }: Props) => {
+const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTravel, onAddCrosses, onRemoveCrosses, onFilter, onRemoveFilter, appliedFilter }: Props) => {
   const t = useTranslations();
   const { dateFrom, dateTo } = useDateRange();
   const { currentUser } = useUser();
   const { stats } = useTravelStats(travels, initialStats);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCrossSelectorDisabled, setIsCrossSelectorDisabled] = useState(false);
+  const [selectedCrossId, setSelectedCrossId] = useState<string>(FILTER_ALL);
 
   const handleExportCsv = async () => {
     try {
@@ -48,6 +53,11 @@ const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTra
       console.error(error)
     }
   };
+
+  useEffect(() => {
+    setIsCrossSelectorDisabled(!!appliedFilter)
+    setSelectedCrossId(FILTER_ALL)
+  }, [appliedFilter, dateFrom, dateTo, currentUser])
 
   return (
     <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
@@ -64,10 +74,11 @@ const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTra
           <CardTitle className="text-gray-900 dark:text-white">{t("Travels.title")}</CardTitle>
         </div>
         <div className="flex items-center gap-2">
+          {onFilter && <CrossSelector onFilter={onFilter} selectedCrossId={selectedCrossId} setSelectedCrossId={setSelectedCrossId} isDisabled={isCrossSelectorDisabled} />}
           {appliedFilter && onRemoveFilter && (
-            <RemoveFilterBtn 
-              handleClick={onRemoveFilter} 
-              filterName={translateDay(appliedFilter, t)} 
+            <RemoveFilterBtn
+              handleClick={onRemoveFilter}
+              filterName={translateDay(appliedFilter, t)}
             />
           )}
           <ExportButton handleClick={handleExportCsv} />
