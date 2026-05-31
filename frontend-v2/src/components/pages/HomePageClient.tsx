@@ -8,7 +8,7 @@ import TravelDashboard from "@/components/TravelDashboard";
 import Header from "@/components/Header";
 
 const HomePageClient = () => {
-  const { data, prevData, isLoading, error } = useDashQuery();
+  const { data, prevData, isLoading, error, currentFrom, currentTo } = useDashQuery();
   const t = useTranslations("Dashboard");
 
   return (
@@ -24,7 +24,14 @@ const HomePageClient = () => {
           {t("errorLoadingStats")}
         </div>
       )}
-      {data && <TravelDashboard stats={data} prevStats={prevData || undefined} />}
+      {data && (
+        <TravelDashboard 
+          stats={data} 
+          prevStats={prevData || undefined} 
+          currentFrom={currentFrom}
+          currentTo={currentTo}
+        />
+      )}
     </>
   );
 };

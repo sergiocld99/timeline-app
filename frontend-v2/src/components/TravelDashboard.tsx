@@ -12,9 +12,11 @@ import FrequentRoutes from "./dashboard/FrequentRoutes";
 type Props = {
   stats: TravelStats;
   prevStats?: TravelStats;
+  currentFrom?: string;
+  currentTo?: string;
 };
 
-const TravelDashboard = ({ stats, prevStats }: Props) => {
+const TravelDashboard = ({ stats, prevStats, currentFrom, currentTo }: Props) => {
   const {
     monthlyStats = {},
     topRoutes = [],
@@ -40,6 +42,8 @@ const TravelDashboard = ({ stats, prevStats }: Props) => {
         count={totalCount}
         totalDistance={totalDistance}
         totalHours={totalHours}
+        currentFrom={currentFrom}
+        currentTo={currentTo}
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 relative z-10">

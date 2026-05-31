@@ -89,6 +89,8 @@ export const useDashQuery = () => {
     data,
     prevData,
     isLoading: isLoading || isPrevLoading,
-    error
+    error,
+    currentFrom: ranges.currentFrom,
+    currentTo: ranges.currentTo
   };
 };

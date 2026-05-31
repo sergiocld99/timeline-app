@@ -6,10 +6,21 @@ type Props = {
   count: number;
   totalDistance: number;
   totalHours: number;
+  currentFrom?: string;
+  currentTo?: string;
 };
 
-const DashboardHeader = ({ count, totalDistance, totalHours }: Props) => {
+const DashboardHeader = ({ count, totalDistance, totalHours, currentFrom, currentTo }: Props) => {
   const t = useTranslations("Dashboard");
+
+  const formatDate = (isoString?: string) => {
+    if (!isoString) return "";
+    const d = new Date(isoString);
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
 
   return (
     <header className="relative z-10 flex flex-col md:flex-row items-start md:items-end justify-between border-bottom border-[#2a2a3a] pb-6 mb-12 animate-in duration-700">
@@ -17,6 +28,11 @@ const DashboardHeader = ({ count, totalDistance, totalHours }: Props) => {
         <h1 className="text-2xl md:text-4xl font-extrabold leading-[0.9] tracking-tighter text-[#e8ff47]">
           {t("title")}
         </h1>
+        {currentFrom && currentTo && (
+          <span className="text-[0.7rem] md:text-[0.8rem] font-['Space_Mono'] text-[#8a8a9e] mt-3.5 block tracking-[2px] uppercase">
+            {formatDate(currentFrom)} — {formatDate(currentTo)}
+          </span>
+        )}
       </div>
 
       <div className="flex gap-8 mt-8 md:mt-0">
