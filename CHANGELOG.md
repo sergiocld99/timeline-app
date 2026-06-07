@@ -1,4 +1,7 @@
 # CHANGELOG
+## v0.10.0
+- COD10-001: Add offset as dashboard query param (#74) [120]
+
 ## v0.9.0
 - COD9-003: Add Partido for Locations with B-Prefix zipcodes (#57) [388]
 - COD9-004: Select Crosses in Travel Creator (#59) [140]
