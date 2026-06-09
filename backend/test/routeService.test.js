@@ -47,4 +47,16 @@ test('routeService.calculateHome', async (t) => {
     // returns competitor1 ("A")
     assert.strictEqual(calculateHome(topRoutes), 'A');
   });
+
+  await t.test('should return competitor from topRoutes[1] if it appears in more routes overall', () => {
+    const topRoutes = [
+      { route: 'A ↔ B', count: 10 },
+      { route: 'C ↔ D', count: 5 },
+      { route: 'D ↔ E', count: 3 }
+    ];
+
+    // Candidates from topRoutes[0] & topRoutes[1]: A, B, C, D
+    // D appears 2 times, others appear 1 time
+    assert.strictEqual(calculateHome(topRoutes), 'D');
+  });
 });
