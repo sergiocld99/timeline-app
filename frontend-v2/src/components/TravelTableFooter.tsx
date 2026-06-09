@@ -33,6 +33,9 @@ const TravelTableFooter = ({ travels, stats }: Props) => {
     )
   }
 
+  const showTooltip = !!(placesVisited && placesVisited.count <= 14 && placesVisited.zipcodes.length);
+  const tooltipText = showTooltip ? placesVisited.zipcodes.sort().join(", ") : undefined;
+
   return (
     <TableFooter>
       <TableRow className="border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
@@ -44,8 +47,10 @@ const TravelTableFooter = ({ travels, stats }: Props) => {
         <TableCell className="text-gray-900 dark:text-white" colSpan={2}>
           <PointWithCopyBtn latitude={totalLat} longitude={totalLong} />
         </TableCell>
-        <TableCell className="font-medium text-gray-900 dark:text-white" colSpan={2}>
-          {t("placesCount", { count: placesVisited?.count || 0 })}
+        <TableCell className="font-medium text-gray-900 dark:text-white" colSpan={2} title={tooltipText}>
+          <span className={showTooltip ? "cursor-help border-b border-dotted border-gray-400 dark:border-gray-500" : ""}>
+            {t("placesCount", { count: placesVisited?.count || 0 })}
+          </span>
         </TableCell>
         <TableCell className="font-medium text-gray-900 dark:text-white">
           {`${totalDistance?.toFixed(0)} km`}
