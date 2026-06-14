@@ -22,8 +22,6 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 
 import { TravelActionDropdown } from './TravelActionDropdown';
 import TravelTableFooter from './TravelTableFooter';
@@ -31,6 +29,7 @@ import MilestoneIcons, { getMilestones } from './TravelMilestones';
 import DateCell from './cell/DateCell';
 import TransportModeCell from './cell/TransportModeCell';
 import LocationCell from './cell/LocationCell';
+import NoteModal from './modal/NoteModal';
 
 type Props = {
   travels: Travel[];
@@ -53,30 +52,10 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
   const { locations } = useLocations()
 
   const [noteTravel, setNoteTravel] = useState<Travel | null>(null);
-  const [noteValue, setNoteValue] = useState("");
   const [detailsTravel, setDetailsTravel] = useState<Travel | null>(null);
 
   const handleOpenNote = (travel: Travel) => {
     setNoteTravel(travel);
-    setNoteValue(travel.notes || "");
-  };
-
-  const handleSaveNote = async () => {
-    if (!noteTravel || !onUpdate) return;
-
-    try {
-      setIsSaving(true);
-      await onUpdate(noteTravel._id, {
-        notes: noteValue
-      });
-      toast.success(t("messages.updateSuccess"), { style: { background: 'green' } });
-      setNoteTravel(null);
-    } catch (error) {
-      const axiosError = error as AxiosErrorResponse;
-      toast.error(axiosError.response?.data?.message || "Error saving note", { style: { background: 'red' } });
-    } finally {
-      setIsSaving(false);
-    }
   };
 
   const resetEdition = () => {
@@ -299,33 +278,7 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
       </Table>
 
       {/* Modal para agregar/editar nota */}
-      <Dialog open={!!noteTravel} onOpenChange={(open) => !open && setNoteTravel(null)}>
-        <DialogContent className="sm:max-w-[425px] bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white">
-          <DialogHeader>
-            <DialogTitle>{noteTravel?.notes ? "Edit note" : "Add note"}</DialogTitle>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="modal-note-textarea" className="text-gray-700 dark:text-gray-300">Note content</Label>
-              <Textarea
-                id="modal-note-textarea"
-                placeholder="Include a note for this travel..."
-                value={noteValue}
-                onChange={(e) => setNoteValue(e.target.value)}
-                className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 min-h-[120px]"
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setNoteTravel(null)} disabled={isSaving}>
-              Cancel
-            </Button>
-            <Button onClick={handleSaveNote} disabled={isSaving} className="bg-blue-600 hover:bg-blue-700 text-white">
-              {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <NoteModal travel={noteTravel} isSaving={isSaving} setTravel={setNoteTravel} setIsSaving={setIsSaving} onUpdate={onUpdate} />
 
       {/* Modal para ver detalles */}
       <Dialog open={!!detailsTravel} onOpenChange={(open) => !open && setDetailsTravel(null)}>

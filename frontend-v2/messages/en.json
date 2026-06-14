@@ -129,6 +129,16 @@
     "goBack": "Go back",
     "copyCoordinates": "Copy coordinates"
   },
+  "Modal": {
+    "addNote": "Add Note",
+    "editNote": "Edit Note",
+    "content": "Content",
+    "notePlaceholder": "Include a note for this travel...",
+    "cancel": "Cancel",
+    "save": "Save",
+    "messageSuccess": "Travel notes updated successfully!",
+    "messageError": "Error saving note"
+  },
   "MonthsShort": {
     "1": "Jan",
     "2": "Feb",

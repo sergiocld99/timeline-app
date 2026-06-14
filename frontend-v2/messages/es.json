@@ -129,6 +129,16 @@
     "goBack": "Volver",
     "copyCoordinates": "Copiar coordenadas"
   },
+  "Modal": {
+    "addNote": "Agregar nota",
+    "editNote": "Editar nota",
+    "content": "Contenido",
+    "notePlaceholder": "Escriba una nota para este viaje...",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "messageSuccess": "Notas del viaje actualizadas con éxito",
+    "messageError": "Error al guardar las notas"
+  },
   "MonthsShort": {
     "1": "Ene",
     "2": "Feb",
