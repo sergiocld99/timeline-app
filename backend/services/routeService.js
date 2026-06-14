@@ -2,12 +2,36 @@ export const ROUTE_SEPARATOR = ' ↔ '
 
 export const calculateHome = (topRoutes) => {
   if (topRoutes.length > 0) {
-    const competitor1 = topRoutes[0].route.split(ROUTE_SEPARATOR)[0]
-    const competitor2 = topRoutes[0].route.split(ROUTE_SEPARATOR)[1]
+    const candidates = []
 
-    const appearances1 = topRoutes.filter(r => r.route.includes(competitor1))
-    const appearances2 = topRoutes.filter(r => r.route.includes(competitor2))
-    return appearances1.length >= appearances2.length ? competitor1 : competitor2
+    // Extract competitors from topRoutes[0]
+    topRoutes[0].route.split(ROUTE_SEPARATOR).forEach(c => {
+      if (!candidates.includes(c)) {
+        candidates.push(c)
+      }
+    })
+
+    // Extract competitors from topRoutes[1] if it exists
+    if (topRoutes.length > 1) {
+      topRoutes[1].route.split(ROUTE_SEPARATOR).forEach(c => {
+        if (!candidates.includes(c)) {
+          candidates.push(c)
+        }
+      })
+    }
+
+    let bestCompetitor = null
+    let maxAppearances = -1
+
+    for (const competitor of candidates) {
+      const appearances = topRoutes.filter(r => r.route.includes(competitor)).length
+      if (appearances > maxAppearances) {
+        maxAppearances = appearances
+        bestCompetitor = competitor
+      }
+    }
+
+    return bestCompetitor
   }
 
   return null
