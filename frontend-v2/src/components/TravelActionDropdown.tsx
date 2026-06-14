@@ -1,6 +1,6 @@
 "use client";
 
-import { MoreVertical, Edit, Trash2, Plus, Minus } from "lucide-react";
+import { MoreVertical, Edit, Trash2, Plus, Minus, Info, PlusCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -16,6 +16,8 @@ interface TravelActionDropdownProps {
   onDelete?: () => void;
   onAddCrosses?: () => void;
   onRemoveCrosses?: () => void;
+  onAddNote?: () => void;
+  onViewDetails?: () => void;
 }
 
 export function TravelActionDropdown({
@@ -23,6 +25,8 @@ export function TravelActionDropdown({
   onDelete,
   onAddCrosses,
   onRemoveCrosses,
+  onAddNote,
+  onViewDetails,
 }: TravelActionDropdownProps) {
   const hasCrossesActions = onAddCrosses && onRemoveCrosses;
   const hasTravelsActions = onEdit && onDelete;
@@ -45,6 +49,14 @@ export function TravelActionDropdown({
               <span>Edit</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator className="border-gray-200 dark:border-gray-700" />
+            <DropdownMenuItem onClick={onAddNote} className="cursor-pointer">
+              <PlusCircle className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
+              <span>Add note</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={onViewDetails} className="cursor-pointer">
+              <Info className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
+              <span>View details</span>
+            </DropdownMenuItem>
             <DropdownMenuItem
               onClick={onDelete}
               className="cursor-pointer text-red-600 dark:text-red-400 focus:bg-red-50 dark:focus:bg-red-950/20 focus:text-red-600 dark:focus:text-red-400"

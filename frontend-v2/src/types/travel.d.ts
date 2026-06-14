@@ -17,6 +17,7 @@ export type Travel = Weighted & {
   duration: number
   speed: number
   crosses: Cross[]
+  notes?: string
   hourParts: {
     completeParts: HourPart[],
     firstHalf: HourPart[],

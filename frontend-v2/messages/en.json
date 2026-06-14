@@ -63,6 +63,7 @@
     "tooltips": {
       "clickToEdit": "Click to edit"
     },
+    "notes": "Notes",
     "footer": {
       "travelsCount": "{count, plural, =1 {# travel} other {# travels}}",
       "routesCount": "{count, plural, =1 {# route} other {# routes}}",

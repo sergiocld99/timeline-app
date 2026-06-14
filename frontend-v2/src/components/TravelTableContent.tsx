@@ -15,6 +15,15 @@ import useLocations from '@/hooks/useLocations';
 import { extractTime } from '@/utils';
 import { renderWeight } from '@/utils/weight';
 import { cn } from '@/lib/utils';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 import { TravelActionDropdown } from './TravelActionDropdown';
 import TravelTableFooter from './TravelTableFooter';
@@ -42,6 +51,33 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
   const [editValues, setEditValues] = useState<TravelEditValues>({ date: '', distance: '', duration: '', modeOfTransport: '', origin: '', destination: '', line: '' });
   const [isSaving, setIsSaving] = useState(false);
   const { locations } = useLocations()
+
+  const [noteTravel, setNoteTravel] = useState<Travel | null>(null);
+  const [noteValue, setNoteValue] = useState("");
+  const [detailsTravel, setDetailsTravel] = useState<Travel | null>(null);
+
+  const handleOpenNote = (travel: Travel) => {
+    setNoteTravel(travel);
+    setNoteValue(travel.notes || "");
+  };
+
+  const handleSaveNote = async () => {
+    if (!noteTravel || !onUpdate) return;
+
+    try {
+      setIsSaving(true);
+      await onUpdate(noteTravel._id, {
+        notes: noteValue
+      });
+      toast.success(t("messages.updateSuccess"), { style: { background: 'green' } });
+      setNoteTravel(null);
+    } catch (error) {
+      const axiosError = error as AxiosErrorResponse;
+      toast.error(axiosError.response?.data?.message || "Error saving note", { style: { background: 'red' } });
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const resetEdition = () => {
     setEditingId(null);
@@ -189,6 +225,8 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
         onDelete={onDelete ? () => { void handleDelete(travel); } : undefined}
         onAddCrosses={onAddCrosses ? () => { void onAddCrosses(travel._id); } : undefined}
         onRemoveCrosses={onRemoveCrosses ? () => { void onRemoveCrosses(travel._id); } : undefined}
+        onAddNote={() => handleOpenNote(travel)}
+        onViewDetails={() => setDetailsTravel(travel)}
       />
     );
   };
@@ -210,54 +248,176 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
   }
 
   return (
-    <Table>
-      {!isCollapsed && (
-        <>
-          <TableHeader>
-            <TableRow className="border-gray-200 dark:border-gray-700">
-              {renderColumnHeaders()}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {travels.map((t) => {
-              const milestones = getMilestones(t, tMilestones, stats);
-              const editProps = getEditProps(t);
+    <>
+      <Table>
+        {!isCollapsed && (
+          <>
+            <TableHeader>
+              <TableRow className="border-gray-200 dark:border-gray-700">
+                {renderColumnHeaders()}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {travels.map((t) => {
+                const milestones = getMilestones(t, tMilestones, stats);
+                const editProps = getEditProps(t);
 
-              return (
-                <TableRow
-                  key={t._id}
-                  className={cn(
-                    "border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors",
-                    t.crosses?.length > 0 && "bg-purple-50/50 dark:bg-purple-900/20",
-                    milestones.length > 0 && "bg-yellow-50/50 dark:bg-yellow-900/30"
+                return (
+                  <TableRow
+                    key={t._id}
+                    className={cn(
+                      "border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors",
+                      t.crosses?.length > 0 && "bg-purple-50/50 dark:bg-purple-900/20",
+                      milestones.length > 0 && "bg-yellow-50/50 dark:bg-yellow-900/30"
+                    )}
+                  >
+                    <TableCell className="text-gray-900 dark:text-white">
+                      <div className="flex items-center gap-2">
+                        <DateCell editProps={editProps} handleEdit={handleEdit} />
+                        <MilestoneIcons milestones={milestones} />
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-gray-900 dark:text-white"><TransportModeCell editProps={editProps} /></TableCell>
+                    <TableCell className="text-gray-900 dark:text-white">{renderEditableLocation(editProps, 'origin')}</TableCell>
+                    <TableCell className="text-gray-900 dark:text-white">{renderEditableLocation(editProps, 'destination')}</TableCell>
+                    <TableCell className="text-gray-900 dark:text-white font-mono text-sm whitespace-nowrap">
+                      <span>{extractTime(t.startTime)}</span>
+                      <span className="text-gray-400 dark:text-gray-500 mx-1.5">→</span>
+                      <span className="text-gray-500 dark:text-gray-400 font-medium">{extractTime(t.endTime)}</span>
+                    </TableCell>
+                    <TableCell className="text-gray-900 dark:text-white">{renderEditableCell(t, 'distance', 0.1)}</TableCell>
+                    <TableCell className="text-gray-900 dark:text-white">{renderEditableCell(t, 'duration', 1)}</TableCell>
+                    <TableCell className="text-gray-900 dark:text-white">{renderWeight(t)}</TableCell>
+                    <TableCell>{renderActionButtons(t)}</TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </>
+        )}
+        <TravelTableFooter travels={travels} stats={stats} />
+      </Table>
+
+      {/* Modal para agregar/editar nota */}
+      <Dialog open={!!noteTravel} onOpenChange={(open) => !open && setNoteTravel(null)}>
+        <DialogContent className="sm:max-w-[425px] bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white">
+          <DialogHeader>
+            <DialogTitle>{noteTravel?.notes ? "Edit note" : "Add note"}</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="modal-note-textarea" className="text-gray-700 dark:text-gray-300">Note content</Label>
+              <Textarea
+                id="modal-note-textarea"
+                placeholder="Include a note for this travel..."
+                value={noteValue}
+                onChange={(e) => setNoteValue(e.target.value)}
+                className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 min-h-[120px]"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setNoteTravel(null)} disabled={isSaving}>
+              Cancel
+            </Button>
+            <Button onClick={handleSaveNote} disabled={isSaving} className="bg-blue-600 hover:bg-blue-700 text-white">
+              {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal para ver detalles */}
+      <Dialog open={!!detailsTravel} onOpenChange={(open) => !open && setDetailsTravel(null)}>
+        <DialogContent className="sm:max-w-[500px] bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white">
+          <DialogHeader>
+            <DialogTitle>Travel Details</DialogTitle>
+          </DialogHeader>
+          {detailsTravel && (
+            <div className="space-y-4 py-4 text-sm">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <h4 className="font-semibold text-gray-500 dark:text-gray-400">{t("tableHeaders.from") || "Origin"}</h4>
+                  <p>{detailsTravel.origin.name}</p>
+                  {detailsTravel.origin.zipcode && (
+                    <p className="text-xs text-gray-400">Zip: {detailsTravel.origin.zipcode}</p>
                   )}
-                >
-                  <TableCell className="text-gray-900 dark:text-white">
-                    <div className="flex items-center gap-2">
-                      <DateCell editProps={editProps} handleEdit={handleEdit} />
-                      <MilestoneIcons milestones={milestones} />
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-gray-900 dark:text-white"><TransportModeCell editProps={editProps} /></TableCell>
-                  <TableCell className="text-gray-900 dark:text-white">{renderEditableLocation(editProps, 'origin')}</TableCell>
-                  <TableCell className="text-gray-900 dark:text-white">{renderEditableLocation(editProps, 'destination')}</TableCell>
-                  <TableCell className="text-gray-900 dark:text-white font-mono text-sm whitespace-nowrap">
-                    <span>{extractTime(t.startTime)}</span>
-                    <span className="text-gray-400 dark:text-gray-500 mx-1.5">→</span>
-                    <span className="text-gray-500 dark:text-gray-400 font-medium">{extractTime(t.endTime)}</span>
-                  </TableCell>
-                  <TableCell className="text-gray-900 dark:text-white">{renderEditableCell(t, 'distance', 0.1)}</TableCell>
-                  <TableCell className="text-gray-900 dark:text-white">{renderEditableCell(t, 'duration', 1)}</TableCell>
-                  <TableCell className="text-gray-900 dark:text-white">{renderWeight(t)}</TableCell>
-                  <TableCell>{renderActionButtons(t)}</TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </>
-      )}
-      <TravelTableFooter travels={travels} stats={stats} />
-    </Table>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-500 dark:text-gray-400">{t("tableHeaders.to") || "Destination"}</h4>
+                  <p>{detailsTravel.destination.name}</p>
+                  {detailsTravel.destination.zipcode && (
+                    <p className="text-xs text-gray-400">Zip: {detailsTravel.destination.zipcode}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="border-t border-gray-100 dark:border-gray-700 pt-3 grid grid-cols-2 gap-4">
+                <div>
+                  <h4 className="font-semibold text-gray-500 dark:text-gray-400">{t("tableHeaders.schedule") || "Schedule"}</h4>
+                  <p>
+                    {new Date(detailsTravel.startTime).toLocaleString()} 
+                    <br />
+                    <span className="text-gray-400 font-medium">to</span> 
+                    <br />
+                    {new Date(detailsTravel.endTime).toLocaleString()}
+                  </p>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-500 dark:text-gray-400">{t("tableHeaders.mode") || "Transport Mode"}</h4>
+                  <p className="capitalize">{detailsTravel.modeOfTransport}</p>
+                  {detailsTravel.line && (
+                    <p className="text-xs text-gray-400">Line: {detailsTravel.line}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="border-t border-gray-100 dark:border-gray-700 pt-3 grid grid-cols-3 gap-2">
+                <div>
+                  <h4 className="font-semibold text-gray-500 dark:text-gray-400">{t("tableHeaders.distance") || "Distance"}</h4>
+                  <p>{detailsTravel.distance} km</p>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-500 dark:text-gray-400">{t("tableHeaders.duration") || "Duration"}</h4>
+                  <p>{detailsTravel.duration} min</p>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-500 dark:text-gray-400">{t("tableHeaders.speed") || "Speed"}</h4>
+                  <p>{detailsTravel.speed?.toFixed(1) || 0} km/h</p>
+                </div>
+              </div>
+
+              {detailsTravel.crosses && detailsTravel.crosses.length > 0 && (
+                <div className="border-t border-gray-100 dark:border-gray-700 pt-3">
+                  <h4 className="font-semibold text-gray-500 dark:text-gray-400">Crosses</h4>
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {detailsTravel.crosses.map((c) => (
+                      <span key={c._id} className="bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 text-xs px-2 py-0.5 rounded">
+                        {c.name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="border-t border-gray-100 dark:border-gray-700 pt-3">
+                <h4 className="font-semibold text-gray-500 dark:text-gray-400">{t("notes") || "Notes"}</h4>
+                {detailsTravel.notes ? (
+                  <p className="whitespace-pre-wrap bg-gray-50 dark:bg-gray-900 p-3 rounded-md text-gray-700 dark:text-gray-300 italic mt-1 border border-gray-100 dark:border-gray-800">
+                    {detailsTravel.notes}
+                  </p>
+                ) : (
+                  <p className="text-gray-400 dark:text-gray-500 italic mt-1">No notes added yet.</p>
+                )}
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button onClick={() => setDetailsTravel(null)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
