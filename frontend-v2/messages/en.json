@@ -108,6 +108,7 @@
     "fastestTravel": "Fastest travel"
   },
   "Actions": {
+    "openMenu": "Open Menu",
     "edit": "Edit",
     "delete": "Delete",
     "apply": "Apply",
