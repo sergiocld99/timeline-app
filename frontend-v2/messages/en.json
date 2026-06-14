@@ -113,7 +113,10 @@
     "apply": "Apply",
     "export": "Export",
     "removeFilter": "Remove Filter: {filterName}",
+    "removeCross": "Remove Cross",
     "add": "Add",
+    "addNote": "Add Note",
+    "addCross": "Add Cross",
     "remove": "Remove",
     "search": "Search",
     "arrivals": "Arrivals",
@@ -122,6 +125,7 @@
     "previousWeek": "Previous week",
     "nextMonth": "Next month",
     "previousMonth": "Previous month",
+    "viewDetails": "View Details",
     "goBack": "Go back",
     "copyCoordinates": "Copy coordinates"
   },

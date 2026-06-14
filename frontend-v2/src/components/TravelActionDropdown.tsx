@@ -1,6 +1,7 @@
 "use client";
 
 import { MoreVertical, Edit, Trash2, Plus, Minus, Info, PlusCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -28,6 +29,7 @@ export function TravelActionDropdown({
   onAddNote,
   onViewDetails,
 }: TravelActionDropdownProps) {
+  const t = useTranslations("Actions");
   const hasCrossesActions = onAddCrosses && onRemoveCrosses;
   const hasTravelsActions = onEdit && onDelete;
 
@@ -46,23 +48,23 @@ export function TravelActionDropdown({
           <>
             <DropdownMenuItem onClick={onEdit} className="cursor-pointer">
               <Edit className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
-              <span>Edit</span>
+              <span>{t("edit")}</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator className="border-gray-200 dark:border-gray-700" />
             <DropdownMenuItem onClick={onAddNote} className="cursor-pointer">
               <PlusCircle className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
-              <span>Add note</span>
+              <span>{t("addNote")}</span>
             </DropdownMenuItem>
             <DropdownMenuItem onClick={onViewDetails} className="cursor-pointer">
               <Info className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
-              <span>View details</span>
+              <span>{t("viewDetails")}</span>
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={onDelete}
               className="cursor-pointer text-red-600 dark:text-red-400 focus:bg-red-50 dark:focus:bg-red-950/20 focus:text-red-600 dark:focus:text-red-400"
             >
               <Trash2 className="mr-2 h-4 w-4" />
-              <span>Delete</span>
+              <span>{t("delete")}</span>
             </DropdownMenuItem>
           </>
         )}
@@ -70,11 +72,11 @@ export function TravelActionDropdown({
           <>
             <DropdownMenuItem onClick={onAddCrosses} className="cursor-pointer">
               <Plus className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
-              <span>Add Cross</span>
+              <span>{t("addCross")}</span>
             </DropdownMenuItem>
             <DropdownMenuItem onClick={onRemoveCrosses} className="cursor-pointer">
               <Minus className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
-              <span>Remove Cross</span>
+              <span>{t("removeCross")}</span>
             </DropdownMenuItem>
           </>
         )}
