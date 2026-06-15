@@ -50,6 +50,8 @@
       "duration": "Duración",
       "speed": "Velocidad",
       "weight": "Peso",
+      "price": "Precio",
+      "pricePerKm": "Precio por km",
       "actions": "Acciones"
     },
     "messages": {
