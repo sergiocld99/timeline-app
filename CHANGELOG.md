@@ -1,6 +1,7 @@
 # CHANGELOG
 ## v0.10.0
 - COD10-001: Add offset as dashboard query param (#74) [120]
+- COD10-005: Add Travel Modals for Notes and Details (#77) [500]
 
 ## v0.9.0
 - COD9-003: Add Partido for Locations with B-Prefix zipcodes (#57) [388]
