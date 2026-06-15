@@ -74,7 +74,9 @@ const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTra
           <CardTitle className="text-gray-900 dark:text-white">{t("Travels.title")}</CardTitle>
         </div>
         <div className="flex items-center gap-2">
-          {onFilter && <CrossSelector onFilter={onFilter} selectedCrossId={selectedCrossId} setSelectedCrossId={setSelectedCrossId} isDisabled={isCrossSelectorDisabled} />}
+          <div className="hidden lg:block">
+            {onFilter && <CrossSelector onFilter={onFilter} selectedCrossId={selectedCrossId} setSelectedCrossId={setSelectedCrossId} isDisabled={isCrossSelectorDisabled} />}
+          </div>
           {appliedFilter && onRemoveFilter && (
             <RemoveFilterBtn
               handleClick={onRemoveFilter}
