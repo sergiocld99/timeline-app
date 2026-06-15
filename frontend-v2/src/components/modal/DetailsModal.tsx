@@ -11,6 +11,8 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from '@/components/ui/button';
+import { extractTime, getEmojiForMode } from "@/utils";
+import { renderNiceDate } from "@/utils/date";
 
 type Props = {
   travel: Travel | null
@@ -20,6 +22,7 @@ type Props = {
 const DetailsModal = ({ travel, setTravel }: Props) => {
   const t = useTranslations("Travels")
   const tModes = useTranslations("Charts.modes")
+  const tRoot = useTranslations()
 
   return (
     <Dialog open={!!travel} onOpenChange={(open) => !open && setTravel(null)}>
@@ -50,16 +53,16 @@ const DetailsModal = ({ travel, setTravel }: Props) => {
                 <div>
                   <h4 className="font-semibold text-gray-500 dark:text-gray-400">{t("tableHeaders.schedule") || "Schedule"}</h4>
                   <p>
-                    {new Date(travel.startTime).toLocaleString()} 
+                    {renderNiceDate(travel.startTime, tRoot)} {extractTime(travel.startTime)} 
                     <br />
                     <span className="text-gray-400 font-medium">{t("to")}</span> 
                     <br />
-                    {new Date(travel.endTime).toLocaleString()}
+                    {renderNiceDate(travel.endTime, tRoot)} {extractTime(travel.endTime)}
                   </p>
                 </div>
                 <div>
                   <h4 className="font-semibold text-gray-500 dark:text-gray-400">{t("tableHeaders.mode") || "Transport Mode"}</h4>
-                  <p className="capitalize">{tModes(travel.modeOfTransport)}</p>
+                  <p className="capitalize">{getEmojiForMode(travel.modeOfTransport)} {tModes(travel.modeOfTransport)}</p>
                   {travel.line && (
                     <p className="text-xs text-gray-400">{t("line")} {travel.line}</p>
                   )}
