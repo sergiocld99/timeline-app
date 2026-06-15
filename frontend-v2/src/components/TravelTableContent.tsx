@@ -42,15 +42,10 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
   const tMilestones = useTranslations("Milestones");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValues, setEditValues] = useState<TravelEditValues>({ date: '', distance: '', duration: '', modeOfTransport: '', origin: '', destination: '', line: '' });
-  const [isSaving, setIsSaving] = useState(false);
-  const { locations } = useLocations()
-
   const [noteTravel, setNoteTravel] = useState<Travel | null>(null);
   const [detailsTravel, setDetailsTravel] = useState<Travel | null>(null);
-
-  const handleOpenNote = (travel: Travel) => {
-    setNoteTravel(travel);
-  };
+  const [isSaving, setIsSaving] = useState(false);
+  const { locations } = useLocations()
 
   const resetEdition = () => {
     setEditingId(null);
@@ -198,12 +193,11 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
         onDelete={onDelete ? () => { void handleDelete(travel); } : undefined}
         onAddCrosses={onAddCrosses ? () => { void onAddCrosses(travel._id); } : undefined}
         onRemoveCrosses={onRemoveCrosses ? () => { void onRemoveCrosses(travel._id); } : undefined}
-        onAddNote={() => handleOpenNote(travel)}
+        onAddNote={() => setNoteTravel(travel)}
         onViewDetails={() => setDetailsTravel(travel)}
       />
     );
   };
-
 
   const renderColumnHeaders = () => (
     COLUMN_KEYS.map((key) => (
