@@ -14,6 +14,9 @@ import { Button } from '@/components/ui/button';
 import { extractTime, getEmojiForMode } from "@/utils";
 import { renderNiceDate } from "@/utils/date";
 
+import CrossSection from "./CrossSection";
+import NotesSection from "./NotesSection";
+
 type Props = {
   travel: Travel | null
   setTravel: Dispatch<SetStateAction<Travel | null>>
@@ -98,29 +101,8 @@ const DetailsModal = ({ travel, setTravel }: Props) => {
               }
             </div>
 
-            {travel.crosses && travel.crosses.length > 0 && (
-              <div className="border-t border-gray-100 dark:border-gray-700 pt-3">
-                <h4 className="font-semibold text-gray-500 dark:text-gray-400">{t("crosses")}</h4>
-                <div className="flex flex-wrap gap-1 mt-1">
-                  {travel.crosses.map((c) => (
-                    <span key={c._id} className="bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 text-xs px-2 py-0.5 rounded">
-                      {c.name}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <div className="border-t border-gray-100 dark:border-gray-700 pt-3">
-              <h4 className="font-semibold text-gray-500 dark:text-gray-400">{t("notes") || "Notes"}</h4>
-              {travel.notes ? (
-                <p className="whitespace-pre-wrap bg-gray-50 dark:bg-gray-900 p-3 rounded-md text-gray-700 dark:text-gray-300 italic mt-1 border border-gray-100 dark:border-gray-800">
-                  {travel.notes}
-                </p>
-              ) : (
-                <p className="text-gray-400 dark:text-gray-500 italic mt-1">{t("emptyNotes")}</p>
-              )}
-            </div>
+            <CrossSection crosses={travel.crosses} title={t("crosses")} />
+            <NotesSection notes={travel.notes} title={t("notes")} emptyNotesMsg={t("emptyNotes")} />
           </div>
         )}
         <DialogFooter>
