@@ -101,7 +101,7 @@ const DetailsModal = ({ travel, setTravel }: Props) => {
               }
             </div>
 
-            <CrossSection crosses={travel.crosses} title={t("crosses")} />
+            <CrossSection travel={travel} title={t("crosses")} />
             <NotesSection notes={travel.notes} title={t("notes")} emptyNotesMsg={t("emptyNotes")} />
           </div>
         )}
