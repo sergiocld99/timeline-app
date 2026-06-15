@@ -50,7 +50,6 @@ export function TravelActionDropdown({
               <Edit className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
               <span>{t("edit")}</span>
             </DropdownMenuItem>
-            <DropdownMenuSeparator className="border-gray-200 dark:border-gray-700" />
             <DropdownMenuItem onClick={onAddNote} className="cursor-pointer">
               <PlusCircle className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
               <span>{t("addNote")}</span>
@@ -59,6 +58,7 @@ export function TravelActionDropdown({
               <Info className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
               <span>{t("viewDetails")}</span>
             </DropdownMenuItem>
+            <DropdownMenuSeparator className="border-gray-200 dark:border-gray-700" />
             <DropdownMenuItem
               onClick={onDelete}
               className="cursor-pointer text-red-600 dark:text-red-400 focus:bg-red-50 dark:focus:bg-red-950/20 focus:text-red-600 dark:focus:text-red-400"

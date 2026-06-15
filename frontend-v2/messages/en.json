@@ -69,7 +69,14 @@
       "routesCount": "{count, plural, =1 {# route} other {# routes}}",
       "daysCount": "{count, plural, =1 {# day} other {# days}}",
       "placesCount": "{count, plural, =1 {# place} other {# places}}"
-    }
+    },
+    "details": "Details",
+    "zip": "Zip",
+    "to": "to",
+    "line": "Line",
+    "crosses": "Crosses",
+    "emptyNotes": "No notes added yet.",
+    "close": "Close"
   },
   "TravelMap": {
     "noLocations": "No travel locations to display",

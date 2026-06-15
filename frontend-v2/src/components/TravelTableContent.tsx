@@ -15,13 +15,6 @@ import useLocations from '@/hooks/useLocations';
 import { extractTime } from '@/utils';
 import { renderWeight } from '@/utils/weight';
 import { cn } from '@/lib/utils';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
 
 import { TravelActionDropdown } from './TravelActionDropdown';
 import TravelTableFooter from './TravelTableFooter';
@@ -30,6 +23,7 @@ import DateCell from './cell/DateCell';
 import TransportModeCell from './cell/TransportModeCell';
 import LocationCell from './cell/LocationCell';
 import NoteModal from './modal/NoteModal';
+import DetailsModal from './modal/DetailsModal';
 
 type Props = {
   travels: Travel[];
@@ -277,99 +271,8 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
         <TravelTableFooter travels={travels} stats={stats} />
       </Table>
 
-      {/* Modal para agregar/editar nota */}
       <NoteModal travel={noteTravel} isSaving={isSaving} setTravel={setNoteTravel} setIsSaving={setIsSaving} onUpdate={onUpdate} />
-
-      {/* Modal para ver detalles */}
-      <Dialog open={!!detailsTravel} onOpenChange={(open) => !open && setDetailsTravel(null)}>
-        <DialogContent className="sm:max-w-[500px] bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white">
-          <DialogHeader>
-            <DialogTitle>Travel Details</DialogTitle>
-          </DialogHeader>
-          {detailsTravel && (
-            <div className="space-y-4 py-4 text-sm">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <h4 className="font-semibold text-gray-500 dark:text-gray-400">{t("tableHeaders.from") || "Origin"}</h4>
-                  <p>{detailsTravel.origin.name}</p>
-                  {detailsTravel.origin.zipcode && (
-                    <p className="text-xs text-gray-400">Zip: {detailsTravel.origin.zipcode}</p>
-                  )}
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-500 dark:text-gray-400">{t("tableHeaders.to") || "Destination"}</h4>
-                  <p>{detailsTravel.destination.name}</p>
-                  {detailsTravel.destination.zipcode && (
-                    <p className="text-xs text-gray-400">Zip: {detailsTravel.destination.zipcode}</p>
-                  )}
-                </div>
-              </div>
-
-              <div className="border-t border-gray-100 dark:border-gray-700 pt-3 grid grid-cols-2 gap-4">
-                <div>
-                  <h4 className="font-semibold text-gray-500 dark:text-gray-400">{t("tableHeaders.schedule") || "Schedule"}</h4>
-                  <p>
-                    {new Date(detailsTravel.startTime).toLocaleString()} 
-                    <br />
-                    <span className="text-gray-400 font-medium">to</span> 
-                    <br />
-                    {new Date(detailsTravel.endTime).toLocaleString()}
-                  </p>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-500 dark:text-gray-400">{t("tableHeaders.mode") || "Transport Mode"}</h4>
-                  <p className="capitalize">{detailsTravel.modeOfTransport}</p>
-                  {detailsTravel.line && (
-                    <p className="text-xs text-gray-400">Line: {detailsTravel.line}</p>
-                  )}
-                </div>
-              </div>
-
-              <div className="border-t border-gray-100 dark:border-gray-700 pt-3 grid grid-cols-3 gap-2">
-                <div>
-                  <h4 className="font-semibold text-gray-500 dark:text-gray-400">{t("tableHeaders.distance") || "Distance"}</h4>
-                  <p>{detailsTravel.distance} km</p>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-500 dark:text-gray-400">{t("tableHeaders.duration") || "Duration"}</h4>
-                  <p>{detailsTravel.duration} min</p>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-500 dark:text-gray-400">{t("tableHeaders.speed") || "Speed"}</h4>
-                  <p>{detailsTravel.speed?.toFixed(1) || 0} km/h</p>
-                </div>
-              </div>
-
-              {detailsTravel.crosses && detailsTravel.crosses.length > 0 && (
-                <div className="border-t border-gray-100 dark:border-gray-700 pt-3">
-                  <h4 className="font-semibold text-gray-500 dark:text-gray-400">Crosses</h4>
-                  <div className="flex flex-wrap gap-1 mt-1">
-                    {detailsTravel.crosses.map((c) => (
-                      <span key={c._id} className="bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 text-xs px-2 py-0.5 rounded">
-                        {c.name}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <div className="border-t border-gray-100 dark:border-gray-700 pt-3">
-                <h4 className="font-semibold text-gray-500 dark:text-gray-400">{t("notes") || "Notes"}</h4>
-                {detailsTravel.notes ? (
-                  <p className="whitespace-pre-wrap bg-gray-50 dark:bg-gray-900 p-3 rounded-md text-gray-700 dark:text-gray-300 italic mt-1 border border-gray-100 dark:border-gray-800">
-                    {detailsTravel.notes}
-                  </p>
-                ) : (
-                  <p className="text-gray-400 dark:text-gray-500 italic mt-1">No notes added yet.</p>
-                )}
-              </div>
-            </div>
-          )}
-          <DialogFooter>
-            <Button onClick={() => setDetailsTravel(null)}>Close</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <DetailsModal travel={detailsTravel} setTravel={setDetailsTravel} />
     </>
   );
 };
