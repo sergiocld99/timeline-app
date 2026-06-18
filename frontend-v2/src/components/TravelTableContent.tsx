@@ -22,6 +22,8 @@ import MilestoneIcons, { getMilestones } from './TravelMilestones';
 import DateCell from './cell/DateCell';
 import TransportModeCell from './cell/TransportModeCell';
 import LocationCell from './cell/LocationCell';
+import NoteModal from './modal/NoteModal';
+import DetailsModal from './modal/DetailsModal';
 
 type Props = {
   travels: Travel[];
@@ -40,6 +42,8 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
   const tMilestones = useTranslations("Milestones");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValues, setEditValues] = useState<TravelEditValues>({ date: '', distance: '', duration: '', modeOfTransport: '', origin: '', destination: '', line: '' });
+  const [noteTravel, setNoteTravel] = useState<Travel | null>(null);
+  const [detailsTravel, setDetailsTravel] = useState<Travel | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const { locations } = useLocations()
 
@@ -189,10 +193,11 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
         onDelete={onDelete ? () => { void handleDelete(travel); } : undefined}
         onAddCrosses={onAddCrosses ? () => { void onAddCrosses(travel._id); } : undefined}
         onRemoveCrosses={onRemoveCrosses ? () => { void onRemoveCrosses(travel._id); } : undefined}
+        onAddNote={() => setNoteTravel(travel)}
+        onViewDetails={() => setDetailsTravel(travel)}
       />
     );
   };
-
 
   const renderColumnHeaders = () => (
     COLUMN_KEYS.map((key) => (
@@ -210,54 +215,59 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
   }
 
   return (
-    <Table>
-      {!isCollapsed && (
-        <>
-          <TableHeader>
-            <TableRow className="border-gray-200 dark:border-gray-700">
-              {renderColumnHeaders()}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {travels.map((t) => {
-              const milestones = getMilestones(t, tMilestones, stats);
-              const editProps = getEditProps(t);
+    <>
+      <Table>
+        {!isCollapsed && (
+          <>
+            <TableHeader>
+              <TableRow className="border-gray-200 dark:border-gray-700">
+                {renderColumnHeaders()}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {travels.map((t) => {
+                const milestones = getMilestones(t, tMilestones, stats);
+                const editProps = getEditProps(t);
 
-              return (
-                <TableRow
-                  key={t._id}
-                  className={cn(
-                    "border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors",
-                    t.crosses?.length > 0 && "bg-purple-50/50 dark:bg-purple-900/20",
-                    milestones.length > 0 && "bg-yellow-50/50 dark:bg-yellow-900/30"
-                  )}
-                >
-                  <TableCell className="text-gray-900 dark:text-white">
-                    <div className="flex items-center gap-2">
-                      <DateCell editProps={editProps} handleEdit={handleEdit} />
-                      <MilestoneIcons milestones={milestones} />
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-gray-900 dark:text-white"><TransportModeCell editProps={editProps} /></TableCell>
-                  <TableCell className="text-gray-900 dark:text-white">{renderEditableLocation(editProps, 'origin')}</TableCell>
-                  <TableCell className="text-gray-900 dark:text-white">{renderEditableLocation(editProps, 'destination')}</TableCell>
-                  <TableCell className="text-gray-900 dark:text-white font-mono text-sm whitespace-nowrap">
-                    <span>{extractTime(t.startTime)}</span>
-                    <span className="text-gray-400 dark:text-gray-500 mx-1.5">→</span>
-                    <span className="text-gray-500 dark:text-gray-400 font-medium">{extractTime(t.endTime)}</span>
-                  </TableCell>
-                  <TableCell className="text-gray-900 dark:text-white">{renderEditableCell(t, 'distance', 0.1)}</TableCell>
-                  <TableCell className="text-gray-900 dark:text-white">{renderEditableCell(t, 'duration', 1)}</TableCell>
-                  <TableCell className="text-gray-900 dark:text-white">{renderWeight(t)}</TableCell>
-                  <TableCell>{renderActionButtons(t)}</TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </>
-      )}
-      <TravelTableFooter travels={travels} stats={stats} />
-    </Table>
+                return (
+                  <TableRow
+                    key={t._id}
+                    className={cn(
+                      "border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors",
+                      t.crosses?.length > 0 && "bg-purple-50/50 dark:bg-purple-900/20",
+                      milestones.length > 0 && "bg-yellow-50/50 dark:bg-yellow-900/30"
+                    )}
+                  >
+                    <TableCell className="text-gray-900 dark:text-white">
+                      <div className="flex items-center gap-2">
+                        <DateCell editProps={editProps} handleEdit={handleEdit} />
+                        <MilestoneIcons milestones={milestones} />
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-gray-900 dark:text-white"><TransportModeCell editProps={editProps} /></TableCell>
+                    <TableCell className="text-gray-900 dark:text-white">{renderEditableLocation(editProps, 'origin')}</TableCell>
+                    <TableCell className="text-gray-900 dark:text-white">{renderEditableLocation(editProps, 'destination')}</TableCell>
+                    <TableCell className="text-gray-900 dark:text-white font-mono text-sm whitespace-nowrap">
+                      <span>{extractTime(t.startTime)}</span>
+                      <span className="text-gray-400 dark:text-gray-500 mx-1.5">→</span>
+                      <span className="text-gray-500 dark:text-gray-400 font-medium">{extractTime(t.endTime)}</span>
+                    </TableCell>
+                    <TableCell className="text-gray-900 dark:text-white">{renderEditableCell(t, 'distance', 0.1)}</TableCell>
+                    <TableCell className="text-gray-900 dark:text-white">{renderEditableCell(t, 'duration', 1)}</TableCell>
+                    <TableCell className="text-gray-900 dark:text-white">{renderWeight(t)}</TableCell>
+                    <TableCell>{renderActionButtons(t)}</TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </>
+        )}
+        <TravelTableFooter travels={travels} stats={stats} />
+      </Table>
+
+      <NoteModal travel={noteTravel} isSaving={isSaving} setTravel={setNoteTravel} setIsSaving={setIsSaving} onUpdate={onUpdate} />
+      <DetailsModal travel={detailsTravel} setTravel={setDetailsTravel} />
+    </>
   );
 };
 

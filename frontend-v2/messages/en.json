@@ -50,6 +50,8 @@
       "duration": "Duration",
       "speed": "Speed",
       "weight": "Weight",
+      "price": "Precio",
+      "pricePerKm": "Precio por km",
       "actions": "Actions"
     },
     "messages": {
@@ -63,12 +65,20 @@
     "tooltips": {
       "clickToEdit": "Click to edit"
     },
+    "notes": "Notes",
     "footer": {
       "travelsCount": "{count, plural, =1 {# travel} other {# travels}}",
       "routesCount": "{count, plural, =1 {# route} other {# routes}}",
       "daysCount": "{count, plural, =1 {# day} other {# days}}",
       "placesCount": "{count, plural, =1 {# place} other {# places}}"
-    }
+    },
+    "details": "Details",
+    "zip": "Zip",
+    "to": "to",
+    "line": "Line",
+    "crosses": "Crosses",
+    "emptyNotes": "No notes added yet.",
+    "close": "Close"
   },
   "TravelMap": {
     "noLocations": "No travel locations to display",
@@ -107,12 +117,16 @@
     "fastestTravel": "Fastest travel"
   },
   "Actions": {
+    "openMenu": "Open Menu",
     "edit": "Edit",
     "delete": "Delete",
     "apply": "Apply",
     "export": "Export",
     "removeFilter": "Remove Filter: {filterName}",
+    "removeCross": "Remove Cross",
     "add": "Add",
+    "addNote": "Add Note",
+    "addCross": "Add Cross",
     "remove": "Remove",
     "search": "Search",
     "arrivals": "Arrivals",
@@ -121,8 +135,19 @@
     "previousWeek": "Previous week",
     "nextMonth": "Next month",
     "previousMonth": "Previous month",
+    "viewDetails": "View Details",
     "goBack": "Go back",
     "copyCoordinates": "Copy coordinates"
+  },
+  "Modal": {
+    "addNote": "Add Note",
+    "editNote": "Edit Note",
+    "content": "Content",
+    "notePlaceholder": "Include a note for this travel...",
+    "cancel": "Cancel",
+    "save": "Save",
+    "messageSuccess": "Travel notes updated successfully!",
+    "messageError": "Error saving note"
   },
   "MonthsShort": {
     "1": "Jan",

@@ -85,7 +85,7 @@ const TravelMap = ({ travels, isFiltered, stats }: Props) => {
   }
 
   return (
-    <div className="w-2/10 h-87 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+    <div className="w-2/10 h-87 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 relative z-0">
       <MapContainer
         center={mapCenter}
         zoom={zoom}

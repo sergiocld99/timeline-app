@@ -92,7 +92,7 @@ export const createTravel = (req, res) => {
 
 export const updateTravel = (req, res, next) => {
   const { id } = req.params;
-  const { startTime, endTime, origin, destination, modeOfTransport, distance, crosses, userId, line } = req.body;
+  const { startTime, endTime, origin, destination, modeOfTransport, distance, crosses, userId, line, notes } = req.body;
   let safeDistance;
 
   try {
@@ -118,7 +118,8 @@ export const updateTravel = (req, res, next) => {
     modeOfTransport,
     distance: safeDistance?.value,
     crosses,
-    line
+    line,
+    notes
   };
 
   if (userId !== undefined) {
