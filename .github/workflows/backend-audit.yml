@@ -1,14 +1,14 @@
-name: Frontend npm audit
+name: Backend npm audit
 
 on:
   push:
     paths:
       - "backend/**"
-      - ".github/workflows/frontend-audit.yml"
+      - ".github/workflows/backend-audit.yml"
   pull_request:
     paths:
       - "backend/**"
-      - ".github/workflows/frontend-audit.yml"
+      - ".github/workflows/backend-audit.yml"
 
 jobs:
   audit:
