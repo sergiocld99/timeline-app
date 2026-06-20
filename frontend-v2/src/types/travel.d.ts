@@ -54,8 +54,8 @@ export type PlacesVisited = {
 export type TravelRecordItem = {
   value: number;
   date: string;
-  origin: string;
-  destination: string;
+  origin: Location;
+  destination: Location;
 }
 
 export type TravelRecords = {
