@@ -12,6 +12,7 @@ import { MapContainer, TileLayer, useMap, Circle } from "react-leaflet";
 
 import useNearbyCenters from "@/hooks/useNearbyCenters";
 import { useMapConfig } from "@/hooks/useMapConfig";
+import { calculateCenter } from "@/utils/location";
 
 import { getUniqueLocations } from "./analize/travel";
 import { defaultMarker } from "./map/icons";
@@ -26,6 +27,8 @@ type Props = {
 const DEFAULT_ZOOM = 9
 const DEFAULT_LAT = -34.6037031
 const DEFAULT_LNG = -58.3816211
+const COLOR_LIGHT_BLUE = "#3b82f6"
+const COLOR_RED = "#FF0000"
 
 const ChangeMapView = ({ center, zoom }: { center: Center, zoom: number }) => {
   const map = useMap(); // Access the map instance
@@ -43,7 +46,7 @@ const TravelMap = ({ travels, isFiltered, stats }: Props) => {
   const [mapCenter, setMapCenter] = useState<[number, number]>([DEFAULT_LAT, DEFAULT_LNG])
   const [zoom, setZoom] = useState(DEFAULT_ZOOM)
 
-  const { count = 0, averageLatitude, averageLongitude, averageDistance } = stats || {}
+  const { count = 0, averageLatitude, averageLongitude, averageDistance, records } = stats || {}
   const nearbyRadius = averageDistance ? (averageDistance * 2) : undefined
 
   // Auxiliar variables
@@ -98,20 +101,32 @@ const TravelMap = ({ travels, isFiltered, stats }: Props) => {
         />
 
         <ChangeMapView center={mapCenter} zoom={zoom} />
-        {stats && averageLatitude && averageLongitude && averageDistance && (
+        {averageLatitude && averageLongitude && averageDistance && (
           <Circle
             center={[averageLatitude, averageLongitude]}
             radius={averageDistance * 1000}
             pathOptions={{
-              color: "#3b82f6",
-              fillColor: "#3b82f6",
+              color: COLOR_LIGHT_BLUE,
+              fillColor: COLOR_LIGHT_BLUE,
               fillOpacity: 0.15,
               weight: 2,
               dashArray: "5, 5"
             }}
           />
         )}
-        {renderLocationMarkers(uniqueLocations, t)}
+        {records?.maxDistance && (
+          <Circle
+          center={calculateCenter(records.maxDistance.origin, records.maxDistance.destination)}
+          radius={records.maxDistance.value * 500}
+          pathOptions={{
+            color: COLOR_RED,
+            fill: false,
+            weight: 2,
+            dashArray: "5, 5"
+          }}
+        />
+        )}
+        {renderLocationMarkers(uniqueLocations, t, records?.maxDistance || undefined)}
       </MapContainer>
     </div>
   );

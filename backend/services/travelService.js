@@ -239,20 +239,20 @@ export const calculateTravelStats = (travels) => {
       maxDistance: maxDistanceTravel ? {
         value: maxDistanceTravel.distance,
         date: maxDistanceTravel.startTime,
-        origin: maxDistanceTravel.origin?.name,
-        destination: maxDistanceTravel.destination?.name
+        origin: maxDistanceTravel.origin,
+        destination: maxDistanceTravel.destination
       } : null,
       maxDuration: maxDurationTravel ? {
         value: maxDurationTravel.get ? maxDurationTravel.get('duration') : maxDurationTravel.duration,
         date: maxDurationTravel.startTime,
-        origin: maxDurationTravel.origin?.name,
-        destination: maxDurationTravel.destination?.name
+        origin: maxDurationTravel.origin,
+        destination: maxDurationTravel.destination
       } : null,
       maxSpeed: maxSpeedTravel ? {
         value: Math.round(maxSpeedTravel.get ? maxSpeedTravel.get('speed') : maxSpeedTravel.speed),
         date: maxSpeedTravel.startTime,
-        origin: maxSpeedTravel.origin?.name,
-        destination: maxSpeedTravel.destination?.name
+        origin: maxSpeedTravel.origin,
+        destination: maxSpeedTravel.destination
       } : null,
     }
   };

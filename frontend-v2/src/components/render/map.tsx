@@ -1,10 +1,10 @@
 import type { TranslationFn } from "@/types/i18n"
 import type { MapLocation } from "@/types/map"
+import type { TravelRecordItem } from "@/types/travel"
 
 import { Marker, Popup } from "react-leaflet"
 
-
-import { blackMarker, defaultMarker, greenMarker, redMarker } from "../map/icons"
+import { blackMarker, defaultMarker, greenMarker, orangeMarker, redMarker } from "../map/icons"
 
 const getKey = (lat: number, lng: number, index = 0) => {
   return `${lat.toFixed(4)}-${lng.toFixed(4)}-${index}`
@@ -22,9 +22,13 @@ const createLocationPopupContent = (location: MapLocation, t: TranslationFn) => 
   )
 }
 
-const getMarkerIcon = (location: MapLocation) => {
-  if (location.isFrequent) {
+const getMarkerIcon = (location: MapLocation, maxDistance?: TravelRecordItem) => {
+  if (location.name === maxDistance?.origin.name || location.name === maxDistance?.destination.name) {
     return redMarker
+  }
+  
+  if (location.isFrequent) {
+    return orangeMarker
   }
 
   if (location.type === 'visited-nearby') {
@@ -38,10 +42,10 @@ const getMarkerIcon = (location: MapLocation) => {
   return defaultMarker
 }
 
-export const renderLocationMarkers = (locations: MapLocation[], t: TranslationFn) => {
+export const renderLocationMarkers = (locations: MapLocation[], t: TranslationFn, maxDistance?: TravelRecordItem) => {
   return locations.map((location, index) => {
     const popupContent = createLocationPopupContent(location, t)
-    const icon = getMarkerIcon(location)
+    const icon = getMarkerIcon(location, maxDistance)
 
     return (
       <Marker
