@@ -33,6 +33,14 @@ const calculateHome = (travels: Travel[], options: Props["options"]) => {
     return travels.find(t => t.destination.name === options.backendHome)?.destination
   }
 
+  if (options?.appliedFilter) {
+    const zipcodeMatch = travels.find(t => t.destination.zipcode === options.appliedFilter)
+
+    if (zipcodeMatch) {
+      return zipcodeMatch.destination
+    }
+  }
+
   if (travels.length > 10 && travels[0].destination.name === travels[travels.length - 1].origin.name) {
     return travels[0].destination
   }
