@@ -17,19 +17,20 @@ type Props = {
   travels: Travel[],
   onFilter: (data: FilteringData) => void,
   options?: {
-    field: 'origin' | 'destination'
+    field?: 'origin' | 'destination',
+    backendHome?: string,
+    appliedFilter?: string | null
   },
-  cardClassName?: string,
-  backendHome?: string
+  cardClassName?: string
 }
 
-const calculateHome = (travels: Travel[], options: Props["options"], backendHome?: string) => {
+const calculateHome = (travels: Travel[], options: Props["options"]) => {
   if (travels.length > 0 && options?.field) {
     return travels[0][options.field]
   }
 
-  if (backendHome) {
-    return travels.find(t => t.destination.name === backendHome)?.destination
+  if (!options?.appliedFilter && options?.backendHome) {
+    return travels.find(t => t.destination.name === options.backendHome)?.destination
   }
 
   if (travels.length > 10 && travels[0].destination.name === travels[travels.length - 1].origin.name) {
@@ -53,9 +54,9 @@ const enrichWithFarthestPoint = (t: Travel, home?: Location) => {
   }
 }
 
-const TravelBarStats = ({ travels, onFilter, options, cardClassName = "w-8/10", backendHome }: Props) => {
+const TravelBarStats = ({ travels, onFilter, options, cardClassName = "w-8/10" }: Props) => {
   const t = useTranslations();
-  const home = calculateHome(travels, options, backendHome)
+  const home = calculateHome(travels, options)
   const relevantTravels = travels.map(t => enrichWithFarthestPoint(t, home))
 
   const { topKeys, otherKeys, shouldShowOthers } = calculateBestLocations(relevantTravels, 5)
