@@ -20,11 +20,16 @@ type Props = {
     field: 'origin' | 'destination'
   },
   cardClassName?: string,
+  backendHome?: string
 }
 
-const calculateHome = (travels: Travel[], options: Props["options"]) => {
+const calculateHome = (travels: Travel[], options: Props["options"], backendHome?: string) => {
   if (travels.length > 0 && options?.field) {
     return travels[0][options.field]
+  }
+
+  if (backendHome) {
+    return travels.find(t => t.destination.name === backendHome)?.destination
   }
 
   if (travels.length > 10 && travels[0].destination.name === travels[travels.length - 1].origin.name) {
@@ -48,9 +53,9 @@ const enrichWithFarthestPoint = (t: Travel, home?: Location) => {
   }
 }
 
-const TravelBarStats = ({ travels, onFilter, options, cardClassName = "w-8/10" }: Props) => {
+const TravelBarStats = ({ travels, onFilter, options, cardClassName = "w-8/10", backendHome }: Props) => {
   const t = useTranslations();
-  const home = calculateHome(travels, options)
+  const home = calculateHome(travels, options, backendHome)
   const relevantTravels = travels.map(t => enrichWithFarthestPoint(t, home))
 
   const { topKeys, otherKeys, shouldShowOthers } = calculateBestLocations(relevantTravels, 5)
