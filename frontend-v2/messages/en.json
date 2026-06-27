@@ -109,7 +109,8 @@
     "title": "Date Range",
     "from": "From",
     "to": "To",
-    "invalidRange": "Start date cannot be later than end date."
+    "invalidRange": "Start date cannot be later than end date.",
+    "invalidDate": "Please enter valid start and end dates."
   },
   "Milestones": {
     "longestDistance": "Longest travel distance",

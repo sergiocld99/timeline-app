@@ -1,4 +1,28 @@
 const DATE_ONLY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+const FORM_DATETIME_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/;
+
+export const isValidFormDateTime = (value: string): boolean => {
+  if (!FORM_DATETIME_PATTERN.test(value)) return false;
+
+  const [datePart, timePart] = value.split("T");
+  const [year, month, day] = datePart.split("-").map(Number);
+  const [hours, minutes] = timePart.split(":").map(Number);
+
+  if (month < 1 || month > 12) return false;
+  if (day < 1 || day > 31) return false;
+  if (hours < 0 || hours > 23) return false;
+  if (minutes < 0 || minutes > 59) return false;
+
+  const date = new Date(year, month - 1, day, hours, minutes);
+
+  return (
+    date.getFullYear() === year &&
+    date.getMonth() === month - 1 &&
+    date.getDate() === day &&
+    date.getHours() === hours &&
+    date.getMinutes() === minutes
+  );
+};
 
 /** Build datetime-local value without UTC conversion (toISOString shifts the day). */
 export const toFormDateFromParts = (
