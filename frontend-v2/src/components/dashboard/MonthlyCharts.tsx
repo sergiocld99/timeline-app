@@ -20,6 +20,7 @@ import {
 import { ACCENT1, ACCENT2, BORDER, MUTED } from "@/constants/colors";
 import { getMonthlyBarStyling } from "@/utils/chart/monthly";
 
+import MonthTick from "./MonthTick";
 import ZipcodeTicker from "./ZipcodeTicker";
 
 type Props = {
@@ -50,6 +51,7 @@ const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }
 
         return {
           month: tMonths(monthKey),
+          monthKey: key,
           ...data,
           km: Math.round(data.km),
           prevKm: prevData ? Math.round(prevData.km) : undefined,
@@ -99,7 +101,12 @@ const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData}>
               <CartesianGrid vertical={false} stroke={BORDER} strokeDasharray="3 3" />
-              <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: ACCENT1, fontFamily: 'Space Mono' }} />
+              <XAxis
+                dataKey="month"
+                axisLine={false}
+                tickLine={false}
+                tick={(props) => <MonthTick {...props} chartData={chartData} tickColor={ACCENT1} />}
+              />
               <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: MUTED, fontFamily: 'Space Mono' }} />
               <Tooltip
                 cursor={{ fill: 'rgba(232, 255, 71, 0.05)' }}
@@ -148,7 +155,12 @@ const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }
                 </linearGradient>
               </defs>
               <CartesianGrid vertical={false} stroke={BORDER} strokeDasharray="3 3" />
-              <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: ACCENT2, fontFamily: 'Space Mono' }} />
+              <XAxis
+                dataKey="month"
+                axisLine={false}
+                tickLine={false}
+                tick={(props) => <MonthTick {...props} chartData={chartData} tickColor={ACCENT2} />}
+              />
               <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: MUTED, fontFamily: 'Space Mono' }} tickFormatter={(v) => v === 0 ? '' : v} />
               <Tooltip
                 contentStyle={{ backgroundColor: '#18181f', border: `1px solid ${BORDER}`, borderRadius: 2 }}

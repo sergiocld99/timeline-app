@@ -41,6 +41,19 @@ export const buildDateRangeSearch = (dateFrom: string, dateTo: string): string =
   return params.toString();
 };
 
+export const getMonthDateRangeSearch = (yearMonth: string): string => {
+  const [yearStr, monthStr] = yearMonth.split("-");
+  const year = Number(yearStr);
+  const month = Number(monthStr);
+  const lastDay = new Date(year, month, 0).getDate();
+  const paddedMonth = monthStr.padStart(2, "0");
+
+  return buildDateRangeSearch(
+    `${yearStr}-${paddedMonth}-01`,
+    `${yearStr}-${paddedMonth}-${String(lastDay).padStart(2, "0")}`
+  );
+};
+
 export const parseDateRangeFromSearchParams = (
   searchParams: URLSearchParams | Readonly<URLSearchParams>
 ): { dateFrom: string; dateTo: string } | null => {
