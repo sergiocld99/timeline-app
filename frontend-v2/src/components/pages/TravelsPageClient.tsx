@@ -92,7 +92,10 @@ const TravelsPageClient = () => {
               <CircularViewBtn handleClick={() => setStatsView("circular")} isActive={statsView === "circular"} />
               <LineViewBtn handleClick={() => setStatsView("line")} isActive={statsView === "line"} />
             </div>
-            {statsView === "bar" && <TravelBarStats travels={filteredTravels} onFilter={onFilter} cardClassName="w-full" />}
+            {statsView === "bar" && <TravelBarStats travels={filteredTravels} onFilter={onFilter} cardClassName="w-full" options={{
+              backendHome: stats?.home,
+              appliedFilter: appliedFilter
+            }} />}
             {statsView === "line" && <TravelLineStats travels={filteredTravels} onFilter={onFilter} />}
             {statsView === "circular" && <TravelPieStats travels={filteredTravels} />}
           </div>
