@@ -6,8 +6,10 @@ import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { usePathname } from "@/i18n/routing";
 import { useDateRange } from "@/contexts/DateRangeContext";
 import { convertToFormDate } from "@/utils";
+import { replaceDateRangeInUrl } from "@/utils/dateRange";
 
 import ApplyButton from "./buttons/ApplyButton";
 import NextMonthBtn from "./buttons/NextMonthBtn";
@@ -15,11 +17,19 @@ import NextWeekBtn from "./buttons/NextWeekBtn";
 import PreviousMonthBtn from "./buttons/PreviousMonthBtn";
 import PreviousWeekBtn from "./buttons/PreviousWeekBtn";
 
+const DATE_RANGE_PATHS = new Set(["/travels"]);
+
 const DateRangeSelector = () => {
   const t = useTranslations("DateRange");
+  const pathname = usePathname();
   const { dateFrom: contextDateFrom, dateTo: contextDateTo, updateDateRange } = useDateRange();
   const [dateFrom, setDateFrom] = useState(contextDateFrom);
   const [dateTo, setDateTo] = useState(contextDateTo);
+
+  const syncDateRangeToUrl = (from: string, to: string) => {
+    if (!DATE_RANGE_PATHS.has(pathname)) return;
+    replaceDateRangeInUrl(from, to);
+  };
 
   // Sync local state with context when context changes
   useEffect(() => {
@@ -51,6 +61,7 @@ const DateRangeSelector = () => {
     setDateFrom(dateFromStr)
     setDateTo(dateToStr)
     updateDateRange(dateFromStr, dateToStr)
+    syncDateRangeToUrl(dateFromStr, dateToStr)
   }
 
   const handleApply = () => {
@@ -59,6 +70,7 @@ const DateRangeSelector = () => {
       return;
     }
     updateDateRange(dateFrom, dateTo);
+    syncDateRangeToUrl(dateFrom, dateTo);
   };
 
   const isInvalidRange = new Date(dateFrom) > new Date(dateTo);

@@ -1,10 +1,12 @@
 "use client";
 
-import type { ReactNode } from "react"
+import type { Dispatch, ReactNode, SetStateAction } from "react";
 
-import { createContext, useContext, useState } from 'react';
+import { createContext, Suspense, useCallback, useContext, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
-import { getStartDateFromCurrent, getTodayEndTime } from '@/utils';
+import { getStartDateFromCurrent, getTodayEndTime } from "@/utils";
+import { parseDateRangeFromSearchParams } from "@/utils/dateRange";
 
 interface DateRangeContextType {
   dateFrom: string;
@@ -17,19 +19,41 @@ const DateRangeContext = createContext<DateRangeContextType | undefined>(undefin
 interface DateRangeProviderProps {
   children: ReactNode;
   initialDays?: number;
-}
+};
+
+type UrlSyncProps = {
+  setDateFrom: Dispatch<SetStateAction<string>>;
+  setDateTo: Dispatch<SetStateAction<string>>;
+};
+
+const DateRangeUrlSync = ({ setDateFrom, setDateTo }: UrlSyncProps) => {
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const parsed = parseDateRangeFromSearchParams(searchParams);
+    if (!parsed) return;
+
+    setDateFrom((current) => (current === parsed.dateFrom ? current : parsed.dateFrom));
+    setDateTo((current) => (current === parsed.dateTo ? current : parsed.dateTo));
+  }, [searchParams, setDateFrom, setDateTo]);
+
+  return null;
+};
 
 export const DateRangeProvider = ({ children, initialDays = 30 }: DateRangeProviderProps) => {
   const [dateFrom, setDateFrom] = useState(getStartDateFromCurrent(initialDays));
   const [dateTo, setDateTo] = useState(getTodayEndTime());
 
-  const updateDateRange = (newDateFrom: string, newDateTo: string) => {
+  const updateDateRange = useCallback((newDateFrom: string, newDateTo: string) => {
     setDateFrom(newDateFrom);
     setDateTo(newDateTo);
-  };
+  }, []);
 
   return (
     <DateRangeContext.Provider value={{ dateFrom, dateTo, updateDateRange }}>
+      <Suspense fallback={null}>
+        <DateRangeUrlSync setDateFrom={setDateFrom} setDateTo={setDateTo} />
+      </Suspense>
       {children}
     </DateRangeContext.Provider>
   );
@@ -38,7 +62,7 @@ export const DateRangeProvider = ({ children, initialDays = 30 }: DateRangeProvi
 export const useDateRange = () => {
   const context = useContext(DateRangeContext);
   if (context === undefined) {
-    throw new Error('useDateRange must be used within a DateRangeProvider');
+    throw new Error("useDateRange must be used within a DateRangeProvider");
   }
   return context;
 };

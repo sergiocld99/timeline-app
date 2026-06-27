@@ -1,0 +1,65 @@
+const DATE_ONLY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+
+/** Build datetime-local value without UTC conversion (toISOString shifts the day). */
+export const toFormDateFromParts = (
+  datePart: string,
+  boundary: "start" | "end"
+): string => {
+  return boundary === "start" ? `${datePart}T21:00` : `${datePart}T20:59`;
+};
+
+export const parseDateParamToFormDate = (
+  value: string,
+  boundary: "start" | "end"
+): string | null => {
+  if (!value) return null;
+
+  if (DATE_ONLY_PATTERN.test(value)) {
+    return toFormDateFromParts(value, boundary);
+  }
+
+  const parsed = new Date(value);
+  if (isNaN(parsed.getTime())) return null;
+
+  const year = parsed.getFullYear();
+  const month = String(parsed.getMonth() + 1).padStart(2, "0");
+  const day = String(parsed.getDate()).padStart(2, "0");
+  const hours = String(parsed.getHours()).padStart(2, "0");
+  const minutes = String(parsed.getMinutes()).padStart(2, "0");
+
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+};
+
+export const toUrlDateParam = (formDate: string): string => {
+  return formDate.slice(0, 10);
+};
+
+export const buildDateRangeSearch = (dateFrom: string, dateTo: string): string => {
+  const params = new URLSearchParams();
+  params.set("dateFrom", toUrlDateParam(dateFrom));
+  params.set("dateTo", toUrlDateParam(dateTo));
+  return params.toString();
+};
+
+export const parseDateRangeFromSearchParams = (
+  searchParams: URLSearchParams | Readonly<URLSearchParams>
+): { dateFrom: string; dateTo: string } | null => {
+  const fromParam = searchParams.get("dateFrom");
+  const toParam = searchParams.get("dateTo");
+
+  if (!fromParam || !toParam) return null;
+
+  const dateFrom = parseDateParamToFormDate(fromParam, "start");
+  const dateTo = parseDateParamToFormDate(toParam, "end");
+
+  if (!dateFrom || !dateTo) return null;
+  if (new Date(dateFrom) > new Date(dateTo)) return null;
+
+  return { dateFrom, dateTo };
+};
+
+export const replaceDateRangeInUrl = (dateFrom: string, dateTo: string) => {
+  if (typeof window === "undefined") return;
+  const search = buildDateRangeSearch(dateFrom, dateTo);
+  window.history.replaceState(null, "", `${window.location.pathname}?${search}`);
+};
