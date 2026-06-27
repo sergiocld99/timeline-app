@@ -29,8 +29,6 @@ type Props = {
   placesVisited: PlacesVisited;
 };
 
-
-
 const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }: Props) => {
   const t = useTranslations("Dashboard");
   const tMonths = useTranslations("MonthsShort");

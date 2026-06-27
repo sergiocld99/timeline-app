@@ -48,7 +48,7 @@ export type MonthlyStats = Record<string, MonthlyStatItem>;
 export type PlacesVisited = {
   count: number,
   zipcodes: string[],
-  names?: Record<string, string>
+  data?: Record<string, { name: string, id: string }>
 }
 
 export type TravelRecordItem = {

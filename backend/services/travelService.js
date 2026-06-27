@@ -99,7 +99,7 @@ export const calculateTravelStats = (travels) => {
   const uniqueRoutesSet = new Set()
   const monthlyStats = {};
   const routeStats = {};
-  const placeNames = {};
+  const placeDataMap = new Map();
 
   let totalKm = 0;
   let totalMinutes = 0;
@@ -169,14 +169,14 @@ export const calculateTravelStats = (travels) => {
     // Calculate average coordinates from all origins and destinations
     if (t.origin && t.origin.latitude != null && t.origin.longitude != null) {
       placesVisited.add(t.origin.zipcode)
-      placeNames[t.origin.zipcode] = t.origin.name
+      placeDataMap.set(t.origin.zipcode, { name: t.origin.name, id: t.origin.id });
       sumLatitude += t.origin.latitude * weight;
       sumLongitude += t.origin.longitude * weight;
       validWeight += weight
     }
     if (t.destination && t.destination.latitude != null && t.destination.longitude != null) {
       placesVisited.add(t.destination.zipcode)
-      placeNames[t.destination.zipcode] = t.destination.name
+      placeDataMap.set(t.destination.zipcode, { name: t.destination.name, id: t.destination.id });
       sumLatitude += t.destination.latitude * weight;
       sumLongitude += t.destination.longitude * weight;
       validWeight += weight
@@ -230,7 +230,7 @@ export const calculateTravelStats = (travels) => {
     placesVisited: {
       count: placesVisited.size,
       zipcodes: Array.from(placesVisited.values()),
-      names: placeNames
+      data: Object.fromEntries(placeDataMap)
     },
     monthlyStats,
     topRoutes,
