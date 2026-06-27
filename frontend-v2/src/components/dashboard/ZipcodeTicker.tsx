@@ -101,12 +101,12 @@ const ZipcodeTicker = ({ monthlyStats, currentPlaces, previousPlaces, onActiveZi
               className="flex items-center gap-2 text-[0.8rem] h-5 font-['Space_Mono']"
             >
               {showComparison ? <span className="scale-75 origin-left">{isVisited ? '✅' : '❌'}</span> : null}
-              {placeData?.id ? (
-                <Link href={`/travels/to/${placeData.id}`} className={`${textClassName}`}>
+              {placeData && isVisited ? (
+                <Link href={`/travels/to/${placeData.id}`} className={textClassName}>
                   {zip} - {placeData.name}
                 </Link>
               ) : (
-                <span className={textClassName}>
+                <span className={`${textClassName} select-none`}>
                   {zip} - {placeData?.name}
                 </span>
               )}
