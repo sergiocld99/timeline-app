@@ -29,7 +29,7 @@ export const toFormDateFromParts = (
   datePart: string,
   boundary: "start" | "end"
 ): string => {
-  return boundary === "start" ? `${datePart}T21:00` : `${datePart}T20:59`;
+  return boundary === "start" ? `${datePart}T00:00` : `${datePart}T23:59`;
 };
 
 export const parseDateParamToFormDate = (
