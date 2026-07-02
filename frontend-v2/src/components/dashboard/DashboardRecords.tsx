@@ -15,9 +15,9 @@ const DashboardRecords = ({ records }: Props) => {
 
   const formatDate = (dateStr: string) => renderNiceDate(dateStr, t);
 
-  const renderRecordItem = ({ origin, destination, value, date }: TravelRecordItem, unit: string) => (
+  const renderRecordItem = ({ origin, destination, value, date }: TravelRecordItem, unit: string, recordName: string) => (
     <div>
-      <div className="text-[0.6rem] text-[#6b6b80] uppercase tracking-wider mb-1">{t("Dashboard.longestTravelDistance")}</div>
+      <div className="text-[0.6rem] text-[#6b6b80] uppercase tracking-wider mb-1">{recordName}</div>
       <div className="flex justify-between items-baseline">
         <div className="text-lg font-bold text-[#f0f0f8]">{origin.name} → {destination.name}</div>
         <div className="text-xl font-bold text-[#ff6b47]">{value} {unit}</div>
@@ -33,9 +33,9 @@ const DashboardRecords = ({ records }: Props) => {
         <span className="text-2xl font-extrabold text-[#ff6b47]">{t("Dashboard.records")}</span>
       </div>
       <div className="space-y-6 font-['Space_Mono']">
-        {records?.maxDistance && renderRecordItem(records.maxDistance, 'km')}
-        {records?.maxDuration && renderRecordItem(records.maxDuration, 'min')}
-        {records?.maxSpeed && renderRecordItem(records.maxSpeed, 'km/h')}
+        {records?.maxDistance && renderRecordItem(records.maxDistance, 'km', t('Dashboard.longestTravelDistance'))}
+        {records?.maxDuration && renderRecordItem(records.maxDuration, 'min', t('Dashboard.longestTravelTime'))}
+        {records?.maxSpeed && renderRecordItem(records.maxSpeed, 'km/h', t('Dashboard.fastestTravel'))}
       </div>
     </div>
   );

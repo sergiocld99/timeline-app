@@ -6,8 +6,10 @@ import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { usePathname } from "@/i18n/routing";
 import { useDateRange } from "@/contexts/DateRangeContext";
 import { convertToFormDate } from "@/utils";
+import { isValidFormDateTime, replaceDateRangeInUrl } from "@/utils/dateRange";
 
 import ApplyButton from "./buttons/ApplyButton";
 import NextMonthBtn from "./buttons/NextMonthBtn";
@@ -15,11 +17,24 @@ import NextWeekBtn from "./buttons/NextWeekBtn";
 import PreviousMonthBtn from "./buttons/PreviousMonthBtn";
 import PreviousWeekBtn from "./buttons/PreviousWeekBtn";
 
+const DATE_RANGE_PATHS = new Set(["/travels"]);
+
 const DateRangeSelector = () => {
   const t = useTranslations("DateRange");
+  const pathname = usePathname();
   const { dateFrom: contextDateFrom, dateTo: contextDateTo, updateDateRange } = useDateRange();
   const [dateFrom, setDateFrom] = useState(contextDateFrom);
   const [dateTo, setDateTo] = useState(contextDateTo);
+
+  const isDateFromInvalid = !isValidFormDateTime(dateFrom);
+  const isDateToInvalid = !isValidFormDateTime(dateTo);
+  const isInvalidRange = !isDateFromInvalid && !isDateToInvalid && new Date(dateFrom) > new Date(dateTo);
+  const isApplyDisabled = isDateFromInvalid || isDateToInvalid || isInvalidRange;
+
+  const syncDateRangeToUrl = (from: string, to: string) => {
+    if (!DATE_RANGE_PATHS.has(pathname)) return;
+    replaceDateRangeInUrl(from, to);
+  };
 
   // Sync local state with context when context changes
   useEffect(() => {
@@ -51,17 +66,21 @@ const DateRangeSelector = () => {
     setDateFrom(dateFromStr)
     setDateTo(dateToStr)
     updateDateRange(dateFromStr, dateToStr)
+    syncDateRangeToUrl(dateFromStr, dateToStr)
   }
 
   const handleApply = () => {
+    if (!isValidFormDateTime(dateFrom) || !isValidFormDateTime(dateTo)) {
+      alert(t("invalidDate"));
+      return;
+    }
     if (new Date(dateFrom) > new Date(dateTo)) {
       alert(t("invalidRange"));
       return;
     }
     updateDateRange(dateFrom, dateTo);
+    syncDateRangeToUrl(dateFrom, dateTo);
   };
-
-  const isInvalidRange = new Date(dateFrom) > new Date(dateTo);
 
   return (
     <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
@@ -90,7 +109,7 @@ const DateRangeSelector = () => {
               id="date_from"
               onChange={handleChangeDateFrom}
               value={dateFrom}
-              className={`bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white ${isInvalidRange ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
+              className={`bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white ${isDateFromInvalid || isInvalidRange ? "border-red-500 focus-visible:ring-red-500" : ""}`}
             />
           </div>
 
@@ -102,7 +121,7 @@ const DateRangeSelector = () => {
               id="date_to"
               onChange={handleChangeDateTo}
               value={dateTo}
-              className={`bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white ${isInvalidRange ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
+              className={`bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white ${isDateToInvalid || isInvalidRange ? "border-red-500 focus-visible:ring-red-500" : ""}`}
             />
           </div>
 
@@ -112,7 +131,7 @@ const DateRangeSelector = () => {
           </div>
 
           <div className="pt-6">
-            <ApplyButton handleClick={handleApply} disabled={isInvalidRange} />
+            <ApplyButton handleClick={handleApply} disabled={isApplyDisabled} />
           </div>
         </div>
       </CardContent>
