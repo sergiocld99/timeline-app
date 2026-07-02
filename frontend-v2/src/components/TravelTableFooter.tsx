@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 
 import { getHoursAndMinutes } from "@/utils";
 import { renderTotalWeightsCell } from "@/utils/weight";
+import { cn } from "@/lib/utils";
 
 import { PointWithCopyBtn } from "./render/coordinates";
 import { TableCell, TableFooter, TableRow } from "./ui/table";
@@ -11,9 +12,10 @@ import { TableCell, TableFooter, TableRow } from "./ui/table";
 type Props = {
   travels: Travel[];
   stats?: TravelStats;
+  isGold?: boolean;
 }
 
-const TravelTableFooter = ({ travels, stats }: Props) => {
+const TravelTableFooter = ({ travels, stats, isGold }: Props) => {
   const t = useTranslations("Travels.footer");
   const { averageLatitude: totalLat, averageLongitude: totalLong, totalDistance = 0, totalMinutes = 0, placesVisited, uniqueDays, uniqueRoutes } = stats || {}
 
@@ -38,7 +40,10 @@ const TravelTableFooter = ({ travels, stats }: Props) => {
 
   return (
     <TableFooter>
-      <TableRow className="border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+      <TableRow className={cn(
+        "border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800",
+        isGold && "bg-amber-100/30 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-200"
+      )}>
         <TableCell className="font-medium text-gray-900 dark:text-white">
           <div className="flex items-center gap-2">
             {renderFirstTotalCell(travels.length, uniqueRoutes, uniqueDays)}

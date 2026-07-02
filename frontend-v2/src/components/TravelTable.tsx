@@ -15,6 +15,7 @@ import { useUser } from '@/contexts/UserContext';
 import { useTravelStats } from '@/hooks/useTravelStats';
 import TravelService from '@/services/TravelService';
 import { translateDay } from '@/utils/date';
+import { cn } from "@/lib/utils";
 
 import ExportButton from './buttons/ExportButton';
 import RemoveFilterBtn from './buttons/RemoveFilterBtn';
@@ -44,6 +45,18 @@ const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTra
   const [isCrossSelectorDisabled, setIsCrossSelectorDisabled] = useState(false);
   const [selectedCrossId, setSelectedCrossId] = useState<string>(FILTER_ALL);
 
+  // Calcular el número de días del rango actual
+  const daysRange = (() => {
+    if (!dateFrom || !dateTo) return 0;
+    const from = new Date(dateFrom.split('T')[0]);
+    const to = new Date(dateTo.split('T')[0]);
+    const diffTime = to.getTime() - from.getTime();
+    return Math.round(diffTime / (1000 * 60 * 60 * 24)) + 1;
+  })();
+
+  const placesCount = stats?.placesVisited?.count || 0;
+  const isGold = daysRange > 0 && daysRange < 35 && placesCount >= 12;
+
   const handleExportCsv = async () => {
     try {
       const userId = currentUser?.userId;
@@ -60,7 +73,10 @@ const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTra
   }, [appliedFilter, dateFrom, dateTo, currentUser])
 
   return (
-    <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+    <Card className={cn(
+      "w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 transition-all duration-300",
+      isGold && "border-2 border-amber-400 dark:border-amber-400 bg-amber-50/20 dark:bg-amber-950/20"
+    )}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <div className="flex items-center gap-2">
           <Button
@@ -87,7 +103,7 @@ const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTra
         </div>
       </CardHeader>
       <CardContent className="flex flex-col gap-6">
-        <DateRangeSelector />
+        <DateRangeSelector isGold={isGold} />
         {travels.length === 0 && (
           <div className="text-center py-8 text-gray-500 dark:text-gray-400">
             {t("Travels.noTravelsFound")}
@@ -102,6 +118,7 @@ const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTra
             onAddCrosses={onAddCrosses}
             onRemoveCrosses={onRemoveCrosses}
             isCollapsed={isCollapsed}
+            isGold={isGold}
           />
         </div>
         <div className="lg:hidden">
