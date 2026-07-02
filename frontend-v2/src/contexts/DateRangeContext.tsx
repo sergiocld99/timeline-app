@@ -2,15 +2,17 @@
 
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 
-import { createContext, Suspense, useCallback, useContext, useEffect, useState } from "react";
+import { createContext, Suspense, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 import { getStartDateFromCurrent, getTodayEndTime } from "@/utils";
 import { parseDateRangeFromSearchParams } from "@/utils/dateRange";
+import { getDaysRange } from "@/utils/date";
 
 interface DateRangeContextType {
   dateFrom: string;
   dateTo: string;
+  daysRange: number;
   updateDateRange: (dateFrom: string, dateTo: string) => void;
 }
 
@@ -49,8 +51,10 @@ export const DateRangeProvider = ({ children, initialDays = 30 }: DateRangeProvi
     setDateTo(newDateTo);
   }, []);
 
+  const daysRange = useMemo(() => getDaysRange(dateFrom, dateTo), [dateFrom, dateTo]);
+
   return (
-    <DateRangeContext.Provider value={{ dateFrom, dateTo, updateDateRange }}>
+    <DateRangeContext.Provider value={{ dateFrom, dateTo, daysRange, updateDateRange }}>
       <Suspense fallback={null}>
         <DateRangeUrlSync setDateFrom={setDateFrom} setDateTo={setDateTo} />
       </Suspense>

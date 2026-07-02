@@ -33,11 +33,12 @@ type Props = {
   onAddCrosses?: (travelId: string) => Promise<void>;
   onRemoveCrosses?: (travelId: string) => Promise<void>;
   isCollapsed?: boolean;
+  isGold?: boolean;
 };
 
 const COLUMN_KEYS = ['date', 'mode', 'from', 'to', 'schedule', 'distance', 'duration', 'weight', 'actions'];
 
-const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, onRemoveCrosses, isCollapsed }: Props) => {
+const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, onRemoveCrosses, isCollapsed, isGold = false }: Props) => {
   const t = useTranslations("Travels");
   const tMilestones = useTranslations("Milestones");
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -201,7 +202,7 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
 
   const renderColumnHeaders = () => (
     COLUMN_KEYS.map((key) => (
-      <TableHead key={key} className="text-gray-700 dark:text-gray-300">{t(`tableHeaders.${key}`)}</TableHead>
+      <TableHead key={key} className={cn("text-gray-700 dark:text-gray-300", isGold && "text-amber-900 dark:text-amber-200 font-semibold")}>{t(`tableHeaders.${key}`)}</TableHead>
     ))
   );
 
@@ -216,11 +217,11 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
 
   return (
     <>
-      <Table>
+      <Table className={cn(isGold && "bg-amber-50/10 dark:bg-amber-950/5")}>
         {!isCollapsed && (
           <>
-            <TableHeader>
-              <TableRow className="border-gray-200 dark:border-gray-700">
+            <TableHeader className={cn(isGold && "bg-amber-100/40 dark:bg-amber-900/20")}>
+              <TableRow className={cn("border-gray-200 dark:border-gray-700", isGold && "border-amber-200 dark:border-amber-800")}>
                 {renderColumnHeaders()}
               </TableRow>
             </TableHeader>
@@ -234,6 +235,7 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
                     key={t._id}
                     className={cn(
                       "border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors",
+                      isGold && "border-amber-100/50 dark:border-amber-900/50 hover:bg-amber-100/30 dark:hover:bg-amber-100/10",
                       t.crosses?.length > 0 && "bg-purple-50/50 dark:bg-purple-900/20",
                       milestones.length > 0 && "bg-yellow-50/50 dark:bg-yellow-900/30"
                     )}
@@ -262,7 +264,7 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
             </TableBody>
           </>
         )}
-        <TravelTableFooter travels={travels} stats={stats} />
+        <TravelTableFooter travels={travels} stats={stats} isGold={isGold} />
       </Table>
 
       <NoteModal travel={noteTravel} isSaving={isSaving} setTravel={setNoteTravel} setIsSaving={setIsSaving} onUpdate={onUpdate} />

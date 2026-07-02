@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 import { usePathname } from "@/i18n/routing";
 import { useDateRange } from "@/contexts/DateRangeContext";
 import { convertToFormDate } from "@/utils";
@@ -19,7 +20,11 @@ import PreviousWeekBtn from "./buttons/PreviousWeekBtn";
 
 const DATE_RANGE_PATHS = new Set(["/travels"]);
 
-const DateRangeSelector = () => {
+type Props = {
+  isGold?: boolean;
+}
+
+const DateRangeSelector = ({ isGold = false }: Props) => {
   const t = useTranslations("DateRange");
   const pathname = usePathname();
   const { dateFrom: contextDateFrom, dateTo: contextDateTo, updateDateRange } = useDateRange();
@@ -83,7 +88,10 @@ const DateRangeSelector = () => {
   };
 
   return (
-    <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+    <Card className={cn(
+      "w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 transition-all duration-300",
+      isGold && "border-amber-300/40 dark:border-amber-300/40 bg-amber-100/10 dark:bg-black/30"
+    )}>
       <CardHeader>
         <CardTitle className="text-gray-900 dark:text-white">{t("title")}</CardTitle>
       </CardHeader>
@@ -102,26 +110,34 @@ const DateRangeSelector = () => {
           </div>
 
           <div className="space-y-2 flex-1">
-            <Label htmlFor="date_from" className="text-gray-700 dark:text-gray-300">{t("from")}</Label>
+            <Label htmlFor="date_from" className={cn("text-gray-700 dark:text-gray-300", isGold && "text-amber-800 dark:text-amber-300")}>{t("from")}</Label>
             <Input
               type="datetime-local"
               name="date_from"
               id="date_from"
               onChange={handleChangeDateFrom}
               value={dateFrom}
-              className={`bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white ${isDateFromInvalid || isInvalidRange ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+              className={cn(
+                "bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white",
+                isGold && "bg-amber-50/40 dark:bg-amber-950/20 border-amber-300/50 dark:border-amber-800/40 text-amber-900 dark:text-amber-100 focus-visible:ring-amber-500",
+                (isDateFromInvalid || isInvalidRange) && "border-red-500 focus-visible:ring-red-500"
+              )}
             />
           </div>
 
           <div className="space-y-2 flex-1">
-            <Label htmlFor="date_to" className="text-gray-700 dark:text-gray-300">{t("to")}</Label>
+            <Label htmlFor="date_to" className={cn("text-gray-700 dark:text-gray-300", isGold && "text-amber-800 dark:text-amber-300")}>{t("to")}</Label>
             <Input
               type="datetime-local"
               name="date_to"
               id="date_to"
               onChange={handleChangeDateTo}
               value={dateTo}
-              className={`bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white ${isDateToInvalid || isInvalidRange ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+              className={cn(
+                "bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white",
+                isGold && "bg-amber-50/40 dark:bg-amber-950/20 border-amber-300/50 dark:border-amber-800/40 text-amber-900 dark:text-amber-100 focus-visible:ring-amber-500",
+                (isDateToInvalid || isInvalidRange) && "border-red-500 focus-visible:ring-red-500"
+              )}
             />
           </div>
 
@@ -131,7 +147,7 @@ const DateRangeSelector = () => {
           </div>
 
           <div className="pt-6">
-            <ApplyButton handleClick={handleApply} disabled={isApplyDisabled} />
+            <ApplyButton handleClick={handleApply} disabled={isApplyDisabled} isGold={isGold} />
           </div>
         </div>
       </CardContent>
