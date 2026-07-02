@@ -61,7 +61,7 @@ const LocationCommonViewer = ({ locationId, action }: Props) => {
         <div className="lg:hidden">
           <span className="text-lg font-bold">{travelsLabel} {locationName}</span>
         </div>
-        <TravelTable travels={travels} stats={stats} />
+        <TravelTable travels={travels} stats={stats} source="locationViewer" />
       </div>
     </main>
   )

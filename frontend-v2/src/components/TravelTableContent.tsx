@@ -2,6 +2,7 @@
 
 import type { AxiosErrorResponse } from '@/types/commons';
 import type { Travel, TravelEditProps, TravelEditValues, TravelStats } from "@/types/travel";
+import type { TravelTableSource } from '@/types/props';
 
 import { Loader2, Save, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
@@ -24,6 +25,7 @@ import TransportModeCell from './cell/TransportModeCell';
 import LocationCell from './cell/LocationCell';
 import NoteModal from './modal/NoteModal';
 import DetailsModal from './modal/DetailsModal';
+import CalendarBtn from './buttons/CalendarBtn';
 
 type Props = {
   travels: Travel[];
@@ -34,11 +36,12 @@ type Props = {
   onRemoveCrosses?: (travelId: string) => Promise<void>;
   isCollapsed?: boolean;
   isGold?: boolean;
+  source?: TravelTableSource;
 };
 
 const COLUMN_KEYS = ['date', 'mode', 'from', 'to', 'schedule', 'distance', 'duration', 'weight', 'actions'];
 
-const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, onRemoveCrosses, isCollapsed, isGold = false }: Props) => {
+const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, onRemoveCrosses, isCollapsed, isGold = false, source }: Props) => {
   const t = useTranslations("Travels");
   const tMilestones = useTranslations("Milestones");
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -186,6 +189,13 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
           </Button>
         </div>
       );
+    }
+    if (source === 'locationViewer') {
+      const dateFrom = travel.startTime.split('T')[0];
+      const dateTo = travel.endTime.split('T')[0];
+      return (
+        <CalendarBtn handleClick={() => { window.open(`/travels?dateFrom=${dateFrom}&dateTo=${dateTo}`, '_blank'); }} />
+      )
     }
 
     return (
