@@ -38,21 +38,12 @@ type Props = {
 
 const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTravel, onAddCrosses, onRemoveCrosses, onFilter, onRemoveFilter, appliedFilter }: Props) => {
   const t = useTranslations();
-  const { dateFrom, dateTo } = useDateRange();
+  const { dateFrom, dateTo, daysRange } = useDateRange();
   const { currentUser } = useUser();
   const { stats } = useTravelStats(travels, initialStats);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isCrossSelectorDisabled, setIsCrossSelectorDisabled] = useState(false);
   const [selectedCrossId, setSelectedCrossId] = useState<string>(FILTER_ALL);
-
-  // Calcular el número de días del rango actual
-  const daysRange = (() => {
-    if (!dateFrom || !dateTo) return 0;
-    const from = new Date(dateFrom.split('T')[0]);
-    const to = new Date(dateTo.split('T')[0]);
-    const diffTime = to.getTime() - from.getTime();
-    return Math.round(diffTime / (1000 * 60 * 60 * 24)) + 1;
-  })();
 
   const placesCount = stats?.placesVisited?.count || 0;
   const isGold = daysRange > 0 && daysRange < 35 && placesCount >= 12;
@@ -75,7 +66,7 @@ const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTra
   return (
     <Card className={cn(
       "w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 transition-all duration-300",
-      isGold && "border-2 border-amber-400 dark:border-amber-400 bg-amber-50/20 dark:bg-amber-950/20"
+      isGold && "border-2 border-amber-400 dark:border-amber-400 bg-amber-50/20 dark:bg-amber-950/20 shadow-[0_0_20px_rgba(245,158,11,0.15)]"
     )}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <div className="flex items-center gap-2">
