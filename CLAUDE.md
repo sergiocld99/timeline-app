@@ -92,6 +92,6 @@ ESLint enforces `import/order` (type → builtin → external → internal → p
 ## Cross-cutting rules
 
 - **Software Design Documents**: non-trivial features or architectural changes should get a doc in `docs/sdd/` (copy `template.md`) before implementation.
-- **CHANGELOG.md is manually curated** — never edit it; the team fills it in by PR number/subject.
+- **CHANGELOG.md is manually curated** — never edit it directly; the team fills it in by PR number/subject. The one exception is the `changelog-cod` skill, which computes the PR size using the same formula as `.github/workflows/pr-compliance.yml` and appends the resulting `CODn-XXX` entry — only invoke it explicitly (e.g. via `/changelog-cod`), never edit the file ad hoc.
 - **MongoDB is shared** across backend (writes, via Mongoose) and statistics-service (reads only, via Panache) — Mongoose schemas are app-level validation only and don't constrain what Quarkus can read. Don't add write paths to the stats service.
 - Architectural decisions belong in `docs/ADR.md`; check it before changing the stats/map consolidation contract.
