@@ -5,6 +5,7 @@
 - COD10-006: Populate origin and destination in records + new circle in map (#80) [202]
 - COD10-007: Support query params for date range in travels (#82) [179]
 - COD10-008: Add VIP styles to Travels Page when applies (#83) [103]
+- COD10-009: Add purge button to date range selector (#84) [114]
 
 ## v0.9.0
 - COD9-003: Add Partido for Locations with B-Prefix zipcodes (#57) [388]
