@@ -100,3 +100,8 @@ export const replaceDateRangeInUrl = (dateFrom: string, dateTo: string) => {
   const search = buildDateRangeSearch(dateFrom, dateTo);
   window.history.replaceState(null, "", `${window.location.pathname}?${search}`);
 };
+
+export const clearDateRangeFromUrl = () => {
+  if (typeof window === "undefined") return;
+  window.history.replaceState(null, "", window.location.pathname);
+};

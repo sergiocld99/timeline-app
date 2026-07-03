@@ -110,7 +110,8 @@
     "from": "Desde",
     "to": "Hasta",
     "invalidRange": "La fecha de inicio no puede ser posterior a la fecha de fin.",
-    "invalidDate": "Ingresá fechas de inicio y fin válidas."
+    "invalidDate": "Ingresá fechas de inicio y fin válidas.",
+    "purge": "Restablecer"
   },
   "Milestones": {
     "longestDistance": "Mayor distancia recorrida",
