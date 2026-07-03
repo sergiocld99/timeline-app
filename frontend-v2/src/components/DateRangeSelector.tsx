@@ -10,13 +10,14 @@ import { cn } from "@/lib/utils";
 import { usePathname } from "@/i18n/routing";
 import { useDateRange } from "@/contexts/DateRangeContext";
 import { convertToFormDate } from "@/utils";
-import { isValidFormDateTime, replaceDateRangeInUrl } from "@/utils/dateRange";
+import { clearDateRangeFromUrl, isValidFormDateTime, replaceDateRangeInUrl } from "@/utils/dateRange";
 
 import ApplyButton from "./buttons/ApplyButton";
 import NextMonthBtn from "./buttons/NextMonthBtn";
 import NextWeekBtn from "./buttons/NextWeekBtn";
 import PreviousMonthBtn from "./buttons/PreviousMonthBtn";
 import PreviousWeekBtn from "./buttons/PreviousWeekBtn";
+import PurgeDateRangeBtn from "./buttons/PurgeDateRangeBtn";
 
 const DATE_RANGE_PATHS = new Set(["/travels"]);
 
@@ -27,7 +28,7 @@ type Props = {
 const DateRangeSelector = ({ isGold = false }: Props) => {
   const t = useTranslations("DateRange");
   const pathname = usePathname();
-  const { dateFrom: contextDateFrom, dateTo: contextDateTo, updateDateRange } = useDateRange();
+  const { dateFrom: contextDateFrom, dateTo: contextDateTo, updateDateRange, resetDateRange } = useDateRange();
   const [dateFrom, setDateFrom] = useState(contextDateFrom);
   const [dateTo, setDateTo] = useState(contextDateTo);
 
@@ -85,6 +86,11 @@ const DateRangeSelector = ({ isGold = false }: Props) => {
     }
     updateDateRange(dateFrom, dateTo);
     syncDateRangeToUrl(dateFrom, dateTo);
+  };
+
+  const handlePurge = () => {
+    resetDateRange();
+    if (DATE_RANGE_PATHS.has(pathname)) clearDateRangeFromUrl();
   };
 
   return (
@@ -146,8 +152,9 @@ const DateRangeSelector = ({ isGold = false }: Props) => {
             <NextMonthBtn handleClick={() => handleDayMovement(+30)} />
           </div>
 
-          <div className="pt-6">
+          <div className="pt-6 flex flex-row gap-2">
             <ApplyButton handleClick={handleApply} disabled={isApplyDisabled} isGold={isGold} />
+            <PurgeDateRangeBtn handleClick={handlePurge} />
           </div>
         </div>
       </CardContent>

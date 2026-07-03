@@ -14,6 +14,7 @@ interface DateRangeContextType {
   dateTo: string;
   daysRange: number;
   updateDateRange: (dateFrom: string, dateTo: string) => void;
+  resetDateRange: () => void;
 }
 
 const DateRangeContext = createContext<DateRangeContextType | undefined>(undefined);
@@ -51,10 +52,15 @@ export const DateRangeProvider = ({ children, initialDays = 30 }: DateRangeProvi
     setDateTo(newDateTo);
   }, []);
 
+  const resetDateRange = useCallback(() => {
+    setDateFrom(getStartDateFromCurrent(initialDays));
+    setDateTo(getTodayEndTime());
+  }, [initialDays]);
+
   const daysRange = useMemo(() => getDaysRange(dateFrom, dateTo), [dateFrom, dateTo]);
 
   return (
-    <DateRangeContext.Provider value={{ dateFrom, dateTo, daysRange, updateDateRange }}>
+    <DateRangeContext.Provider value={{ dateFrom, dateTo, daysRange, updateDateRange, resetDateRange }}>
       <Suspense fallback={null}>
         <DateRangeUrlSync setDateFrom={setDateFrom} setDateTo={setDateTo} />
       </Suspense>
