@@ -9,6 +9,7 @@ import statsRoutes from "./routes/statsRouter.js"
 import crossRoutes from "./routes/crossRoutes.js"
 import knownCenterRoutes from "./routes/knownCenterRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import exportRoutes from "./routes/exportRoutes.js";
 import connectToDatabase from "./config/database.js";
 import "./events/subscriber.js";
 
@@ -27,6 +28,7 @@ app.use('/api/stats', statsRoutes)
 app.use('/api/crosses', crossRoutes)
 app.use('/api/known-centers', knownCenterRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/export', exportRoutes);
 connectToDatabase();
 
 app.listen(PORT, () => {
