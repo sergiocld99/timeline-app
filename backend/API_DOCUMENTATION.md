@@ -358,7 +358,7 @@ Elimina un usuario.
 Endpoints de solo lectura pensados para sincronizar una copia local de los datos (ej. la app Android) por trimestre, en lugar de traer todo el histórico de una vez.
 
 ### GET `/api/export/quarters`
-Lista los trimestres que tienen viajes registrados, calculado a partir de las fechas reales de `Travel.startTime` (no incluye trimestres vacíos).
+Lista los trimestres que tienen viajes registrados, calculado a partir de las fechas reales de `Travel.startTime` (no incluye trimestres vacíos). Ordenados del más reciente al más viejo.
 
 **Query Parameters:** `userId` (opcional)
 

@@ -19,7 +19,7 @@ export const getAvailableQuarters = async (userId) => {
         travelCount: { $sum: 1 }
       }
     },
-    { $sort: { "_id.year": 1, "_id.quarter": 1 } }
+    { $sort: { "_id.year": -1, "_id.quarter": -1 } }
   ]);
 
   return results.map(({ _id, travelCount }) => ({
