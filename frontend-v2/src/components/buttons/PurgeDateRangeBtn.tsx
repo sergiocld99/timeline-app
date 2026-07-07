@@ -14,9 +14,10 @@ const PurgeDateRangeBtn = ({ handleClick }: ButtonProps) => {
       onClick={handleClick}
       variant="outline"
       className="gap-2"
+      aria-label={t("purge")}
+      title={t("purge")}
     >
       <Eraser className="h-4 w-4" />
-      {t("purge")}
     </Button>
   );
 };
