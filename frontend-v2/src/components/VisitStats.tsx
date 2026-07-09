@@ -104,6 +104,56 @@ const buildWeekdayChartConfig = (t: ReturnType<typeof useTranslations>): ChartCo
   ) satisfies ChartConfig
 }
 
+const buildLocationBars = (
+  topLocations: string[],
+  otherKeys: string[],
+  shouldShowOthers: boolean,
+  onLocationClick: (location: string[]) => void
+) => [
+  topLocations.at(0) && <Bar
+    key="red"
+    dataKey="red"
+    stackId="a"
+    fill="var(--color-red)"
+    onClick={() => onLocationClick([topLocations[0]])}
+  />,
+  topLocations.at(1) && <Bar
+    key="orange"
+    dataKey="orange"
+    stackId="a"
+    fill="var(--color-orange)"
+    onClick={() => onLocationClick([topLocations[1]])}
+  />,
+  topLocations.at(2) && <Bar
+    key="yellow"
+    dataKey="yellow"
+    stackId="a"
+    fill="var(--color-yellow)"
+    onClick={() => onLocationClick([topLocations[2]])}
+  />,
+  topLocations.at(3) && <Bar
+    key="green"
+    dataKey="green"
+    stackId="a"
+    fill="var(--color-green)"
+    onClick={() => onLocationClick([topLocations[3]])}
+  />,
+  topLocations.at(4) && <Bar
+    key="blue"
+    dataKey="blue"
+    stackId="a"
+    fill="var(--color-blue)"
+    onClick={() => onLocationClick([topLocations[4]])}
+  />,
+  shouldShowOthers && <Bar
+    key="others"
+    dataKey="others"
+    stackId="a"
+    fill="var(--color-others)"
+    onClick={() => onLocationClick(otherKeys)}
+  />
+]
+
 const VisitStats = ({ visits, onFilter, groupHourlyByWeekday }: Props) => {
   const t = useTranslations();
   const tCharts = useTranslations("Charts");
@@ -153,50 +203,7 @@ const VisitStats = ({ visits, onFilter, groupHourlyByWeekday }: Props) => {
                   fill={`var(--color-${day})`}
                 />
               ))
-              : [
-                topLocations.at(0) && <Bar
-                  key="red"
-                  dataKey="red"
-                  stackId="a"
-                  fill="var(--color-red)"
-                  onClick={() => handleLocationClick([topLocations[0]])}
-                />,
-                topLocations.at(1) && <Bar
-                  key="orange"
-                  dataKey="orange"
-                  stackId="a"
-                  fill="var(--color-orange)"
-                  onClick={() => handleLocationClick([topLocations[1]])}
-                />,
-                topLocations.at(2) && <Bar
-                  key="yellow"
-                  dataKey="yellow"
-                  stackId="a"
-                  fill="var(--color-yellow)"
-                  onClick={() => handleLocationClick([topLocations[2]])}
-                />,
-                topLocations.at(3) && <Bar
-                  key="green"
-                  dataKey="green"
-                  stackId="a"
-                  fill="var(--color-green)"
-                  onClick={() => handleLocationClick([topLocations[3]])}
-                />,
-                topLocations.at(4) && <Bar
-                  key="blue"
-                  dataKey="blue"
-                  stackId="a"
-                  fill="var(--color-blue)"
-                  onClick={() => handleLocationClick([topLocations[4]])}
-                />,
-                shouldShowOthers && <Bar
-                  key="others"
-                  dataKey="others"
-                  stackId="a"
-                  fill="var(--color-others)"
-                  onClick={() => handleLocationClick(otherKeys)}
-                />
-              ]
+              : buildLocationBars(topLocations, otherKeys, shouldShowOthers, handleLocationClick)
             }
           </BarChart>
         </ChartContainer>
@@ -217,50 +224,7 @@ const VisitStats = ({ visits, onFilter, groupHourlyByWeekday }: Props) => {
                   <Cell key={entry.day} fill={`var(--color-${entry.day})`} />
                 ))}
               </Bar>
-              : [
-                topLocations.at(0) && <Bar
-                  key="red"
-                  dataKey="red"
-                  stackId="a"
-                  fill="var(--color-red)"
-                  onClick={() => handleLocationClick([topLocations[0]])}
-                />,
-                topLocations.at(1) && <Bar
-                  key="orange"
-                  dataKey="orange"
-                  stackId="a"
-                  fill="var(--color-orange)"
-                  onClick={() => handleLocationClick([topLocations[1]])}
-                />,
-                topLocations.at(2) && <Bar
-                  key="yellow"
-                  dataKey="yellow"
-                  stackId="a"
-                  fill="var(--color-yellow)"
-                  onClick={() => handleLocationClick([topLocations[2]])}
-                />,
-                topLocations.at(3) && <Bar
-                  key="green"
-                  dataKey="green"
-                  stackId="a"
-                  fill="var(--color-green)"
-                  onClick={() => handleLocationClick([topLocations[3]])}
-                />,
-                topLocations.at(4) && <Bar
-                  key="blue"
-                  dataKey="blue"
-                  stackId="a"
-                  fill="var(--color-blue)"
-                  onClick={() => handleLocationClick([topLocations[4]])}
-                />,
-                shouldShowOthers && <Bar
-                  key="others"
-                  dataKey="others"
-                  stackId="a"
-                  fill="var(--color-others)"
-                  onClick={() => handleLocationClick(otherKeys)}
-                />
-              ]
+              : buildLocationBars(topLocations, otherKeys, shouldShowOthers, handleLocationClick)
             }
           </BarChart>
         </ChartContainer>
