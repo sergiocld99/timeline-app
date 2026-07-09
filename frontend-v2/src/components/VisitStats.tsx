@@ -144,31 +144,37 @@ const VisitStats = ({ visits, onFilter }: Props) => {
               dataKey="red"
               stackId="a"
               fill="var(--color-red)"
+              onClick={() => handleLocationClick([topLocations[0]])}
             />}
             {topLocations.at(1) && <Bar
               dataKey="orange"
               stackId="a"
               fill="var(--color-orange)"
+              onClick={() => handleLocationClick([topLocations[1]])}
             />}
             {topLocations.at(2) && <Bar
               dataKey="yellow"
               stackId="a"
               fill="var(--color-yellow)"
+              onClick={() => handleLocationClick([topLocations[2]])}
             />}
             {topLocations.at(3) && <Bar
               dataKey="green"
               stackId="a"
               fill="var(--color-green)"
+              onClick={() => handleLocationClick([topLocations[3]])}
             />}
             {topLocations.at(4) && <Bar
               dataKey="blue"
               stackId="a"
               fill="var(--color-blue)"
+              onClick={() => handleLocationClick([topLocations[4]])}
             />}
             {shouldShowOthers && <Bar
               dataKey="others"
               stackId="a"
               fill="var(--color-others)"
+              onClick={() => handleLocationClick(otherKeys)}
             />}
           </BarChart>
         </ChartContainer>
