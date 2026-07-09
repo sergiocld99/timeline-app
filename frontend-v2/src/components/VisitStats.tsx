@@ -128,7 +128,7 @@ const buildLocationBars = (
   const LOCATION_COLOR_SLOTS = ["red", "orange", "yellow", "green", "blue"]
 
   return [
-    ...topLocations.map((location, i) => (
+    ...topLocations.filter(Boolean).map((location, i) => (
       <Bar
         key={LOCATION_COLOR_SLOTS[i]}
         dataKey={LOCATION_COLOR_SLOTS[i]}
