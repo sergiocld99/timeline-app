@@ -1,37 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
-import TravelService from "@/services/TravelService";
+import { useDashQuery } from "@/hooks/useDashQuery";
 import TravelDashboard from "@/components/TravelDashboard";
 import Header from "@/components/Header";
-import { useUser } from "@/contexts/UserContext";
 
 const HomePageClient = () => {
-  const [dateFrom, setDateFrom] = useState("");
-  const { currentUser, loading: userLoading } = useUser();
-
-  useEffect(() => {
-    const now = new Date();
-    const tenMonthsAgo = new Date();
-    tenMonthsAgo.setMonth(now.getMonth() - 10);
-    tenMonthsAgo.setDate(1); // Start of month
-    setDateFrom(tenMonthsAgo.toISOString());
-  }, []);
-
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["home_stats", dateFrom, currentUser],
-    queryFn: async () => {
-      if (!dateFrom) return null;
-      // We call getAll but with a large range to get the stats
-      // The backend returns { travels, stats }
-      const res = await TravelService.getAll({ dateFrom, userId: currentUser?.userId });
-      return res.stats;
-    },
-    enabled: !!dateFrom && !userLoading,
-  });
+  const { data, prevData, isLoading, error, currentFrom, currentTo } = useDashQuery();
+  const t = useTranslations("Dashboard");
 
   return (
     <>
@@ -43,10 +21,17 @@ const HomePageClient = () => {
       )}
       {error && (
         <div className="bg-[#0a0a0f] min-h-screen flex items-center justify-center text-red-500">
-          Error loading statistics.
+          {t("errorLoadingStats")}
         </div>
       )}
-      {data && <TravelDashboard stats={data} />}
+      {data && (
+        <TravelDashboard 
+          stats={data} 
+          prevStats={prevData || undefined} 
+          currentFrom={currentFrom}
+          currentTo={currentTo}
+        />
+      )}
     </>
   );
 };

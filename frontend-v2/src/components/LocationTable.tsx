@@ -2,6 +2,8 @@
 
 import type { Location } from "@/types/location";;
 
+import { useTranslations } from "next-intl";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import LocationTableContent from "./LocationTableContent";
@@ -15,18 +17,20 @@ type Props = {
 };
 
 const LocationTable = ({ locations, updateFn, deleteFn, searchTerm }: Props) => {
+  const t = useTranslations("Locations");
+
   return (
     <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardHeader>
-        <CardTitle className="text-gray-900 dark:text-white">Locations</CardTitle>
+        <CardTitle className="text-gray-900 dark:text-white">{t("title")}</CardTitle>
       </CardHeader>
       <CardContent>
         {locations.length === 0 && (
           <div className="text-center py-12 text-gray-500 dark:text-gray-400">
             {searchTerm ? (
-              <p>No locations found matching &quot;<span className="font-semibold text-gray-900 dark:text-white">{searchTerm}</span>&quot;</p>
+              <p>{t.rich("noLocationsFoundMatching", { searchTerm, span: (chunks) => <span className="font-semibold text-gray-900 dark:text-white">{chunks}</span> })}</p>
             ) : (
-              <p>No locations created yet. Add your first location in the Creator page!</p>
+              <p>{t("noLocationsCreated")}</p>
             )}
           </div>
         )}

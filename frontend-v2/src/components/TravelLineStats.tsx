@@ -2,9 +2,10 @@ import type { Travel } from "@/types/travel";
 import type { ChartConfig } from "./ui/chart";
 import type { FilteringData } from "@/types/stats";
 
-import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import { useTranslations } from "next-intl";
 
-import { getChartHours } from "@/utils/chart";
+import { cleanUnusedBorders, getChartHours } from "@/utils/chart";
 import { roundDecimals } from "@/utils/numbers";
 
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
@@ -37,40 +38,56 @@ const buildHourlyChartData = (travels: Travel[]) => {
     car: travels.filter(t => t.modeOfTransport === 'car'),
     bus: travels.filter(t => t.modeOfTransport === 'bus'),
     taxi: travels.filter(t => t.modeOfTransport === 'taxi'),
+    mixed: travels.filter(t => t.modeOfTransport === 'mixed'),
     walking: travels.filter(t => t.modeOfTransport === 'walking'),
-    others: travels.filter(t => !['car', 'bus', 'taxi', 'walking'].includes(t.modeOfTransport)),
+    others: travels.filter(t => !['car', 'bus', 'taxi', 'mixed', 'walking'].includes(t.modeOfTransport)),
   }
 
-  return getChartHours().map(hour => ({
-    hour,
-    car: getHourData(travelsByMode.car, hour),
-    bus: getHourData(travelsByMode.bus, hour),
-    taxi: getHourData(travelsByMode.taxi, hour),
-    walking: getHourData(travelsByMode.walking, hour),
-    others: getHourData(travelsByMode.others, hour),
-  }));
+  const chartData = getChartHours().map(hour => {
+    const modesData = {
+      car: getHourData(travelsByMode.car, hour),
+      bus: getHourData(travelsByMode.bus, hour),
+      taxi: getHourData(travelsByMode.taxi, hour),
+      mixed: getHourData(travelsByMode.mixed, hour),
+      walking: getHourData(travelsByMode.walking, hour),
+      others: getHourData(travelsByMode.others, hour),
+    }
+
+    return {
+      hour,
+      ...modesData,
+      empty: Object.values(modesData).every(v => v === null)
+    }
+  });
+
+  return cleanUnusedBorders(chartData);
 }
 
 const TravelLineStats = ({ travels, onFilter }: Props) => {
+  const t = useTranslations("Charts");
   const chartConfig = {
     car: {
-      label: "car",
+      label: t("modes.car"),
       color: "var(--chart-5)",
     },
     taxi: {
-      label: "taxi",
+      label: t("modes.taxi"),
       color: "var(--chart-4)",
     },
     bus: {
-      label: "bus",
+      label: t("modes.bus"),
       color: "var(--chart-3)",
     },
+    mixed: {
+      label: t("modes.mixed"),
+      color: "var(--chart-6)",
+    },
     walking: {
-      label: "walking",
+      label: t("modes.walking"),
       color: "var(--chart-2)",
     },
     others: {
-      label: "others",
+      label: t("modes.others"),
       color: "var(--chart-1)"
     }
   } satisfies ChartConfig
@@ -84,16 +101,16 @@ const TravelLineStats = ({ travels, onFilter }: Props) => {
   return (
     <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardHeader>
-        <CardTitle>Speed in km/h</CardTitle>
+        <CardTitle>{t("speedInKmH")}</CardTitle>
       </CardHeader>
-      <CardContent className="h-[255px] flex items-center justify-center">
-        <ChartContainer config={chartConfig} className="min-h-[255px] max-h-[255px] w-9/10">
+      <CardContent className="h-[255px] flex items-center justify-center pt-4">
+        <ChartContainer config={chartConfig} className="min-h-[255px] max-h-[255px] w-full">
           <LineChart
             accessibilityLayer
             data={hourlyChartData}
             margin={{
-              left: 12,
-              right: 12,
+              left: -20,
+              right: 40,
               top: 12,
             }}
           >
@@ -107,11 +124,17 @@ const TravelLineStats = ({ travels, onFilter }: Props) => {
               tickFormatter={(value) => value.slice(0, 3)}
               onClick={(data) => handleHourClick(data?.value)}
             />
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              tickFormatter={(value) => (value === 0 ? "" : value)}
+            />
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
-            {['car', 'bus', 'taxi', 'walking', 'others'].map(key => (
+            {['car', 'bus', 'taxi', 'mixed', 'walking', 'others'].map(key => (
               <Line
                 key={key}
                 dataKey={key}

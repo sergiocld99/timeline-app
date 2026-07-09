@@ -1,0 +1,356 @@
+{
+  "Dashboard": {
+    "title": "PANEL",
+    "travels": "Viajes",
+    "totalKm": "km totales",
+    "totalHours": "horas totales",
+    "placesVisited": "Lugares visitados",
+    "kilometersPerMonth": "Kilómetros por mes",
+    "previousYear": "Año Anterior",
+    "currentYear": "Año Actual",
+    "maximumValues": "Valores máximos",
+    "records": "Récords",
+    "longestTravelDistance": "Viaje de mayor distancia",
+    "longestTravelTime": "Viaje de mayor duración",
+    "fastestTravel": "Viaje más rápido",
+    "frequentRoutes": "Rutas Frecuentes",
+    "mostUsedRoutes": "Rutas más usadas",
+    "mostFrequentRoutes": "Rutas más frecuentes",
+    "top5": "Top 5",
+    "noRoutesMessage": "No se encontraron rutas para este período.",
+    "errorLoadingStats": "Error al cargar las estadísticas.",
+    "loadingMap": "Cargando mapa...",
+    "others": "Otros"
+  },
+  "PresentialAlert": {
+    "lastTravel": "El último viaje al trabajo fue hace {days} días. Visitaste {destination} el {date}",
+    "noTravel": "No viajaste al trabajo en los últimos 90 días"
+  },
+  "Common": {
+    "loading": "Cargando...",
+    "messages": {
+      "copied": "¡Coordenadas copiadas al portapapeles!",
+      "copyError": "Error al copiar las coordenadas"
+    }
+  },
+  "Travels": {
+    "title": "Viajes",
+    "noTravelsFound": "No se encontraron viajes para el rango de fechas seleccionado :/",
+    "exportCsv": "Exportar CSV",
+    "filterByCross": "Filtrar por cruce...",
+    "allCrosses": "Todos los cruces",
+    "tableHeaders": {
+      "date": "Fecha",
+      "mode": "Modo",
+      "from": "Desde",
+      "to": "Hasta",
+      "start": "Inicio",
+      "schedule": "Horario",
+      "distance": "Distancia",
+      "duration": "Duración",
+      "speed": "Velocidad",
+      "weight": "Peso",
+      "price": "Precio",
+      "pricePerKm": "Precio por km",
+      "actions": "Acciones"
+    },
+    "messages": {
+      "updateSuccess": "¡Viaje actualizado con éxito!",
+      "deleteSuccess": "¡Viaje eliminado con éxito!",
+      "deleteError": "Error al eliminar el viaje",
+      "invalidNumbers": "Por favor ingresa números positivos válidos para distancia y duración",
+      "durationExceeded": "La duración del viaje no puede exceder las 24 horas (1440 minutos)",
+      "exportError": "Error al exportar CSV:"
+    },
+    "tooltips": {
+      "clickToEdit": "Click para editar"
+    },
+    "notes": "Notas",
+    "footer": {
+      "travelsCount": "{count, plural, =1 {# viaje} other {# viajes}}",
+      "routesCount": "{count, plural, =1 {# ruta} other {# rutas}}",
+      "daysCount": "{count, plural, =1 {# día} other {# días}}",
+      "placesCount": "{count, plural, =1 {# lugar} other {# lugares}}"
+    },
+    "details": "Detalles",
+    "zip": "CP",
+    "to": "hasta",
+    "line": "Línea",
+    "crosses": "Cruces",
+    "emptyNotes": "No se agregaron notas",
+    "close": "Cerrar"
+  },
+  "TravelMap": {
+    "noLocations": "No hay ubicaciones para mostrar",
+    "kmFromCenter": "{distance} km del centro"
+  },
+  "Charts": {
+    "speedInKmH": "Velocidad en km/h",
+    "km": "Km",
+    "minutes": "Minutos",
+    "travels": "Viajes",
+    "kmH": "Km/h",
+    "modeOfTransport": "Modo de transporte",
+    "modes": {
+      "car": "Auto",
+      "taxi": "Taxi",
+      "bus": "Colectivo",
+      "subway": "Subte",
+      "train": "Tren",
+      "ferry": "Ferry",
+      "walking": "Caminando",
+      "mixed": "Mixto",
+      "mixedTooltip": "Viaje con 2 medios de transporte: uno con mayor distancia y otro con mayor duración",
+      "others": "Otros",
+      "other": "Otro"
+    }
+  },
+  "DateRange": {
+    "title": "Rango de fechas",
+    "from": "Desde",
+    "to": "Hasta",
+    "invalidRange": "La fecha de inicio no puede ser posterior a la fecha de fin.",
+    "invalidDate": "Ingresá fechas de inicio y fin válidas.",
+    "purge": "Restablecer"
+  },
+  "Milestones": {
+    "longestDistance": "Mayor distancia recorrida",
+    "longestDuration": "Mayor duración",
+    "fastestTravel": "Viaje más rápido"
+  },
+  "Actions": {
+    "openMenu": "Abrir menú",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "apply": "Aplicar",
+    "export": "Exportar",
+    "removeFilter": "Quitar filtro: {filterName}",
+    "removeCross": "Quitar cruce",
+    "add": "Agregar",
+    "addNote": "Agregar nota",
+    "addCross": "Agregar cruce",
+    "remove": "Quitar",
+    "search": "Buscar",
+    "goToDate": "Ver viajes en esta fecha",
+    "arrivals": "Llegadas",
+    "departures": "Salidas",
+    "nextWeek": "Próxima semana",
+    "previousWeek": "Semana anterior",
+    "nextMonth": "Próximo mes",
+    "previousMonth": "Mes anterior",
+    "viewDetails": "Ver detalles",
+    "goBack": "Volver",
+    "copyCoordinates": "Copiar coordenadas"
+  },
+  "Modal": {
+    "addNote": "Agregar nota",
+    "editNote": "Editar nota",
+    "content": "Contenido",
+    "notePlaceholder": "Escriba una nota para este viaje...",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "messageSuccess": "Notas del viaje actualizadas con éxito",
+    "messageError": "Error al guardar las notas"
+  },
+  "MonthsShort": {
+    "1": "Ene",
+    "2": "Feb",
+    "3": "Mar",
+    "4": "Abr",
+    "5": "May",
+    "6": "Jun",
+    "7": "Jul",
+    "8": "Ago",
+    "9": "Sep",
+    "10": "Oct",
+    "11": "Nov",
+    "12": "Dic"
+  },
+  "Navigation": {
+    "creator": "Crear",
+    "crosses": "Cruces",
+    "locations": "Lugares",
+    "travels": "Viajes",
+    "visits": "Visitas",
+    "menu": "Menú"
+  },
+  "DaysShort": {
+    "Sun": "Dom",
+    "Mon": "Lun",
+    "Tue": "Mar",
+    "Wed": "Mié",
+    "Thu": "Jue",
+    "Fri": "Vie",
+    "Sat": "Sáb"
+  },
+  "Creator": {
+    "addLocation": "Agregar Lugar",
+    "addTravel": "Agregar Viaje",
+    "locationName": "Nombre",
+    "coordinates": "Coordenadas",
+    "pickOnMap": "Elegir en Mapa",
+    "latitude": "Latitud",
+    "longitude": "Longitud",
+    "zipcode": "Código Postal",
+    "partido": "Partido",
+    "notes": "Notas",
+    "saveLocation": "Guardar Lugar",
+    "pickLocationOnMap": "Elegir Ubicación en Mapa",
+    "origin": "Origen",
+    "destination": "Destino",
+    "selectOrigin": "Seleccionar Origen",
+    "selectDestination": "Seleccionar Destino",
+    "startTime": "Hora de Inicio",
+    "endTime": "Hora de Fin",
+    "modeOfTransport": "Modo de Transporte",
+    "busLine": "Línea de Colectivo",
+    "busLinePlaceholder": "ej. 152, 60, etc.",
+    "distanceKm": "Distancia (km)",
+    "priceOptional": "Precio (opcional)",
+    "crossesOptional": "Cruces (opcional)",
+    "selectCrossesPlaceholder": "Seleccionar cruces para esta ruta",
+    "startsAndFinishesSameDay": "Comienza y termina el mismo día",
+    "createForAllUsers": "Crear viaje para todos los usuarios registrados",
+    "createTravel": "Crear Viaje",
+    "messages": {
+      "locationAddedSuccess": "¡Lugar \"{name}\" agregado con éxito!",
+      "locationAddedError": "Error al agregar el lugar. Por favor intente de nuevo.",
+      "validationOriginDestinationRequired": "El origen y el destino son requeridos.",
+      "validationOriginDestinationDifferent": "El origen y el destino deben ser diferentes.",
+      "noUsersFound": "No se encontraron usuarios.",
+      "travelCreatedAllUsersSuccess": "¡Viaje creado con éxito para los {count} usuarios!",
+      "travelCreatedAllUsersError": "La creación del viaje falló para {count} usuarios.",
+      "travelWithVisitSuccess": "¡Viaje con visita agregado con éxito!",
+      "travelSuccess": "Viaje agregado con éxito"
+    }
+  },
+  "Crosses": {
+    "addCross": "Agregar Cruce",
+    "pickOnMap": "Elegir en Mapa",
+    "coordinates": "Coordenadas",
+    "name": "Nombre",
+    "latitude": "Latitud",
+    "longitude": "Longitud",
+    "crosses": "Cruces",
+    "noCrosses": "No hay cruces para mostrar",
+    "searchPlaceholder": "Buscar cruces...",
+    "noCrossesFound": "No se encontraron cruces.",
+    "messages": {
+      "crossAddedSuccess": "¡Cruce \"{name}\" agregado con éxito!",
+      "crossAddedError": "Error al agregar el cruce: {error}",
+      "noAdditionNeeded": "No se necesita adición para este viaje",
+      "addedCrossesSuccess": "Después de la adición, el viaje tiene {count} cruces, se querían {wanted}",
+      "addedCrossesError": "Error al agregar cruces: {error}",
+      "noDeletionNeeded": "No se necesita eliminación para este viaje",
+      "removedCrossesSuccess": "Después de la eliminación, el viaje tiene {count} cruces, se querían {wanted}",
+      "removedCrossesError": "Error al eliminar cruces: {error}"
+    }
+  },
+  "Locations": {
+    "title": "Lugares",
+    "searchPlaceholder": "Buscar lugares...",
+    "loading": "Cargando lugares...",
+    "errorLoading": "Error al cargar los lugares. Por favor intente actualizar la página.",
+    "noLocationsFoundMatching": "No se encontraron lugares que coincidan con \"{searchTerm}\"",
+    "noLocationsFound": "No se encontraron lugares.",
+    "noLocationsCreated": "No se han creado lugares aún. ¡Agrega tu primer lugar en la página de Creación!",
+    "tableHeaders": {
+      "name": "Nombre",
+      "latitude": "Latitud",
+      "longitude": "Longitud",
+      "zipcode": "Código Postal",
+      "partido": "Partido",
+      "notes": "Notas",
+      "actions": "Acciones"
+    },
+    "messages": {
+      "updateSuccess": "¡Lugar actualizado!",
+      "updateError": "Error al actualizar el lugar",
+      "deleteConfirm": "¿Estás seguro de que quieres eliminar \"{name}\"?",
+      "deleteSuccess": "Lugar eliminado con éxito",
+      "deleteError": "Error al eliminar el lugar"
+    },
+    "viewer": {
+      "travelsFrom": "Viajes desde",
+      "travelsTo": "Viajes hacia",
+      "unknownLocation": "Lugar desconocido"
+    }
+  },
+  "Visits": {
+    "title": "Visitas",
+    "loading": "Cargando visitas...",
+    "errorLoading": "Error al cargar las visitas. Por favor intente actualizar la página.",
+    "noVisitsFound": "No se encontraron visitas para el rango de fechas seleccionado.",
+    "away": "a {distance} km",
+    "visitsCount": "{count, plural, =1 {# visita} other {# visitas}}",
+    "tableHeaders": {
+      "date": "Fecha",
+      "location": "Lugar",
+      "arrival": "Llegada",
+      "departure": "Salida",
+      "duration": "Duración",
+      "weight": "Peso",
+      "actions": "Acciones",
+      "clickToEdit": "Hacer clic para editar",
+      "deleteVisit": "Eliminar visita",
+      "excludeWeight": "Excluir del cálculo de peso",
+      "includeWeight": "Incluir en el cálculo de peso"
+    },
+    "messages": {
+      "deleteSuccess": "Visita eliminada",
+      "deleteError": "Error al eliminar la visita",
+      "updateSuccess": "¡Visita actualizada con éxito!",
+      "updateError": "Error al actualizar la visita"
+    }
+  },
+  "Profile": {
+    "title": "Gestión de Usuarios",
+    "createNewUser": "Crear Nuevo Usuario",
+    "createUserDescription": "Agrega un nuevo usuario con un ID numérico único y un nombre",
+    "userId": "ID de Usuario",
+    "name": "Nombre",
+    "userIdPlaceholder": "ej. 2",
+    "namePlaceholder": "ej. Juan Pérez",
+    "creating": "Creando...",
+    "createUser": "Crear Usuario",
+    "existingUsers": "Usuarios Existentes",
+    "existingUsersDescription": "Gestiona los usuarios existentes en el sistema",
+    "noUsers": "No se encontraron usuarios. Crea uno arriba.",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "edit": "Editar",
+    "migrationTitle": "¿Migrar datos de invitado?",
+    "migrationDescription": "Encontramos {travelCount} viajes y {visitCount} visitas que no tienen un usuario asignado (datos en modo invitado).\n\n¿Te gustaría migrar todos estos datos a {name} (ID: {userId})?\n\nEsta acción no se puede deshacer, pero siempre puedes reasignar los datos más tarde si es necesario.",
+    "skip": "Omitir",
+    "migrateData": "Sí, migrar datos",
+    "migrating": "Migrando...",
+    "messages": {
+      "userIdNameRequired": "El ID de usuario y el nombre son requeridos",
+      "userIdNumber": "El ID de usuario debe ser un número",
+      "createSuccess": "Usuario {name} creado con éxito",
+      "createError": "Error al crear el usuario",
+      "migrationSuccess": "¡Migración completa! {travels} viajes y {visits} visitas migradas a {name}.",
+      "migrationError": "Error al migrar los datos. Por favor intente de nuevo.",
+      "nameRequired": "El nombre es requerido",
+      "updateSuccess": "Usuario {name} editado con éxito",
+      "updateError": "Error al actualizar el usuario"
+    }
+  },
+  "Themes": {
+    "light": "Claro",
+    "dark": "Oscuro",
+    "system": "Sistema",
+    "toggleTheme": "Cambiar tema"
+  },
+  "Languages": {
+    "en": "Inglés",
+    "es": "Español",
+    "toggleLanguage": "Cambiar idioma"
+  },
+  "UserDropdown": {
+    "guest": "Invitado",
+    "guestMode": "Modo Invitado",
+    "loggedInAs": "Sesión iniciada como {name}",
+    "manageUsers": "Administrar Usuarios"
+  }
+}

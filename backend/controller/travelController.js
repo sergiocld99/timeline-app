@@ -13,7 +13,7 @@ export const getAllTravels = (req, res) => {
   const dateFrom = getDateFrom(req)
   const dateTo = getDateTo(req)
   const crosses = req.body?.crossIds ?? []
-  const { sortingField = DEFAULT_SORTING_FIELD, userId, locFrom, locTo } = req.query
+  const { sortingField = DEFAULT_SORTING_FIELD, userId, locFrom, locTo, statsOnly } = req.query
 
   // Fetch all travels with populated origin and destination (Location) fields
   Travel.find({
@@ -28,17 +28,19 @@ export const getAllTravels = (req, res) => {
     const weightedTravels = withWeight(enrichedTravels, sortingField);
     const stats = calculateTravelStats(weightedTravels);
 
-    res.json({
-      travels: weightedTravels,
-      stats
-    });
+    const response = { stats };
+    if (statsOnly !== 'true') {
+      response.travels = weightedTravels;
+    }
+
+    res.json(response);
   }).catch(err => {
     res.status(500).json({ message: 'Error fetching travels', error: err.message });
   });
 }
 
 export const createTravel = (req, res) => {
-  const { startTime, endTime, origin, destination, modeOfTransport, distance, price, userId, line } = req.body;
+  const { startTime, endTime, origin, destination, modeOfTransport, distance, price, userId, line, crosses } = req.body;
   let safePrice, safeDistance;
 
   try {
@@ -75,6 +77,7 @@ export const createTravel = (req, res) => {
       distance: safeDistance.value,
       price: safePrice.amount,
       line,
+      crosses: crosses || [],
     });
 
     travel.save().then(savedTravel => {
@@ -89,7 +92,7 @@ export const createTravel = (req, res) => {
 
 export const updateTravel = (req, res, next) => {
   const { id } = req.params;
-  const { startTime, endTime, origin, destination, modeOfTransport, distance, crosses, userId, line } = req.body;
+  const { startTime, endTime, origin, destination, modeOfTransport, distance, crosses, userId, line, notes } = req.body;
   let safeDistance;
 
   try {
@@ -115,7 +118,8 @@ export const updateTravel = (req, res, next) => {
     modeOfTransport,
     distance: safeDistance?.value,
     crosses,
-    line
+    line,
+    notes
   };
 
   if (userId !== undefined) {

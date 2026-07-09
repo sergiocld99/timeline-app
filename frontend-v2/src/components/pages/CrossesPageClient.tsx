@@ -6,6 +6,7 @@ import type { Cross } from "@/types/cross";
 
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 import CrossForm from "@/components/CrossForm";
 import CrossTable from "@/components/CrossTable";
@@ -14,6 +15,7 @@ import useCrosses from "@/hooks/useCrosses";
 import useTravels from "@/hooks/useTravels";
 
 const CrossesPageClient = () => {
+  const t = useTranslations("Crosses");
   const { crosses } = useCrosses();
   const { travels: travelsData, refetch: refetchTravels, updateTravel } = useTravels();
   const [orCrosses, setOrCrosses] = useState<Cross[]>([]);
@@ -46,16 +48,16 @@ const CrossesPageClient = () => {
     const crosses = [...currentTravelCrosses, ...editCrosses];
 
     if (currentTravelCrosses.length === crosses.length) {
-      toast.info('No addition needed for this travel');
+      toast.info(t("messages.noAdditionNeeded"));
       return;
     }
 
     updateTravel(travelId, { crosses })
-      .then(t => {
-        toast.success(`After addition, travel has ${t.crosses.length} crosses, wanted ${crosses.length}`);
+      .then(tRes => {
+        toast.success(t("messages.addedCrossesSuccess", { count: tRes.crosses.length, wanted: crosses.length }));
       })
       .catch(err => {
-        toast.error(`Failed to add crosses: ${err}`);
+        toast.error(t("messages.addedCrossesError", { error: err.message || err }));
       });
   };
 
@@ -65,16 +67,16 @@ const CrossesPageClient = () => {
     const crosses = currentTravelCrosses.filter(c => !crossIdsToRemove.includes(c._id));
 
     if (currentTravelCrosses.length === crosses.length) {
-      toast.info('No deletion needed for this travel');
+      toast.info(t("messages.noDeletionNeeded"));
       return;
     }
 
     updateTravel(travelId, { crosses })
-      .then(t => {
-        toast.success(`After deletion, travel has ${t.crosses.length} crosses, wanted ${crosses.length}`);
+      .then(tRes => {
+        toast.success(t("messages.removedCrossesSuccess", { count: tRes.crosses.length, wanted: crosses.length }));
       })
       .catch(err => {
-        toast.error(`Failed to remove crosses: ${err}`);
+        toast.error(t("messages.removedCrossesError", { error: err.message || err }));
       })
       .finally(() => refetchTravels(orCrosses.map(cross => cross._id)));
   };

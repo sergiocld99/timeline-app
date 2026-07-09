@@ -2,9 +2,11 @@ import type { Travel } from "@/types/travel";
 import type { Location } from "@/types/location";
 import type { FilteringData } from "@/types/stats";
 
+import { useTranslations } from "next-intl";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
 import { buildChartConfig } from "@/utils/chart"
+import { translateDay } from "@/utils/date";
 
 import { calculateBestLocations } from "./analize/travel";
 import { buildDailyChartData, buildHourlyChartData } from "./builders/travelBars";
@@ -15,14 +17,32 @@ type Props = {
   travels: Travel[],
   onFilter: (data: FilteringData) => void,
   options?: {
-    field: 'origin' | 'destination'
+    field?: 'origin' | 'destination',
+    backendHome?: string,
+    appliedFilter?: string | null
   },
-  cardClassName?: string,
+  cardClassName?: string
 }
 
 const calculateHome = (travels: Travel[], options: Props["options"]) => {
   if (travels.length > 0 && options?.field) {
     return travels[0][options.field]
+  }
+
+  if (options?.appliedFilter) {
+    const zipcodeMatch = travels.find(t => t.destination.zipcode === options.appliedFilter)
+
+    if (zipcodeMatch) {
+      return zipcodeMatch.destination
+    }
+  }
+
+  if (!options?.appliedFilter && options?.backendHome) {
+    const matches = travels.filter(t => t.destination.name === options.backendHome)
+
+    if (matches.length >= 3) {
+      return matches[0].destination
+    }
   }
 
   if (travels.length > 10 && travels[0].destination.name === travels[travels.length - 1].origin.name) {
@@ -47,13 +67,14 @@ const enrichWithFarthestPoint = (t: Travel, home?: Location) => {
 }
 
 const TravelBarStats = ({ travels, onFilter, options, cardClassName = "w-8/10" }: Props) => {
+  const t = useTranslations();
   const home = calculateHome(travels, options)
   const relevantTravels = travels.map(t => enrichWithFarthestPoint(t, home))
 
   const { topKeys, otherKeys, shouldShowOthers } = calculateBestLocations(relevantTravels, 5)
   const hourlyChartData = buildHourlyChartData(relevantTravels, topKeys)
   const dailyChartData = buildDailyChartData(relevantTravels, topKeys)
-  const chartConfig = buildChartConfig(topKeys)
+  const chartConfig = buildChartConfig(topKeys, otherKeys, t("Charts.modes.others"))
 
   const handleZipcodeClick = (zipcode: string[]) => {
     onFilter({ type: 'zipcode', value: zipcode })
@@ -80,7 +101,7 @@ const TravelBarStats = ({ travels, onFilter, options, cardClassName = "w-8/10" }
               tickFormatter={(value) => value.slice(0, 3)}
               onClick={(data) => handleHourClick(data?.value)}
             />
-            <ChartTooltip content={<ChartTooltipContent />} />
+            <ChartTooltip content={<ChartTooltipContent labelFormatter={(value) => `${value}hs`} />} />
             <ChartLegend content={<ChartLegendContent />} />
             {topKeys.at(0) && <Bar
               dataKey="red"
@@ -128,10 +149,10 @@ const TravelBarStats = ({ travels, onFilter, options, cardClassName = "w-8/10" }
               className="hover:cursor-pointer"
               dataKey="day"
               tickMargin={10}
-              tickFormatter={(value) => value.slice(0, 3)}
+              tickFormatter={(value) => translateDay(value, t)}
               onClick={(data) => handleDayClick(data?.value)}
             />
-            <ChartTooltip content={<ChartTooltipContent />} />
+            <ChartTooltip content={<ChartTooltipContent labelFormatter={(value) => translateDay(value, t)} />} />
             {topKeys.at(0) && <Bar
               dataKey="red"
               stackId="a"

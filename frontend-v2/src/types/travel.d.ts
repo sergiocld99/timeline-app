@@ -17,6 +17,8 @@ export type Travel = Weighted & {
   duration: number
   speed: number
   crosses: Cross[]
+  price?: number,
+  notes?: string
   hourParts: {
     completeParts: HourPart[],
     firstHalf: HourPart[],
@@ -34,35 +36,60 @@ export type TravelDTO = {
   destination: string
 }
 
+export type MonthlyStatItem = {
+  km: number;
+  minutes: number;
+  count: number;
+  zipcodes: string[];
+}
+
+export type MonthlyStats = Record<string, MonthlyStatItem>;
+
+export type PlacesVisited = {
+  count: number,
+  zipcodes: string[],
+  data?: Record<string, { name: string, id: string }>
+}
+
+export type TravelRecordItem = {
+  value: number;
+  date: string;
+  origin: Location;
+  destination: Location;
+}
+
+export type TravelRecords = {
+  maxDistance: TravelRecordItem | null;
+  maxDuration: TravelRecordItem | null;
+  maxSpeed: TravelRecordItem | null;
+}
+
+export type TopRoute = {
+  route: string;
+  count: number;
+}
+
 export type TravelStats = {
   count: number
   totalDistance: number
   totalHours: number
   totalMinutes: number
-  totalPrice: number
   averageLatitude: number
   averageLongitude: number
   averageSpeed: number
   averageDistance: number
   averageDuration: number
-  averagePrice: number
   uniqueDays?: number
   uniqueRoutes?: number
-  placesVisited: Partial<{
-    count: number,
-    zipcodes: string[]
-  }>
+  placesVisited: PlacesVisited
   mapConfig?: {
     center: [number, number],
     zoom: number
   }
-  monthlyStats?: Record<string, { km: number, minutes: number, count: number, zipcodes: string[] }>
-  topRoutes?: { route: string, count: number }[]
-  records?: {
-    maxDistance: { value: number, date: string, origin: string, destination: string } | null
-    maxDuration: { value: number, date: string, origin: string, destination: string } | null
-    maxSpeed: { value: number, date: string, origin: string, destination: string } | null
-  }
+  monthlyStats?: MonthlyStats
+  topRoutes?: TopRoute[]
+  home?: string
+  records?: TravelRecords
 }
 
 export type TravelFindResult = {
@@ -96,4 +123,14 @@ export type TravelFormData = {
   line: string;
   distance: string;
   price: string;
+  crosses: string[];
+}
+
+export type TravelChangeFn = (field: keyof TravelEditValues, value: string) => void
+
+export type TravelEditProps = {
+  travel: Travel,
+  editingId: string | null,
+  editValues: TravelEditValues,
+  handleChange: TravelChangeFn
 }

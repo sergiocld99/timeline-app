@@ -1,5 +1,4 @@
-import type { FormData } from '@/types/commons';
-import type { TravelDTO, TravelFindResult } from "@/types/travel";;
+import type { TravelDTO, TravelFindResult, TravelFormData } from "@/types/travel";
 
 import axios from 'axios';
 
@@ -15,11 +14,12 @@ type FetchCustomParams = {
   sortingField?: string,
   locFrom?: string,
   locTo?: string,
-  userId?: number
+  userId?: number,
+  statsOnly?: boolean
 }
 
 class TravelService {
-  static async create(formData: FormData, userId?: number) {
+  static async create(formData: TravelFormData, userId?: number) {
     const travelData = {
       ...formData,
       userId
@@ -34,7 +34,7 @@ class TravelService {
     }
   }
 
-  static async getAll({ dateFrom, dateTo, crossIds, sortingField, userId, locFrom, locTo }: FetchCustomParams): Promise<TravelsData> {
+  static async getAll({ dateFrom, dateTo, crossIds, sortingField, userId, locFrom, locTo, statsOnly }: FetchCustomParams): Promise<TravelsData> {
     const correctBaseUrl = crossIds ? `${baseUrl}/v2` : baseUrl
     const url = new URL(correctBaseUrl)
     if (dateFrom) url.searchParams.append("dateFrom", dateFrom);
@@ -43,6 +43,7 @@ class TravelService {
     if (userId) url.searchParams.append("userId", userId.toString());
     if (locFrom) url.searchParams.append("locFrom", locFrom);
     if (locTo) url.searchParams.append("locTo", locTo);
+    if (statsOnly) url.searchParams.append("statsOnly", "true");
 
     try {
       let response;

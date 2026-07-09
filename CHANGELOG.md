@@ -1,10 +1,38 @@
 # CHANGELOG
+## v0.10.0
+- COD10-001: Add offset as dashboard query param (#74) [120]
+- COD10-005: Add Travel Modals for Notes and Details (#77) [500]
+- COD10-006: Populate origin and destination in records + new circle in map (#80) [202]
+- COD10-007: Support query params for date range in travels (#82) [179]
+- COD10-008: Add VIP styles to Travels Page when applies (#83) [103]
+- COD10-009: Add purge button to date range selector (#84) [114]
 
-## v0.8.0
+## v0.9.0
+- COD9-003: Add Partido for Locations with B-Prefix zipcodes (#57) [388]
+- COD9-004: Select Crosses in Travel Creator (#59) [140]
+- COD9-012: Optimize Travel Dashboard analytics and modularize components (#60) [1236]
+  - **Backend**: New `statsOnly` query parameter to reduce payload size.
+  - **Frontend**: Modular Dashboard refactor; Year-over-Year Comparison chart; new `useDashQuery` hook.
+- COD9-013: Remove totalPrice and averagePrice from Travel Stats (#60) [120]
+- COD9-015: Show all zipcodes in ticker (#60) [229]
+- COD9-016: Places highlighting by active zipcode on ticker (#62) [61]
+- COD9-017: Collapse Travel Table Content (#65) [109]
+- COD9-018: Refactor Schedule and Actions columns (#68) [203]
+
+### Internationalization
+- COD9-046: Implement i18n support for Dashboard and Travels pages (#64) [4693]
+- COD9-066: Implement i18n support for rest of the pages (#67) [2264]
+
+## v0.8.0 (2026-04-17)
 - COD8-001: Add Purple Weight for Travels with Crosses (#39) [23]
 - COD8-010: Add Travel and Visit Date Edition & Refactor travel.d.ts (#38) [1054]
+- COD8-011: Backend - Calculate home and reorder route keys (#42) [26]
+- COD8-012: Add Mixed as new mode of transport (#49) [18]
+- COD8-013: Refactor buildChartConfig to dynamically label 'others' category (#51) [11] [IA: 4]
+- COD8-014: Bump up Axios to 1.15.0 (#51) [192]
+- COD8-021: New Java Map Service and Show Milestones (#52) [758]
 
-## v0.7.0
+## v0.7.0 (2026-03-20)
 - COD7-001: Provide Visit Hour Parts from Backend to enable filtering (#26) [105]
 - COD7-002: Add Search to Locations Page (#27) [64]
 - COD7-003: Add Collision Control on Travel Creation (#29) [101]

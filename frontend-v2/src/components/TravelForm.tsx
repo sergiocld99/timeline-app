@@ -1,21 +1,27 @@
 "use client";
 
-import type { Location } from "@/types/location";;
+import type { Location } from "@/types/location";
+import type { Cross } from "@/types/cross";
+
+import { useTranslations } from "next-intl";
 
 import { AutocompleteLocation } from "@/components/AutocompleteLocation";
+import { AutocompleteCrosses } from "@/components/AutocompleteCrosses";
 import { StateCheckbox } from "@/components/StateCheckbox";
+import TransportModeSelect from "@/components/TransportModeSelect";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import useTravelCreator from "@/hooks/useTravelCreator";
 
 type Props = {
   locations: Location[]
+  crosses: Cross[]
 };
 
-const TravelForm = ({ locations }: Props) => {
+const TravelForm = ({ locations, crosses }: Props) => {
+  const t = useTranslations("Creator");
   const {
     formData, handleChange, handleSubmit,
     createForAllUsers, setCreateForAllUsers,
@@ -25,35 +31,35 @@ const TravelForm = ({ locations }: Props) => {
   return (
     <Card className="w-full max-w-4xl mx-auto bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardHeader>
-        <CardTitle className="text-gray-900 dark:text-white">Add Travel</CardTitle>
+        <CardTitle className="text-gray-900 dark:text-white">{t("addTravel")}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="origin" className="text-gray-700 dark:text-gray-300">Origin</Label>
+              <Label htmlFor="origin" className="text-gray-700 dark:text-gray-300">{t("origin")}</Label>
               <AutocompleteLocation
                 locations={locations}
                 value={formData.origin}
                 onValueChange={(value) => handleChange("origin", value)}
-                placeholder="Select Origin"
+                placeholder={t("selectOrigin")}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="destination" className="text-gray-700 dark:text-gray-300">Destination</Label>
+              <Label htmlFor="destination" className="text-gray-700 dark:text-gray-300">{t("destination")}</Label>
               <AutocompleteLocation
                 locations={locations}
                 value={formData.destination}
                 onValueChange={(value) => handleChange("destination", value)}
-                placeholder="Select Destination"
+                placeholder={t("selectDestination")}
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="startTime" className="text-gray-700 dark:text-gray-300">Start Time</Label>
+              <Label htmlFor="startTime" className="text-gray-700 dark:text-gray-300">{t("startTime")}</Label>
               <Input
                 id="startTime"
                 name="startTime"
@@ -66,7 +72,7 @@ const TravelForm = ({ locations }: Props) => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="endTime" className="text-gray-700 dark:text-gray-300">End Time</Label>
+              <Label htmlFor="endTime" className="text-gray-700 dark:text-gray-300">{t("endTime")}</Label>
               <Input
                 id="endTime"
                 name="endTime"
@@ -80,33 +86,19 @@ const TravelForm = ({ locations }: Props) => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="space-y-2">
-              <Label htmlFor="modeOfTransport" className="text-gray-700 dark:text-gray-300">Mode of Transport</Label>
-              <Select value={formData.modeOfTransport} onValueChange={(value) => handleChange("modeOfTransport", value)}>
-                <SelectTrigger className="w-full bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="car">🚘 Car</SelectItem>
-                  <SelectItem value="taxi">🚖 Taxi</SelectItem>
-                  <SelectItem value="bus">🚍 Bus</SelectItem>
-                  <SelectItem value="train">🚉 Train</SelectItem>
-                  <SelectItem value="subway">🚇 Subway</SelectItem>
-                  <SelectItem value="ferry">⛴️ Ferry</SelectItem>
-                  <SelectItem value="walking">🚶🏽 Walking</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <TransportModeSelect
+              value={formData.modeOfTransport}
+              onChange={(value) => handleChange("modeOfTransport", value)}
+            />
 
             {formData.modeOfTransport === 'bus' && (
               <div className="space-y-2">
-                <Label htmlFor="line" className="text-gray-700 dark:text-gray-300">Bus Line</Label>
+                <Label htmlFor="line" className="text-gray-700 dark:text-gray-300">{t("busLine")}</Label>
                 <Input
                   id="line"
                   name="line"
                   type="text"
-                  placeholder="e.g. 152, 60, etc."
+                  placeholder={t("busLinePlaceholder")}
                   value={formData.line}
                   onChange={(e) => handleChange("line", e.target.value)}
                   className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
@@ -115,7 +107,7 @@ const TravelForm = ({ locations }: Props) => {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="distance" className="text-gray-700 dark:text-gray-300">Distance (km)</Label>
+              <Label htmlFor="distance" className="text-gray-700 dark:text-gray-300">{t("distanceKm")}</Label>
               <Input
                 id="distance"
                 name="distance"
@@ -124,13 +116,13 @@ const TravelForm = ({ locations }: Props) => {
                 onChange={(e) => handleChange("distance", e.target.value)}
                 required
                 min="0"
-                step="0.1"
+                step="0.01"
                 className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="price" className="text-gray-700 dark:text-gray-300">Price (optional)</Label>
+              <Label htmlFor="price" className="text-gray-700 dark:text-gray-300">{t("priceOptional")}</Label>
               <Input
                 id="price"
                 name="price"
@@ -142,18 +134,28 @@ const TravelForm = ({ locations }: Props) => {
                 className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
               />
             </div>
+
+            <div className="space-y-2 md:col-span-full">
+              <Label htmlFor="crosses" className="text-gray-700 dark:text-gray-300">{t("crossesOptional")}</Label>
+              <AutocompleteCrosses
+                crosses={crosses}
+                value={formData.crosses}
+                onValueChange={(value) => handleChange("crosses", value)}
+                placeholder={t("selectCrossesPlaceholder")}
+              />
+            </div>
           </div>
 
           <StateCheckbox id="isSameDay" stateStatus={isSameDay} stateSetter={setIsSameDay}>
-            Starts and finishes on the same day
+            {t("startsAndFinishesSameDay")}
           </StateCheckbox>
 
           <StateCheckbox id="createForAllUsers" stateStatus={createForAllUsers} stateSetter={setCreateForAllUsers}>
-            Create travel for all registered users
+            {t("createForAllUsers")}
           </StateCheckbox>
 
           <Button type="submit" className="w-full">
-            Create Travel
+            {t("createTravel")}
           </Button>
         </form>
       </CardContent>

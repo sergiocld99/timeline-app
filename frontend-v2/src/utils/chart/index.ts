@@ -1,5 +1,5 @@
 import type { ChartConfig } from "@/components/ui/chart";
-import type { ChartData, ChartSource, HourAndMinutes } from "@/types/chart";
+import type { ChartSource, HourAndMinutes } from "@/types/chart";
 
 import { extractTime } from "..";
 import { abbreviateWords } from "../strings";
@@ -60,7 +60,7 @@ export const useChartValue = (key: string, weightByField: ChartSource, topKeys: 
   }
 }
 
-export const cleanUnusedBorders = (chartData: ChartData<"hour">) => {
+export const cleanUnusedBorders = <T extends { empty: boolean }>(chartData: T[]): T[] => {
   const firstNotEmptyIndex = chartData.findIndex(h => !h.empty)
   const lastNotEmptyIndex = chartData.findLastIndex(h => !h.empty)
   const validRangeSize = lastNotEmptyIndex - firstNotEmptyIndex
@@ -69,21 +69,23 @@ export const cleanUnusedBorders = (chartData: ChartData<"hour">) => {
     return chartData
   }
 
+  const totalLength = chartData.length
+
   if (validRangeSize > 9) {
     const p0 = Math.max(firstNotEmptyIndex, 0)
-    const p1 = Math.min(lastNotEmptyIndex + 1, 24)
+    const p1 = Math.min(lastNotEmptyIndex + 1, totalLength)
 
     return chartData.slice(p0, p1)
   }
 
   const emptyRequiredSlots = Math.round((9 - validRangeSize) / 2)
   const p0 = Math.max(firstNotEmptyIndex - emptyRequiredSlots, 0)
-  const p1 = Math.min(lastNotEmptyIndex + emptyRequiredSlots + 1, 24)
+  const p1 = Math.min(lastNotEmptyIndex + emptyRequiredSlots + 1, totalLength)
 
   return chartData.slice(p0, p1)
 }
 
-export const buildChartConfig = (topKeys: string[]) => {
+export const buildChartConfig = (topKeys: string[], otherKeys: string[] = [], othersLabel = 'Others') => {
   const chartConfig = {
     red: {
       label: abbreviateWords(topKeys[0]),
@@ -106,7 +108,7 @@ export const buildChartConfig = (topKeys: string[]) => {
       color: "var(--chart-4)",
     },
     others: {
-      label: 'Others',
+      label: otherKeys.length === 1 ? abbreviateWords(otherKeys[0]) : othersLabel,
       color: "var(--chart-1)",
     }
   } satisfies ChartConfig

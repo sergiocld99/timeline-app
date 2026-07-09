@@ -1,10 +1,12 @@
 import type { AxiosErrorResponse } from "@/types/commons";
 import type { User } from "@/types/user";
-import type { TravelFormData } from "@/types/travel";;
+import type { TravelFormData } from "@/types/travel";
+import type { TranslationFn } from "@/types/i18n";
 
 import { useState } from "react";
 import { useQueryClient, type QueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 import { useUser } from "@/contexts/UserContext";
 import TravelService from "@/services/TravelService";
@@ -12,23 +14,23 @@ import UserService from "@/services/UserService";
 import VisitService from "@/services/VisitService";
 import { getTimeFromCurrent } from "@/utils";
 
-const validateFields = (formData: TravelFormData): boolean => {
+const validateFields = (formData: TravelFormData, t: TranslationFn): boolean => {
   if (!formData.origin || !formData.destination) {
-    throw new Error("Origin and destination are required.");
+    throw new Error(t("messages.validationOriginDestinationRequired"));
   }
 
   if (formData.origin === formData.destination) {
-    throw new Error("Origin and destination should be different");
+    throw new Error(t("messages.validationOriginDestinationDifferent"));
   }
 
   return true;
 }
 
-const performCreationForAllUsers = async (formData: TravelFormData, queryClient: QueryClient) => {
+const performCreationForAllUsers = async (formData: TravelFormData, queryClient: QueryClient, t: TranslationFn) => {
   const users = await UserService.getAll();
 
   if (users.length === 0) {
-    toast.error("No users found.");
+    toast.error(t("messages.noUsersFound"));
     return;
   }
 
@@ -49,23 +51,23 @@ const performCreationForAllUsers = async (formData: TravelFormData, queryClient:
   }
 
   if (errorCount === 0) {
-    toast.success(`Travel created successfully for all ${successCount} users!`);
+    toast.success(t("messages.travelCreatedAllUsersSuccess", { count: successCount }));
     void queryClient.invalidateQueries({ queryKey: ['travel_stats'] });
   } else {
-    toast.warning(`Travel creation failed for ${errorCount} users.`, { style: { background: 'red' } });
+    toast.warning(t("messages.travelCreatedAllUsersError", { count: errorCount }), { style: { background: 'red' } });
   }
 }
 
-const performCreationForCurrentUser = async (formData: TravelFormData, currentUser: User | null, queryClient: QueryClient) => {
+const performCreationForCurrentUser = async (formData: TravelFormData, currentUser: User | null, queryClient: QueryClient, t: TranslationFn) => {
   const userId = currentUser?.userId;
   await TravelService.create(formData, userId);
   const persisted = await VisitService.persistIfNeeded(formData.startTime.split('T')[0], userId);
   void queryClient.invalidateQueries({ queryKey: ['travel_stats'] });
 
   if (persisted) {
-    toast.success("Travel with visit added successfully!");
+    toast.success(t("messages.travelWithVisitSuccess"));
   } else {
-    toast.success("Travel added successfully");
+    toast.success(t("messages.travelSuccess"));
   }
 }
 
@@ -90,7 +92,8 @@ const useTravelCreator = () => {
     modeOfTransport: "car",
     line: "",
     distance: "",
-    price: ""
+    price: "",
+    crosses: []
   });
 
   const handleChangeOnSameDay = (name: keyof TravelFormData, value: string) => {
@@ -124,8 +127,8 @@ const useTravelCreator = () => {
     return false
   }
 
-  const handleChange = async (name: keyof TravelFormData, value: string) => {
-    if (isSameDay) {
+  const handleChange = async (name: keyof TravelFormData, value: string | string[]) => {
+    if (isSameDay && typeof value === 'string') {
       try {
         const updated = handleChangeOnSameDay(name, value)
 
@@ -138,7 +141,7 @@ const useTravelCreator = () => {
     }
 
     // Auto-complete distance based on last travel only when changing destination
-    if (name === 'destination') {
+    if (name === 'destination' && typeof value === 'string') {
       const { origin, distance } = formData
       const destination = value
 
@@ -172,12 +175,13 @@ const useTravelCreator = () => {
       [name]: value,
     });
   };
+  const t = useTranslations("Creator");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
-      validateFields(formData)
+      validateFields(formData, t)
     } catch (error) {
       const err = error as Error
 
@@ -187,9 +191,9 @@ const useTravelCreator = () => {
 
     try {
       if (createForAllUsers) {
-        await performCreationForAllUsers(formData, queryClient);
+        await performCreationForAllUsers(formData, queryClient, t);
       } else {
-        await performCreationForCurrentUser(formData, currentUser, queryClient);
+        await performCreationForCurrentUser(formData, currentUser, queryClient, t);
       }
 
       setFormData({
@@ -199,6 +203,7 @@ const useTravelCreator = () => {
         startTime: formData.endTime,
         line: "",
         distance: "",
+        crosses: [],
       });
     } catch (error) {
       const axiosError = error as AxiosErrorResponse;

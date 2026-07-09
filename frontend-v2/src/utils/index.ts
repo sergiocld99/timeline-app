@@ -1,4 +1,3 @@
-import { daysOfWeek } from "@/constants";
 
 export const getHoursAndMinutes = (totalMinutes: number) => {
   if (totalMinutes < 60) {
@@ -14,18 +13,6 @@ export const getHoursAndMinutes = (totalMinutes: number) => {
   }
 
   return `${hours}h ${minutes}m`;
-}
-
-export const renderNiceDate = (dateTime: string) => extractDate(dateTime)
-
-export const extractDate = (dateTime: string) => {
-  const date = new Date(dateTime)
-  const dayOfWeek = daysOfWeek[convertToArgentineTime(date).getDay()]
-
-  const parts = dateTime.split('T')[0].split('-')
-  const shortYear = parts[0].substring(2);
-
-  return `${dayOfWeek} ${parts[2]}/${parts[1]}/${shortYear}`
 }
 
 export const extractTime = (dateTime: string) => {
@@ -90,6 +77,8 @@ export const getEmojiForMode = (mode: string) => {
       return '⛴️';
     case 'walking':
       return '🚶';
+    case 'mixed':
+      return '🛸';
     default:
       return '🤔'
   }

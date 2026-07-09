@@ -4,3 +4,8 @@ export type Cross = {
   latitude: number
   longitude: number
 }
+
+export type EnrichedCross = Cross & {
+  adjustedDistance: number
+  adjustedTimestamp: Date
+}

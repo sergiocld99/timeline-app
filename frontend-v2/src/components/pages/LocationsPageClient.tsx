@@ -2,31 +2,45 @@
 
 import { useState, useMemo } from "react";
 import { Search } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import QuickFilters from "@/components/QuickFilters";
 import LocationTable from "@/components/LocationTable";
 import useLocations from "@/hooks/useLocations";
 import { Input } from "@/components/ui/input";
+import { getSortedPartidos } from "@/utils/partidos";
+import { PARTIDO_FILTER_PREFIX } from "@/constants/partidos";
 
 const LocationsPageClient = () => {
+  const t = useTranslations("Locations");
   const { locations, error, update, remove, loading } = useLocations();
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedPrefix, setSelectedPrefix] = useState<string | null>(null);
+  const [filterValue, setFilterValue] = useState<string | null>(null);
+  const { top: topPartidosNames } = useMemo(() => getSortedPartidos(locations), [locations]);
 
-  const prefixes = [
-    { label: "B - Buenos Aires Provincia", value: "B" },
+  const topPartidos = useMemo(() => 
+    topPartidosNames.map(name => ({ label: `B - ${name}`, value: `${PARTIDO_FILTER_PREFIX}${name}` }))
+  , [topPartidosNames]);
+
+  const filterOptions = useMemo(() => [
+    ...topPartidos,
     { label: "C - Capital Federal", value: "C" },
     { label: "U - Uruguay", value: "U" },
-  ];
+  ], [topPartidos]);
 
   const filteredLocations = useMemo(() => {
     let result = locations;
 
-    // Filter by prefix
-    if (selectedPrefix) {
-      result = result.filter((loc) =>
-        loc.zipcode && loc.zipcode.toUpperCase().startsWith(selectedPrefix)
-      );
+    // Filter by prefix or partido
+    if (filterValue) {
+      if (filterValue.startsWith(PARTIDO_FILTER_PREFIX)) {
+        const partidoName = filterValue.replace(PARTIDO_FILTER_PREFIX, '');
+        result = result.filter((loc) => loc.partido === partidoName);
+      } else {
+        result = result.filter((loc) =>
+          loc.zipcode && loc.zipcode.toUpperCase().startsWith(filterValue)
+        );
+      }
     }
 
     // Filter by search term
@@ -36,15 +50,16 @@ const LocationsPageClient = () => {
     return result.filter((loc) =>
       loc.name.toLowerCase().includes(term) ||
       (loc.zipcode && loc.zipcode.toLowerCase().includes(term)) ||
-      (loc.notes && loc.notes.toLowerCase().includes(term))
+      (loc.notes && loc.notes.toLowerCase().includes(term)) ||
+      (loc.partido && loc.partido.toLowerCase().includes(term))
     );
-  }, [locations, searchTerm, selectedPrefix]);
+  }, [locations, searchTerm, filterValue]);
 
   if (error) {
     return (
       <main className="mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center text-red-600 dark:text-red-400">
-          Error loading locations. Please try refreshing the page.
+          {t("errorLoading")}
         </div>
       </main>
     );
@@ -57,7 +72,7 @@ const LocationsPageClient = () => {
           <div className="relative w-full sm:w-64">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
-              placeholder="Search locations..."
+              placeholder={t("searchPlaceholder")}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
@@ -65,9 +80,9 @@ const LocationsPageClient = () => {
           </div>
 
           <QuickFilters
-            options={prefixes}
-            selectedValue={selectedPrefix}
-            onSelect={setSelectedPrefix}
+            options={filterOptions}
+            selectedValue={filterValue}
+            onSelect={setFilterValue}
           />
         </div>
 
@@ -75,7 +90,7 @@ const LocationsPageClient = () => {
           <div className="text-center py-12 text-gray-500 dark:text-gray-400">
             <div className="animate-pulse flex flex-col items-center">
               <div className="h-8 w-64 bg-gray-200 dark:bg-gray-700 rounded mb-4"></div>
-              <p>Loading locations...</p>
+              <p>{t("loading")}</p>
             </div>
           </div>
         ) : (

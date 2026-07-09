@@ -11,14 +11,15 @@ export const getAllLocations = (req, res) => {
 }
 
 export const createLocation = (req, res) => {
-  const { name, latitude, longitude, zipcode, notes } = req.body;
+  const { name, latitude, longitude, zipcode, notes, partido } = req.body;
 
   const location = new Location({
     name,
     latitude,
     longitude,
     zipcode,
-    notes
+    notes,
+    partido
   });
 
   location.save().then(savedLocation => {
@@ -30,9 +31,9 @@ export const createLocation = (req, res) => {
 
 export const updateLocation = (req, res) => {
   const { id } = req.params;
-  const { name, latitude, longitude, zipcode, notes } = req.body;
+  const { name, latitude, longitude, zipcode, notes, partido } = req.body;
 
-  Location.findByIdAndUpdate(id, { name, latitude, longitude, zipcode, notes }, { new: true })
+  Location.findByIdAndUpdate(id, { name, latitude, longitude, zipcode, notes, partido }, { new: true })
     .then(updatedLocation => {
       if (!updatedLocation) {
         return res.status(404).json({ message: 'Location not found' });

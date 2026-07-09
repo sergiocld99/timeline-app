@@ -27,4 +27,29 @@ test('can switch to dark mode', async ({ page }) => {
   await expect(page.locator('html')).toHaveClass(/dark/);
 
   await page.screenshot({ path: 'test-results/darkmode.png' });
-})
+});
+
+test('can switch language', async ({ page }) => {
+  await page.goto('/');
+
+  // Default is English, showing "DASHBOARD"
+  await expect(page.locator('h1', { hasText: 'DASHBOARD' })).toBeVisible();
+
+  // Open language dropdown (using aria-label/text from en.json)
+  await page.getByRole('button', { name: 'Toggle language' }).click();
+  // Click Spanish option
+  await page.getByRole('menuitem', { name: 'Spanish' }).click();
+
+  // Should navigate to /es and display Spanish translations (e.g. "PANEL")
+  await expect(page.locator('h1', { hasText: 'PANEL' })).toBeVisible();
+
+  // Open language dropdown (using translated aria-label from es.json)
+  await page.getByRole('button', { name: 'Cambiar idioma' }).click();
+  // Click English option ("Inglés")
+  await page.getByRole('menuitem', { name: 'Inglés' }).click();
+
+  // Should navigate back to /en and display English translation ("DASHBOARD")
+  await expect(page.locator('h1', { hasText: 'DASHBOARD' })).toBeVisible();
+
+  await page.screenshot({ path: 'test-results/language-switch.png' });
+});

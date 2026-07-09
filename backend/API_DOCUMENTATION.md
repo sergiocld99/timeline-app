@@ -56,6 +56,10 @@ Todos los endpoints están bajo el prefijo `/api`
 - [PUT /api/users/:userId](#put-apiusersuserid) - Actualizar usuario
 - [DELETE /api/users/:userId](#delete-apiusersuserid) - Eliminar usuario
 
+### [Export](#export-apiexport)
+- [GET /api/export/quarters](#get-apiexportquarters) - Trimestres disponibles para sincronizar
+- [GET /api/export/travels](#get-apiexporttravels) - Export de un trimestre (travels + visits)
+
 ---
 
 ## Travels (`/api/travels`)
@@ -68,8 +72,9 @@ Obtiene todos los viajes con filtros opcionales.
 - `userId` (string, opcional): ID del usuario (null = guest data)
 - `locFrom`, `locTo` (string, opcional): IDs de ubicaciones origen/destino
 - `sortingField` (string, opcional): Campo para ordenar. Por defecto: `duration`
+- `statsOnly` (boolean, opcional): Si es `true`, la respuesta omitirá la lista completa de viajes (`travels`) y devolverá únicamente el objeto `stats`. Ideal para optimizar el dashboard.
 
-**Response:** `{ travels: [...], stats: {...} }`
+**Response:** `{ travels: [...], stats: {...} }` (Si `statsOnly=true`, el nodo `travels` se omite)
 
 ---
 
@@ -345,6 +350,28 @@ Actualiza un usuario.
 Elimina un usuario.
 
 **Response:** 204 No Content
+
+---
+
+## Export (`/api/export`)
+
+Endpoints de solo lectura pensados para sincronizar una copia local de los datos (ej. la app Android) por trimestre, en lugar de traer todo el histórico de una vez.
+
+### GET `/api/export/quarters`
+Lista los trimestres que tienen viajes registrados, calculado a partir de las fechas reales de `Travel.startTime` (no incluye trimestres vacíos). Ordenados del más reciente al más viejo.
+
+**Query Parameters:** `userId` (opcional)
+
+**Response:** `{ quarters: [{ quarter: "2023-Q1", travelCount }] }`
+
+---
+
+### GET `/api/export/travels`
+Export completo de un trimestre, normalizado: `travels`/`visits` referencian `origin`, `destination`, `location` y `crosses` por ID (no poblados), y las `locations`/`crosses` únicas referenciadas se listan aparte para evitar repetir el mismo objeto en cada travel.
+
+**Query Parameters:** `quarter` (requerido, formato `YYYY-Qn`, ej. `2023-Q1`), `userId` (opcional)
+
+**Response:** `{ schemaVersion, generatedAt, quarter, locations: [...], crosses: [...], travels: [...], visits: [...] }`
 
 ---
 

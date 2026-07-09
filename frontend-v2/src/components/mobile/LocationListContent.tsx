@@ -21,6 +21,7 @@ const LocationListContent = ({ locations }: Props) => {
             <ItemContent>
               <ItemTitle>{renderLocationWithZipcode(location)}</ItemTitle>
               <ItemDescription>
+                {location.partido && <span className="block font-medium text-emerald-600 dark:text-emerald-400">{location.partido}</span>}
                 {location.latitude.toFixed(4)}, {location.longitude.toFixed(4)}
               </ItemDescription>
             </ItemContent>
