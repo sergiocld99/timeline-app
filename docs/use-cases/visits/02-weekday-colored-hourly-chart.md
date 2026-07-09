@@ -20,7 +20,7 @@ El usuario filtró Visits a **una sola** location (clickeando una barra que repr
 El usuario puede correlacionar visualmente hora del día × día de la semana para una location específica, algo que no era posible cuando el color representaba la location (siempre un único color una vez filtrado).
 
 ## Notas
-- Aproximación aceptada: si una visita cruza la medianoche, todas sus `hourParts` se atribuyen al día de `arrivalTime` (mismo criterio que ya usaba el gráfico de días para agrupar).
+- El día de la semana se deriva de `arrivalTime` y se le atribuyen todas las `hourParts` de esa visita a ese único día (mismo criterio que ya usaba el gráfico de días para agrupar). Esto es exacto, no una aproximación: una visita nunca cruza la medianoche — ver [creator/01](../creator/01-visit-autogeneration.md) para el porqué.
 - Paleta: se agregó un 7º color categórico (`--chart-7`) porque la paleta existente tenía 6 slots; requirió valores distintos en light y dark (el dark original reasigna hues, así que el 7º color no podía heredar el mismo valor en ambos modos sin colisionar con otro slot).
 - No hay filtro compuesto: clickear un día en modo "weekday" no combina con el filtro de location existente (limitación conocida de `onFilter`, que siempre filtra desde el dataset completo, no sobre el ya filtrado).
 - Componentes: `VisitStats.tsx` (`buildHourlyByWeekdayChartData`, `buildWeekdayChartConfig`, `buildActiveDaysBars`), estado `locationFilterValue`/`groupHourlyByWeekday` en `VisitsPageClient.tsx`.
