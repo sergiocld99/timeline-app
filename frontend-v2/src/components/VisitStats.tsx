@@ -104,31 +104,48 @@ const buildWeekdayChartConfig = (t: ReturnType<typeof useTranslations>): ChartCo
   ) satisfies ChartConfig
 }
 
-const LOCATION_COLOR_SLOTS = ["red", "orange", "yellow", "green", "blue"]
+const buildActiveDaysBars = (visits: Visit[]) => {
+  const activeWeekdays = daysOfWeek.filter(day =>
+    visits.some(v => daysOfWeek[convertToArgentineTime(new Date(v.arrivalTime)).getDay()] === day)
+  )
+
+  return activeWeekdays.map(day => (
+    <Bar
+      key={day}
+      dataKey={day}
+      stackId="a"
+      fill={`var(--color-${day})`}
+    />
+  ))
+}
 
 const buildLocationBars = (
   topLocations: string[],
   otherKeys: string[],
   shouldShowOthers: boolean,
   onLocationClick: (location: string[]) => void
-) => [
-  ...topLocations.map((location, i) => (
-    <Bar
-      key={LOCATION_COLOR_SLOTS[i]}
-      dataKey={LOCATION_COLOR_SLOTS[i]}
+) => {
+  const LOCATION_COLOR_SLOTS = ["red", "orange", "yellow", "green", "blue"]
+
+  return [
+    ...topLocations.map((location, i) => (
+      <Bar
+        key={LOCATION_COLOR_SLOTS[i]}
+        dataKey={LOCATION_COLOR_SLOTS[i]}
+        stackId="a"
+        fill={`var(--color-${LOCATION_COLOR_SLOTS[i]})`}
+        onClick={() => onLocationClick([location])}
+      />
+    )),
+    shouldShowOthers && <Bar
+      key="others"
+      dataKey="others"
       stackId="a"
-      fill={`var(--color-${LOCATION_COLOR_SLOTS[i]})`}
-      onClick={() => onLocationClick([location])}
+      fill="var(--color-others)"
+      onClick={() => onLocationClick(otherKeys)}
     />
-  )),
-  shouldShowOthers && <Bar
-    key="others"
-    dataKey="others"
-    stackId="a"
-    fill="var(--color-others)"
-    onClick={() => onLocationClick(otherKeys)}
-  />
-]
+  ]
+}
 
 const VisitStats = ({ visits, onFilter, groupHourlyByWeekday }: Props) => {
   const t = useTranslations();
@@ -146,10 +163,6 @@ const VisitStats = ({ visits, onFilter, groupHourlyByWeekday }: Props) => {
   const dailyChartConfig = groupHourlyByWeekday
     ? { ...weekdayChartConfig, red: chartConfig.red }
     : chartConfig
-
-  const activeWeekdays = daysOfWeek.filter(day =>
-    visits.some(v => daysOfWeek[convertToArgentineTime(new Date(v.arrivalTime)).getDay()] === day)
-  )
 
   const handleLocationClick = (location: string[]) => {
     onFilter({ type: 'location', value: location })
@@ -171,14 +184,7 @@ const VisitStats = ({ visits, onFilter, groupHourlyByWeekday }: Props) => {
             <ChartTooltip content={<ChartTooltipContent />} />
             <ChartLegend content={<ChartLegendContent />} />
             {groupHourlyByWeekday
-              ? activeWeekdays.map(day => (
-                <Bar
-                  key={day}
-                  dataKey={day}
-                  stackId="a"
-                  fill={`var(--color-${day})`}
-                />
-              ))
+              ? buildActiveDaysBars(visits)
               : buildLocationBars(topLocations, otherKeys, shouldShowOthers, handleLocationClick)
             }
           </BarChart>
