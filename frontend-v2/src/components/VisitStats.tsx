@@ -104,47 +104,23 @@ const buildWeekdayChartConfig = (t: ReturnType<typeof useTranslations>): ChartCo
   ) satisfies ChartConfig
 }
 
+const LOCATION_COLOR_SLOTS = ["red", "orange", "yellow", "green", "blue"]
+
 const buildLocationBars = (
   topLocations: string[],
   otherKeys: string[],
   shouldShowOthers: boolean,
   onLocationClick: (location: string[]) => void
 ) => [
-  topLocations.at(0) && <Bar
-    key="red"
-    dataKey="red"
-    stackId="a"
-    fill="var(--color-red)"
-    onClick={() => onLocationClick([topLocations[0]])}
-  />,
-  topLocations.at(1) && <Bar
-    key="orange"
-    dataKey="orange"
-    stackId="a"
-    fill="var(--color-orange)"
-    onClick={() => onLocationClick([topLocations[1]])}
-  />,
-  topLocations.at(2) && <Bar
-    key="yellow"
-    dataKey="yellow"
-    stackId="a"
-    fill="var(--color-yellow)"
-    onClick={() => onLocationClick([topLocations[2]])}
-  />,
-  topLocations.at(3) && <Bar
-    key="green"
-    dataKey="green"
-    stackId="a"
-    fill="var(--color-green)"
-    onClick={() => onLocationClick([topLocations[3]])}
-  />,
-  topLocations.at(4) && <Bar
-    key="blue"
-    dataKey="blue"
-    stackId="a"
-    fill="var(--color-blue)"
-    onClick={() => onLocationClick([topLocations[4]])}
-  />,
+  ...topLocations.map((location, i) => (
+    <Bar
+      key={LOCATION_COLOR_SLOTS[i]}
+      dataKey={LOCATION_COLOR_SLOTS[i]}
+      stackId="a"
+      fill={`var(--color-${LOCATION_COLOR_SLOTS[i]})`}
+      onClick={() => onLocationClick([location])}
+    />
+  )),
   shouldShowOthers && <Bar
     key="others"
     dataKey="others"
