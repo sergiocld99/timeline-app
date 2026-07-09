@@ -1,4 +1,4 @@
-# UC-02: Ver patrón horario por día de la semana de una location (Visits)
+# UC-02 (Visits): Ver patrón horario por día de la semana de una location
 
 ## Actor
 Usuario autenticado viendo la página de Visits, luego de aplicar el caso de uso [UC-01](./01-bar-stats-click-to-filter.md) sobre una única location.
@@ -24,3 +24,4 @@ El usuario puede correlacionar visualmente hora del día × día de la semana pa
 - Paleta: se agregó un 7º color categórico (`--chart-7`) porque la paleta existente tenía 6 slots; requirió valores distintos en light y dark (el dark original reasigna hues, así que el 7º color no podía heredar el mismo valor en ambos modos sin colisionar con otro slot).
 - No hay filtro compuesto: clickear un día en modo "weekday" no combina con el filtro de location existente (limitación conocida de `onFilter`, que siempre filtra desde el dataset completo, no sobre el ya filtrado).
 - Componentes: `VisitStats.tsx` (`buildHourlyByWeekdayChartData`, `buildWeekdayChartConfig`, `buildActiveDaysBars`), estado `locationFilterValue`/`groupHourlyByWeekday` en `VisitsPageClient.tsx`.
+- Exclusivo de Visits: Travels no tiene un caso de uso equivalente (no aplica, `TravelBarStats` no cambia de modo al filtrar a un solo zipcode).
