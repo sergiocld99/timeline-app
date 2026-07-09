@@ -72,6 +72,10 @@ const VisitStats = ({ visits, onFilter }: Props) => {
   const dailyChartData = buildDailyChartData(visits, topLocations)
   const chartConfig = buildChartConfig(topLocations, otherKeys, tCharts("modes.others"))
 
+  const handleLocationClick = (location: string[]) => {
+    onFilter({ type: 'location', value: location })
+  }
+
   return (
     <Card className="w-8/10 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardContent className="h-[300px] flex items-center justify-center">
@@ -91,31 +95,37 @@ const VisitStats = ({ visits, onFilter }: Props) => {
               dataKey="red"
               stackId="a"
               fill="var(--color-red)"
+              onClick={() => handleLocationClick([topLocations[0]])}
             />}
             {topLocations.at(1) && <Bar
               dataKey="orange"
               stackId="a"
               fill="var(--color-orange)"
+              onClick={() => handleLocationClick([topLocations[1]])}
             />}
             {topLocations.at(2) && <Bar
               dataKey="yellow"
               stackId="a"
               fill="var(--color-yellow)"
+              onClick={() => handleLocationClick([topLocations[2]])}
             />}
             {topLocations.at(3) && <Bar
               dataKey="green"
               stackId="a"
               fill="var(--color-green)"
+              onClick={() => handleLocationClick([topLocations[3]])}
             />}
             {topLocations.at(4) && <Bar
               dataKey="blue"
               stackId="a"
               fill="var(--color-blue)"
+              onClick={() => handleLocationClick([topLocations[4]])}
             />}
             {shouldShowOthers && <Bar
               dataKey="others"
               stackId="a"
               fill="var(--color-others)"
+              onClick={() => handleLocationClick(otherKeys)}
             />}
           </BarChart>
         </ChartContainer>

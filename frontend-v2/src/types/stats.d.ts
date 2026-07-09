@@ -23,6 +23,11 @@ type FilteringByZipcode = {
   value: string[]
 }
 
+type FilteringByLocation = {
+  type: 'location'
+  value: string[]
+}
+
 type FilteringByTime = {
   type: 'day' | 'hour'
   value: string | undefined | null
@@ -33,4 +38,4 @@ type FilteringByCross = {
   value: string
 }
 
-export type FilteringData = FilteringByZipcode | FilteringByTime | FilteringByCross
+export type FilteringData = FilteringByZipcode | FilteringByLocation | FilteringByTime | FilteringByCross

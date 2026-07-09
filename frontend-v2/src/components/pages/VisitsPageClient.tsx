@@ -14,6 +14,7 @@ import { extractDate } from "@/utils/date";
 
 const VisitsPageClient = () => {
   const t = useTranslations("Visits");
+  const tDashboard = useTranslations("Dashboard");
   const { visits: visitsData, error, deleteVisit, updateVisit } = useVisits();
   const { visits } = visitsData;
 
@@ -22,6 +23,14 @@ const VisitsPageClient = () => {
 
   const onFilter = (data?: FilteringData) => {
     const { type, value } = data || {}
+
+    if (type === 'location' && value) {
+      const displayName = value.length === 1 ? value[0] : value.length < 10 ? value.join(", ") : tDashboard("others")
+
+      setFilteredVisits(visits.filter(v => value.includes(v.location.name)))
+      setAppliedFilter(displayName)
+      return
+    }
 
     if (type === 'day' && value) {
       setFilteredVisits(visits.filter(v => extractDate(v.date).slice(0, 3) === value))
