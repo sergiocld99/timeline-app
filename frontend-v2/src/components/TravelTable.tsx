@@ -2,6 +2,7 @@
 
 import type { Travel, TravelStats } from "@/types/travel";
 import type { FilteringByCross } from "@/types/stats";
+import type { TravelTableSource } from "@/types/props";
 
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -34,9 +35,10 @@ type Props = {
   onFilter?: (data?: FilteringByCross) => void;
   onRemoveFilter?: () => void;
   appliedFilter?: string | null;
+  source?: TravelTableSource;
 };
 
-const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTravel, onAddCrosses, onRemoveCrosses, onFilter, onRemoveFilter, appliedFilter }: Props) => {
+const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTravel, onAddCrosses, onRemoveCrosses, onFilter, onRemoveFilter, appliedFilter, source }: Props) => {
   const t = useTranslations();
   const { dateFrom, dateTo, daysRange } = useDateRange();
   const { currentUser } = useUser();
@@ -110,6 +112,7 @@ const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTra
             onRemoveCrosses={onRemoveCrosses}
             isCollapsed={isCollapsed}
             isGold={isGold}
+            source={source}
           />
         </div>
         <div className="lg:hidden">
