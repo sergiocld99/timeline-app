@@ -99,7 +99,7 @@ export const calculateTravelStats = (travels) => {
   const uniqueRoutesSet = new Set()
   const monthlyStats = {};
   const routeStats = {};
-  const placeNames = {};
+  const placeDataMap = new Map();
 
   let totalKm = 0;
   let totalMinutes = 0;
@@ -169,14 +169,14 @@ export const calculateTravelStats = (travels) => {
     // Calculate average coordinates from all origins and destinations
     if (t.origin && t.origin.latitude != null && t.origin.longitude != null) {
       placesVisited.add(t.origin.zipcode)
-      placeNames[t.origin.zipcode] = t.origin.name
+      placeDataMap.set(t.origin.zipcode, { name: t.origin.name, id: t.origin.id });
       sumLatitude += t.origin.latitude * weight;
       sumLongitude += t.origin.longitude * weight;
       validWeight += weight
     }
     if (t.destination && t.destination.latitude != null && t.destination.longitude != null) {
       placesVisited.add(t.destination.zipcode)
-      placeNames[t.destination.zipcode] = t.destination.name
+      placeDataMap.set(t.destination.zipcode, { name: t.destination.name, id: t.destination.id });
       sumLatitude += t.destination.latitude * weight;
       sumLongitude += t.destination.longitude * weight;
       validWeight += weight
@@ -230,7 +230,7 @@ export const calculateTravelStats = (travels) => {
     placesVisited: {
       count: placesVisited.size,
       zipcodes: Array.from(placesVisited.values()),
-      names: placeNames
+      data: Object.fromEntries(placeDataMap)
     },
     monthlyStats,
     topRoutes,
@@ -239,20 +239,20 @@ export const calculateTravelStats = (travels) => {
       maxDistance: maxDistanceTravel ? {
         value: maxDistanceTravel.distance,
         date: maxDistanceTravel.startTime,
-        origin: maxDistanceTravel.origin?.name,
-        destination: maxDistanceTravel.destination?.name
+        origin: maxDistanceTravel.origin,
+        destination: maxDistanceTravel.destination
       } : null,
       maxDuration: maxDurationTravel ? {
         value: maxDurationTravel.get ? maxDurationTravel.get('duration') : maxDurationTravel.duration,
         date: maxDurationTravel.startTime,
-        origin: maxDurationTravel.origin?.name,
-        destination: maxDurationTravel.destination?.name
+        origin: maxDurationTravel.origin,
+        destination: maxDurationTravel.destination
       } : null,
       maxSpeed: maxSpeedTravel ? {
         value: Math.round(maxSpeedTravel.get ? maxSpeedTravel.get('speed') : maxSpeedTravel.speed),
         date: maxSpeedTravel.startTime,
-        origin: maxSpeedTravel.origin?.name,
-        destination: maxSpeedTravel.destination?.name
+        origin: maxSpeedTravel.origin,
+        destination: maxSpeedTravel.destination
       } : null,
     }
   };

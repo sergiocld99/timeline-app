@@ -17,14 +17,32 @@ type Props = {
   travels: Travel[],
   onFilter: (data: FilteringData) => void,
   options?: {
-    field: 'origin' | 'destination'
+    field?: 'origin' | 'destination',
+    backendHome?: string,
+    appliedFilter?: string | null
   },
-  cardClassName?: string,
+  cardClassName?: string
 }
 
 const calculateHome = (travels: Travel[], options: Props["options"]) => {
   if (travels.length > 0 && options?.field) {
     return travels[0][options.field]
+  }
+
+  if (options?.appliedFilter) {
+    const zipcodeMatch = travels.find(t => t.destination.zipcode === options.appliedFilter)
+
+    if (zipcodeMatch) {
+      return zipcodeMatch.destination
+    }
+  }
+
+  if (!options?.appliedFilter && options?.backendHome) {
+    const matches = travels.filter(t => t.destination.name === options.backendHome)
+
+    if (matches.length >= 3) {
+      return matches[0].destination
+    }
   }
 
   if (travels.length > 10 && travels[0].destination.name === travels[travels.length - 1].origin.name) {

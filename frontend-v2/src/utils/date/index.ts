@@ -40,3 +40,11 @@ export const translateDay = (day: string, t: TranslationFn) => {
   }
   return day;
 };
+
+export const getDaysRange = (dateFrom: string, dateTo: string) => {
+  if (!dateFrom || !dateTo) return 0;
+  const from = new Date(dateFrom.split('T')[0]);
+  const to = new Date(dateTo.split('T')[0]);
+  const diffTime = to.getTime() - from.getTime();
+  return Math.round(diffTime / (1000 * 60 * 60 * 24)) + 1;
+};

@@ -12,7 +12,8 @@ const TravelSchema = new mongoose.Schema({
     distance: { type: Number, required: true }, // in kilometers
     price: { type: Number, required: false },
     line: { type: String, required: false },
-    crosses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Cross', required: false }]
+    crosses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Cross', required: false }],
+    notes: { type: String, required: false }
 });
 
 // Unique constraint per user: same user cannot have duplicate startTime + origin

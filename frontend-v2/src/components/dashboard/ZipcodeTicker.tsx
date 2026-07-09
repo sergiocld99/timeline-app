@@ -4,6 +4,8 @@ import type { MonthlyStats, PlacesVisited } from "@/types/travel";
 
 import { useEffect, useMemo, useState } from "react";
 
+import { Link } from "@/i18n/routing";
+
 type Props = {
   monthlyStats: MonthlyStats;
   currentPlaces: PlacesVisited;
@@ -13,7 +15,6 @@ type Props = {
 
 const ZipcodeTicker = ({ monthlyStats, currentPlaces, previousPlaces, onActiveZipcodeChange }: Props) => {
   const showComparison = previousPlaces?.zipcodes?.length;
-
   const currentZipcodes = useMemo(() => {
     const all = new Set<string>();
     Object.values(monthlyStats).forEach(item => {
@@ -91,7 +92,8 @@ const ZipcodeTicker = ({ monthlyStats, currentPlaces, previousPlaces, onActiveZi
         {displayList.map((zip, i) => {
           const isVisited = currentZipcodes.has(zip);
           const isFrequent = isVisited && previousPlaces?.zipcodes?.includes(zip);
-          const name = isVisited ? currentPlaces.names?.[zip] : previousPlaces?.names?.[zip];
+          const placeData = isVisited ? currentPlaces.data?.[zip] : previousPlaces?.data?.[zip];
+          const textClassName = isFrequent ? 'text-[#e8ff47]' : 'text-[#fff]';
 
           return (
             <div
@@ -99,9 +101,15 @@ const ZipcodeTicker = ({ monthlyStats, currentPlaces, previousPlaces, onActiveZi
               className="flex items-center gap-2 text-[0.8rem] h-5 font-['Space_Mono']"
             >
               {showComparison ? <span className="scale-75 origin-left">{isVisited ? '✅' : '❌'}</span> : null}
-              <span className={isFrequent ? 'text-[#e8ff47]' : 'text-[#fff]'}>
-                {zip} - {name}
-              </span>
+              {placeData && isVisited ? (
+                <Link href={`/travels/to/${placeData.id}`} className={textClassName}>
+                  {zip} - {placeData.name}
+                </Link>
+              ) : (
+                <span className={`${textClassName} select-none`}>
+                  {zip} - {placeData?.name}
+                </span>
+              )}
             </div>
           );
         })}

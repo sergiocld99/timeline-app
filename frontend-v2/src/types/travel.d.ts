@@ -17,6 +17,8 @@ export type Travel = Weighted & {
   duration: number
   speed: number
   crosses: Cross[]
+  price?: number,
+  notes?: string
   hourParts: {
     completeParts: HourPart[],
     firstHalf: HourPart[],
@@ -46,14 +48,14 @@ export type MonthlyStats = Record<string, MonthlyStatItem>;
 export type PlacesVisited = {
   count: number,
   zipcodes: string[],
-  names?: Record<string, string>
+  data?: Record<string, { name: string, id: string }>
 }
 
 export type TravelRecordItem = {
   value: number;
   date: string;
-  origin: string;
-  destination: string;
+  origin: Location;
+  destination: Location;
 }
 
 export type TravelRecords = {

@@ -33,7 +33,7 @@ const LocationCommonViewer = ({ locationId, action }: Props) => {
   return (
     <main className="mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
       <div className="space-y-8">
-        <div className="flex gap-8">
+        <div className="hidden lg:flex gap-8">
           <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
             <CardHeader>
               <CardTitle className="text-gray-900 dark:text-white">
@@ -58,7 +58,10 @@ const LocationCommonViewer = ({ locationId, action }: Props) => {
           </Card>
           <TravelBarStats travels={travels} options={{ field: travelField }} onFilter={() => { }} />
         </div>
-        <TravelTable travels={travels} stats={stats} />
+        <div className="lg:hidden">
+          <span className="text-lg font-bold">{travelsLabel} {locationName}</span>
+        </div>
+        <TravelTable travels={travels} stats={stats} source="locationViewer" />
       </div>
     </main>
   )

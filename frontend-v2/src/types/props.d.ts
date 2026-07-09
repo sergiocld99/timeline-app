@@ -3,3 +3,5 @@ export type ButtonProps = {
   isActive?: boolean,
   disabled?: boolean
 }
+
+export type TravelTableSource = 'travels' | 'crosses' | 'locationViewer'
