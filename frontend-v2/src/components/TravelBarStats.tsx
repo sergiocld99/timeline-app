@@ -157,32 +157,38 @@ const TravelBarStats = ({ travels, onFilter, options, cardClassName = "w-8/10" }
               dataKey="red"
               stackId="a"
               fill="var(--color-red)"
+              onClick={() => handleZipcodeClick([topKeys[0]])}
             />}
             {topKeys.at(1) && <Bar
               dataKey="orange"
               stackId="a"
               fill="var(--color-orange)"
+              onClick={() => handleZipcodeClick([topKeys[1]])}
             />}
             {topKeys.at(2) && <Bar
               dataKey="yellow"
               stackId="a"
               fill="var(--color-yellow)"
+              onClick={() => handleZipcodeClick([topKeys[2]])}
             />}
             {topKeys.at(3) && <Bar
               dataKey="green"
               stackId="a"
               fill="var(--color-green)"
+              onClick={() => handleZipcodeClick([topKeys[3]])}
             />}
             {topKeys.at(4) && <Bar
               dataKey="blue"
               stackId="a"
               fill="var(--color-blue)"
+              onClick={() => handleZipcodeClick([topKeys[4]])}
             />}
             {shouldShowOthers &&
               <Bar
                 dataKey="others"
                 stackId="a"
                 fill="var(--color-others)"
+                onClick={() => handleZipcodeClick(otherKeys)}
               />}
           </BarChart>
         </ChartContainer>

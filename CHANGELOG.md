@@ -6,6 +6,7 @@
 - COD10-007: Support query params for date range in travels (#82) [179]
 - COD10-008: Add VIP styles to Travels Page when applies (#83) [103]
 - COD10-009: Add purge button to date range selector (#84) [114]
+- COD10-013: Add location filter and weekday-colored hourly chart to Visits bar stats (#89) [424]
 
 ## v0.9.0
 - COD9-003: Add Partido for Locations with B-Prefix zipcodes (#57) [388]

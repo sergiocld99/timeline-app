@@ -5,9 +5,9 @@ test('can create and delete travel', async ({ page }) => {
 
   // Select origin
   await page.locator('button[role="combobox"]').filter({ hasText: 'Select Origin' }).click();
-  await page.getByPlaceholder('Search locations...').fill('1425');
+  await page.getByPlaceholder('Search locations...').fill('Hospital Rivadavia');
   // Dropdown auto-selects and closes when 1 match is found
-  await expect(page.locator('button[role="combobox"]').filter({ hasText: 'C1425 - Palermo' })).toBeVisible();
+  await expect(page.locator('button[role="combobox"]').filter({ hasText: 'C1425 - Hospital Rivadavia' })).toBeVisible();
 
   // Select destination
   await page.locator('button[role="combobox"]').filter({ hasText: 'Select Destination' }).click();
