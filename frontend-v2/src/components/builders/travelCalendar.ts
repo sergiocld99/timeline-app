@@ -47,9 +47,21 @@ export const buildCalendarChartData = (travels: TravelWithFarthestPoint[], topKe
 
   return daysOfWeek.flatMap(day => getChartHours().map(hour => {
     const weights = weightByDayHour[`${day}-${hour}`]
-    const winningEntry = weights && Object.entries(weights).sort((a, b) => b[1] - a[1])[0]
 
-    if (!winningEntry || winningEntry[1] <= 0) {
+    if (!weights) {
+      return { day, hour, colorKey: null, totalMinutes: 0 }
+    }
+
+    // "others" merges many unrelated zipcodes into one bucket, so it can easily
+    // out-total any single named top-5 zipcode without representing a real place.
+    // Prefer the best named zipcode whenever one has any activity in this cell.
+    const namedWinner = topKeys
+      .map(key => [key, weights[key] || 0] as const)
+      .sort((a, b) => b[1] - a[1])[0]
+
+    const winningEntry = namedWinner && namedWinner[1] > 0 ? namedWinner : ['others', weights.others || 0] as const
+
+    if (winningEntry[1] <= 0) {
       return { day, hour, colorKey: null, totalMinutes: 0 }
     }
 
