@@ -1,5 +1,4 @@
 import type { Travel } from "@/types/travel";
-import type { Location } from "@/types/location";
 import type { FilteringData } from "@/types/stats";
 
 import { useTranslations } from "next-intl";
@@ -8,7 +7,7 @@ import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import { buildChartConfig } from "@/utils/chart"
 import { translateDay } from "@/utils/date";
 
-import { calculateBestLocations } from "./analize/travel";
+import { calculateBestLocations, calculateHome, enrichWithFarthestPoint } from "./analize/travel";
 import { buildDailyChartData, buildHourlyChartData } from "./builders/travelBars";
 import { Card, CardContent } from "./ui/card";
 import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "./ui/chart";
@@ -22,48 +21,6 @@ type Props = {
     appliedFilter?: string | null
   },
   cardClassName?: string
-}
-
-const calculateHome = (travels: Travel[], options: Props["options"]) => {
-  if (travels.length > 0 && options?.field) {
-    return travels[0][options.field]
-  }
-
-  if (options?.appliedFilter) {
-    const zipcodeMatch = travels.find(t => t.destination.zipcode === options.appliedFilter)
-
-    if (zipcodeMatch) {
-      return zipcodeMatch.destination
-    }
-  }
-
-  if (!options?.appliedFilter && options?.backendHome) {
-    const matches = travels.filter(t => t.destination.name === options.backendHome)
-
-    if (matches.length >= 3) {
-      return matches[0].destination
-    }
-  }
-
-  if (travels.length > 10 && travels[0].destination.name === travels[travels.length - 1].origin.name) {
-    return travels[0].destination
-  }
-
-  return undefined
-}
-
-const chooseFarthestPoint = (p1: Location, p2: Location, home: Location) => {
-  const dist1 = Math.abs(p1.latitude - home.latitude) + Math.abs(p1.longitude - home.longitude)
-  const dist2 = Math.abs(p2.latitude - home.latitude) + Math.abs(p2.longitude - home.longitude)
-
-  return dist1 > dist2 ? p1 : p2
-}
-
-const enrichWithFarthestPoint = (t: Travel, home?: Location) => {
-  return {
-    ...t,
-    farthestPoint: home && chooseFarthestPoint(t.origin, t.destination, home)
-  }
 }
 
 const TravelBarStats = ({ travels, onFilter, options, cardClassName = "w-8/10" }: Props) => {

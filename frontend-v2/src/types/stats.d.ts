@@ -10,7 +10,7 @@ export type StatByModeChartData = StatByMode & {
   fill: string
 }
 
-export type StatsView = "bar" | "circular" | "line"
+export type StatsView = "bar" | "circular" | "line" | "calendar"
 
 export type TopKeysResult = {
   topKeys: string[]

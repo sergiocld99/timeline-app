@@ -21,6 +21,8 @@ docker compose up --build -d
 ```
 **Always pass `--build` after touching `frontend-v2/` or `backend/` source** — Next.js/node_modules are cached in the container and stale code will silently keep running otherwise.
 
+**For frontend-only changes, prefer `cd frontend-v2 && npm run dev` over rebuilding the Docker container** when running Playwright MCP verification — it's much faster than a full `docker compose up --build`. Only rebuild the container when the change needs the full stack (backend/stats-service interaction) or before a final end-to-end check.
+
 ### Backend (Node/Express)
 ```bash
 cd backend

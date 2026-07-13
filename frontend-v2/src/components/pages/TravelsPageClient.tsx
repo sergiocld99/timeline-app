@@ -9,11 +9,13 @@ import { useEffect, useState } from "react";
 
 import PresentialWorkAlert from "@/components/PresentialWorkAlert";
 import TravelBarStats from "@/components/TravelBarStats";
+import TravelCalendarStats from "@/components/TravelCalendarStats";
 import TravelPieStats from "@/components/TravelPieStats";
 import TravelTable from "@/components/TravelTable";
 import useTravels from "@/hooks/useTravels";
 
 import BarViewBtn from "../buttons/BarViewBtn";
+import CalendarViewBtn from "../buttons/CalendarViewBtn";
 import CircularViewBtn from "../buttons/CircularViewBtn";
 import LineViewBtn from "../buttons/LineViewBtn";
 import TravelLineStats from "../TravelLineStats";
@@ -98,6 +100,7 @@ const TravelsPageClient = () => {
               <BarViewBtn handleClick={() => setStatsView("bar")} isActive={statsView === "bar"} />
               <CircularViewBtn handleClick={() => setStatsView("circular")} isActive={statsView === "circular"} />
               <LineViewBtn handleClick={() => setStatsView("line")} isActive={statsView === "line"} />
+              <CalendarViewBtn handleClick={() => setStatsView("calendar")} isActive={statsView === "calendar"} />
             </div>
             {statsView === "bar" && <TravelBarStats travels={filteredTravels} onFilter={onFilter} cardClassName="w-full" options={{
               backendHome: stats?.home,
@@ -105,6 +108,10 @@ const TravelsPageClient = () => {
             }} />}
             {statsView === "line" && <TravelLineStats travels={filteredTravels} onFilter={onFilter} />}
             {statsView === "circular" && <TravelPieStats travels={filteredTravels} onFilter={onFilter} />}
+            {statsView === "calendar" && <TravelCalendarStats travels={filteredTravels} options={{
+              backendHome: stats?.home,
+              appliedFilter: appliedFilter
+            }} />}
           </div>
         </div>
         <TravelTable
