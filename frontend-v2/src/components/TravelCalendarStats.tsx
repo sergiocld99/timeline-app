@@ -47,6 +47,9 @@ const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
     onFilter?.({ type: 'zipcode', value: zipcodes })
   }
 
+  const handleDayClick = (day: string) => onFilter?.({ type: 'day', value: day })
+  const handleHourClick = (hour: string) => onFilter?.({ type: 'hour', value: hour })
+
   return (
     <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardContent className="h-[300px] flex flex-col items-center justify-center gap-6 py-4 pr-16">
@@ -60,13 +63,20 @@ const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
           >
             <div />
             {HOURS.map(hour => (
-              <div key={hour} className="text-xs text-muted-foreground text-center">
+              <div
+                key={hour}
+                onClick={() => handleHourClick(hour)}
+                className="text-xs text-muted-foreground text-center hover:cursor-pointer"
+              >
                 {hour}
               </div>
             ))}
             {daysOfWeek.map(day => (
               <Fragment key={day}>
-                <div className="text-xs text-muted-foreground pr-1 flex items-center justify-end">
+                <div
+                  onClick={() => handleDayClick(day)}
+                  className="text-xs text-muted-foreground pr-1 flex items-center justify-end hover:cursor-pointer"
+                >
                   {translateDay(day, t)}
                 </div>
                 {HOURS.map(hour => {
