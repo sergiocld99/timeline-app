@@ -57,7 +57,7 @@ const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
   const handleHourClick = (hour: string) => onFilter?.({ type: 'hour', value: hour })
 
   return (
-    <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+    <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 animate-in fade-in-0 zoom-in-95 duration-300">
       <CardContent className="h-[300px] flex flex-col items-center justify-center gap-6 py-4 pr-16">
         <div className="w-full flex-1 min-h-0 overflow-x-auto">
           <div
@@ -77,11 +77,12 @@ const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
                 {hour}
               </div>
             ))}
-            {daysOfWeek.map(day => (
+            {daysOfWeek.map((day, dayIndex) => (
               <Fragment key={day}>
                 <div
                   onClick={() => handleDayClick(day)}
-                  className="text-xs text-muted-foreground pr-1 flex items-center justify-end hover:cursor-pointer"
+                  className="text-xs text-muted-foreground pr-1 flex items-center justify-end hover:cursor-pointer animate-in fade-in-0 slide-in-from-left-1 duration-300"
+                  style={{ animationDelay: `${dayIndex * 40}ms`, animationFillMode: "backwards" }}
                 >
                   {translateDay(day, t)}
                 </div>
@@ -97,8 +98,12 @@ const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
                       key={`${day}-${hour}`}
                       title={label}
                       onClick={colorKey ? () => handleCellClick(colorKey) : undefined}
-                      className={`rounded-[3px] bg-gray-100 dark:bg-gray-700 ${colorKey ? "hover:cursor-pointer" : ""}`}
-                      style={colorKey ? { backgroundColor: chartConfig[colorKey as keyof typeof chartConfig].color } : undefined}
+                      className={`rounded-[3px] bg-gray-100 dark:bg-gray-700 transition-colors duration-300 ease-out animate-in fade-in-0 duration-300 ${colorKey ? "hover:cursor-pointer hover:scale-110 hover:brightness-110 transition-transform" : ""}`}
+                      style={{
+                        ...(colorKey ? { backgroundColor: chartConfig[colorKey as keyof typeof chartConfig].color } : {}),
+                        animationDelay: `${dayIndex * 40}ms`,
+                        animationFillMode: "backwards"
+                      }}
                     />
                   )
                 })}
@@ -106,7 +111,7 @@ const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
             ))}
           </div>
         </div>
-        <div className="flex flex-wrap items-center justify-center gap-3">
+        <div className="flex flex-wrap items-center justify-center gap-3 animate-in fade-in-0 duration-500 delay-300" style={{ animationFillMode: "backwards" }}>
           {legendKeys.map(key => (
             <div key={key} className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: chartConfig[key].color }} />
