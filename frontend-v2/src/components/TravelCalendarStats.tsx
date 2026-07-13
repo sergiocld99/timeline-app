@@ -57,6 +57,13 @@ const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
   const handleDayClick = (day: string) => onFilter?.({ type: 'day', value: day })
   const handleHourClick = (hour: string) => onFilter?.({ type: 'hour', value: hour })
 
+  const handleLegendClick = (legendKey: string) => {
+    const colorIndex = colorKeys.indexOf(legendKey as keyof typeof chartConfig)
+    const zipcodes = colorIndex >= 0 ? [topKeys[colorIndex]] : otherKeys
+
+    onFilter?.({ type: 'zipcode', value: zipcodes })
+  }
+
   return (
     <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 animate-in fade-in-0 zoom-in-95 duration-300">
       <CardContent className="h-[300px] flex flex-col items-center justify-center gap-6 py-4 pr-16">
@@ -117,7 +124,11 @@ const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
         </div>
         <div className="flex flex-wrap items-center justify-center gap-3 animate-in fade-in-0 duration-500 delay-300" style={{ animationFillMode: "backwards" }}>
           {legendKeys.map(key => (
-            <div key={key} className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <div
+              key={key}
+              onClick={() => handleLegendClick(key)}
+              className="flex items-center gap-1.5 text-xs text-muted-foreground hover:cursor-pointer hover:text-foreground transition-colors"
+            >
               <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: chartConfig[key].color }} />
               {chartConfig[key].label}
             </div>
