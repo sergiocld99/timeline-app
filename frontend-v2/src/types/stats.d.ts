@@ -43,4 +43,9 @@ type FilteringByMode = {
   value: string
 }
 
-export type FilteringData = FilteringByZipcode | FilteringByLocation | FilteringByTime | FilteringByCross | FilteringByMode
+type FilteringByDayHour = {
+  type: 'dayHour'
+  value: { day: string, hour: string }
+}
+
+export type FilteringData = FilteringByZipcode | FilteringByLocation | FilteringByTime | FilteringByCross | FilteringByMode | FilteringByDayHour

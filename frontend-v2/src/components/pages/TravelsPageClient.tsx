@@ -13,6 +13,7 @@ import TravelCalendarStats from "@/components/TravelCalendarStats";
 import TravelPieStats from "@/components/TravelPieStats";
 import TravelTable from "@/components/TravelTable";
 import useTravels from "@/hooks/useTravels";
+import { translateDay } from "@/utils/date";
 
 import BarViewBtn from "../buttons/BarViewBtn";
 import CalendarViewBtn from "../buttons/CalendarViewBtn";
@@ -36,6 +37,7 @@ const TravelMap = dynamic(() => import("@/components/TravelMap"), {
 });
 
 const TravelsPageClient = () => {
+  const t = useTranslations();
   const tDashboard = useTranslations("Dashboard");
   const tCharts = useTranslations("Charts");
   const { travels: travelsData, updateTravel, deleteTravel } = useTravels();
@@ -77,6 +79,14 @@ const TravelsPageClient = () => {
     if (type === 'mode' && value) {
       setFilteredTravels(travels.filter(t => t.modeOfTransport === value));
       setAppliedFilter(tCharts(`modes.${value}`));
+      return;
+    }
+
+    if (type === 'dayHour' && value) {
+      setFilteredTravels(travels.filter(tr =>
+        tr.extractedDate.slice(0, 3) === value.day && tr.hourParts.completeParts.some(p => p.hour === value.hour)
+      ));
+      setAppliedFilter(`${translateDay(value.day, t)} ${value.hour}hs`);
       return;
     }
 

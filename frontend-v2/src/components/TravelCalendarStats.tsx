@@ -52,12 +52,7 @@ const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
     .filter((_, index) => topKeys[index])
     .concat(shouldShowOthers ? ['others'] : [])
 
-  const handleCellClick = (colorKey: string) => {
-    const colorIndex = colorKeys.indexOf(colorKey as keyof typeof chartConfig)
-    const zipcodes = colorIndex >= 0 ? [topKeys[colorIndex]] : otherKeys
-
-    onFilter?.({ type: 'zipcode', value: zipcodes })
-  }
+  const handleCellClick = (day: string, hour: string) => onFilter?.({ type: 'dayHour', value: { day, hour } })
 
   const handleDayClick = (day: string) => onFilter?.({ type: 'day', value: day })
   const handleHourClick = (hour: string) => onFilter?.({ type: 'hour', value: hour })
@@ -103,7 +98,7 @@ const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
                     <div
                       key={`${day}-${hour}`}
                       title={label}
-                      onClick={colorKey ? () => handleCellClick(colorKey) : undefined}
+                      onClick={colorKey ? () => handleCellClick(day, hour) : undefined}
                       className={`rounded-[3px] bg-gray-100 dark:bg-gray-700 transition-[background-color,opacity] duration-300 ease-out animate-in fade-in-0 duration-300 ${colorKey ? "hover:cursor-pointer hover:scale-110 hover:brightness-110 transition-transform" : ""}`}
                       style={{
                         ...(colorKey ? {
