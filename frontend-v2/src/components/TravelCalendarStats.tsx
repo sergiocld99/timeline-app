@@ -1,5 +1,6 @@
 "use client";
 
+import type { FilteringData } from "@/types/stats";
 import type { Travel } from "@/types/travel";
 
 import { useTranslations } from "next-intl";
@@ -15,6 +16,7 @@ import { Card, CardContent } from "./ui/card";
 
 type Props = {
   travels: Travel[],
+  onFilter?: (data: FilteringData) => void,
   options?: {
     backendHome?: string,
     appliedFilter?: string | null
@@ -23,7 +25,7 @@ type Props = {
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0'))
 
-const TravelCalendarStats = ({ travels, options }: Props) => {
+const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
   const t = useTranslations();
   const home = calculateHome(travels, options)
   const relevantTravels = travels.map(travel => enrichWithFarthestPoint(travel, home))
@@ -37,6 +39,13 @@ const TravelCalendarStats = ({ travels, options }: Props) => {
   const legendKeys: (keyof typeof chartConfig)[] = colorKeys
     .filter((_, index) => topKeys[index])
     .concat(shouldShowOthers ? ['others'] : [])
+
+  const handleCellClick = (colorKey: string) => {
+    const colorIndex = colorKeys.indexOf(colorKey as keyof typeof chartConfig)
+    const zipcodes = colorIndex >= 0 ? [topKeys[colorIndex]] : otherKeys
+
+    onFilter?.({ type: 'zipcode', value: zipcodes })
+  }
 
   return (
     <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
@@ -71,7 +80,8 @@ const TravelCalendarStats = ({ travels, options }: Props) => {
                     <div
                       key={`${day}-${hour}`}
                       title={label}
-                      className="rounded-[3px] bg-gray-100 dark:bg-gray-700"
+                      onClick={colorKey ? () => handleCellClick(colorKey) : undefined}
+                      className={`rounded-[3px] bg-gray-100 dark:bg-gray-700 ${colorKey ? "hover:cursor-pointer" : ""}`}
                       style={colorKey ? { backgroundColor: chartConfig[colorKey as keyof typeof chartConfig].color } : undefined}
                     />
                   )

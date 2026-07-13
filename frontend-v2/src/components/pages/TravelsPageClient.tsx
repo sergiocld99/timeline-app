@@ -108,7 +108,7 @@ const TravelsPageClient = () => {
             }} />}
             {statsView === "line" && <TravelLineStats travels={filteredTravels} onFilter={onFilter} />}
             {statsView === "circular" && <TravelPieStats travels={filteredTravels} onFilter={onFilter} />}
-            {statsView === "calendar" && <TravelCalendarStats travels={filteredTravels} options={{
+            {statsView === "calendar" && <TravelCalendarStats travels={filteredTravels} onFilter={onFilter} options={{
               backendHome: stats?.home,
               appliedFilter: appliedFilter
             }} />}
