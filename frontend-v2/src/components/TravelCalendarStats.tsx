@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 import { Fragment } from "react";
 
 import { daysOfWeek } from "@/constants";
-import { buildChartConfig } from "@/utils/chart";
+import { buildChartConfig, cleanUnusedBorders } from "@/utils/chart";
 import { translateDay } from "@/utils/date";
 
 import { calculateBestLocations, calculateHome, enrichWithFarthestPoint } from "./analize/travel";
@@ -35,6 +35,12 @@ const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
   const cells = buildCalendarChartData(relevantTravels, topKeys)
   const cellByKey = new Map(cells.map(cell => [`${cell.day}-${cell.hour}`, cell]))
 
+  const hourTotals = cells.reduce((acc, cell) => {
+    acc[cell.hour] = (acc[cell.hour] || 0) + cell.totalMinutes
+    return acc
+  }, {} as Record<string, number>)
+  const visibleHours = cleanUnusedBorders(HOURS.map(hour => ({ hour, empty: !hourTotals[hour] }))).map(h => h.hour)
+
   const colorKeys: (keyof typeof chartConfig)[] = ['red', 'orange', 'yellow', 'green', 'blue']
   const legendKeys: (keyof typeof chartConfig)[] = colorKeys
     .filter((_, index) => topKeys[index])
@@ -57,12 +63,12 @@ const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
           <div
             className="grid gap-1 w-full h-full"
             style={{
-              gridTemplateColumns: `2.5rem repeat(24, minmax(0, 1fr))`,
+              gridTemplateColumns: `2.5rem repeat(${visibleHours.length}, minmax(0, 1fr))`,
               gridTemplateRows: `auto repeat(7, 1fr)`
             }}
           >
             <div />
-            {HOURS.map(hour => (
+            {visibleHours.map(hour => (
               <div
                 key={hour}
                 onClick={() => handleHourClick(hour)}
@@ -79,7 +85,7 @@ const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
                 >
                   {translateDay(day, t)}
                 </div>
-                {HOURS.map(hour => {
+                {visibleHours.map(hour => {
                   const cell = cellByKey.get(`${day}-${hour}`)
                   const colorKey = cell?.colorKey
                   const label = colorKey
