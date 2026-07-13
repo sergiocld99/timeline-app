@@ -38,4 +38,9 @@ type FilteringByCross = {
   value: string
 }
 
-export type FilteringData = FilteringByZipcode | FilteringByLocation | FilteringByTime | FilteringByCross
+type FilteringByMode = {
+  type: 'mode'
+  value: string
+}
+
+export type FilteringData = FilteringByZipcode | FilteringByLocation | FilteringByTime | FilteringByCross | FilteringByMode

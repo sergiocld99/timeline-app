@@ -1,7 +1,7 @@
 "use client";
 
 import type { ChartConfig } from "@/components/ui/chart"
-import type { StatByModeChartData } from "@/types/stats"
+import type { FilteringData, StatByModeChartData } from "@/types/stats"
 import type { Travel } from "@/types/travel";
 
 import { BadgeQuestionMarkIcon, BusIcon, CarIcon, CarTaxiFrontIcon, PersonStandingIcon, RocketIcon, ShipIcon, TrainIcon } from "lucide-react";
@@ -67,11 +67,14 @@ const getLabel = (total: number | string, label: string) => {
 
 type Props = {
   travels: Travel[]
+  onFilter?: (data?: FilteringData) => void
 }
 
-const TravelPieStats = ({ travels }: Props) => {
+const TravelPieStats = ({ travels, onFilter }: Props) => {
   const t = useTranslations("Charts");
   const stats = calculateStatsByMode(travels);
+
+  const handleSliceClick = (data: StatByModeChartData) => onFilter?.({ type: 'mode', value: data.modeOfTransport })
 
   const chartConfig = {
     modeOfTransport: {
@@ -132,7 +135,7 @@ const TravelPieStats = ({ travels }: Props) => {
         <ChartContainer config={chartConfig} className="min-h-[200px] max-h-[300px] max-w-[250px]">
           <PieChart>
             <ChartTooltip content={<ChartTooltipContent />} />
-            <Pie data={chartData} dataKey="totalKm" nameKey="modeOfTransport" innerRadius={60} strokeWidth={5}>
+            <Pie data={chartData} dataKey="totalKm" nameKey="modeOfTransport" innerRadius={60} strokeWidth={5} onClick={handleSliceClick} className="hover:cursor-pointer">
               {getLabel(totalKm, t("km"))}
             </Pie>
           </PieChart>
@@ -140,7 +143,7 @@ const TravelPieStats = ({ travels }: Props) => {
         <ChartContainer config={chartConfig} className="min-h-[200px] max-h-[300px] max-w-[250px]">
           <PieChart>
             <ChartTooltip content={<ChartTooltipContent />} />
-            <Pie data={chartData} dataKey="totalMinutes" nameKey="modeOfTransport" innerRadius={60} strokeWidth={5}>
+            <Pie data={chartData} dataKey="totalMinutes" nameKey="modeOfTransport" innerRadius={60} strokeWidth={5} onClick={handleSliceClick} className="hover:cursor-pointer">
               {getLabel(totalMinutes, t("minutes"))}
             </Pie>
           </PieChart>
@@ -148,7 +151,7 @@ const TravelPieStats = ({ travels }: Props) => {
         <ChartContainer config={chartConfig} className="min-h-[200px] max-h-[300px] max-w-[250px]">
           <PieChart>
             <ChartTooltip content={<ChartTooltipContent />} />
-            <Pie data={chartData} dataKey="count" nameKey="modeOfTransport" innerRadius={60} strokeWidth={5}>
+            <Pie data={chartData} dataKey="count" nameKey="modeOfTransport" innerRadius={60} strokeWidth={5} onClick={handleSliceClick} className="hover:cursor-pointer">
               {getLabel(totalTravels, t("travels"))}
             </Pie>
           </PieChart>
@@ -156,7 +159,7 @@ const TravelPieStats = ({ travels }: Props) => {
         <ChartContainer config={chartConfig} className="min-h-[200px] max-h-[300px] max-w-[250px]">
           <PieChart>
             <ChartTooltip content={<ChartTooltipContent />} />
-            <Pie data={chartData} dataKey="averageSpeed" nameKey="modeOfTransport" innerRadius={60} strokeWidth={5}>
+            <Pie data={chartData} dataKey="averageSpeed" nameKey="modeOfTransport" innerRadius={60} strokeWidth={5} onClick={handleSliceClick} className="hover:cursor-pointer">
               {getLabel(averageSpeed, t("kmH"))}
             </Pie>
           </PieChart>

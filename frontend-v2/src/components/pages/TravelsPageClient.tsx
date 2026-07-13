@@ -35,6 +35,7 @@ const TravelMap = dynamic(() => import("@/components/TravelMap"), {
 
 const TravelsPageClient = () => {
   const tDashboard = useTranslations("Dashboard");
+  const tCharts = useTranslations("Charts");
   const { travels: travelsData, updateTravel, deleteTravel } = useTravels();
   const { travels, stats } = travelsData;
 
@@ -71,6 +72,12 @@ const TravelsPageClient = () => {
       return;
     }
 
+    if (type === 'mode' && value) {
+      setFilteredTravels(travels.filter(t => t.modeOfTransport === value));
+      setAppliedFilter(tCharts(`modes.${value}`));
+      return;
+    }
+
     setFilteredTravels(travels);
     setAppliedFilter(null);
   };
@@ -97,7 +104,7 @@ const TravelsPageClient = () => {
               appliedFilter: appliedFilter
             }} />}
             {statsView === "line" && <TravelLineStats travels={filteredTravels} onFilter={onFilter} />}
-            {statsView === "circular" && <TravelPieStats travels={filteredTravels} />}
+            {statsView === "circular" && <TravelPieStats travels={filteredTravels} onFilter={onFilter} />}
           </div>
         </div>
         <TravelTable
