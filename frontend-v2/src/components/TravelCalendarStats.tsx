@@ -31,7 +31,7 @@ const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
   const home = calculateHome(travels, options)
   const relevantTravels = travels.map(travel => enrichWithFarthestPoint(travel, home))
 
-  const { topKeys, otherKeys, shouldShowOthers } = calculateBestLocations(relevantTravels, 5)
+  const { topKeys, otherKeys } = calculateBestLocations(relevantTravels, 5)
   const chartConfig = buildChartConfig(topKeys, otherKeys, t("Charts.modes.others"))
   const cells = buildCalendarChartData(relevantTravels, topKeys)
   const cellByKey = new Map(cells.map(cell => [`${cell.day}-${cell.hour}`, cell]))
@@ -48,9 +48,10 @@ const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
   const visibleHours = cleanUnusedBorders(HOURS.map(hour => ({ hour, empty: !hourTotals[hour] }))).map(h => h.hour)
 
   const colorKeys: (keyof typeof chartConfig)[] = ['red', 'orange', 'yellow', 'green', 'blue']
+  const presentColorKeys = new Set(cells.map(cell => cell.colorKey).filter((key): key is string => Boolean(key)))
   const legendKeys: (keyof typeof chartConfig)[] = colorKeys
-    .filter((_, index) => topKeys[index])
-    .concat(shouldShowOthers ? ['others'] : [])
+    .filter(key => presentColorKeys.has(key))
+    .concat(presentColorKeys.has('others') ? ['others'] : [])
 
   const handleCellClick = (day: string, hour: string) => onFilter?.({ type: 'dayHour', value: { day, hour } })
 
