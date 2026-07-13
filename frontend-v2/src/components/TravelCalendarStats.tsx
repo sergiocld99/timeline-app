@@ -34,6 +34,12 @@ const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
   const chartConfig = buildChartConfig(topKeys, otherKeys, t("Charts.modes.others"))
   const cells = buildCalendarChartData(relevantTravels, topKeys)
   const cellByKey = new Map(cells.map(cell => [`${cell.day}-${cell.hour}`, cell]))
+  const maxCellMinutes = Math.max(0, ...cells.map(cell => cell.totalMinutes))
+
+  const getCellOpacity = (totalMinutes: number) => {
+    if (maxCellMinutes <= 0) { return 1 }
+    return 0.4 + (totalMinutes / maxCellMinutes) * 0.6
+  }
 
   const hourTotals = cells.reduce((acc, cell) => {
     acc[cell.hour] = (acc[cell.hour] || 0) + cell.totalMinutes
@@ -98,9 +104,12 @@ const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
                       key={`${day}-${hour}`}
                       title={label}
                       onClick={colorKey ? () => handleCellClick(colorKey) : undefined}
-                      className={`rounded-[3px] bg-gray-100 dark:bg-gray-700 transition-colors duration-300 ease-out animate-in fade-in-0 duration-300 ${colorKey ? "hover:cursor-pointer hover:scale-110 hover:brightness-110 transition-transform" : ""}`}
+                      className={`rounded-[3px] bg-gray-100 dark:bg-gray-700 transition-[background-color,opacity] duration-300 ease-out animate-in fade-in-0 duration-300 ${colorKey ? "hover:cursor-pointer hover:scale-110 hover:brightness-110 transition-transform" : ""}`}
                       style={{
-                        ...(colorKey ? { backgroundColor: chartConfig[colorKey as keyof typeof chartConfig].color } : {}),
+                        ...(colorKey ? {
+                          backgroundColor: chartConfig[colorKey as keyof typeof chartConfig].color,
+                          opacity: getCellOpacity(cell.totalMinutes)
+                        } : {}),
                         animationDelay: `${dayIndex * 40}ms`,
                         animationFillMode: "backwards"
                       }}
