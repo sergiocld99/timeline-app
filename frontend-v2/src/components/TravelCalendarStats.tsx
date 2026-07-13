@@ -24,6 +24,7 @@ type Props = {
 }
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0'))
+const FULL_OPACITY_MINUTES = 60
 
 const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
   const t = useTranslations();
@@ -34,11 +35,10 @@ const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
   const chartConfig = buildChartConfig(topKeys, otherKeys, t("Charts.modes.others"))
   const cells = buildCalendarChartData(relevantTravels, topKeys)
   const cellByKey = new Map(cells.map(cell => [`${cell.day}-${cell.hour}`, cell]))
-  const maxCellMinutes = Math.max(0, ...cells.map(cell => cell.totalMinutes))
 
   const getCellOpacity = (totalMinutes: number) => {
-    if (maxCellMinutes <= 0) { return 1 }
-    return 0.4 + (totalMinutes / maxCellMinutes) * 0.6
+    const ratio = Math.min(totalMinutes / FULL_OPACITY_MINUTES, 1)
+    return 0.4 + ratio * 0.6
   }
 
   const hourTotals = cells.reduce((acc, cell) => {
