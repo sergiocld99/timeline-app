@@ -7,11 +7,12 @@ import { useTranslations } from "next-intl";
 import { Fragment } from "react";
 
 import { daysOfWeek } from "@/constants";
-import { buildChartConfig, cleanUnusedBorders } from "@/utils/chart";
+import { buildChartConfig, cleanUnusedBorders, getCellOpacity } from "@/utils/chart";
 import { translateDay } from "@/utils/date";
 
 import { calculateHome, enrichWithFarthestPoint } from "./analize/travel";
-import { buildCalendarChartData, calculateBestLocationsByCellDominance } from "./builders/travelCalendar";
+import { buildCalendarChartData, calculateBestLocationsByCellDominance, COLOR_KEYS } from "./builders/travelCalendar";
+import CalendarLegend from "./CalendarLegend";
 import { Card, CardContent } from "./ui/card";
 
 type Props = {
@@ -24,7 +25,6 @@ type Props = {
 }
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0'))
-const FULL_OPACITY_MINUTES = 60
 
 const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
   const t = useTranslations();
@@ -42,32 +42,52 @@ const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
   }))
   const visibleHours = cleanUnusedBorders(hourEntries).map(entry => entry.hour)
 
-  const getCellOpacity = (totalMinutes: number) => {
-    const ratio = Math.min(totalMinutes / FULL_OPACITY_MINUTES, 1)
-    return 0.4 + ratio * 0.6
-  }
-
-  const colorKeys: (keyof typeof chartConfig)[] = ['red', 'orange', 'yellow', 'green', 'blue']
-  const cellCountByColorKey = cells.reduce((acc, cell) => {
-    if (cell.colorKey) { acc[cell.colorKey] = (acc[cell.colorKey] || 0) + 1 }
-    return acc
-  }, {} as Record<string, number>)
-  const presentColorKeys = new Set(Object.keys(cellCountByColorKey))
-  const legendKeys: (keyof typeof chartConfig)[] = colorKeys
-    .filter(key => presentColorKeys.has(key))
-    .concat(presentColorKeys.has('others') ? ['others'] : [])
-
   const handleCellClick = (day: string, hour: string) => onFilter?.({ type: 'dayHour', value: { day, hour } })
-
   const handleDayClick = (day: string) => onFilter?.({ type: 'day', value: day })
   const handleHourClick = (hour: string) => onFilter?.({ type: 'hour', value: hour })
 
   const handleLegendClick = (legendKey: string) => {
-    const colorIndex = colorKeys.indexOf(legendKey as keyof typeof chartConfig)
+    const colorIndex = COLOR_KEYS.indexOf(legendKey as typeof COLOR_KEYS[number])
     const zipcodes = colorIndex >= 0 ? [topKeys[colorIndex]] : otherKeys
 
     onFilter?.({ type: 'zipcode', value: zipcodes })
   }
+
+  const renderCell = (day: string, hour: string) => {
+    const cell = cellByKey.get(`${day}-${hour}`)
+    const colorKey = cell?.colorKey
+    const label = colorKey
+      ? `${translateDay(day, t)} ${hour}hs — ${chartConfig[colorKey as keyof typeof chartConfig].label} (${Math.round(cell.totalMinutes)} min)`
+      : `${translateDay(day, t)} ${hour}hs`
+
+    return (
+      <div
+        key={`${day}-${hour}`}
+        title={label}
+        onClick={colorKey ? () => handleCellClick(day, hour) : undefined}
+        className={`rounded-[3px] bg-gray-100 dark:bg-gray-700 ${colorKey ? "hover:cursor-pointer hover:scale-110 hover:brightness-110 transition-transform" : ""}`}
+        style={{
+          ...(colorKey ? {
+            backgroundColor: chartConfig[colorKey as keyof typeof chartConfig].color,
+            opacity: getCellOpacity(cell.totalMinutes)
+          } : {})
+        }}
+      />
+    )
+  }
+
+  const renderDayOfWeek = (day: string, dayIndex: number) => (
+    <Fragment key={day}>
+      <div
+        onClick={() => handleDayClick(day)}
+        className="text-xs text-muted-foreground pr-1 flex items-center justify-end hover:cursor-pointer animate-in fade-in-0 slide-in-from-left-1 duration-300"
+        style={{ animationDelay: `${dayIndex * 40}ms`, animationFillMode: "backwards" }}
+      >
+        {translateDay(day, t)}
+      </div>
+      {visibleHours.map(hour => renderCell(day, hour))}
+    </Fragment>
+  )
 
   return (
     <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 animate-in fade-in-0 zoom-in-95 duration-300">
@@ -90,56 +110,14 @@ const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
                 {hour}
               </div>
             ))}
-            {daysOfWeek.map((day, dayIndex) => (
-              <Fragment key={day}>
-                <div
-                  onClick={() => handleDayClick(day)}
-                  className="text-xs text-muted-foreground pr-1 flex items-center justify-end hover:cursor-pointer animate-in fade-in-0 slide-in-from-left-1 duration-300"
-                  style={{ animationDelay: `${dayIndex * 40}ms`, animationFillMode: "backwards" }}
-                >
-                  {translateDay(day, t)}
-                </div>
-                {visibleHours.map(hour => {
-                  const cell = cellByKey.get(`${day}-${hour}`)
-                  const colorKey = cell?.colorKey
-                  const label = colorKey
-                    ? `${translateDay(day, t)} ${hour}hs — ${chartConfig[colorKey as keyof typeof chartConfig].label} (${Math.round(cell.totalMinutes)} min)`
-                    : `${translateDay(day, t)} ${hour}hs`
-
-                  return (
-                    <div
-                      key={`${day}-${hour}`}
-                      title={label}
-                      onClick={colorKey ? () => handleCellClick(day, hour) : undefined}
-                      className={`rounded-[3px] bg-gray-100 dark:bg-gray-700 ${colorKey ? "hover:cursor-pointer hover:scale-110 hover:brightness-110 transition-transform" : ""}`}
-                      style={{
-                        ...(colorKey ? {
-                          backgroundColor: chartConfig[colorKey as keyof typeof chartConfig].color,
-                          opacity: getCellOpacity(cell.totalMinutes)
-                        } : {}),
-                        animationDelay: `${dayIndex * 40}ms`,
-                        animationFillMode: "backwards"
-                      }}
-                    />
-                  )
-                })}
-              </Fragment>
-            ))}
+            {daysOfWeek.map((day, dayIndex) => renderDayOfWeek(day, dayIndex))}
           </div>
         </div>
-        <div className="flex flex-wrap items-center justify-center gap-3 animate-in fade-in-0 duration-500 delay-300" style={{ animationFillMode: "backwards" }}>
-          {legendKeys.map(key => (
-            <div
-              key={key}
-              onClick={() => handleLegendClick(key)}
-              className="flex items-center gap-1.5 text-xs text-foreground hover:cursor-pointer transition-colors"
-            >
-              <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: chartConfig[key].color }} />
-              {chartConfig[key].label}
-              <span className="text-foreground/70">({cellCountByColorKey[key] || 0})</span>
-            </div>
-          ))}
-        </div>
+        <CalendarLegend
+          cells={cells}
+          chartConfig={chartConfig}
+          onLegendClick={handleLegendClick}
+        />
       </CardContent>
     </Card>
   )

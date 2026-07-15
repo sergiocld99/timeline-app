@@ -1,4 +1,4 @@
-import type { ChartSource } from "@/types/chart"
+import type { CalendarCell, ChartSource } from "@/types/chart"
 import type { TravelWithFarthestPoint } from "@/types/travel";
 
 import { daysOfWeek } from "@/constants"
@@ -7,14 +7,7 @@ import { getChartHours, useDefaultValues } from "@/utils/chart"
 import { extractKeys, sortByDescendingValue } from "@/utils/kv"
 
 const CHART_FIELD = 'zipcode'
-const COLOR_KEYS = ['red', 'orange', 'yellow', 'green', 'blue'] as const
-
-export type CalendarCell = {
-  day: string
-  hour: string
-  colorKey: string | null
-  totalMinutes: number
-}
+export const COLOR_KEYS = ['red', 'orange', 'yellow', 'green', 'blue'] as const
 
 const buildPlaceWeightByDayHour = (travels: TravelWithFarthestPoint[], topLocations: string[]): ChartSource => {
   return travels.reduce((acc, t) => {
@@ -116,4 +109,20 @@ export const buildCalendarChartData = (travels: TravelWithFarthestPoint[], topKe
 
     return { day, hour, colorKey, totalMinutes: winningMinutes }
   }))
+}
+
+export const buildCellCountByColorKey = (cells: CalendarCell[]): Record<string, number> => {
+  return cells.reduce((acc, cell) => {
+    if (cell.colorKey) { acc[cell.colorKey] = (acc[cell.colorKey] || 0) + 1 }
+    return acc
+  }, {} as Record<string, number>)
+}
+
+export const buildLegendKeys = (cells: CalendarCell[]): string[] => {
+  const presentColorKeys = new Set(cells.map(cell => cell.colorKey).filter((key): key is string => Boolean(key)))
+  const colorKeys: string[] = [...COLOR_KEYS]
+
+  return colorKeys
+    .filter(key => presentColorKeys.has(key))
+    .concat(presentColorKeys.has('others') ? ['others'] : [])
 }

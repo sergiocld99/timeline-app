@@ -19,3 +19,10 @@ export type HourAndMinutes = {
   hour: number;
   minutes: number;
 }
+
+export type CalendarCell = {
+  day: string
+  hour: string
+  colorKey: string | null
+  totalMinutes: number
+}
