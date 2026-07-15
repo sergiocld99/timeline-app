@@ -122,7 +122,7 @@ const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
             <div
               key={key}
               onClick={() => handleLegendClick(key)}
-              className="flex items-center gap-1.5 text-xs text-muted-foreground hover:cursor-pointer hover:text-foreground transition-colors"
+              className="flex items-center gap-1.5 text-xs text-foreground hover:cursor-pointer transition-colors"
             >
               <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: chartConfig[key].color }} />
               {chartConfig[key].label}
