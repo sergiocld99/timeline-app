@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 import { Fragment } from "react";
 
 import { daysOfWeek } from "@/constants";
-import { buildChartConfig } from "@/utils/chart";
+import { buildChartConfig, cleanUnusedBorders } from "@/utils/chart";
 import { translateDay } from "@/utils/date";
 
 import { calculateHome, enrichWithFarthestPoint } from "./analize/travel";
@@ -35,6 +35,12 @@ const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
   const chartConfig = buildChartConfig(topKeys, otherKeys, t("Charts.modes.others"))
   const cells = buildCalendarChartData(relevantTravels, topKeys)
   const cellByKey = new Map(cells.map(cell => [`${cell.day}-${cell.hour}`, cell]))
+
+  const hourEntries = HOURS.map(hour => ({
+    hour,
+    empty: !cells.some(cell => cell.hour === hour && cell.colorKey)
+  }))
+  const visibleHours = cleanUnusedBorders(hourEntries).map(entry => entry.hour)
 
   const getCellOpacity = (totalMinutes: number) => {
     const ratio = Math.min(totalMinutes / FULL_OPACITY_MINUTES, 1)
@@ -66,12 +72,12 @@ const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
           <div
             className="grid gap-1 w-full h-full"
             style={{
-              gridTemplateColumns: `2.5rem repeat(${HOURS.length}, minmax(0, 1fr))`,
+              gridTemplateColumns: `2.5rem repeat(${visibleHours.length}, minmax(0, 1fr))`,
               gridTemplateRows: `auto repeat(7, 1fr)`
             }}
           >
             <div />
-            {HOURS.map(hour => (
+            {visibleHours.map(hour => (
               <div
                 key={hour}
                 onClick={() => handleHourClick(hour)}
@@ -89,7 +95,7 @@ const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
                 >
                   {translateDay(day, t)}
                 </div>
-                {HOURS.map(hour => {
+                {visibleHours.map(hour => {
                   const cell = cellByKey.get(`${day}-${hour}`)
                   const colorKey = cell?.colorKey
                   const label = colorKey
@@ -101,7 +107,7 @@ const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
                       key={`${day}-${hour}`}
                       title={label}
                       onClick={colorKey ? () => handleCellClick(day, hour) : undefined}
-                      className={`rounded-[3px] bg-gray-100 dark:bg-gray-700 transition-[background-color,opacity] duration-300 ease-out animate-in fade-in-0 duration-300 ${colorKey ? "hover:cursor-pointer hover:scale-110 hover:brightness-110 transition-transform" : ""}`}
+                      className={`rounded-[3px] bg-gray-100 dark:bg-gray-700 ${colorKey ? "hover:cursor-pointer hover:scale-110 hover:brightness-110 transition-transform" : ""}`}
                       style={{
                         ...(colorKey ? {
                           backgroundColor: chartConfig[colorKey as keyof typeof chartConfig].color,
