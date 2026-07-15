@@ -48,7 +48,11 @@ const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
   }
 
   const colorKeys: (keyof typeof chartConfig)[] = ['red', 'orange', 'yellow', 'green', 'blue']
-  const presentColorKeys = new Set(cells.map(cell => cell.colorKey).filter((key): key is string => Boolean(key)))
+  const cellCountByColorKey = cells.reduce((acc, cell) => {
+    if (cell.colorKey) { acc[cell.colorKey] = (acc[cell.colorKey] || 0) + 1 }
+    return acc
+  }, {} as Record<string, number>)
+  const presentColorKeys = new Set(Object.keys(cellCountByColorKey))
   const legendKeys: (keyof typeof chartConfig)[] = colorKeys
     .filter(key => presentColorKeys.has(key))
     .concat(presentColorKeys.has('others') ? ['others'] : [])
@@ -132,6 +136,7 @@ const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
             >
               <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: chartConfig[key].color }} />
               {chartConfig[key].label}
+              <span className="text-foreground/70">({cellCountByColorKey[key] || 0})</span>
             </div>
           ))}
         </div>
