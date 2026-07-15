@@ -37,6 +37,15 @@ const TravelBarStats = ({ travels, onFilter, options, cardClassName = "w-8/10" }
     onFilter({ type: 'zipcode', value: zipcode })
   }
 
+  const colorKeys = ['red', 'orange', 'yellow', 'green', 'blue'] as const
+
+  const handleLegendClick = (dataKey: string) => {
+    const colorIndex = colorKeys.indexOf(dataKey as typeof colorKeys[number])
+    const zipcode = colorIndex >= 0 ? [topKeys[colorIndex]] : otherKeys
+
+    handleZipcodeClick(zipcode)
+  }
+
   const handleDayClick = (day?: string) => {
     onFilter({ type: 'day', value: day })
   }
@@ -59,7 +68,7 @@ const TravelBarStats = ({ travels, onFilter, options, cardClassName = "w-8/10" }
               onClick={(data) => handleHourClick(data?.value)}
             />
             <ChartTooltip content={<ChartTooltipContent labelFormatter={(value) => `${value}hs`} />} />
-            <ChartLegend content={<ChartLegendContent />} />
+            <ChartLegend content={<ChartLegendContent onItemClick={handleLegendClick} />} />
             {topKeys.at(0) && <Bar
               dataKey="red"
               stackId="a"
