@@ -10,8 +10,8 @@ import { daysOfWeek } from "@/constants";
 import { buildChartConfig } from "@/utils/chart";
 import { translateDay } from "@/utils/date";
 
-import { calculateBestLocations, calculateHome, enrichWithFarthestPoint } from "./analize/travel";
-import { buildCalendarChartData } from "./builders/travelCalendar";
+import { calculateHome, enrichWithFarthestPoint } from "./analize/travel";
+import { buildCalendarChartData, calculateBestLocationsByCellDominance } from "./builders/travelCalendar";
 import { Card, CardContent } from "./ui/card";
 
 type Props = {
@@ -31,7 +31,7 @@ const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
   const home = calculateHome(travels, options)
   const relevantTravels = travels.map(travel => enrichWithFarthestPoint(travel, home))
 
-  const { topKeys, otherKeys } = calculateBestLocations(relevantTravels, 5)
+  const { topKeys, otherKeys } = calculateBestLocationsByCellDominance(relevantTravels, 5)
   const chartConfig = buildChartConfig(topKeys, otherKeys, t("Charts.modes.others"))
   const cells = buildCalendarChartData(relevantTravels, topKeys)
   const cellByKey = new Map(cells.map(cell => [`${cell.day}-${cell.hour}`, cell]))

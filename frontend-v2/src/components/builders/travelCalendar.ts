@@ -4,6 +4,7 @@ import type { TravelWithFarthestPoint } from "@/types/travel";
 import { daysOfWeek } from "@/constants"
 import { convertToArgentineTime } from "@/utils"
 import { getChartHours, useDefaultValues } from "@/utils/chart"
+import { extractKeys, sortByDescendingValue } from "@/utils/kv"
 
 const CHART_FIELD = 'zipcode'
 const COLOR_KEYS = ['red', 'orange', 'yellow', 'green', 'blue'] as const
@@ -40,6 +41,50 @@ const buildPlaceWeightByDayHour = (travels: TravelWithFarthestPoint[], topLocati
 
     return acc
   }, {} as ChartSource)
+}
+
+const buildRawWeightByDayHour = (travels: TravelWithFarthestPoint[]): Record<string, Record<string, number>> => {
+  return travels.reduce((acc, t) => {
+    const day = daysOfWeek[convertToArgentineTime(new Date(t.startTime)).getDay()]
+    const { farthestPoint, hourParts } = t
+
+    const addHourParts = (parts: typeof hourParts.completeParts, zipcode: string) => {
+      parts.forEach(hour => {
+        const cellKey = `${day}-${hour.hour}`
+        if (!acc[cellKey]) { acc[cellKey] = {} }
+        acc[cellKey][zipcode] = (acc[cellKey][zipcode] || 0) + hour.totalMinutes
+      })
+    }
+
+    if (farthestPoint) {
+      addHourParts(hourParts.completeParts, farthestPoint[CHART_FIELD])
+      return acc
+    }
+
+    addHourParts(hourParts.firstHalf, t.origin[CHART_FIELD])
+    addHourParts(hourParts.secondHalf, t.destination[CHART_FIELD])
+
+    return acc
+  }, {} as Record<string, Record<string, number>>)
+}
+
+// Ranks zipcodes by how much they actually dominate individual day-hour cells,
+// instead of by total accumulated duration. A zipcode with lots of spread-out
+// minutes but few (or no) outright cell wins would otherwise occupy a color slot
+// that a less-voluminous but more locally-dominant zipcode never gets to use.
+export const calculateBestLocationsByCellDominance = (travels: TravelWithFarthestPoint[], quantity: number) => {
+  const rawWeightByDayHour = buildRawWeightByDayHour(travels)
+
+  const dominanceScore = Object.values(rawWeightByDayHour).reduce((acc, cellWeights) => {
+    const [winningZipcode, winningMinutes] = Object.entries(cellWeights).sort((a, b) => b[1] - a[1])[0]
+
+    acc[winningZipcode] = (acc[winningZipcode] || 0) + winningMinutes
+
+    return acc
+  }, {} as Record<string, number>)
+
+  const sortedZipcodes = sortByDescendingValue(dominanceScore)
+  return extractKeys(sortedZipcodes, quantity, true)
 }
 
 export const buildCalendarChartData = (travels: TravelWithFarthestPoint[], topKeys: string[]): CalendarCell[] => {
