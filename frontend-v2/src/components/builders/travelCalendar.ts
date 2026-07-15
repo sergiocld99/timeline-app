@@ -1,4 +1,4 @@
-import type { CalendarCell, ChartSource } from "@/types/chart"
+import type { CalendarCell, ChartSource, ColorKey } from "@/types/chart"
 import type { TravelWithFarthestPoint } from "@/types/travel";
 
 import { daysOfWeek } from "@/constants"
@@ -118,11 +118,9 @@ export const buildCellCountByColorKey = (cells: CalendarCell[]): Record<string, 
   }, {} as Record<string, number>)
 }
 
-export const buildLegendKeys = (cells: CalendarCell[]): string[] => {
-  const presentColorKeys = new Set(cells.map(cell => cell.colorKey).filter((key): key is string => Boolean(key)))
-  const colorKeys: string[] = [...COLOR_KEYS]
+export const buildLegendKeys = (cells: CalendarCell[]): ColorKey[] => {
+  const presentColorKeys = new Set(cells.map(cell => cell.colorKey).filter((key): key is ColorKey => Boolean(key)))
+  const presentNamedColors: ColorKey[] = COLOR_KEYS.filter(key => presentColorKeys.has(key))
 
-  return colorKeys
-    .filter(key => presentColorKeys.has(key))
-    .concat(presentColorKeys.has('others') ? ['others'] : [])
+  return presentNamedColors.concat(presentColorKeys.has('others') ? ['others'] : [])
 }

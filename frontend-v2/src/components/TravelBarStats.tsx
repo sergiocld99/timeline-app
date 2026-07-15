@@ -40,7 +40,7 @@ const TravelBarStats = ({ travels, onFilter, options, cardClassName = "w-8/10" }
   const colorKeys = ['red', 'orange', 'yellow', 'green', 'blue'] as const
 
   const handleLegendClick = (dataKey: string) => {
-    const colorIndex = colorKeys.indexOf(dataKey as typeof colorKeys[number])
+    const colorIndex = colorKeys.findIndex(key => key === dataKey)
     const zipcode = colorIndex >= 0 ? [topKeys[colorIndex]] : otherKeys
 
     handleZipcodeClick(zipcode)

@@ -1,5 +1,6 @@
 "use client";
 
+import type { ColorKey } from "@/types/chart";
 import type { FilteringData } from "@/types/stats";
 import type { Travel } from "@/types/travel";
 
@@ -46,8 +47,8 @@ const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
   const handleDayClick = (day: string) => onFilter?.({ type: 'day', value: day })
   const handleHourClick = (hour: string) => onFilter?.({ type: 'hour', value: hour })
 
-  const handleLegendClick = (legendKey: string) => {
-    const colorIndex = COLOR_KEYS.indexOf(legendKey as typeof COLOR_KEYS[number])
+  const handleLegendClick = (legendKey: ColorKey) => {
+    const colorIndex = COLOR_KEYS.findIndex(key => key === legendKey)
     const zipcodes = colorIndex >= 0 ? [topKeys[colorIndex]] : otherKeys
 
     onFilter?.({ type: 'zipcode', value: zipcodes })
@@ -57,7 +58,7 @@ const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
     const cell = cellByKey.get(`${day}-${hour}`)
     const colorKey = cell?.colorKey
     const label = colorKey
-      ? `${translateDay(day, t)} ${hour}hs — ${chartConfig[colorKey as keyof typeof chartConfig].label} (${Math.round(cell.totalMinutes)} min)`
+      ? `${translateDay(day, t)} ${hour}hs — ${chartConfig[colorKey].label} (${Math.round(cell.totalMinutes)} min)`
       : `${translateDay(day, t)} ${hour}hs`
 
     return (
@@ -68,7 +69,7 @@ const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
         className={`rounded-[3px] bg-gray-100 dark:bg-gray-700 ${colorKey ? "hover:cursor-pointer hover:scale-110 hover:brightness-110 transition-transform" : ""}`}
         style={{
           ...(colorKey ? {
-            backgroundColor: chartConfig[colorKey as keyof typeof chartConfig].color,
+            backgroundColor: chartConfig[colorKey].color,
             opacity: getCellOpacity(cell.totalMinutes)
           } : {})
         }}

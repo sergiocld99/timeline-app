@@ -20,9 +20,11 @@ export type HourAndMinutes = {
   minutes: number;
 }
 
+export type ColorKey = 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'others'
+
 export type CalendarCell = {
   day: string
   hour: string
-  colorKey: string | null
+  colorKey: ColorKey | null
   totalMinutes: number
 }
