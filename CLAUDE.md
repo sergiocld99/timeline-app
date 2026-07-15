@@ -88,6 +88,8 @@ Hook/component conventions:
 - Declare all hooks and state at the top of a component/custom hook, before handlers or other logic.
 - Prefer triggering side effects (e.g. auto-filling a distance when a destination changes) inside event handlers via imperative calls (`queryClient.fetchQuery`) rather than `useEffect`, so users can override auto-filled values without the effect fighting back.
 - Check readiness flags (e.g. `areStatsReady`) before rendering components that depend on backend-calculated stats, to avoid inconsistent UI states.
+- If a chunk of inline JSX computes several derived variables before its `return`, extract it — but only if the resulting component/function stays at **5 props or fewer**. If extracting would need more props than that, keep it inline (or as a local closure function inside the parent) instead of prop-drilling; a component that needs its own derived data (e.g. counts from a `cells` array) should compute it internally from a raw prop rather than receiving it pre-computed.
+- Shared/domain types (data shapes used across more than one component) belong in `src/types/*.d.ts`, not declared inline in a component or builder file — see the existing per-entity files there (`chart.d.ts`, `travel.d.ts`, etc.) for where a given shape belongs.
 
 ESLint enforces `import/order` (type → builtin → external → internal → parent → sibling → index, with blank lines between groups) and `consistent-type-imports`. Run `npm run lint` after any frontend change — it's required for CI (GitHub Actions) to pass.
 
