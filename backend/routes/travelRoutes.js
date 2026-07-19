@@ -10,7 +10,8 @@ import {
   exportTravelsCsv,
   findTravels,
   findAnyTravelsToCPs,
-  findLastTravel
+  findLastTravel,
+  suggestDestination
 } from "../controller/travelExtras.js";
 
 const router = e.Router();
@@ -20,6 +21,7 @@ router.get('/graph', buildGraph);
 router.get('/export/csv', exportTravelsCsv);
 router.get('/find', findTravels)
 router.get('/find-last', findLastTravel)
+router.get('/suggest-destination', suggestDestination)
 
 router.post('/v2', getAllTravels)
 router.post('/find-any', findAnyTravelsToCPs)

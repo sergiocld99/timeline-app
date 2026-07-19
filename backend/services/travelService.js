@@ -31,6 +31,44 @@ export const enrichDuration = (travel) => {
   return travel
 }
 
+/**
+ * Picks the destination that most often follows travels from the same origin
+ * around a given hour:minute (in minutes since midnight, UTC digits).
+ * @param {Array} travels - Travel documents/objects with startTime (Date) and destination
+ * @param {number} targetMinutes - target time of day, in minutes since midnight
+ * @param {{ toleranceMinutes?: number, minOccurrences?: number }} [options]
+ * @returns {{ destination: string, count: number } | null}
+ */
+export const computeDestinationSuggestion = (travels, targetMinutes, { toleranceMinutes = 15, minOccurrences = 2 } = {}) => {
+  const counts = new Map()
+
+  for (const travel of travels) {
+    // startTime holds Argentina wall-clock digits written as UTC (see CLAUDE.md), so
+    // reading UTC hour/minute here gives the real time-of-day the user picked
+    const travelMinutes = travel.startTime.getUTCHours() * 60 + travel.startTime.getUTCMinutes()
+    const diff = Math.min(
+      Math.abs(travelMinutes - targetMinutes),
+      1440 - Math.abs(travelMinutes - targetMinutes)
+    )
+
+    if (diff > toleranceMinutes) continue
+
+    const destId = travel.destination.toString()
+    const entry = counts.get(destId) ?? { count: 0, mostRecent: travel.startTime }
+
+    entry.count++
+    if (travel.startTime > entry.mostRecent) entry.mostRecent = travel.startTime
+    counts.set(destId, entry)
+  }
+
+  // Requires at least 2 past matches so a single one-off trip doesn't dictate the suggestion
+  const [bestDestination] = [...counts.entries()]
+    .filter(([, entry]) => entry.count >= minOccurrences)
+    .sort((a, b) => b[1].count - a[1].count || b[1].mostRecent - a[1].mostRecent)
+
+  return bestDestination ? { destination: bestDestination[0], count: bestDestination[1].count } : null
+}
+
 export const getOverallSpeed = (travels) => {
   let sumOfDurationMin = 0
   let sumOfDistanceKm = 0

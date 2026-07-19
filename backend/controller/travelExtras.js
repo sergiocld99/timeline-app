@@ -1,7 +1,7 @@
 import { useCorrectUser } from "../helpers/useCorrectUser.js"
 import Travel from "../models/Travel.js"
 import Location from "../models/Location.js"
-import { enrichTravels, getOverallSpeed } from "../services/travelService.js"
+import { computeDestinationSuggestion, enrichTravels, getOverallSpeed } from "../services/travelService.js"
 import { getDateFrom, getDateTo } from "../utils/index.js"
 
 const escapeCsvValue = (value) => {
@@ -57,6 +57,27 @@ export const findLastTravel = async (req, res) => {
   }).catch(err => {
     res.status(500).json({ message: 'Error finding travel', error: err.message });
   })
+}
+
+export const suggestDestination = async (req, res) => {
+  const { origin, userId, hour, minute } = req.query
+
+  if (!origin || hour === undefined || minute === undefined) {
+    return res.status(400).json({ message: 'Missing origin, hour or minute' })
+  }
+
+  const targetMinutes = parseInt(hour, 10) * 60 + parseInt(minute, 10)
+
+  try {
+    const travels = await Travel.find({
+      ...useCorrectUser(userId),
+      origin,
+    })
+
+    res.json(computeDestinationSuggestion(travels, targetMinutes))
+  } catch (err) {
+    res.status(500).json({ message: 'Error suggesting destination', error: err.message });
+  }
 }
 
 export const findTravels = async (req, res) => {

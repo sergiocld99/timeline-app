@@ -1,4 +1,4 @@
-import type { TravelDTO, TravelFindResult, TravelFormData } from "@/types/travel";
+import type { DestinationSuggestion, TravelDTO, TravelFindResult, TravelFormData } from "@/types/travel";
 
 import axios from 'axios';
 
@@ -153,6 +153,22 @@ class TravelService {
       return response.data;
     } catch (error) {
       console.error("Error finding last travel:", error);
+      throw error;
+    }
+  }
+
+  static async suggestDestination(origin: string, hour: number, minute: number, userId?: number): Promise<DestinationSuggestion | null> {
+    try {
+      const url = new URL(`${baseUrl}/suggest-destination`);
+      url.searchParams.append("origin", origin);
+      url.searchParams.append("hour", hour.toString());
+      url.searchParams.append("minute", minute.toString());
+      if (userId) url.searchParams.append("userId", userId.toString());
+
+      const response = await axios.get<DestinationSuggestion | null>(url.toString());
+      return response.data;
+    } catch (error) {
+      console.error("Error suggesting destination:", error);
       throw error;
     }
   }

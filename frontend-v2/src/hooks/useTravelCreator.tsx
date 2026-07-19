@@ -127,17 +127,55 @@ const useTravelCreator = () => {
     return false
   }
 
+  // Auto-complete destination based on past travels sharing this origin + hour:minute
+  const suggestDestination = async (origin: string, startTime: string, currentDestination: string) => {
+    if (!origin || !startTime || currentDestination) return
+
+    const [hourPart, minutePart] = startTime.split('T')[1]?.split(':') ?? []
+    const hour = Number(hourPart)
+    const minute = Number(minutePart)
+
+    if (Number.isNaN(hour) || Number.isNaN(minute)) return
+
+    try {
+      const suggestion = await queryClient.fetchQuery({
+        queryKey: ['suggest_destination', origin, hour, minute, currentUser?.userId],
+        queryFn: () => TravelService.suggestDestination(origin, hour, minute, currentUser?.userId),
+        staleTime: 1000 * 60 * 30,
+      });
+
+      if (suggestion) {
+        setFormData(prev => (prev.destination ? prev : { ...prev, destination: suggestion.destination }));
+      }
+    } catch (err) {
+      // Si falla, simplemente seguimos sin auto-completar
+      console.error("Error fetching destination suggestion:", err);
+    }
+  }
+
   const handleChange = async (name: keyof TravelFormData, value: string | string[]) => {
     if (isSameDay && typeof value === 'string') {
       try {
         const updated = handleChangeOnSameDay(name, value)
 
         if (updated) {
+          if (name === 'startTime') {
+            void suggestDestination(formData.origin, value, formData.destination)
+          }
+
           return
         }
       } catch (err) {
         console.error(err)
       }
+    }
+
+    if (name === 'origin' && typeof value === 'string') {
+      void suggestDestination(value, formData.startTime, formData.destination)
+    }
+
+    if (name === 'startTime' && typeof value === 'string' && !isSameDay) {
+      void suggestDestination(formData.origin, value, formData.destination)
     }
 
     // Auto-complete distance based on last travel only when changing destination
