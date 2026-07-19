@@ -21,6 +21,8 @@ docker compose up --build -d
 ```
 **Always pass `--build` after touching `frontend-v2/` or `backend/` source** — Next.js/node_modules are cached in the container and stale code will silently keep running otherwise.
 
+**For frontend-only changes, prefer `cd frontend-v2 && npm run dev` over rebuilding the Docker container** when running Playwright MCP verification — it's much faster than a full `docker compose up --build`. Only rebuild the container when the change needs the full stack (backend/stats-service interaction) or before a final end-to-end check.
+
 ### Backend (Node/Express)
 ```bash
 cd backend
@@ -86,11 +88,14 @@ Hook/component conventions:
 - Declare all hooks and state at the top of a component/custom hook, before handlers or other logic.
 - Prefer triggering side effects (e.g. auto-filling a distance when a destination changes) inside event handlers via imperative calls (`queryClient.fetchQuery`) rather than `useEffect`, so users can override auto-filled values without the effect fighting back.
 - Check readiness flags (e.g. `areStatsReady`) before rendering components that depend on backend-calculated stats, to avoid inconsistent UI states.
+- If a chunk of inline JSX computes several derived variables before its `return`, extract it — but only if the resulting component/function stays at **5 props or fewer**. If extracting would need more props than that, keep it inline (or as a local closure function inside the parent) instead of prop-drilling; a component that needs its own derived data (e.g. counts from a `cells` array) should compute it internally from a raw prop rather than receiving it pre-computed.
+- Shared/domain types (data shapes used across more than one component) belong in `src/types/*.d.ts`, not declared inline in a component or builder file — see the existing per-entity files there (`chart.d.ts`, `travel.d.ts`, etc.) for where a given shape belongs.
 
 ESLint enforces `import/order` (type → builtin → external → internal → parent → sibling → index, with blank lines between groups) and `consistent-type-imports`. Run `npm run lint` after any frontend change — it's required for CI (GitHub Actions) to pass.
 
 ## Cross-cutting rules
 
+- **Never `git commit` without having run `docker compose up --build -d` first in that session** (or the same change validated some other way as noted below) — this is the final end-to-end check that the full stack actually builds and runs with the change, not just that `npm run dev`/`npm run lint` pass locally. `npm run dev` (see above) is fine for fast iterative Playwright MCP verification while working, but always follow up with a Docker rebuild before committing.
 - **Software Design Documents**: non-trivial features or architectural changes should get a doc in `docs/sdd/` (copy `template.md`) before implementation.
 - **CHANGELOG.md is manually curated** — never edit it directly; the team fills it in by PR number/subject. The one exception is the `changelog-cod` skill, which computes the PR size using the same formula as `.github/workflows/pr-compliance.yml` and appends the resulting `CODn-XXX` entry — only invoke it explicitly (e.g. via `/changelog-cod`), never edit the file ad hoc.
 - **MongoDB is shared** across backend (writes, via Mongoose) and statistics-service (reads only, via Panache) — Mongoose schemas are app-level validation only and don't constrain what Quarkus can read. Don't add write paths to the stats service.

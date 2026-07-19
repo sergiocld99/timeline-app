@@ -8,6 +8,11 @@ export const normalizeHour = (hour: number) => {
   return hour.toString().padStart(2, '0');
 }
 
+export const getCellOpacity = (totalMinutes: number, fullOpacityMinutes = 60) => {
+  const ratio = Math.min(totalMinutes / fullOpacityMinutes, 1)
+  return 0.4 + ratio * 0.6
+}
+
 export const getChartHours = () => {
   const chartHours = [];
 

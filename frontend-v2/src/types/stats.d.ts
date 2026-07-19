@@ -10,7 +10,7 @@ export type StatByModeChartData = StatByMode & {
   fill: string
 }
 
-export type StatsView = "bar" | "circular" | "line"
+export type StatsView = "bar" | "circular" | "line" | "calendar"
 
 export type TopKeysResult = {
   topKeys: string[]
@@ -38,4 +38,14 @@ type FilteringByCross = {
   value: string
 }
 
-export type FilteringData = FilteringByZipcode | FilteringByLocation | FilteringByTime | FilteringByCross
+type FilteringByMode = {
+  type: 'mode'
+  value: string
+}
+
+type FilteringByDayHour = {
+  type: 'dayHour'
+  value: { day: string, hour: string }
+}
+
+export type FilteringData = FilteringByZipcode | FilteringByLocation | FilteringByTime | FilteringByCross | FilteringByMode | FilteringByDayHour

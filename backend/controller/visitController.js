@@ -109,6 +109,13 @@ export const deleteVisit = (req, res) => {
     if (!deletedVisit) {
       return res.status(404).json({ message: 'Visit not found' });
     }
+    console.log('Visit deleted:', {
+      id: deletedVisit._id.toString(),
+      userId: deletedVisit.userId,
+      location: deletedVisit.location.toString(),
+      arrivalTime: deletedVisit.arrivalTime,
+      departureTime: deletedVisit.departureTime
+    });
     res.status(204).send();
   }).catch(err => {
     res.status(400).json({ message: 'Error deleting visit', error: err.message });

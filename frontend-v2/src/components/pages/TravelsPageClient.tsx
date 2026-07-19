@@ -9,11 +9,14 @@ import { useEffect, useState } from "react";
 
 import PresentialWorkAlert from "@/components/PresentialWorkAlert";
 import TravelBarStats from "@/components/TravelBarStats";
+import TravelCalendarStats from "@/components/TravelCalendarStats";
 import TravelPieStats from "@/components/TravelPieStats";
 import TravelTable from "@/components/TravelTable";
 import useTravels from "@/hooks/useTravels";
+import { translateDay } from "@/utils/date";
 
 import BarViewBtn from "../buttons/BarViewBtn";
+import CalendarViewBtn from "../buttons/CalendarViewBtn";
 import CircularViewBtn from "../buttons/CircularViewBtn";
 import LineViewBtn from "../buttons/LineViewBtn";
 import TravelLineStats from "../TravelLineStats";
@@ -34,7 +37,9 @@ const TravelMap = dynamic(() => import("@/components/TravelMap"), {
 });
 
 const TravelsPageClient = () => {
+  const t = useTranslations();
   const tDashboard = useTranslations("Dashboard");
+  const tCharts = useTranslations("Charts");
   const { travels: travelsData, updateTravel, deleteTravel } = useTravels();
   const { travels, stats } = travelsData;
 
@@ -71,6 +76,20 @@ const TravelsPageClient = () => {
       return;
     }
 
+    if (type === 'mode' && value) {
+      setFilteredTravels(travels.filter(t => t.modeOfTransport === value));
+      setAppliedFilter(tCharts(`modes.${value}`));
+      return;
+    }
+
+    if (type === 'dayHour' && value) {
+      setFilteredTravels(travels.filter(tr =>
+        tr.extractedDate.slice(0, 3) === value.day && tr.hourParts.completeParts.some(p => p.hour === value.hour)
+      ));
+      setAppliedFilter(`${translateDay(value.day, t)} ${value.hour}hs`);
+      return;
+    }
+
     setFilteredTravels(travels);
     setAppliedFilter(null);
   };
@@ -91,13 +110,18 @@ const TravelsPageClient = () => {
               <BarViewBtn handleClick={() => setStatsView("bar")} isActive={statsView === "bar"} />
               <CircularViewBtn handleClick={() => setStatsView("circular")} isActive={statsView === "circular"} />
               <LineViewBtn handleClick={() => setStatsView("line")} isActive={statsView === "line"} />
+              <CalendarViewBtn handleClick={() => setStatsView("calendar")} isActive={statsView === "calendar"} />
             </div>
             {statsView === "bar" && <TravelBarStats travels={filteredTravels} onFilter={onFilter} cardClassName="w-full" options={{
               backendHome: stats?.home,
               appliedFilter: appliedFilter
             }} />}
             {statsView === "line" && <TravelLineStats travels={filteredTravels} onFilter={onFilter} />}
-            {statsView === "circular" && <TravelPieStats travels={filteredTravels} />}
+            {statsView === "circular" && <TravelPieStats travels={filteredTravels} onFilter={onFilter} />}
+            {statsView === "calendar" && <TravelCalendarStats travels={filteredTravels} onFilter={onFilter} options={{
+              backendHome: stats?.home,
+              appliedFilter: appliedFilter
+            }} />}
           </div>
         </div>
         <TravelTable
