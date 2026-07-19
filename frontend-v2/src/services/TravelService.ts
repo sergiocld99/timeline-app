@@ -157,12 +157,11 @@ class TravelService {
     }
   }
 
-  static async suggestDestination(origin: string, hour: number, minute: number, userId?: number): Promise<DestinationSuggestion | null> {
+  static async suggestDestination(origin: string, startTime: string, userId?: number): Promise<DestinationSuggestion | null> {
     try {
       const url = new URL(`${baseUrl}/suggest-destination`);
       url.searchParams.append("origin", origin);
-      url.searchParams.append("hour", hour.toString());
-      url.searchParams.append("minute", minute.toString());
+      url.searchParams.append("startTime", startTime);
       if (userId) url.searchParams.append("userId", userId.toString());
 
       const response = await axios.get<DestinationSuggestion | null>(url.toString());

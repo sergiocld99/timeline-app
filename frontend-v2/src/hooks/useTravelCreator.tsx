@@ -131,16 +131,10 @@ const useTravelCreator = () => {
   const suggestDestination = async (origin: string, startTime: string, currentDestination: string) => {
     if (!origin || !startTime || currentDestination) return
 
-    const [hourPart, minutePart] = startTime.split('T')[1]?.split(':') ?? []
-    const hour = Number(hourPart)
-    const minute = Number(minutePart)
-
-    if (Number.isNaN(hour) || Number.isNaN(minute)) return
-
     try {
       const suggestion = await queryClient.fetchQuery({
-        queryKey: ['suggest_destination', origin, hour, minute, currentUser?.userId],
-        queryFn: () => TravelService.suggestDestination(origin, hour, minute, currentUser?.userId),
+        queryKey: ['suggest_destination', origin, startTime, currentUser?.userId],
+        queryFn: () => TravelService.suggestDestination(origin, startTime, currentUser?.userId),
         staleTime: 1000 * 60 * 30,
       });
 

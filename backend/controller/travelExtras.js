@@ -60,18 +60,25 @@ export const findLastTravel = async (req, res) => {
 }
 
 export const suggestDestination = async (req, res) => {
-  const { origin, userId, hour, minute } = req.query
+  const { origin, userId, startTime } = req.query
 
-  if (!origin || hour === undefined || minute === undefined) {
-    return res.status(400).json({ message: 'Missing origin, hour or minute' })
+  if (!origin || !startTime) {
+    return res.status(400).json({ message: 'Missing origin or startTime' })
   }
 
-  const targetMinutes = parseInt(hour, 10) * 60 + parseInt(minute, 10)
+  const targetDate = new Date(startTime)
+  // Only look at recent history relative to the form's date, so an origin whose
+  // meaning changed long ago (e.g. an old job) doesn't skew today's suggestion
+  const dateFrom = new Date(targetDate)
+  dateFrom.setUTCDate(dateFrom.getUTCDate() - 200)
+
+  const targetMinutes = targetDate.getUTCHours() * 60 + targetDate.getUTCMinutes()
 
   try {
     const travels = await Travel.find({
       ...useCorrectUser(userId),
       origin,
+      startTime: { $gte: dateFrom, $lte: targetDate },
     })
 
     res.json(computeDestinationSuggestion(travels, targetMinutes))
