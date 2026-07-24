@@ -16,6 +16,7 @@ Todos los endpoints están bajo el prefijo `/api`
 - [GET /api/travels/export/csv](#get-apitravelsexportcsv) - Exportar CSV
 - [GET /api/travels/find](#get-apitravelsfind) - Buscar viajes entre CPs
 - [GET /api/travels/find-last](#get-apitravelsfind-last) - Último viaje entre ubicaciones
+- [GET /api/travels/suggest-destination](#get-apitravelssuggest-destination) - Sugerir destino por origen + hora
 - [POST /api/travels/find-any](#post-apitravelsfind-any) - Buscar viajes a múltiples CPs
 - [POST /api/travels](#post-apitravels) - Crear viaje
 - [PUT /api/travels/:id](#put-apitravelsid) - Actualizar viaje
@@ -124,6 +125,18 @@ Busca el último viaje entre dos ubicaciones (útil para autocompletar distancia
 - `userId` (opcional)
 
 **Response:** Objeto del viaje más reciente o `null`
+
+---
+
+### GET `/api/travels/suggest-destination`
+Sugiere un destino en base a viajes previos del usuario con el mismo origen y una hora del día similar (útil para autocompletar destino en el Creator). Solo considera viajes de los 200 días previos a `startTime`.
+
+**Query Parameters:**
+- `origin` (string, requerido): ID de ubicación
+- `startTime` (string, requerido): fecha/hora objetivo (mismo formato que el campo `startTime` de un viaje)
+- `userId` (opcional)
+
+**Response:** `{ destination, count }` o `null` si no hay al menos 2 viajes coincidentes dentro de una tolerancia de 15 minutos
 
 ---
 

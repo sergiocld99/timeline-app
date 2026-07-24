@@ -1,4 +1,28 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type APIRequestContext } from '@playwright/test';
+
+const backendUrl = 'http://localhost:3000/api';
+
+// If a previous run of this test failed between creating and deleting the travel,
+// the leftover row collides with the unique {userId, startTime, origin} index and
+// blocks re-creation. Clear anything left in this test's date range before/after running.
+const cleanupTestTravels = async (request: APIRequestContext) => {
+  const response = await request.get(`${backendUrl}/travels`, {
+    params: { dateFrom: '2099-08-01T00:00', dateTo: '2099-08-31T23:59', userId: '1' },
+  });
+  const { travels } = await response.json();
+
+  for (const travel of travels) {
+    await request.delete(`${backendUrl}/travels/${travel._id}`);
+  }
+};
+
+test.beforeEach(async ({ request }) => {
+  await cleanupTestTravels(request);
+});
+
+test.afterEach(async ({ request }) => {
+  await cleanupTestTravels(request);
+});
 
 test('can create and delete travel', async ({ page }) => {
   await page.goto('/creator');
@@ -62,11 +86,17 @@ test('can create and delete travel', async ({ page }) => {
 
   await expect(page.locator('td').filter({ hasText: '1 travel' })).toBeVisible()
 
+  // filterPromise can resolve on an unrelated /travels GET (e.g. stats), so the table
+  // may still show stale rows momentarily; wait until exactly one filtered row is rendered
+  // before interacting with it, or "Open menu" resolves to more than one match
+  const openMenuButton = page.getByRole('button', { name: 'Open menu' });
+  await expect(openMenuButton).toHaveCount(1);
+
   // Delete travel - Wait for the DELETE request to complete
   const deletePromise = page.waitForResponse(response =>
     response.url().includes('/travels') && response.request().method() === 'DELETE' && response.status() === 204
   );
-  await page.getByRole('button', { name: 'Open menu' }).click()
+  await openMenuButton.click()
   await page.getByRole('menuitem', { name: 'Delete' }).click()
   await deletePromise;
 

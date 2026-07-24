@@ -97,6 +97,11 @@ export type TravelFindResult = {
   travels: Travel[]
 }
 
+export type DestinationSuggestion = {
+  destination: string
+  count: number
+}
+
 export type TravelsData = {
   travels: Travel[]
   stats?: TravelStats

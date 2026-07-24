@@ -1,7 +1,7 @@
 import { useCorrectUser } from "../helpers/useCorrectUser.js"
 import Travel from "../models/Travel.js"
 import Location from "../models/Location.js"
-import { enrichTravels, getOverallSpeed } from "../services/travelService.js"
+import { computeDestinationSuggestion, enrichTravels, getOverallSpeed } from "../services/travelService.js"
 import { getDateFrom, getDateTo } from "../utils/index.js"
 
 const escapeCsvValue = (value) => {
@@ -57,6 +57,34 @@ export const findLastTravel = async (req, res) => {
   }).catch(err => {
     res.status(500).json({ message: 'Error finding travel', error: err.message });
   })
+}
+
+export const suggestDestination = async (req, res) => {
+  const { origin, userId, startTime } = req.query
+
+  if (!origin || !startTime) {
+    return res.status(400).json({ message: 'Missing origin or startTime' })
+  }
+
+  const targetDate = new Date(startTime)
+  // Only look at recent history relative to the form's date, so an origin whose
+  // meaning changed long ago (e.g. an old job) doesn't skew today's suggestion
+  const dateFrom = new Date(targetDate)
+  dateFrom.setUTCDate(dateFrom.getUTCDate() - 200)
+
+  const targetMinutes = targetDate.getUTCHours() * 60 + targetDate.getUTCMinutes()
+
+  try {
+    const travels = await Travel.find({
+      ...useCorrectUser(userId),
+      origin,
+      startTime: { $gte: dateFrom, $lte: targetDate },
+    })
+
+    res.json(computeDestinationSuggestion(travels, targetMinutes))
+  } catch (err) {
+    res.status(500).json({ message: 'Error suggesting destination', error: err.message });
+  }
 }
 
 export const findTravels = async (req, res) => {
