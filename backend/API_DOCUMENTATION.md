@@ -136,7 +136,7 @@ Sugiere un destino en base a viajes previos del usuario con el mismo origen y un
 - `startTime` (string, requerido): fecha/hora objetivo (mismo formato que el campo `startTime` de un viaje)
 - `userId` (opcional)
 
-**Response:** `{ destination, count }` o `null` si no hay al menos 2 viajes coincidentes dentro de una tolerancia de 15 minutos
+**Response:** `{ destination, count, durationMinutes }` o `null` si no hay al menos 2 viajes coincidentes dentro de una tolerancia de 15 minutos. `durationMinutes` es la mediana de la duración de esos viajes (o `null` si no se pudo calcular), y sirve para estimar el `endTime`
 
 ---
 

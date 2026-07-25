@@ -31,13 +31,27 @@ export const enrichDuration = (travel) => {
   return travel
 }
 
+// Median (not average) so a single unusually long trip doesn't skew the estimate
+const getMedianDuration = (durations) => {
+  if (durations.length === 0) return null
+
+  const sorted = [...durations].sort((a, b) => a - b)
+  const middle = Math.floor(sorted.length / 2)
+  const median = sorted.length % 2 === 0
+    ? (sorted[middle - 1] + sorted[middle]) / 2
+    : sorted[middle]
+
+  return Math.round(median)
+}
+
 /**
  * Picks the destination that most often follows travels from the same origin
- * around a given hour:minute (in minutes since midnight, UTC digits).
- * @param {Array} travels - Travel documents/objects with startTime (Date) and destination
+ * around a given hour:minute (in minutes since midnight, UTC digits), together
+ * with the typical duration of those travels so the caller can estimate an endTime.
+ * @param {Array} travels - Travel documents/objects with startTime (Date), endTime (Date) and destination
  * @param {number} targetMinutes - target time of day, in minutes since midnight
  * @param {{ toleranceMinutes?: number, minOccurrences?: number }} [options]
- * @returns {{ destination: string, count: number } | null}
+ * @returns {{ destination: string, count: number, durationMinutes: number | null } | null}
  */
 export const computeDestinationSuggestion = (travels, targetMinutes, { toleranceMinutes = 15, minOccurrences = 2 } = {}) => {
   const counts = new Map()
@@ -54,10 +68,17 @@ export const computeDestinationSuggestion = (travels, targetMinutes, { tolerance
     if (diff > toleranceMinutes) continue
 
     const destId = travel.destination.toString()
-    const entry = counts.get(destId) ?? { count: 0, mostRecent: travel.startTime }
+    const entry = counts.get(destId) ?? { count: 0, mostRecent: travel.startTime, durations: [] }
 
     entry.count++
     if (travel.startTime > entry.mostRecent) entry.mostRecent = travel.startTime
+
+    if (travel.endTime) {
+      const duration = calculateDuration(travel.startTime, travel.endTime)
+
+      if (duration > 0) entry.durations.push(duration)
+    }
+
     counts.set(destId, entry)
   }
 
@@ -66,7 +87,11 @@ export const computeDestinationSuggestion = (travels, targetMinutes, { tolerance
     .filter(([, entry]) => entry.count >= minOccurrences)
     .sort((a, b) => b[1].count - a[1].count || b[1].mostRecent - a[1].mostRecent)
 
-  return bestDestination ? { destination: bestDestination[0], count: bestDestination[1].count } : null
+  if (!bestDestination) return null
+
+  const [destination, entry] = bestDestination
+
+  return { destination, count: entry.count, durationMinutes: getMedianDuration(entry.durations) }
 }
 
 export const getOverallSpeed = (travels) => {

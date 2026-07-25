@@ -218,6 +218,7 @@
       "locationAddedError": "Error al agregar el lugar. Por favor intente de nuevo.",
       "validationOriginDestinationRequired": "El origen y el destino son requeridos.",
       "validationOriginDestinationDifferent": "El origen y el destino deben ser diferentes.",
+      "validationTimesRequired": "La hora de inicio y de fin son obligatorias.",
       "noUsersFound": "No se encontraron usuarios.",
       "travelCreatedAllUsersSuccess": "¡Viaje creado con éxito para los {count} usuarios!",
       "travelCreatedAllUsersError": "La creación del viaje falló para {count} usuarios.",

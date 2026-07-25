@@ -12,7 +12,7 @@ import { useUser } from "@/contexts/UserContext";
 import TravelService from "@/services/TravelService";
 import UserService from "@/services/UserService";
 import VisitService from "@/services/VisitService";
-import { getTimeFromCurrent } from "@/utils";
+import { addMinutesToFormDate, getTimeFromCurrent } from "@/utils";
 
 const validateFields = (formData: TravelFormData, t: TranslationFn): boolean => {
   if (!formData.origin || !formData.destination) {
@@ -21,6 +21,10 @@ const validateFields = (formData: TravelFormData, t: TranslationFn): boolean => 
 
   if (formData.origin === formData.destination) {
     throw new Error(t("messages.validationOriginDestinationDifferent"));
+  }
+
+  if (!isCompleteFormDate(formData.startTime) || !formData.endTime) {
+    throw new Error(t("messages.validationTimesRequired"));
   }
 
   return true;
@@ -71,7 +75,17 @@ const performCreationForCurrentUser = async (formData: TravelFormData, currentUs
   }
 }
 
+const getDatePart = (formDate: string) => formDate.split('T')[0] ?? ""
+
+const getTimePart = (formDate: string) => formDate.split('T')[1] ?? ""
+
+// startTime is edited as a date + a time field, so it can hold a date with no hour yet
+const isCompleteFormDate = (formDate: string) => /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(formDate)
+
 const getSameDayEndTime = (startTime: string, endTime: string) => {
+  // endTime starts out empty (it gets auto-filled from the destination suggestion)
+  if (!endTime) return ""
+
   const datePart = startTime.split('T')[0]
   const endTimeHourPart = endTime.split('T')[1]
 
@@ -88,7 +102,8 @@ const useTravelCreator = () => {
     origin: "",
     destination: "",
     startTime: getTimeFromCurrent(2),
-    endTime: getTimeFromCurrent(0),
+    // Left empty on purpose: it gets auto-filled from the suggested destination's typical duration
+    endTime: "",
     modeOfTransport: "car",
     line: "",
     distance: "",
@@ -113,8 +128,8 @@ const useTravelCreator = () => {
     if (name === 'endTime') {
       const datePart = formData.startTime.split('T')[0]
 
-      // Keep original format for backend (datetime-local)
-      value = datePart.concat('T').concat(value)
+      // Keep original format for backend (datetime-local), unless the user cleared the field
+      value = value ? datePart.concat('T').concat(value) : ""
 
       setFormData({
         ...formData,
@@ -129,7 +144,7 @@ const useTravelCreator = () => {
 
   // Auto-complete destination based on past travels sharing this origin + hour:minute
   const suggestDestination = async (origin: string, startTime: string, currentDestination: string) => {
-    if (!origin || !startTime || currentDestination) return
+    if (!origin || !isCompleteFormDate(startTime) || currentDestination) return
 
     try {
       const suggestion = await queryClient.fetchQuery({
@@ -139,7 +154,16 @@ const useTravelCreator = () => {
       });
 
       if (suggestion) {
-        setFormData(prev => (prev.destination ? prev : { ...prev, destination: suggestion.destination }));
+        setFormData(prev => {
+          if (prev.destination) return prev
+
+          // The suggested destination brings its typical duration, so we can estimate the endTime too
+          const endTime = suggestion.durationMinutes && !prev.endTime
+            ? addMinutesToFormDate(startTime, suggestion.durationMinutes)
+            : prev.endTime
+
+          return { ...prev, destination: suggestion.destination, endTime }
+        });
       }
     } catch (err) {
       // Si falla, simplemente seguimos sin auto-completar
@@ -207,6 +231,14 @@ const useTravelCreator = () => {
       [name]: value,
     });
   };
+  const handleStartTimeChange = (part: 'date' | 'time', value: string) => {
+    const startTime = part === 'date'
+      ? value.concat('T').concat(getTimePart(formData.startTime))
+      : getDatePart(formData.startTime).concat('T').concat(value)
+
+    void handleChange('startTime', startTime)
+  }
+
   const t = useTranslations("Creator");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -232,7 +264,10 @@ const useTravelCreator = () => {
         ...formData,
         origin: formData.destination,
         destination: "",
-        startTime: formData.endTime,
+        // Keep the date, blank both hours: forces re-entering the real start hour
+        // (avoids accidental 0-minute visits) and lets endTime be predicted again
+        startTime: getDatePart(formData.endTime).concat('T'),
+        endTime: "",
         line: "",
         distance: "",
         crosses: [],
@@ -264,6 +299,7 @@ const useTravelCreator = () => {
     setCreateForAllUsers,
     setIsSameDay: handleSameDayCheck,
     handleChange,
+    handleStartTimeChange,
     handleSubmit,
   }
 }
