@@ -12,8 +12,10 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { useDateRange } from '@/contexts/DateRangeContext';
 import useLocations from '@/hooks/useLocations';
 import { extractTime } from '@/utils';
+import { replaceDateRangeInUrl, toFormDateFromParts } from '@/utils/dateRange';
 import { renderWeight } from '@/utils/weight';
 import { cn } from '@/lib/utils';
 
@@ -50,6 +52,7 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
   const [detailsTravel, setDetailsTravel] = useState<Travel | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const { locations } = useLocations()
+  const { updateDateRange } = useDateRange()
 
   const resetEdition = () => {
     setEditingId(null);
@@ -172,6 +175,15 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
     return <LocationCell editProps={editProps} field={field} locations={locations} />
   }
 
+  // startTime/endTime carry Argentina wall-clock digits, so the date part is taken literally.
+  const handleGoToDate = (travel: Travel) => {
+    const dateFrom = toFormDateFromParts(travel.startTime.split('T')[0], 'start');
+    const dateTo = toFormDateFromParts(travel.endTime.split('T')[0], 'end');
+
+    updateDateRange(dateFrom, dateTo);
+    replaceDateRangeInUrl(dateFrom, dateTo);
+  };
+
   const renderActionButtons = (travel: Travel) => {
     if (editingId === travel._id) {
       return (
@@ -200,6 +212,7 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
 
     return (
       <TravelActionDropdown
+        onGoToDate={source === 'travels' ? () => handleGoToDate(travel) : undefined}
         onEdit={() => handleEdit(travel)}
         onDelete={onDelete ? () => { void handleDelete(travel); } : undefined}
         onAddCrosses={onAddCrosses ? () => { void onAddCrosses(travel._id); } : undefined}

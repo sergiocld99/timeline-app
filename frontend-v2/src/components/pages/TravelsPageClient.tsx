@@ -70,6 +70,7 @@ const TravelsPageClient = () => {
         <TravelTable
           travels={filteredTravels}
           stats={stats}
+          source="travels"
           onUpdateTravel={updateTravel}
           onDeleteTravel={deleteTravel}
           onFilter={onFilter}

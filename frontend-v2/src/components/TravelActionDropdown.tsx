@@ -1,6 +1,6 @@
 "use client";
 
-import { MoreVertical, Edit, Trash2, Plus, Minus, Info, PlusCircle } from "lucide-react";
+import { MoreVertical, Edit, Trash2, Plus, Minus, Info, PlusCircle, CalendarSearchIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,7 @@ type TravelActionDropdownProps = {
   onRemoveCrosses?: () => void;
   onAddNote?: () => void;
   onViewDetails?: () => void;
+  onGoToDate?: () => void;
 }
 
 export function TravelActionDropdown({
@@ -28,6 +29,7 @@ export function TravelActionDropdown({
   onRemoveCrosses,
   onAddNote,
   onViewDetails,
+  onGoToDate,
 }: TravelActionDropdownProps) {
   const t = useTranslations("Actions");
   const hasCrossesActions = onAddCrosses && onRemoveCrosses;
@@ -58,6 +60,12 @@ export function TravelActionDropdown({
               <Info className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
               <span>{t("viewDetails")}</span>
             </DropdownMenuItem>
+            {onGoToDate && (
+              <DropdownMenuItem onClick={onGoToDate} className="cursor-pointer">
+                <CalendarSearchIcon className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
+                <span>{t("goToDate")}</span>
+              </DropdownMenuItem>
+            )}
             <DropdownMenuSeparator className="border-gray-200 dark:border-gray-700" />
             <DropdownMenuItem
               onClick={onDelete}
