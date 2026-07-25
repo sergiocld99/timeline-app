@@ -1,4 +1,7 @@
 # CHANGELOG
+## v0.11.0
+- COD11-003: Location names on zipcode stats + click-to-filter on from/to pages + go-to-date action (#95) [344]
+
 ## v0.10.0
 - COD10-001: Add offset as dashboard query param (#74) [120]
 - COD10-005: Add Travel Modals for Notes and Details (#77) [500]
