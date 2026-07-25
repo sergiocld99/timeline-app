@@ -10,6 +10,7 @@ import TravelBarStats from "@/components/TravelBarStats"
 import TravelTable from "@/components/TravelTable"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import useLocations from "@/hooks/useLocations"
+import useTravelFilter from "@/hooks/useTravelFilter"
 import useTravels from "@/hooks/useTravels"
 
 type Props = {
@@ -23,6 +24,7 @@ const LocationCommonViewer = ({ locationId, action }: Props) => {
   const { locations, loading } = useLocations()
   const { travels: travelsData } = useTravels('', action === 'from' ? locationId : '', action === 'to' ? locationId : '')
   const { travels, stats } = travelsData
+  const { filteredTravels, appliedFilter, onFilter } = useTravelFilter(travels)
 
   const targetLocation = locations.find(loc => loc._id === locationId)
 
@@ -56,12 +58,22 @@ const LocationCommonViewer = ({ locationId, action }: Props) => {
               </div>
             </CardContent>
           </Card>
-          <TravelBarStats travels={travels} options={{ field: travelField }} onFilter={() => { }} />
+          <TravelBarStats
+            travels={filteredTravels}
+            onFilter={onFilter}
+            options={{ field: travelField, appliedFilter }}
+          />
         </div>
         <div className="lg:hidden">
           <span className="text-lg font-bold">{travelsLabel} {locationName}</span>
         </div>
-        <TravelTable travels={travels} stats={stats} source="locationViewer" />
+        <TravelTable
+          travels={filteredTravels}
+          stats={stats}
+          source="locationViewer"
+          onRemoveFilter={() => onFilter()}
+          appliedFilter={appliedFilter}
+        />
       </div>
     </main>
   )
