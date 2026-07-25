@@ -11,7 +11,7 @@ import { daysOfWeek } from "@/constants";
 import { buildChartConfig, cleanUnusedBorders, getCellOpacity } from "@/utils/chart";
 import { translateDay } from "@/utils/date";
 
-import { calculateHome, enrichWithFarthestPoint } from "./analize/travel";
+import { buildZipcodeLabels, calculateHome, enrichWithFarthestPoint } from "./analize/travel";
 import { buildCalendarChartData, calculateBestLocationsByCellDominance, COLOR_KEYS } from "./builders/travelCalendar";
 import CalendarLegend from "./CalendarLegend";
 import { Card, CardContent } from "./ui/card";
@@ -33,7 +33,8 @@ const TravelCalendarStats = ({ travels, onFilter, options }: Props) => {
   const relevantTravels = travels.map(travel => enrichWithFarthestPoint(travel, home))
 
   const { topKeys, otherKeys } = calculateBestLocationsByCellDominance(relevantTravels, 5)
-  const chartConfig = buildChartConfig(topKeys, otherKeys, t("Charts.modes.others"))
+  const zipcodeLabels = buildZipcodeLabels(travels)
+  const chartConfig = buildChartConfig(topKeys, otherKeys, t("Charts.modes.others"), zipcodeLabels)
   const cells = buildCalendarChartData(relevantTravels, topKeys)
   const cellByKey = new Map(cells.map(cell => [`${cell.day}-${cell.hour}`, cell]))
 

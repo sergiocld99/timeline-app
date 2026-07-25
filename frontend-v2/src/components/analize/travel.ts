@@ -77,6 +77,25 @@ export const calculateBestLocations = (travels: TravelWithFarthestPoint[], quant
   return extractKeys(sortedLocations, quantity, true)
 }
 
+export const buildZipcodeLabels = (travels: Travel[]): Record<string, string> => {
+  const namesByZipcode = travels.reduce((acc, t) => {
+    [t.origin, t.destination].forEach(location => {
+      if (!location?.zipcode) { return }
+      if (!acc[location.zipcode]) { acc[location.zipcode] = new Set<string>() }
+
+      acc[location.zipcode].add(location.name)
+    })
+
+    return acc
+  }, {} as Record<string, Set<string>>)
+
+  return Object.fromEntries(
+    Object.entries(namesByZipcode)
+      .filter(([, names]) => names.size === 1)
+      .map(([zipcode, names]) => [zipcode, [...names][0]])
+  )
+}
+
 export const calculateBestModes = (travels: Travel[], quantity: number) => {
   const topModes = travels.reduce((acc, t) => {
     const key = t.modeOfTransport

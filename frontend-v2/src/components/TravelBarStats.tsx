@@ -7,7 +7,7 @@ import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import { buildChartConfig } from "@/utils/chart"
 import { translateDay } from "@/utils/date";
 
-import { calculateBestLocations, calculateHome, enrichWithFarthestPoint } from "./analize/travel";
+import { buildZipcodeLabels, calculateBestLocations, calculateHome, enrichWithFarthestPoint } from "./analize/travel";
 import { buildDailyChartData, buildHourlyChartData } from "./builders/travelBars";
 import { Card, CardContent } from "./ui/card";
 import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "./ui/chart";
@@ -31,7 +31,8 @@ const TravelBarStats = ({ travels, onFilter, options, cardClassName = "w-8/10" }
   const { topKeys, otherKeys, shouldShowOthers } = calculateBestLocations(relevantTravels, 5)
   const hourlyChartData = buildHourlyChartData(relevantTravels, topKeys)
   const dailyChartData = buildDailyChartData(relevantTravels, topKeys)
-  const chartConfig = buildChartConfig(topKeys, otherKeys, t("Charts.modes.others"))
+  const zipcodeLabels = buildZipcodeLabels(travels)
+  const chartConfig = buildChartConfig(topKeys, otherKeys, t("Charts.modes.others"), zipcodeLabels)
 
   const handleZipcodeClick = (zipcode: string[]) => {
     onFilter({ type: 'zipcode', value: zipcode })

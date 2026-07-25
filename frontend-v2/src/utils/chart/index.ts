@@ -90,30 +90,37 @@ export const cleanUnusedBorders = <T extends { empty: boolean }>(chartData: T[])
   return chartData.slice(p0, p1)
 }
 
-export const buildChartConfig = (topKeys: string[], otherKeys: string[] = [], othersLabel = 'Others') => {
+export const buildChartConfig = (
+  topKeys: string[],
+  otherKeys: string[] = [],
+  othersLabel = 'Others',
+  labels: Record<string, string> = {}
+) => {
+  const toLabel = (key: string) => abbreviateWords(labels[key] ?? key)
+
   const chartConfig = {
     red: {
-      label: abbreviateWords(topKeys[0]),
+      label: toLabel(topKeys[0]),
       color: "var(--chart-5)",
     },
     orange: {
-      label: abbreviateWords(topKeys[1]),
+      label: toLabel(topKeys[1]),
       color: "var(--chart-3)",
     },
     yellow: {
-      label: abbreviateWords(topKeys[2]),
+      label: toLabel(topKeys[2]),
       color: "var(--chart-6)",
     },
     green: {
-      label: abbreviateWords(topKeys[3]),
+      label: toLabel(topKeys[3]),
       color: "var(--chart-2)",
     },
     blue: {
-      label: abbreviateWords(topKeys[4]),
+      label: toLabel(topKeys[4]),
       color: "var(--chart-4)",
     },
     others: {
-      label: otherKeys.length === 1 ? abbreviateWords(otherKeys[0]) : othersLabel,
+      label: otherKeys.length === 1 ? toLabel(otherKeys[0]) : othersLabel,
       color: "var(--chart-1)",
     }
   } satisfies ChartConfig

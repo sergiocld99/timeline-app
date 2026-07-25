@@ -172,6 +172,15 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
     return <LocationCell editProps={editProps} field={field} locations={locations} />
   }
 
+  // Opens in a new tab so the user keeps the date range they had on this one.
+  // startTime/endTime carry Argentina wall-clock digits, so the date part is taken literally.
+  const handleGoToDate = (travel: Travel) => {
+    const dateFrom = travel.startTime.split('T')[0];
+    const dateTo = travel.endTime.split('T')[0];
+
+    window.open(`${window.location.pathname}?dateFrom=${dateFrom}&dateTo=${dateTo}`, '_blank');
+  };
+
   const renderActionButtons = (travel: Travel) => {
     if (editingId === travel._id) {
       return (
@@ -200,6 +209,7 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
 
     return (
       <TravelActionDropdown
+        onGoToDate={source === 'travels' ? () => handleGoToDate(travel) : undefined}
         onEdit={() => handleEdit(travel)}
         onDelete={onDelete ? () => { void handleDelete(travel); } : undefined}
         onAddCrosses={onAddCrosses ? () => { void onAddCrosses(travel._id); } : undefined}
