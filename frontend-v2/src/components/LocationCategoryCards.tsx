@@ -60,7 +60,7 @@ const LocationCategoryCards = ({ locations, selectedValue, onSelect }: LocationC
             key={value}
             onClick={() => onSelect(isSelected ? null : value)}
             aria-pressed={isSelected}
-            className={`group relative flex flex-col justify-between gap-6 overflow-hidden rounded-2xl bg-gradient-to-br ${gradient}
+            className={`group relative flex cursor-pointer flex-col justify-between gap-6 overflow-hidden rounded-2xl bg-gradient-to-br ${gradient}
               min-h-36 sm:min-h-44 p-5 text-left text-white shadow-md transition-all
               hover:shadow-xl hover:-translate-y-0.5 focus:outline-none focus-visible:ring-4 focus-visible:ring-white/40
               ${isSelected ? "ring-4 ring-white/70 shadow-xl" : ""}

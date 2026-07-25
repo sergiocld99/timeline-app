@@ -10,7 +10,7 @@ import LocationTable from "@/components/LocationTable";
 import useLocations from "@/hooks/useLocations";
 import { Input } from "@/components/ui/input";
 import { getSortedSubdivisions } from "@/utils/subdivisions";
-import { SUBDIVISIONS, SUBDIVISION_FILTER_PREFIX } from "@/constants/subdivisions";
+import { SUBDIVISIONS, SUBDIVISION_FILTER_PREFIX, getPrefixForSubdivisionName } from "@/constants/subdivisions";
 
 const LocationsPageClient = () => {
   const t = useTranslations("Locations");
@@ -18,16 +18,28 @@ const LocationsPageClient = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterValue, setFilterValue] = useState<string | null>(null);
 
-  // Top drill-down filters per jurisdiction (partidos for B, barrios for C, …).
-  // The C/U category filters themselves live in the cards above.
+  // The category currently in focus, from either a selected card (zipcode
+  // prefix) or an active subdivision filter. Null when nothing is selected.
+  const activePrefix = useMemo(() => {
+    if (!filterValue) return null;
+    if (filterValue.startsWith(SUBDIVISION_FILTER_PREFIX)) {
+      return getPrefixForSubdivisionName(filterValue.slice(SUBDIVISION_FILTER_PREFIX.length)) ?? null;
+    }
+    return filterValue;
+  }, [filterValue]);
+
+  // Top drill-down filters per jurisdiction (partidos for B, barrios for C, …),
+  // scoped to the active category so you never see another card's filters.
   const filterOptions = useMemo(() =>
-    SUBDIVISIONS.flatMap((s) =>
-      getSortedSubdivisions(locations, s.prefix).top.map((name) => ({
-        label: `${s.prefix} - ${name}`,
-        value: `${SUBDIVISION_FILTER_PREFIX}${name}`,
-      }))
-    )
-  , [locations]);
+    SUBDIVISIONS
+      .filter((s) => !activePrefix || s.prefix === activePrefix)
+      .flatMap((s) =>
+        getSortedSubdivisions(locations, s.prefix).top.map((name) => ({
+          label: name,
+          value: `${SUBDIVISION_FILTER_PREFIX}${name}`,
+        }))
+      )
+  , [locations, activePrefix]);
 
   const filteredLocations = useMemo(() => {
     let result = locations;
