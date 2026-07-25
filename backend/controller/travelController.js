@@ -13,7 +13,7 @@ export const getAllTravels = (req, res) => {
   const dateFrom = getDateFrom(req)
   const dateTo = getDateTo(req)
   const crosses = req.body?.crossIds ?? []
-  const { sortingField = DEFAULT_SORTING_FIELD, userId, locFrom, locTo, statsOnly, travelsOnly, limit } = req.query
+  const { sortingField = DEFAULT_SORTING_FIELD, userId, locFrom, locTo, statsOnly, skipStats, limit } = req.query
 
   // Fetch all travels with populated origin and destination (Location) fields
   Travel.find({
@@ -29,7 +29,7 @@ export const getAllTravels = (req, res) => {
 
     const response = {};
 
-    if (travelsOnly !== 'true') {
+    if (skipStats !== 'true') {
       // Unlike statsOnly, this actually skips the calculateTravelStats pass, not just the payload
       response.stats = calculateTravelStats(weightedTravels);
     }
