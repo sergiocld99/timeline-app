@@ -274,6 +274,12 @@
       "travelsFrom": "Travels from",
       "travelsTo": "Travels to",
       "unknownLocation": "Unknown location"
+    },
+    "categories": {
+      "buenosAires": "Buenos Aires Province",
+      "capital": "City of Buenos Aires",
+      "uruguay": "Uruguay",
+      "count": "{count} places"
     }
   },
   "Visits": {

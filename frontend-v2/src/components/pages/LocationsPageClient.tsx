@@ -5,6 +5,7 @@ import { Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import QuickFilters from "@/components/QuickFilters";
+import LocationCategoryCards from "@/components/LocationCategoryCards";
 import LocationTable from "@/components/LocationTable";
 import useLocations from "@/hooks/useLocations";
 import { Input } from "@/components/ui/input";
@@ -22,11 +23,9 @@ const LocationsPageClient = () => {
     topPartidosNames.map(name => ({ label: `B - ${name}`, value: `${PARTIDO_FILTER_PREFIX}${name}` }))
   , [topPartidosNames]);
 
-  const filterOptions = useMemo(() => [
-    ...topPartidos,
-    { label: "C - Capital Federal", value: "C" },
-    { label: "U - Uruguay", value: "U" },
-  ], [topPartidos]);
+  // C (Capital Federal) and U (Uruguay) are covered by the category cards above,
+  // so only the per-partido drill-down filters remain here.
+  const filterOptions = topPartidos;
 
   const filteredLocations = useMemo(() => {
     let result = locations;
@@ -68,6 +67,12 @@ const LocationsPageClient = () => {
   return (
     <main className="mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
       <div className="space-y-6">
+        <LocationCategoryCards
+          locations={locations}
+          selectedValue={filterValue}
+          onSelect={setFilterValue}
+        />
+
         <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center">
           <div className="relative w-full sm:w-64">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />

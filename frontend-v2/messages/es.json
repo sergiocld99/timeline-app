@@ -274,6 +274,12 @@
       "travelsFrom": "Viajes desde",
       "travelsTo": "Viajes hacia",
       "unknownLocation": "Lugar desconocido"
+    },
+    "categories": {
+      "buenosAires": "Prov. de Buenos Aires",
+      "capital": "Ciudad de Buenos Aires",
+      "uruguay": "Uruguay",
+      "count": "{count} lugares"
     }
   },
   "Visits": {
