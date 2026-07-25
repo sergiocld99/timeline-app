@@ -1,0 +1,1 @@
+curl -s "http://localhost:3000/api/travels?dateFrom=2026-01-01&dateTo=2026-07-25&travelsOnly=true&limit=3&userId=1"
