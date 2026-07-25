@@ -96,7 +96,7 @@ export const buildZipcodeLabels = (travels: Travel[]): Record<string, string> =>
   )
 }
 
-export const calculateBestModes =(travels: Travel[], quantity: number) => {
+export const calculateBestModes = (travels: Travel[], quantity: number) => {
   const topModes = travels.reduce((acc, t) => {
     const key = t.modeOfTransport
     if (!acc[key]) {
