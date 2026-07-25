@@ -59,7 +59,7 @@ const LocationCategoryCards = ({ locations, selectedValue, onSelect }: LocationC
             key={value}
             onClick={() => onSelect(isSelected ? null : value)}
             aria-pressed={isSelected}
-            className={`group relative overflow-hidden rounded-2xl bg-gradient-to-br ${gradient}
+            className={`group relative flex flex-col justify-between gap-6 overflow-hidden rounded-2xl bg-gradient-to-br ${gradient}
               min-h-36 sm:min-h-44 p-5 text-left text-white shadow-md transition-all
               hover:shadow-xl hover:-translate-y-0.5 focus:outline-none focus-visible:ring-4 focus-visible:ring-white/40
               ${isSelected ? "ring-4 ring-white/70 shadow-xl" : ""}
@@ -77,7 +77,7 @@ const LocationCategoryCards = ({ locations, selectedValue, onSelect }: LocationC
             />
 
             <Icon className="relative h-9 w-9 opacity-90 drop-shadow-sm" strokeWidth={1.75} />
-            <div className="absolute bottom-5 left-5 right-5 flex flex-col justify-end">
+            <div className="relative flex flex-col justify-end">
               <span className="text-xl font-semibold drop-shadow-sm">{t(titleKey)}</span>
               <span className="text-sm text-white/85">
                 {t("count", { count: counts[value] })}
