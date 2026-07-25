@@ -42,6 +42,8 @@ const LocationCategoryCards = ({ locations, selectedValue, onSelect }: LocationC
     return acc;
   }, [locations]);
 
+  const hasSelection = !!selectedValue;
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
       {CATEGORIES.map(({ value, titleKey, icon: Icon, gradient, image }) => {
@@ -50,6 +52,8 @@ const LocationCategoryCards = ({ locations, selectedValue, onSelect }: LocationC
         const isSelected =
           selectedValue === value ||
           (value === "B" && !!selectedValue?.startsWith(PARTIDO_FILTER_PREFIX));
+        // Dim the other cards only while some card is active; none is dimmed by default.
+        const isDimmed = hasSelection && !isSelected;
         return (
           <button
             key={value}
@@ -58,7 +62,8 @@ const LocationCategoryCards = ({ locations, selectedValue, onSelect }: LocationC
             className={`group relative overflow-hidden rounded-2xl bg-gradient-to-br ${gradient}
               min-h-36 sm:min-h-44 p-5 text-left text-white shadow-md transition-all
               hover:shadow-xl hover:-translate-y-0.5 focus:outline-none focus-visible:ring-4 focus-visible:ring-white/40
-              ${isSelected ? "ring-4 ring-white/70 shadow-xl" : ""}`}
+              ${isSelected ? "ring-4 ring-white/70 shadow-xl" : ""}
+              ${isDimmed ? "opacity-50 saturate-75 hover:opacity-100" : ""}`}
           >
             {/* Map silhouette as a decorative watermark motif */}
             <Image
