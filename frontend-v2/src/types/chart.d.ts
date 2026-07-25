@@ -22,9 +22,19 @@ export type HourAndMinutes = {
 
 export type ColorKey = 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'others'
 
-export type CalendarCell = {
-  day: string
-  hour: string
+export type CalendarCellBase = {
   colorKey: ColorKey | null
   totalMinutes: number
 }
+
+export type CalendarCell = CalendarCellBase & {
+  day: string
+  hour: string
+}
+
+export type MonthlyCalendarCell = CalendarCellBase & {
+  dayRange: string
+  hour: string
+}
+
+export type CalendarMode = 'weekly' | 'monthly'

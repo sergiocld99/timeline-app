@@ -1,12 +1,12 @@
 "use client";
 
-import type { CalendarCell, ColorKey } from "@/types/chart";
+import type { CalendarCellBase, ColorKey } from "@/types/chart";
 import type { ChartConfig } from "./ui/chart";
 
 import { buildCellCountByColorKey, buildLegendKeys } from "./builders/travelCalendar";
 
 type Props = {
-  cells: CalendarCell[],
+  cells: CalendarCellBase[],
   chartConfig: ChartConfig,
   onLegendClick: (legendKey: ColorKey) => void
 }

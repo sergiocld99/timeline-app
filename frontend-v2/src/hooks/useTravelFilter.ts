@@ -6,7 +6,7 @@ import type { Travel } from "@/types/travel";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
-import { translateDay } from "@/utils/date";
+import { getDayOfMonth, getDayRangeDays, getDayRangeLabel, translateDay } from "@/utils/date";
 
 const useTravelFilter = (travels: Travel[]) => {
   const t = useTranslations();
@@ -55,6 +55,24 @@ const useTravelFilter = (travels: Travel[]) => {
         tr.extractedDate.slice(0, 3) === value.day && tr.hourParts.completeParts.some(p => p.hour === value.hour)
       ));
       setAppliedFilter(`${translateDay(value.day, t)} ${value.hour}hs`);
+      return;
+    }
+
+    if (type === 'dayRange' && value) {
+      const days = getDayRangeDays(value);
+
+      setFilteredTravels(travels.filter(tr => days.includes(getDayOfMonth(tr.extractedDate))));
+      setAppliedFilter(tCharts("calendar.days", { range: getDayRangeLabel(value) }));
+      return;
+    }
+
+    if (type === 'dayRangeHour' && value) {
+      const days = getDayRangeDays(value.dayRange);
+
+      setFilteredTravels(travels.filter(tr =>
+        days.includes(getDayOfMonth(tr.extractedDate)) && tr.hourParts.completeParts.some(p => p.hour === value.hour)
+      ));
+      setAppliedFilter(`${tCharts("calendar.days", { range: getDayRangeLabel(value.dayRange) })} ${value.hour}hs`);
       return;
     }
 

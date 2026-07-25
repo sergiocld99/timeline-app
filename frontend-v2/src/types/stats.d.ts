@@ -48,4 +48,14 @@ type FilteringByDayHour = {
   value: { day: string, hour: string }
 }
 
-export type FilteringData = FilteringByZipcode | FilteringByLocation | FilteringByTime | FilteringByCross | FilteringByMode | FilteringByDayHour
+type FilteringByDayRange = {
+  type: 'dayRange'
+  value: string
+}
+
+type FilteringByDayRangeHour = {
+  type: 'dayRangeHour'
+  value: { dayRange: string, hour: string }
+}
+
+export type FilteringData = FilteringByZipcode | FilteringByLocation | FilteringByTime | FilteringByCross | FilteringByMode | FilteringByDayHour | FilteringByDayRange | FilteringByDayRangeHour
