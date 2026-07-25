@@ -1,5 +1,6 @@
 import { calculateHome, ROUTE_SEPARATOR } from "./routeService.js";
 import { getHourParts } from "./timeService.js";
+import { getMedian } from "../utils/index.js";
 
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -36,12 +37,8 @@ const getMedianDuration = (durations) => {
   if (durations.length === 0) return null
 
   const sorted = [...durations].sort((a, b) => a - b)
-  const middle = Math.floor(sorted.length / 2)
-  const median = sorted.length % 2 === 0
-    ? (sorted[middle - 1] + sorted[middle]) / 2
-    : sorted[middle]
 
-  return Math.round(median)
+  return Math.round(getMedian(sorted))
 }
 
 /**
