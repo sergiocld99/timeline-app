@@ -73,7 +73,9 @@ Obtiene todos los viajes con filtros opcionales.
 - `userId` (string, opcional): ID del usuario (null = guest data)
 - `locFrom`, `locTo` (string, opcional): IDs de ubicaciones origen/destino
 - `sortingField` (string, opcional): Campo para ordenar. Por defecto: `duration`
-- `statsOnly` (boolean, opcional): Si es `true`, la respuesta omitirá la lista completa de viajes (`travels`) y devolverá únicamente el objeto `stats`. Ideal para optimizar el dashboard.
+- `statsOnly` (boolean, opcional): Si es `true`, la respuesta omitirá la lista completa de viajes (`travels`) y devolverá únicamente el objeto `stats`. Ideal para optimizar el dashboard. No evita el cálculo de `stats`, solo el payload de `travels`.
+- `travelsOnly` (boolean, opcional): Si es `true`, la respuesta omitirá `stats` y devolverá únicamente `travels`. A diferencia de `statsOnly`, esto sí evita el cálculo (`calculateTravelStats` no se ejecuta).
+- `limit` (number, opcional): Recorta la cantidad de viajes devueltos en `travels` (los primeros N según `sortingField`/orden de fecha desc). No afecta `stats`, que siempre se calcula sobre el rango completo salvo que `travelsOnly=true`.
 
 **Response:** `{ travels: [...], stats: {...} }` (Si `statsOnly=true`, el nodo `travels` se omite)
 
