@@ -7,7 +7,7 @@ import Image from "next/image";
 import { MapPinned, Building2, Flag } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-import { PARTIDO_FILTER_PREFIX } from "@/constants/partidos";
+import { SUBDIVISION_FILTER_PREFIX, getPrefixForSubdivisionName } from "@/constants/subdivisions";
 
 type LocationCategoryCardsProps = {
   locations: Location[];
@@ -43,15 +43,16 @@ const LocationCategoryCards = ({ locations, selectedValue, onSelect }: LocationC
   }, [locations]);
 
   const hasSelection = !!selectedValue;
+  // When a subdivision quick-filter is active (e.g. a partido or barrio), resolve
+  // which category prefix it belongs to so that card stays selected too.
+  const activeSubdivisionPrefix = selectedValue?.startsWith(SUBDIVISION_FILTER_PREFIX)
+    ? getPrefixForSubdivisionName(selectedValue.slice(SUBDIVISION_FILTER_PREFIX.length))
+    : undefined;
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
       {CATEGORIES.map(({ value, titleKey, icon: Icon, gradient, image }) => {
-        // A per-partido filter (PARTIDO:...) is a subset of Buenos Aires province,
-        // so it keeps the "B" card marked as selected too.
-        const isSelected =
-          selectedValue === value ||
-          (value === "B" && !!selectedValue?.startsWith(PARTIDO_FILTER_PREFIX));
+        const isSelected = selectedValue === value || activeSubdivisionPrefix === value;
         // Dim the other cards only while some card is active; none is dimmed by default.
         const isDimmed = hasSelection && !isSelected;
         return (

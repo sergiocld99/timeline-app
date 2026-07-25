@@ -31,7 +31,8 @@
     "messages": {
       "copied": "¡Coordenadas copiadas al portapapeles!",
       "copyError": "Error al copiar las coordenadas"
-    }
+    },
+    "select": "Seleccionar..."
   },
   "Travels": {
     "title": "Viajes",
@@ -222,7 +223,8 @@
       "travelCreatedAllUsersError": "La creación del viaje falló para {count} usuarios.",
       "travelWithVisitSuccess": "¡Viaje con visita agregado con éxito!",
       "travelSuccess": "Viaje agregado con éxito"
-    }
+    },
+    "barrio": "Barrio"
   },
   "Crosses": {
     "addCross": "Agregar Cruce",
@@ -261,7 +263,8 @@
       "zipcode": "Código Postal",
       "partido": "Partido",
       "notes": "Notas",
-      "actions": "Acciones"
+      "actions": "Acciones",
+      "zone": "Zona"
     },
     "messages": {
       "updateSuccess": "¡Lugar actualizado!",

@@ -9,32 +9,34 @@ import LocationCategoryCards from "@/components/LocationCategoryCards";
 import LocationTable from "@/components/LocationTable";
 import useLocations from "@/hooks/useLocations";
 import { Input } from "@/components/ui/input";
-import { getSortedPartidos } from "@/utils/partidos";
-import { PARTIDO_FILTER_PREFIX } from "@/constants/partidos";
+import { getSortedSubdivisions } from "@/utils/subdivisions";
+import { SUBDIVISIONS, SUBDIVISION_FILTER_PREFIX } from "@/constants/subdivisions";
 
 const LocationsPageClient = () => {
   const t = useTranslations("Locations");
   const { locations, error, update, remove, loading } = useLocations();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterValue, setFilterValue] = useState<string | null>(null);
-  const { top: topPartidosNames } = useMemo(() => getSortedPartidos(locations), [locations]);
 
-  const topPartidos = useMemo(() => 
-    topPartidosNames.map(name => ({ label: `B - ${name}`, value: `${PARTIDO_FILTER_PREFIX}${name}` }))
-  , [topPartidosNames]);
-
-  // C (Capital Federal) and U (Uruguay) are covered by the category cards above,
-  // so only the per-partido drill-down filters remain here.
-  const filterOptions = topPartidos;
+  // Top drill-down filters per jurisdiction (partidos for B, barrios for C, …).
+  // The C/U category filters themselves live in the cards above.
+  const filterOptions = useMemo(() =>
+    SUBDIVISIONS.flatMap((s) =>
+      getSortedSubdivisions(locations, s.prefix).top.map((name) => ({
+        label: `${s.prefix} - ${name}`,
+        value: `${SUBDIVISION_FILTER_PREFIX}${name}`,
+      }))
+    )
+  , [locations]);
 
   const filteredLocations = useMemo(() => {
     let result = locations;
 
-    // Filter by prefix or partido
+    // Filter by subdivision name or by zipcode prefix (category card)
     if (filterValue) {
-      if (filterValue.startsWith(PARTIDO_FILTER_PREFIX)) {
-        const partidoName = filterValue.replace(PARTIDO_FILTER_PREFIX, '');
-        result = result.filter((loc) => loc.partido === partidoName);
+      if (filterValue.startsWith(SUBDIVISION_FILTER_PREFIX)) {
+        const subdivisionName = filterValue.replace(SUBDIVISION_FILTER_PREFIX, '');
+        result = result.filter((loc) => loc.partido === subdivisionName);
       } else {
         result = result.filter((loc) =>
           loc.zipcode && loc.zipcode.toUpperCase().startsWith(filterValue)

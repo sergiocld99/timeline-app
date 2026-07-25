@@ -11,14 +11,15 @@ import { Link } from "@/i18n/routing";
 import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { getSortedPartidos } from "@/utils/partidos";
+import { getSortedSubdivisions } from "@/utils/subdivisions";
+import { SUBDIVISIONS, getSubdivisionConfig } from "@/constants/subdivisions";
 import { cn } from "@/lib/utils";
 import { roundDecimals } from "@/utils/numbers";
 
 import ArrivalsAction from "./buttons/ArrivalsAction";
 import DeleteAction from "./buttons/DeleteAction";
 import DeparturesAction from "./buttons/DeparturesAction";
-import { PartidoCell } from "./cell/PartidoCell";
+import { SubdivisionCell } from "./cell/SubdivisionCell";
 import EditAction from "./buttons/EditAction";
 
 type Props = {
@@ -32,14 +33,19 @@ const LocationTableContent = ({ locations, updateFn, deleteFn }: Props) => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValues, setEditValues] = useState<LocationEditValues>({ name: '', zipcode: '', latitude: 0, longitude: 0, notes: '', partido: '' });
 
-  const sortedPartidos = useMemo(() => getSortedPartidos(locations).all, [locations]);
+  // Sorted subdivision options per jurisdiction prefix, computed once for all rows.
+  const sortedByPrefix = useMemo(() => {
+    const map: Record<string, string[]> = {};
+    for (const s of SUBDIVISIONS) map[s.prefix] = getSortedSubdivisions(locations, s.prefix).all;
+    return map;
+  }, [locations]);
 
   const columnHeaders = [
     t('tableHeaders.name'),
     t('tableHeaders.latitude'),
     t('tableHeaders.longitude'),
     t('tableHeaders.zipcode'),
-    t('tableHeaders.partido'),
+    t('tableHeaders.zone'),
     t('tableHeaders.notes'),
     t('tableHeaders.actions')
   ];
@@ -157,12 +163,12 @@ const LocationTableContent = ({ locations, updateFn, deleteFn }: Props) => {
             <TableCell className="text-gray-700 dark:text-gray-300">{renderEditableCoordinate(l, 'longitude')}</TableCell>
             <TableCell className="text-gray-700 dark:text-gray-300">{renderEditableCell(l, 'zipcode', 'w-24')}</TableCell>
             <TableCell>
-              <PartidoCell
+              <SubdivisionCell
                 location={l}
                 isEditing={editingId === l._id}
                 value={editValues.partido}
                 onChange={(value) => setEditValues(prev => ({ ...prev, partido: value }))}
-                sortedPartidos={sortedPartidos}
+                options={sortedByPrefix[getSubdivisionConfig(l.zipcode)?.prefix ?? ''] ?? []}
               />
             </TableCell>
             <TableCell className="text-gray-700 dark:text-gray-300">{renderEditableCell(l, 'notes', 'w-64')}</TableCell>

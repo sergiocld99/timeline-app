@@ -14,7 +14,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import LocationService from "@/services/LocationService";
-import { getSortedPartidos } from "@/utils/partidos";
+import { getSortedSubdivisions } from "@/utils/subdivisions";
+import { getSubdivisionConfig } from "@/constants/subdivisions";
 import useLocations from "@/hooks/useLocations";
 
 import { BaseSelector } from "./selectors/BaseSelector";
@@ -39,8 +40,6 @@ const LocationForm = () => {
   const queryClient = useQueryClient();
   const { locations } = useLocations();
 
-  const sortedPartidos = useMemo(() => getSortedPartidos(locations).all, [locations]);
-
   const [formData, setFormData] = useState({
     name: "",
     latitude: "",
@@ -50,6 +49,12 @@ const LocationForm = () => {
     partido: "",
   });
   const [isMapOpen, setIsMapOpen] = useState(false);
+
+  const subdivisionConfig = getSubdivisionConfig(formData.zipcode);
+  const sortedSubdivisions = useMemo(
+    () => (subdivisionConfig ? getSortedSubdivisions(locations, subdivisionConfig.prefix).all : []),
+    [locations, subdivisionConfig]
+  );
 
   const mutation = useMutation({
     mutationFn: (newLocation: typeof formData) => LocationService.create(newLocation),
@@ -168,13 +173,13 @@ const LocationForm = () => {
             />
           </div>
 
-          {formData.zipcode.toUpperCase().startsWith('B') && (
+          {subdivisionConfig && (
             <div className="space-y-2">
-              <Label htmlFor="partido" className="text-gray-700 dark:text-gray-300">{t("partido")}</Label>
+              <Label htmlFor="partido" className="text-gray-700 dark:text-gray-300">{t(subdivisionConfig.labelKey)}</Label>
               <BaseSelector
                 value={formData.partido}
                 onValueChange={(value) => setFormData(prev => ({ ...prev, partido: value }))}
-                options={sortedPartidos}
+                options={sortedSubdivisions}
               />
             </div>
           )}
