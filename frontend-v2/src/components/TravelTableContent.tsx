@@ -12,10 +12,8 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { useDateRange } from '@/contexts/DateRangeContext';
 import useLocations from '@/hooks/useLocations';
 import { extractTime } from '@/utils';
-import { replaceDateRangeInUrl, toFormDateFromParts } from '@/utils/dateRange';
 import { renderWeight } from '@/utils/weight';
 import { cn } from '@/lib/utils';
 
@@ -52,7 +50,6 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
   const [detailsTravel, setDetailsTravel] = useState<Travel | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const { locations } = useLocations()
-  const { updateDateRange } = useDateRange()
 
   const resetEdition = () => {
     setEditingId(null);
@@ -175,13 +172,13 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
     return <LocationCell editProps={editProps} field={field} locations={locations} />
   }
 
+  // Opens in a new tab so the user keeps the date range they had on this one.
   // startTime/endTime carry Argentina wall-clock digits, so the date part is taken literally.
   const handleGoToDate = (travel: Travel) => {
-    const dateFrom = toFormDateFromParts(travel.startTime.split('T')[0], 'start');
-    const dateTo = toFormDateFromParts(travel.endTime.split('T')[0], 'end');
+    const dateFrom = travel.startTime.split('T')[0];
+    const dateTo = travel.endTime.split('T')[0];
 
-    updateDateRange(dateFrom, dateTo);
-    replaceDateRangeInUrl(dateFrom, dateTo);
+    window.open(`${window.location.pathname}?dateFrom=${dateFrom}&dateTo=${dateTo}`, '_blank');
   };
 
   const renderActionButtons = (travel: Travel) => {
