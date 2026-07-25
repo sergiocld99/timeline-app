@@ -1,11 +1,11 @@
 "use client";
 
-interface FilterOption {
+type FilterOption = {
   label: string;
   value: string;
 }
 
-interface QuickFiltersProps {
+type QuickFiltersProps = {
   options: FilterOption[];
   selectedValue: string | null;
   onSelect: (value: string | null) => void;

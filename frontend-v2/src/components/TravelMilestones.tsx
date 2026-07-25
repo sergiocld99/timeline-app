@@ -1,7 +1,7 @@
 import type { TranslationFn } from "@/types/i18n";
 import type { Travel, TravelStats } from "@/types/travel"
 
-interface Milestone {
+type Milestone = {
   icon: string;
   text: string;
 }

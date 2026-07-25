@@ -9,7 +9,7 @@ import { useTranslations } from "next-intl";
 
 import { PARTIDO_FILTER_PREFIX } from "@/constants/partidos";
 
-interface LocationCategoryCardsProps {
+type LocationCategoryCardsProps = {
   locations: Location[];
   selectedValue: string | null;
   onSelect: (value: string | null) => void;

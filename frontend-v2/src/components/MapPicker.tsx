@@ -8,7 +8,7 @@ import { defaultMarker } from "./map/icons";
 
 import "leaflet/dist/leaflet.css";
 
-interface MapPickerProps {
+type MapPickerProps = {
   onSelect: (lat: number, lng: number) => void;
   initialLat?: number;
   initialLng?: number;

@@ -7,7 +7,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 import UserService from "@/services/UserService";
 
-interface UserContextType {
+type UserContextType = {
   currentUser: User | null;
   users: User[];
   setCurrentUser: (user: User | null) => void;

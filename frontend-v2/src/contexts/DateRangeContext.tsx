@@ -9,7 +9,7 @@ import { getStartDateFromCurrent, getTodayEndTime } from "@/utils";
 import { parseDateRangeFromSearchParams } from "@/utils/dateRange";
 import { getDaysRange } from "@/utils/date";
 
-interface DateRangeContextType {
+type DateRangeContextType = {
   dateFrom: string;
   dateTo: string;
   daysRange: number;
@@ -19,7 +19,7 @@ interface DateRangeContextType {
 
 const DateRangeContext = createContext<DateRangeContextType | undefined>(undefined);
 
-interface DateRangeProviderProps {
+type DateRangeProviderProps = {
   children: ReactNode;
   initialDays?: number;
 };

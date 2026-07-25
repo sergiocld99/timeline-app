@@ -18,7 +18,7 @@ export type GravityCenter = {
   lng?: number;
 }
 
-export interface MapConfig {
+export type MapConfig = {
   center: Center;
   zoom: number;
 }
