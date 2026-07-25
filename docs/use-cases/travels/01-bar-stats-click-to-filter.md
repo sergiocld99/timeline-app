@@ -20,6 +20,7 @@ Hay travels cargados para el rango de fechas actual.
 Vista acotada al zipcode o al día/hora elegido. El filtro es reemplazable (un click nuevo reemplaza al anterior, no se combinan) y se puede limpiar con "Remove Filter".
 
 ## Notas
-- La agrupación es por **zipcode** de origen/destino (o del `farthestPoint` calculado respecto del "home" detectado).
+- La agrupación (y el filtrado) es por **zipcode** de origen/destino (o del `farthestPoint` calculado respecto del "home" detectado).
+- La **etiqueta visible** (leyenda, tooltips, `title` de las celdas del calendario) muestra el **nombre de la location** en vez del zipcode cuando ese CP tiene una única location distinta entre los travels mostrados; si hay 2+, se sigue mostrando el zipcode. Es solo cosmético: la clave de agrupación y el valor del filtro siguen siendo el zipcode (por eso el botón "Remove Filter" sigue mostrando el CP). Helper: `buildZipcodeLabels` en `src/components/analize/travel.ts`.
 - El filtro es puramente client-side sobre los datos ya traídos para el rango de fechas — no dispara un nuevo request al backend.
 - Componentes: `TravelBarStats.tsx`, orquestado por `TravelsPageClient.tsx`. Tipo de filtro: `FilteringData` en `src/types/stats.d.ts`.
