@@ -5,37 +5,50 @@ import { Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import QuickFilters from "@/components/QuickFilters";
+import LocationCategoryCards from "@/components/LocationCategoryCards";
 import LocationTable from "@/components/LocationTable";
 import useLocations from "@/hooks/useLocations";
 import { Input } from "@/components/ui/input";
-import { getSortedPartidos } from "@/utils/partidos";
-import { PARTIDO_FILTER_PREFIX } from "@/constants/partidos";
+import { getSortedSubdivisions } from "@/utils/subdivisions";
+import { SUBDIVISIONS, SUBDIVISION_FILTER_PREFIX, getPrefixForSubdivisionName } from "@/constants/subdivisions";
 
 const LocationsPageClient = () => {
   const t = useTranslations("Locations");
   const { locations, error, update, remove, loading } = useLocations();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterValue, setFilterValue] = useState<string | null>(null);
-  const { top: topPartidosNames } = useMemo(() => getSortedPartidos(locations), [locations]);
 
-  const topPartidos = useMemo(() => 
-    topPartidosNames.map(name => ({ label: `B - ${name}`, value: `${PARTIDO_FILTER_PREFIX}${name}` }))
-  , [topPartidosNames]);
+  // The category currently in focus, from either a selected card (zipcode
+  // prefix) or an active subdivision filter. Null when nothing is selected.
+  const activePrefix = useMemo(() => {
+    if (!filterValue) return null;
+    if (filterValue.startsWith(SUBDIVISION_FILTER_PREFIX)) {
+      return getPrefixForSubdivisionName(filterValue.slice(SUBDIVISION_FILTER_PREFIX.length)) ?? null;
+    }
+    return filterValue;
+  }, [filterValue]);
 
-  const filterOptions = useMemo(() => [
-    ...topPartidos,
-    { label: "C - Capital Federal", value: "C" },
-    { label: "U - Uruguay", value: "U" },
-  ], [topPartidos]);
+  // Top drill-down filters per jurisdiction (partidos for B, barrios for C, …),
+  // scoped to the active category so you never see another card's filters.
+  const filterOptions = useMemo(() =>
+    SUBDIVISIONS
+      .filter((s) => !activePrefix || s.prefix === activePrefix)
+      .flatMap((s) =>
+        getSortedSubdivisions(locations, s.prefix).top.map((name) => ({
+          label: name,
+          value: `${SUBDIVISION_FILTER_PREFIX}${name}`,
+        }))
+      )
+  , [locations, activePrefix]);
 
   const filteredLocations = useMemo(() => {
     let result = locations;
 
-    // Filter by prefix or partido
+    // Filter by subdivision name or by zipcode prefix (category card)
     if (filterValue) {
-      if (filterValue.startsWith(PARTIDO_FILTER_PREFIX)) {
-        const partidoName = filterValue.replace(PARTIDO_FILTER_PREFIX, '');
-        result = result.filter((loc) => loc.partido === partidoName);
+      if (filterValue.startsWith(SUBDIVISION_FILTER_PREFIX)) {
+        const subdivisionName = filterValue.replace(SUBDIVISION_FILTER_PREFIX, '');
+        result = result.filter((loc) => loc.partido === subdivisionName);
       } else {
         result = result.filter((loc) =>
           loc.zipcode && loc.zipcode.toUpperCase().startsWith(filterValue)
@@ -68,6 +81,12 @@ const LocationsPageClient = () => {
   return (
     <main className="mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
       <div className="space-y-6">
+        <LocationCategoryCards
+          locations={locations}
+          selectedValue={filterValue}
+          onSelect={setFilterValue}
+        />
+
         <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center">
           <div className="relative w-full sm:w-64">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />

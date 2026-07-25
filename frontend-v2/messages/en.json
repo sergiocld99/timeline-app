@@ -31,7 +31,8 @@
     "messages": {
       "copied": "Coordinates copied to clipboard!",
       "copyError": "Failed to copy coordinates"
-    }
+    },
+    "select": "Select..."
   },
   "Travels": {
     "title": "Travels",
@@ -222,7 +223,8 @@
       "travelCreatedAllUsersError": "Travel creation failed for {count} users.",
       "travelWithVisitSuccess": "Travel with visit added successfully!",
       "travelSuccess": "Travel added successfully"
-    }
+    },
+    "barrio": "Barrio"
   },
   "Crosses": {
     "addCross": "Add Cross",
@@ -261,7 +263,8 @@
       "zipcode": "Zipcode",
       "partido": "Partido",
       "notes": "Notes",
-      "actions": "Actions"
+      "actions": "Actions",
+      "zone": "Zone"
     },
     "messages": {
       "updateSuccess": "Location updated!",
@@ -274,6 +277,12 @@
       "travelsFrom": "Travels from",
       "travelsTo": "Travels to",
       "unknownLocation": "Unknown location"
+    },
+    "categories": {
+      "buenosAires": "Buenos Aires Province",
+      "capital": "City of Buenos Aires",
+      "uruguay": "Uruguay",
+      "count": "{count} places"
     }
   },
   "Visits": {

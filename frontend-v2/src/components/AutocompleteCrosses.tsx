@@ -9,7 +9,7 @@ import { useTranslations } from "next-intl"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 
-interface AutocompleteCrossesProps {
+type AutocompleteCrossesProps = {
   crosses: Cross[]
   value: string[] // Array of selected cross IDs
   onValueChange: (value: string[]) => void

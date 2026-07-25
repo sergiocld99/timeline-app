@@ -1,5 +1,7 @@
 import type { Weighted } from "../../types/commons";
 
+import { Fragment } from "react";
+
 import { getFixedPercentage } from "..";
 
 const getPercentagesByColor = (sourceArr: Weighted[]) => sourceArr.reduce((sum, elem) => {
@@ -26,9 +28,9 @@ export const renderTotalWeightsCell = (sourceArr: Weighted[]) => {
     if (percentage === 0) return null;
 
     return (
-      <>
+      <Fragment key={color}>
         {color} {getFixedPercentage(percentage)} <br />
-      </>
+      </Fragment>
     )
   })
 }

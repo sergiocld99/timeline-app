@@ -1,5 +1,7 @@
 import type { Location } from "@/types/location";
 
+import { getSubdivisionConfig } from "@/constants/subdivisions";
+
 import { BaseSelector } from "../selectors/BaseSelector";
 
 type Props = {
@@ -7,20 +9,20 @@ type Props = {
   isEditing: boolean;
   value?: string;
   onChange: (value: string) => void;
-  sortedPartidos: string[];
-}
+  options: string[];
+};
 
-export const PartidoCell = ({
+export const SubdivisionCell = ({
   location,
   isEditing,
   value,
   onChange,
-  sortedPartidos
+  options,
 }: Props) => {
-  const isBuenosAires = location.zipcode?.toUpperCase().startsWith('B');
+  const hasSubdivision = !!getSubdivisionConfig(location.zipcode);
 
   if (isEditing) {
-    if (!isBuenosAires) {
+    if (!hasSubdivision) {
       return <span className="text-gray-400">-</span>;
     }
 
@@ -28,13 +30,13 @@ export const PartidoCell = ({
       <BaseSelector
         value={value || ""}
         onValueChange={onChange}
-        options={sortedPartidos}
+        options={options}
         className="w-36"
       />
     );
   }
 
-  if (!isBuenosAires) {
+  if (!hasSubdivision) {
     return <span className="text-gray-700 dark:text-gray-300">-</span>;
   }
 

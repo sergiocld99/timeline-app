@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-interface TravelActionDropdownProps {
+type TravelActionDropdownProps = {
   onEdit?: () => void;
   onDelete?: () => void;
   onAddCrosses?: () => void;

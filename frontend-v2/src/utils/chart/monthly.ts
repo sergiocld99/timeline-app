@@ -1,6 +1,6 @@
 import { ACCENT1, MUTED, WARNING } from "@/constants/colors";
 
-interface MonthlyBarEntry {
+type MonthlyBarEntry = {
   zipcodes: string[];
   prevZipcodes: string[];
   places: number;

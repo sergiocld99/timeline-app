@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 
-interface AutocompleteLocationProps {
+type AutocompleteLocationProps = {
   locations: Location[]
   value: string
   onValueChange: (value: string) => void
