@@ -7,6 +7,7 @@ import { Fragment, useMemo } from "react";
 
 import { ACCENT1, ACCENT3 } from "@/constants/colors";
 import { Link } from "@/i18n/routing";
+import { getCellOpacity } from "@/utils/chart";
 import { calculateTopPlacesByMonths } from "@/utils/chart/monthly";
 import { getMonthDateRangeSearch } from "@/utils/dateRange";
 
@@ -40,6 +41,20 @@ const TopPlacesByMonths = ({ monthlyStats, placesVisited, home }: Props) => {
     () => Object.keys(monthlyStats).sort((a, b) => a.localeCompare(b)),
     [monthlyStats]
   );
+
+  // Monthly km are heavily skewed — a single long trip dwarfs a year of commutes
+  // and would flatten every other cell. Saturating at the 90th percentile keeps
+  // the ramp readable while still adapting to whoever is looking.
+  const fullOpacityKm = useMemo(() => {
+    const values = ranking
+      .flatMap(place => sortedMonthKeys.map(monthKey => monthlyStats[monthKey].kmByZipcode?.[place.zipcode] ?? 0))
+      .filter(km => km > 0)
+      .sort((a, b) => a - b);
+
+    const percentile90 = values[Math.floor(values.length * 0.9)] ?? values[values.length - 1];
+
+    return Math.max(percentile90 ?? 0, 1);
+  }, [ranking, sortedMonthKeys, monthlyStats]);
 
   if (ranking.length === 0) return null;
 
@@ -84,13 +99,19 @@ const TopPlacesByMonths = ({ monthlyStats, placesVisited, home }: Props) => {
               </div>
               {sortedMonthKeys.map(monthKey => {
                 const visited = place.monthKeys.includes(monthKey);
+                // Km only count arrivals, so a month visited purely as an origin
+                // stays coloured but at the floor opacity.
+                const km = monthlyStats[monthKey].kmByZipcode?.[place.zipcode] ?? 0;
 
                 return (
                   <div
                     key={`${place.zipcode}-${monthKey}`}
-                    title={`${place.zipcode} - ${place.name} — ${monthKey}`}
+                    title={`${place.zipcode} - ${place.name} — ${monthKey}${visited ? ` · ${Math.round(km)} km` : ""}`}
                     className="h-full w-full rounded-[3px] bg-gray-700"
-                    style={visited ? { backgroundColor: getPlaceColor(place.zipcode, rowIndex) } : undefined}
+                    style={visited ? {
+                      backgroundColor: getPlaceColor(place.zipcode, rowIndex),
+                      opacity: getCellOpacity(km, fullOpacityKm)
+                    } : undefined}
                   />
                 );
               })}

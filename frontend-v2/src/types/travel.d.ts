@@ -41,6 +41,8 @@ export type MonthlyStatItem = {
   minutes: number;
   count: number;
   zipcodes: string[];
+  // Km credited to each zipcode as a travel destination (see calculateTravelStats).
+  kmByZipcode?: Record<string, number>;
 }
 
 export type MonthlyStats = Record<string, MonthlyStatItem>;
