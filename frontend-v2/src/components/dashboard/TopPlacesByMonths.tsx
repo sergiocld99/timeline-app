@@ -1,16 +1,17 @@
 "use client";
 
-import type { MonthlyStats, PlaceMonthRanking, PlacesVisited } from "@/types/travel";
+import type { MonthlyStats, PlacesVisited } from "@/types/travel";
 
 import { useTranslations } from "next-intl";
-import { Fragment, useMemo } from "react";
+import { useMemo } from "react";
 
-import { ACCENT1, ACCENT3 } from "@/constants/colors";
+import { ACCENT3 } from "@/constants/colors";
 import { Link } from "@/i18n/routing";
-import { getCellOpacity } from "@/utils/chart";
 import { calculateKmOpacityCeiling, calculateTopPlacesByMonths } from "@/utils/chart/monthly";
 import { toShortMonthKey } from "@/utils/date";
 import { getMonthDateRangeSearch } from "@/utils/dateRange";
+
+import PlaceRow from "./PlaceRow";
 
 type Props = {
   monthlyStats: MonthlyStats;
@@ -19,17 +20,6 @@ type Props = {
 };
 
 const TOP_PLACES_LIMIT = 7;
-
-// Two ramps darkening by rank, so a cell reads both its position and its
-// jurisdiction: CABA zipcodes (prefix "C") in yellow, everything else in green.
-const CABA_PREFIX = "C";
-const placeColors = [ACCENT3, "#3fe07a", "#38c66c", "#31ac5e", "#2a9250", "#237d43", "#1c6737"];
-const cabaPlaceColors = [ACCENT1, "#cce03e", "#b4c637", "#9dac30", "#859229", "#727d23", "#5e671d"];
-
-const getPlaceColor = (zipcode: string, rank: number) =>
-  (zipcode.toUpperCase().startsWith(CABA_PREFIX) ? cabaPlaceColors : placeColors)[rank];
-
-const getPlaceLabel = ({ zipcode, name }: PlaceMonthRanking) => `${zipcode} - ${name}`;
 
 const TopPlacesByMonths = ({ monthlyStats, placesVisited, home }: Props) => {
   const t = useTranslations("Dashboard");
@@ -60,44 +50,6 @@ const TopPlacesByMonths = ({ monthlyStats, placesVisited, home }: Props) => {
     </Link>
   );
 
-  const renderCell = (place: PlaceMonthRanking, monthKey: string, rank: number) => {
-    const visited = place.monthKeys.includes(monthKey);
-    // Km only count arrivals, so a month visited purely as an origin stays
-    // coloured but at the floor opacity.
-    const km = place.kmByMonth[monthKey] ?? 0;
-    const label = `${getPlaceLabel(place)} — ${monthKey}`;
-
-    return (
-      <div
-        key={`${place.zipcode}-${monthKey}`}
-        title={visited ? `${label} · ${Math.round(km)} km` : label}
-        className="h-full w-full rounded-[3px] bg-gray-700"
-        style={visited ? {
-          backgroundColor: getPlaceColor(place.zipcode, rank),
-          opacity: getCellOpacity(km, fullOpacityKm)
-        } : undefined}
-      />
-    );
-  };
-
-  const renderPlaceRow = (place: PlaceMonthRanking, rank: number) => (
-    <Fragment key={place.zipcode}>
-      <div
-        className="text-[0.65rem] font-['Space_Mono'] text-[#f0f0f8] pr-2 truncate flex items-center"
-        title={getPlaceLabel(place)}
-      >
-        {place.id ? (
-          <Link href={`/travels/to/${place.id}`} className="hover:underline">
-            {place.zipcode}
-          </Link>
-        ) : (
-          <span>{place.zipcode}</span>
-        )}
-      </div>
-      {sortedMonthKeys.map(monthKey => renderCell(place, monthKey, rank))}
-    </Fragment>
-  );
-
   return (
     <div className="bg-[#111118] border border-[#2a2a3a] rounded-sm p-7 relative overflow-hidden before:absolute before:top-0 before:left-0 before:w-[3px] before:h-full before:bg-[#47ff88] animate-in duration-700 delay-800 flex flex-col">
       <div className="flex justify-between items-center mb-8">
@@ -114,7 +66,15 @@ const TopPlacesByMonths = ({ monthlyStats, placesVisited, home }: Props) => {
         >
           <div />
           {sortedMonthKeys.map(renderMonthHeader)}
-          {ranking.map(renderPlaceRow)}
+          {ranking.map((place, rank) => (
+            <PlaceRow
+              key={place.zipcode}
+              place={place}
+              rank={rank}
+              monthKeys={sortedMonthKeys}
+              fullOpacityKm={fullOpacityKm}
+            />
+          ))}
         </div>
       </div>
     </div>
