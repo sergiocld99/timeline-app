@@ -69,6 +69,13 @@ export type TopRoute = {
   count: number;
 }
 
+export type PlaceMonthRanking = {
+  zipcode: string;
+  name: string;
+  id?: string;
+  monthKeys: string[];
+}
+
 export type TravelStats = {
   count: number
   totalDistance: number
