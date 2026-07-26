@@ -16,6 +16,7 @@
     "top7": "Top 7",
     "noRoutesMessage": "No top routes found for this period.",
     "errorLoadingStats": "Error loading statistics.",
+    "noDataMessage": "We can't show you a travel summary because there are none between {from} and {to}",
     "loadingMap": "Loading map...",
     "others": "Others"
   },

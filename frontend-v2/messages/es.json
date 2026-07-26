@@ -16,6 +16,7 @@
     "top7": "Top 7",
     "noRoutesMessage": "No se encontraron rutas para este período.",
     "errorLoadingStats": "Error al cargar las estadísticas.",
+    "noDataMessage": "No podemos mostrarte un resumen de tus viajes porque no hay ninguno ocurrido entre el {from} y el {to}",
     "loadingMap": "Cargando mapa...",
     "others": "Otros"
   },

@@ -8,6 +8,7 @@ import { Fragment, useMemo } from "react";
 import { ACCENT3 } from "@/constants/colors";
 import { Link } from "@/i18n/routing";
 import { calculateTopPlacesByMonths } from "@/utils/chart/monthly";
+import { getMonthDateRangeSearch } from "@/utils/dateRange";
 
 type Props = {
   monthlyStats: MonthlyStats;
@@ -50,9 +51,14 @@ const TopPlacesByMonths = ({ monthlyStats, placesVisited, home }: Props) => {
         >
           <div />
           {sortedMonthKeys.map(monthKey => (
-            <div key={monthKey} className="text-[0.6rem] text-center text-muted-foreground font-['Space_Mono']">
+            <Link
+              key={monthKey}
+              href={`/travels?${getMonthDateRangeSearch(monthKey)}`}
+              className="text-[0.6rem] text-center font-['Space_Mono'] cursor-pointer"
+              style={{ color: ACCENT3 }}
+            >
               {tMonths(parseInt(monthKey.split('-')[1], 10).toString())}
-            </div>
+            </Link>
           ))}
           {ranking.map((place, rowIndex) => (
             <Fragment key={place.zipcode}>
