@@ -5,7 +5,7 @@ import type { MonthlyStats, PlacesVisited } from "@/types/travel";
 import { useTranslations } from "next-intl";
 import { Fragment, useMemo } from "react";
 
-import { ACCENT3 } from "@/constants/colors";
+import { ACCENT1, ACCENT3 } from "@/constants/colors";
 import { Link } from "@/i18n/routing";
 import { calculateTopPlacesByMonths } from "@/utils/chart/monthly";
 import { getMonthDateRangeSearch } from "@/utils/dateRange";
@@ -16,8 +16,16 @@ type Props = {
   home?: string;
 };
 
-const placeColors = [ACCENT3, "#3fe07a", "#38c66c", "#31ac5e", "#2a9250", "#237d43", "#1c6737"];
 const TOP_PLACES_LIMIT = 7;
+
+// Two ramps darkening by rank, so a cell reads both its position and its
+// jurisdiction: CABA zipcodes (prefix "C") in yellow, everything else in green.
+const CABA_PREFIX = "C";
+const placeColors = [ACCENT3, "#3fe07a", "#38c66c", "#31ac5e", "#2a9250", "#237d43", "#1c6737"];
+const cabaPlaceColors = [ACCENT1, "#cce03e", "#b4c637", "#9dac30", "#859229", "#727d23", "#5e671d"];
+
+const getPlaceColor = (zipcode: string, rank: number) =>
+  (zipcode.toUpperCase().startsWith(CABA_PREFIX) ? cabaPlaceColors : placeColors)[rank];
 
 const TopPlacesByMonths = ({ monthlyStats, placesVisited, home }: Props) => {
   const t = useTranslations("Dashboard");
@@ -82,7 +90,7 @@ const TopPlacesByMonths = ({ monthlyStats, placesVisited, home }: Props) => {
                     key={`${place.zipcode}-${monthKey}`}
                     title={`${place.zipcode} - ${place.name} — ${monthKey}`}
                     className="h-full w-full rounded-[3px] bg-gray-700"
-                    style={visited ? { backgroundColor: placeColors[rowIndex] } : undefined}
+                    style={visited ? { backgroundColor: getPlaceColor(place.zipcode, rowIndex) } : undefined}
                   />
                 );
               })}
