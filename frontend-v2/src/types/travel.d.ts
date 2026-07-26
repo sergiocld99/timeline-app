@@ -75,7 +75,9 @@ export type PlaceMonthRanking = {
   zipcode: string;
   name: string;
   id?: string;
+  // Months where this place was visited, and the km credited to it in each.
   monthKeys: string[];
+  kmByMonth: Record<string, number>;
 }
 
 export type TravelStats = {

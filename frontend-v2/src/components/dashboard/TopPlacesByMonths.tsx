@@ -1,6 +1,6 @@
 "use client";
 
-import type { MonthlyStats, PlacesVisited } from "@/types/travel";
+import type { MonthlyStats, PlaceMonthRanking, PlacesVisited } from "@/types/travel";
 
 import { useTranslations } from "next-intl";
 import { Fragment, useMemo } from "react";
@@ -8,7 +8,8 @@ import { Fragment, useMemo } from "react";
 import { ACCENT1, ACCENT3 } from "@/constants/colors";
 import { Link } from "@/i18n/routing";
 import { getCellOpacity } from "@/utils/chart";
-import { calculateTopPlacesByMonths } from "@/utils/chart/monthly";
+import { calculateKmOpacityCeiling, calculateTopPlacesByMonths } from "@/utils/chart/monthly";
+import { toShortMonthKey } from "@/utils/date";
 import { getMonthDateRangeSearch } from "@/utils/dateRange";
 
 type Props = {
@@ -28,6 +29,8 @@ const cabaPlaceColors = [ACCENT1, "#cce03e", "#b4c637", "#9dac30", "#859229", "#
 const getPlaceColor = (zipcode: string, rank: number) =>
   (zipcode.toUpperCase().startsWith(CABA_PREFIX) ? cabaPlaceColors : placeColors)[rank];
 
+const getPlaceLabel = ({ zipcode, name }: PlaceMonthRanking) => `${zipcode} - ${name}`;
+
 const TopPlacesByMonths = ({ monthlyStats, placesVisited, home }: Props) => {
   const t = useTranslations("Dashboard");
   const tMonths = useTranslations("MonthsShort");
@@ -42,21 +45,58 @@ const TopPlacesByMonths = ({ monthlyStats, placesVisited, home }: Props) => {
     [monthlyStats]
   );
 
-  // Monthly km are heavily skewed — a single long trip dwarfs a year of commutes
-  // and would flatten every other cell. Saturating at the 90th percentile keeps
-  // the ramp readable while still adapting to whoever is looking.
-  const fullOpacityKm = useMemo(() => {
-    const values = ranking
-      .flatMap(place => sortedMonthKeys.map(monthKey => monthlyStats[monthKey].kmByZipcode?.[place.zipcode] ?? 0))
-      .filter(km => km > 0)
-      .sort((a, b) => a - b);
-
-    const percentile90 = values[Math.floor(values.length * 0.9)] ?? values[values.length - 1];
-
-    return Math.max(percentile90 ?? 0, 1);
-  }, [ranking, sortedMonthKeys, monthlyStats]);
+  const fullOpacityKm = useMemo(() => calculateKmOpacityCeiling(ranking), [ranking]);
 
   if (ranking.length === 0) return null;
+
+  const renderMonthHeader = (monthKey: string) => (
+    <Link
+      key={monthKey}
+      href={`/travels?${getMonthDateRangeSearch(monthKey)}`}
+      className="text-[0.6rem] text-center font-['Space_Mono'] cursor-pointer"
+      style={{ color: ACCENT3 }}
+    >
+      {tMonths(toShortMonthKey(monthKey))}
+    </Link>
+  );
+
+  const renderCell = (place: PlaceMonthRanking, monthKey: string, rank: number) => {
+    const visited = place.monthKeys.includes(monthKey);
+    // Km only count arrivals, so a month visited purely as an origin stays
+    // coloured but at the floor opacity.
+    const km = place.kmByMonth[monthKey] ?? 0;
+    const label = `${getPlaceLabel(place)} — ${monthKey}`;
+
+    return (
+      <div
+        key={`${place.zipcode}-${monthKey}`}
+        title={visited ? `${label} · ${Math.round(km)} km` : label}
+        className="h-full w-full rounded-[3px] bg-gray-700"
+        style={visited ? {
+          backgroundColor: getPlaceColor(place.zipcode, rank),
+          opacity: getCellOpacity(km, fullOpacityKm)
+        } : undefined}
+      />
+    );
+  };
+
+  const renderPlaceRow = (place: PlaceMonthRanking, rank: number) => (
+    <Fragment key={place.zipcode}>
+      <div
+        className="text-[0.65rem] font-['Space_Mono'] text-[#f0f0f8] pr-2 truncate flex items-center"
+        title={getPlaceLabel(place)}
+      >
+        {place.id ? (
+          <Link href={`/travels/to/${place.id}`} className="hover:underline">
+            {place.zipcode}
+          </Link>
+        ) : (
+          <span>{place.zipcode}</span>
+        )}
+      </div>
+      {sortedMonthKeys.map(monthKey => renderCell(place, monthKey, rank))}
+    </Fragment>
+  );
 
   return (
     <div className="bg-[#111118] border border-[#2a2a3a] rounded-sm p-7 relative overflow-hidden before:absolute before:top-0 before:left-0 before:w-[3px] before:h-full before:bg-[#47ff88] animate-in duration-700 delay-800 flex flex-col">
@@ -73,50 +113,8 @@ const TopPlacesByMonths = ({ monthlyStats, placesVisited, home }: Props) => {
           }}
         >
           <div />
-          {sortedMonthKeys.map(monthKey => (
-            <Link
-              key={monthKey}
-              href={`/travels?${getMonthDateRangeSearch(monthKey)}`}
-              className="text-[0.6rem] text-center font-['Space_Mono'] cursor-pointer"
-              style={{ color: ACCENT3 }}
-            >
-              {tMonths(parseInt(monthKey.split('-')[1], 10).toString())}
-            </Link>
-          ))}
-          {ranking.map((place, rowIndex) => (
-            <Fragment key={place.zipcode}>
-              <div
-                className="text-[0.65rem] font-['Space_Mono'] text-[#f0f0f8] pr-2 truncate flex items-center"
-                title={`${place.zipcode} - ${place.name}`}
-              >
-                {place.id ? (
-                  <Link href={`/travels/to/${place.id}`} className="hover:underline">
-                    {place.zipcode}
-                  </Link>
-                ) : (
-                  <span>{place.zipcode}</span>
-                )}
-              </div>
-              {sortedMonthKeys.map(monthKey => {
-                const visited = place.monthKeys.includes(monthKey);
-                // Km only count arrivals, so a month visited purely as an origin
-                // stays coloured but at the floor opacity.
-                const km = monthlyStats[monthKey].kmByZipcode?.[place.zipcode] ?? 0;
-
-                return (
-                  <div
-                    key={`${place.zipcode}-${monthKey}`}
-                    title={`${place.zipcode} - ${place.name} — ${monthKey}${visited ? ` · ${Math.round(km)} km` : ""}`}
-                    className="h-full w-full rounded-[3px] bg-gray-700"
-                    style={visited ? {
-                      backgroundColor: getPlaceColor(place.zipcode, rowIndex),
-                      opacity: getCellOpacity(km, fullOpacityKm)
-                    } : undefined}
-                  />
-                );
-              })}
-            </Fragment>
-          ))}
+          {sortedMonthKeys.map(renderMonthHeader)}
+          {ranking.map(renderPlaceRow)}
         </div>
       </div>
     </div>

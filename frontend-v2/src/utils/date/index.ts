@@ -41,6 +41,9 @@ export const translateDay = (day: string, t: TranslationFn) => {
   return day;
 };
 
+// "2026-03" -> "3", the key `MonthsShort` translations are indexed by.
+export const toShortMonthKey = (monthKey: string) => String(parseInt(monthKey.split("-")[1], 10));
+
 // dd/mm/yyyy for date-range boundaries, which are built client-side from local
 // Dates (see useDashQuery), so reading local parts back round-trips correctly.
 export const formatDayMonthYear = (isoString?: string) => {

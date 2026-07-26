@@ -63,7 +63,24 @@ export const calculateTopPlacesByMonths = (
     .map(([zipcode, monthKeys]) => ({
       zipcode,
       monthKeys,
+      kmByMonth: Object.fromEntries(
+        monthKeys.map(monthKey => [monthKey, monthlyStats[monthKey].kmByZipcode?.[zipcode] ?? 0])
+      ),
       name: placesData?.[zipcode]?.name || zipcode,
       id: placesData?.[zipcode]?.id
     }));
+};
+
+// Monthly km are heavily skewed — a single long trip dwarfs a year of commutes and
+// would flatten every other cell. Saturating at the 90th percentile keeps the ramp
+// readable while still adapting to whoever is looking.
+export const calculateKmOpacityCeiling = (ranking: PlaceMonthRanking[]): number => {
+  const values = ranking
+    .flatMap(place => Object.values(place.kmByMonth))
+    .filter(km => km > 0)
+    .sort((a, b) => a - b);
+
+  const percentile90 = values[Math.floor(values.length * 0.9)] ?? values[values.length - 1];
+
+  return Math.max(percentile90 ?? 0, 1);
 };

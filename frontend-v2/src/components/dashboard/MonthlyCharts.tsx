@@ -19,6 +19,7 @@ import {
 
 import { ACCENT1, ACCENT2, BORDER, MUTED } from "@/constants/colors";
 import { getMonthlyBarStyling } from "@/utils/chart/monthly";
+import { toShortMonthKey } from "@/utils/date";
 
 import MonthTick from "./MonthTick";
 import ZipcodeTicker from "./ZipcodeTicker";
@@ -46,11 +47,9 @@ const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }
         const currentYear = parseInt(key.split('-')[0]);
         const prevKey = `${currentYear - 1}-${month}`;
         const prevData = prevStats?.monthlyStats?.[prevKey];
-        
-        const monthKey = parseInt(month).toString();
 
         return {
-          month: tMonths(monthKey),
+          month: tMonths(toShortMonthKey(key)),
           monthKey: key,
           ...data,
           km: Math.round(data.km),
