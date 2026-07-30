@@ -41,6 +41,8 @@ export type MonthlyStatItem = {
   minutes: number;
   count: number;
   zipcodes: string[];
+  // Km credited to each zipcode as a travel destination (see calculateTravelStats).
+  kmByZipcode?: Record<string, number>;
 }
 
 export type MonthlyStats = Record<string, MonthlyStatItem>;
@@ -67,6 +69,15 @@ export type TravelRecords = {
 export type TopRoute = {
   route: string;
   count: number;
+}
+
+export type PlaceMonthRanking = {
+  zipcode: string;
+  name: string;
+  id?: string;
+  // Months where this place was visited, and the km credited to it in each.
+  monthKeys: string[];
+  kmByMonth: Record<string, number>;
 }
 
 export type TravelStats = {

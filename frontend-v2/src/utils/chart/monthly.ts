@@ -1,3 +1,5 @@
+import type { MonthlyStats, PlaceMonthRanking, PlacesVisited } from "@/types/travel";
+
 import { ACCENT1, MUTED, WARNING } from "@/constants/colors";
 
 type MonthlyBarEntry = {
@@ -35,4 +37,50 @@ export const getMonthlyBarStyling = (
   }
 
   return { fill, opacity };
+};
+
+// Ranks places by how many distinct months they appear in across monthlyStats,
+// excluding the backend-calculated home (it dominates every ranking otherwise).
+export const calculateTopPlacesByMonths = (
+  monthlyStats: MonthlyStats,
+  placesData: PlacesVisited["data"],
+  home: string | undefined,
+  limit = 5
+): PlaceMonthRanking[] => {
+  const monthKeysByPlace: Record<string, string[]> = {};
+
+  Object.entries(monthlyStats).forEach(([monthKey, { zipcodes }]) => {
+    zipcodes.forEach(zipcode => {
+      if (!monthKeysByPlace[zipcode]) { monthKeysByPlace[zipcode] = []; }
+      monthKeysByPlace[zipcode].push(monthKey);
+    });
+  });
+
+  return Object.entries(monthKeysByPlace)
+    .filter(([zipcode]) => placesData?.[zipcode]?.name !== home)
+    .sort(([, a], [, b]) => b.length - a.length)
+    .slice(0, limit)
+    .map(([zipcode, monthKeys]) => ({
+      zipcode,
+      monthKeys,
+      kmByMonth: Object.fromEntries(
+        monthKeys.map(monthKey => [monthKey, monthlyStats[monthKey].kmByZipcode?.[zipcode] ?? 0])
+      ),
+      name: placesData?.[zipcode]?.name || zipcode,
+      id: placesData?.[zipcode]?.id
+    }));
+};
+
+// Monthly km are heavily skewed — a single long trip dwarfs a year of commutes and
+// would flatten every other cell. Saturating at the 90th percentile keeps the ramp
+// readable while still adapting to whoever is looking.
+export const calculateKmOpacityCeiling = (ranking: PlaceMonthRanking[]): number => {
+  const values = ranking
+    .flatMap(place => Object.values(place.kmByMonth))
+    .filter(km => km > 0)
+    .sort((a, b) => a - b);
+
+  const percentile90 = values[Math.floor(values.length * 0.9)] ?? values[values.length - 1];
+
+  return Math.max(percentile90 ?? 0, 1);
 };

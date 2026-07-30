@@ -2,6 +2,8 @@
 
 import { useTranslations } from "next-intl";
 
+import { formatDayMonthYear } from "@/utils/date";
+
 type Props = {
   count: number;
   totalDistance: number;
@@ -13,15 +15,6 @@ type Props = {
 const DashboardHeader = ({ count, totalDistance, totalHours, currentFrom, currentTo }: Props) => {
   const t = useTranslations("Dashboard");
 
-  const formatDate = (isoString?: string) => {
-    if (!isoString) return "";
-    const d = new Date(isoString);
-    const day = String(d.getDate()).padStart(2, "0");
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const year = d.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
-
   return (
     <header className="relative z-10 flex flex-col md:flex-row items-start md:items-end justify-between border-bottom border-[#2a2a3a] pb-6 mb-12 animate-in duration-700">
       <div>
@@ -30,7 +23,7 @@ const DashboardHeader = ({ count, totalDistance, totalHours, currentFrom, curren
         </h1>
         {currentFrom && currentTo && (
           <span className="text-[0.7rem] md:text-[0.8rem] font-['Space_Mono'] text-[#8a8a9e] mt-3.5 block tracking-[2px] uppercase">
-            {formatDate(currentFrom)} — {formatDate(currentTo)}
+            {formatDayMonthYear(currentFrom)} — {formatDayMonthYear(currentTo)}
           </span>
         )}
       </div>

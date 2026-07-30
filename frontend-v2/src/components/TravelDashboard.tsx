@@ -6,8 +6,8 @@ import { ACCENT1 } from "@/constants/colors";
 
 import DashboardHeader from "./dashboard/DashboardHeader";
 import MonthlyCharts from "./dashboard/MonthlyCharts";
-import DashboardRecords from "./dashboard/DashboardRecords";
 import FrequentRoutes from "./dashboard/FrequentRoutes";
+import TopPlacesByMonths from "./dashboard/TopPlacesByMonths";
 
 type Props = {
   stats: TravelStats;
@@ -20,11 +20,11 @@ const TravelDashboard = ({ stats, prevStats, currentFrom, currentTo }: Props) =>
   const {
     monthlyStats = {},
     topRoutes = [],
-    records,
     count: totalCount,
     totalDistance,
     totalHours,
-    placesVisited
+    placesVisited,
+    home
   } = stats;
 
   return (
@@ -54,7 +54,7 @@ const TravelDashboard = ({ stats, prevStats, currentFrom, currentTo }: Props) =>
           totalDistance={totalDistance}
           placesVisited={placesVisited}
         />
-        <DashboardRecords records={records} />
+        <TopPlacesByMonths monthlyStats={monthlyStats} placesVisited={placesVisited} home={home} />
         <FrequentRoutes topRoutes={topRoutes} />
       </div>
     </div>

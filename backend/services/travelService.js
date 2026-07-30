@@ -187,7 +187,7 @@ export const calculateTravelStats = (travels) => {
     // Monthly Stats
     const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
     if (!monthlyStats[monthKey]) {
-      monthlyStats[monthKey] = { km: 0, minutes: 0, count: 0, zipcodes: [] };
+      monthlyStats[monthKey] = { km: 0, minutes: 0, count: 0, zipcodes: [], kmByZipcode: {} };
     }
     monthlyStats[monthKey].km += distance;
     monthlyStats[monthKey].minutes += duration;
@@ -206,6 +206,14 @@ export const calculateTravelStats = (travels) => {
 
       if (!monthlyStats[monthKey].zipcodes.find(cp => cp === t.destination.zipcode)) {
         monthlyStats[monthKey].zipcodes.push(t.destination.zipcode)
+      }
+
+      // `distance` is a single scalar covering the whole trip, so it is credited
+      // to the destination only ("km travelled to this place"). Splitting it or
+      // crediting both endpoints would stop these summing to the period total.
+      if (t.destination.zipcode) {
+        const kmByZipcode = monthlyStats[monthKey].kmByZipcode
+        kmByZipcode[t.destination.zipcode] = (kmByZipcode[t.destination.zipcode] || 0) + distance
       }
 
       // Unique Routes Set (using zipcodes consistent with statistics-service)
