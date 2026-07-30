@@ -96,6 +96,7 @@ ESLint enforces `import/order` (type → builtin → external → internal → p
 
 ## Cross-cutting rules
 
+- **When you find a pre-existing bug** (not introduced by the current change) while working on something else, don't fix it inline and don't open a GitHub issue silently — tell the user what you found and ask for confirmation before filing the issue.
 - **Never `git commit` without having run `docker compose up --build -d` first in that session** (or the same change validated some other way as noted below) — this is the final end-to-end check that the full stack actually builds and runs with the change, not just that `npm run dev`/`npm run lint` pass locally. `npm run dev` (see above) is fine for fast iterative Playwright MCP verification while working, but always follow up with a Docker rebuild before committing.
 - **Software Design Documents**: non-trivial features or architectural changes should get a doc in `docs/sdd/` (copy `template.md`) before implementation.
 - **CHANGELOG.md is manually curated** — never edit it directly; the team fills it in by PR number/subject. The one exception is the `changelog-cod` skill, which computes the PR size using the same formula as `.github/workflows/pr-compliance.yml` and appends the resulting `CODn-XXX` entry — only invoke it explicitly (e.g. via `/changelog-cod`), never edit the file ad hoc.

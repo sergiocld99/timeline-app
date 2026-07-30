@@ -19,6 +19,7 @@ import {
 
 import { ACCENT1, ACCENT2, BORDER, MUTED } from "@/constants/colors";
 import { getMonthlyBarStyling } from "@/utils/chart/monthly";
+import { toShortMonthKey } from "@/utils/date";
 
 import MonthTick from "./MonthTick";
 import ZipcodeTicker from "./ZipcodeTicker";
@@ -46,11 +47,9 @@ const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }
         const currentYear = parseInt(key.split('-')[0]);
         const prevKey = `${currentYear - 1}-${month}`;
         const prevData = prevStats?.monthlyStats?.[prevKey];
-        
-        const monthKey = parseInt(month).toString();
 
         return {
-          month: tMonths(monthKey),
+          month: tMonths(toShortMonthKey(key)),
           monthKey: key,
           ...data,
           km: Math.round(data.km),
@@ -74,6 +73,10 @@ const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }
     return Math.round(prevStats.totalDistance / monthsCount);
   }, [prevStats]);
 
+  // Guard as a number, not a truthiness check: a 0 count would render a stray "0"
+  // next to the current count (e.g. "27" + "0" reading as "270").
+  const prevPlacesCount = prevStats?.placesVisited?.count ?? 0;
+
   return (
     <>
       {/* Chart 1: Places per month */}
@@ -90,9 +93,9 @@ const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }
           </div>
           <span className="text-2xl font-extrabold text-[#e8ff47] flex items-baseline leading-none">
             {placesVisited.count}
-            {prevStats?.placesVisited?.count && (
+            {prevPlacesCount > 0 && (
               <span className="text-[1rem] ml-2 font-['Space_Mono'] text-[#5a5a70] tracking-[1px]" style={{ color: MUTED }}>
-                / {prevStats.placesVisited.count}
+                / {prevPlacesCount}
               </span>
             )}
           </span>

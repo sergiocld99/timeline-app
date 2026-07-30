@@ -101,7 +101,7 @@ const TravelMap = ({ travels, isFiltered, stats }: Props) => {
         />
 
         <ChangeMapView center={mapCenter} zoom={zoom} />
-        {averageLatitude && averageLongitude && averageDistance && (
+        {!!(averageLatitude && averageLongitude && averageDistance) && (
           <Circle
             center={[averageLatitude, averageLongitude]}
             radius={averageDistance * 1000}
