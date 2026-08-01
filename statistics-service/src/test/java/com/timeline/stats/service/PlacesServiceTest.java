@@ -32,6 +32,22 @@ public class PlacesServiceTest {
   @InjectMock
   LocationRepository locationRepository;
 
+  private Location locationAt(String hexId, String name, String zipcode) {
+    Location location = new Location();
+    location.id = new ObjectId(hexId);
+    location.name = name;
+    location.zipcode = zipcode;
+    return location;
+  }
+
+  private Travel travelBetween(Location origin, Location destination) {
+    Travel travel = new Travel();
+    travel.id = new ObjectId();
+    travel.origin = origin.id;
+    travel.destination = destination.id;
+    return travel;
+  }
+
   @Test
   public void testGetZipcodesWhenNoTravels() {
     Set<String> result = placesService.getZipcodesFromTravels(List.of());
@@ -109,22 +125,6 @@ public class PlacesServiceTest {
     assertEquals(2, result.size());
     assertTrue(result.contains(loc1));
     assertTrue(result.contains(loc2));
-  }
-
-  private Location locationAt(String hexId, String name, String zipcode) {
-    Location location = new Location();
-    location.id = new ObjectId(hexId);
-    location.name = name;
-    location.zipcode = zipcode;
-    return location;
-  }
-
-  private Travel travelBetween(Location origin, Location destination) {
-    Travel travel = new Travel();
-    travel.id = new ObjectId();
-    travel.origin = origin.id;
-    travel.destination = destination.id;
-    return travel;
   }
 
   @Test
