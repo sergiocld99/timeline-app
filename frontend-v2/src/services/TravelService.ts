@@ -14,8 +14,7 @@ type FetchCustomParams = {
   sortingField?: string,
   locFrom?: string,
   locTo?: string,
-  userId?: number,
-  statsOnly?: boolean
+  userId?: number
 }
 
 class TravelService {
@@ -34,7 +33,7 @@ class TravelService {
     }
   }
 
-  static async getAll({ dateFrom, dateTo, crossIds, sortingField, userId, locFrom, locTo, statsOnly }: FetchCustomParams): Promise<TravelsData> {
+  static async getAll({ dateFrom, dateTo, crossIds, sortingField, userId, locFrom, locTo }: FetchCustomParams): Promise<TravelsData> {
     const correctBaseUrl = crossIds ? `${baseUrl}/v2` : baseUrl
     const url = new URL(correctBaseUrl)
     if (dateFrom) url.searchParams.append("dateFrom", dateFrom);
@@ -43,7 +42,6 @@ class TravelService {
     if (userId) url.searchParams.append("userId", userId.toString());
     if (locFrom) url.searchParams.append("locFrom", locFrom);
     if (locTo) url.searchParams.append("locTo", locTo);
-    if (statsOnly) url.searchParams.append("statsOnly", "true");
 
     try {
       let response;

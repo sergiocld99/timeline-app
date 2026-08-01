@@ -18,8 +18,9 @@ El controlador `getAllTravels` ahora verifica este parámetro:
 - Por defecto (`false` o ausente): Se mantiene el comportamiento original devolviendo ambos campos.
 
 ### Cambios en Frontend
-- `TravelService.getAll` ahora acepta `statsOnly` en sus parámetros.
-- `HomePageClient` utiliza `statsOnly: true` al cargar los datos para el Dashboard.
+- `TravelService.getAll` aceptaba `statsOnly` en sus parámetros, y el Dashboard lo usaba al cargar sus datos.
+
+> **Estado actual (desde #100):** el Dashboard ya no consume este endpoint — lee de `GET /api/v2/stats/dashboard` en `statistics-service` (ver [SDD 05](../sdd/05-stats-dashboard-endpoint.md)). El parámetro fue removido del cliente por quedar sin uso, pero **sigue soportado y documentado en el backend** (`API_DOCUMENTATION.md`) porque es API pública con consumidores externos (app Android).
 
 ## Beneficios
 - **Reducción de Latencia**: Menor tiempo de transferencia de red.
