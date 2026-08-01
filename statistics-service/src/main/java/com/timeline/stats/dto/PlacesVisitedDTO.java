@@ -1,10 +1,6 @@
 package com.timeline.stats.dto;
 
-import com.timeline.stats.domain.Location;
-
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,14 +18,8 @@ public class PlacesVisitedDTO {
     Arrays.sort(this.zipcodes);
   }
 
-  public PlacesVisitedDTO(Set<String> zipcodes, List<Location> locations) {
+  public PlacesVisitedDTO(Set<String> zipcodes, Map<String, PlaceInfoDTO> data) {
     this(zipcodes);
-
-    this.data = new HashMap<>();
-    for (Location location : locations) {
-      if (location.zipcode != null) {
-        this.data.put(location.zipcode, new PlaceInfoDTO(location.name, location.id.toString()));
-      }
-    }
+    this.data = data;
   }
 }

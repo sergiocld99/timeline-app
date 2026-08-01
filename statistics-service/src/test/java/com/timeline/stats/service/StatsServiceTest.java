@@ -66,6 +66,7 @@ public class StatsServiceTest {
     when(travelRepository.findByIds(any(List.class))).thenReturn(List.of(travel));
     when(placesService.getLocationsFromDTOs(any(List.class))).thenReturn(List.of(origin, destination));
     when(placesService.getZipcodesFromLocations(any())).thenCallRealMethod();
+    when(placesService.getPlaceInfoByZipcode(any())).thenCallRealMethod();
 
     TravelStatsDTO result = statsService.calculateBasicStatsFromIds(List.of(dto));
 

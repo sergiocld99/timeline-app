@@ -69,6 +69,7 @@ public class DashboardServiceTest {
     when(travelRepository.findByDateRangeAndUser(any(), any(), any())).thenReturn(travels);
     when(placesService.getLocationsFromTravels(any())).thenReturn(List.of(casa, trabajo, gimnasio));
     when(placesService.getZipcodesFromLocations(any())).thenCallRealMethod();
+    when(placesService.getPlaceInfoByZipcode(any())).thenCallRealMethod();
 
     DashboardStatsDTO result = dashboardService.calculateDashboardStats(january, february.plusSeconds(3600), 1);
 

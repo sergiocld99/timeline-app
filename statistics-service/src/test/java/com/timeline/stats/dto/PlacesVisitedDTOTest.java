@@ -5,13 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.LinkedHashSet;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
-
-import com.timeline.stats.domain.Location;
 
 public class PlacesVisitedDTOTest {
 
@@ -29,15 +27,11 @@ public class PlacesVisitedDTOTest {
   }
 
   @Test
-  public void testDataMapsZipcodeToNameAndId() {
-    Location location = new Location();
-    location.id = new ObjectId();
-    location.name = "Casa";
-    location.zipcode = "B1888";
+  public void testDataIsExposedAsGiven() {
+    Map<String, PlaceInfoDTO> data = Map.of("B1888", new PlaceInfoDTO("Casa", new ObjectId().toString()));
 
-    PlacesVisitedDTO dto = new PlacesVisitedDTO(Set.of("B1888"), List.of(location));
+    PlacesVisitedDTO dto = new PlacesVisitedDTO(Set.of("B1888"), data);
 
     assertEquals("Casa", dto.data.get("B1888").name());
-    assertEquals(location.id.toString(), dto.data.get("B1888").id());
   }
 }
