@@ -1,5 +1,7 @@
 package com.timeline.stats.repository;
 
+import static com.timeline.stats.TestFixtures.aLocation;
+import static com.timeline.stats.TestFixtures.aTravel;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -26,8 +28,7 @@ public class RepositoryTest {
 
   @Test
   public void testLocationRepositoryFindByIds() {
-    Location loc = new Location();
-    loc.zipcode = "12345";
+    Location loc = aLocation().withoutId().at("12345").build();
     locationRepository.persist(loc);
     assertNotNull(loc.id);
 
@@ -38,57 +39,38 @@ public class RepositoryTest {
 
   @Test
   public void testTravelRepositoryQueries() {
-    Location loc = new Location();
+    Location loc = aLocation().withoutId().build();
     locationRepository.persist(loc);
 
-    Travel travel = new Travel();
-    travel.startTime = Instant.now().minusSeconds(3600);
-    travel.endTime = Instant.now();
-    travel.origin = loc.id;
-    travel.destination = loc.id;
-    travel.distance = 10.0;
-    travel.userId = 999;
-
+    Instant start = Instant.now().minusSeconds(3600);
+    Instant end = Instant.now();
+    Travel travel = aTravel().from(loc).to(loc).startingAt(start).endingAt(end).km(10.0).forUser(999).build();
     travelRepository.persist(travel);
 
-    List<Travel> range = travelRepository.findByDateRange(travel.startTime.minusSeconds(10),
-        travel.endTime.plusSeconds(10));
+    List<Travel> range = travelRepository.findByDateRange(start.minusSeconds(10), end.plusSeconds(10));
     assertEquals(1, range.size());
 
-    List<Travel> userRange = travelRepository.findByDateRangeAndUser(travel.startTime.minusSeconds(10),
-        travel.endTime.plusSeconds(10), 999);
+    List<Travel> userRange = travelRepository.findByDateRangeAndUser(start.minusSeconds(10), end.plusSeconds(10), 999);
     assertEquals(1, userRange.size());
 
-    long count = travelRepository.countByDateRange(travel.startTime.minusSeconds(10), travel.endTime.plusSeconds(10));
+    long count = travelRepository.countByDateRange(start.minusSeconds(10), end.plusSeconds(10));
     assertEquals(1, count);
   }
 
   @Test
   public void testTravelRepositoryGuestQueries() {
-    Location loc = new Location();
+    Location loc = aLocation().withoutId().build();
     locationRepository.persist(loc);
 
-    Travel guestTravel = new Travel();
-    guestTravel.startTime = Instant.now().minusSeconds(3600);
-    guestTravel.endTime = Instant.now();
-    guestTravel.distance = 10.0;
-    guestTravel.origin = loc.id;
-    guestTravel.destination = loc.id;
-    guestTravel.userId = null;
-
-    Travel userTravel = new Travel();
-    userTravel.startTime = guestTravel.startTime;
-    userTravel.endTime = guestTravel.endTime;
-    userTravel.distance = guestTravel.distance;
-    userTravel.origin = loc.id;
-    userTravel.destination = loc.id;
-    userTravel.userId = 999;
+    Instant start = Instant.now().minusSeconds(3600);
+    Instant end = Instant.now();
+    Travel guestTravel = aTravel().from(loc).to(loc).startingAt(start).endingAt(end).km(10.0).build();
+    Travel userTravel = aTravel().from(loc).to(loc).startingAt(start).endingAt(end).km(10.0).forUser(999).build();
 
     travelRepository.persist(guestTravel);
     travelRepository.persist(userTravel);
 
-    List<Travel> userRange = travelRepository.findByDateRangeAndUser(guestTravel.startTime.minusSeconds(10),
-        guestTravel.endTime.plusSeconds(10), null);
+    List<Travel> userRange = travelRepository.findByDateRangeAndUser(start.minusSeconds(10), end.plusSeconds(10), null);
     assertEquals(1, userRange.size());
   }
 }

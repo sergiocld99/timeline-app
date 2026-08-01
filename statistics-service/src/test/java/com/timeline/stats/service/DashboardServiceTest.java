@@ -1,5 +1,7 @@
 package com.timeline.stats.service;
 
+import static com.timeline.stats.TestFixtures.aLocation;
+import static com.timeline.stats.TestFixtures.aTravel;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -7,7 +9,6 @@ import static org.mockito.Mockito.when;
 import java.time.Instant;
 import java.util.List;
 
-import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 
 import com.timeline.stats.domain.Location;
@@ -31,40 +32,19 @@ public class DashboardServiceTest {
   @InjectMock
   PlacesService placesService;
 
-  private Location location(String name, String zipcode) {
-    Location location = new Location();
-    location.id = new ObjectId();
-    location.name = name;
-    location.zipcode = zipcode;
-    location.latitude = 0;
-    location.longitude = 0;
-    return location;
-  }
-
-  private Travel travel(Location origin, Location destination, Instant startTime, double distance) {
-    Travel travel = new Travel();
-    travel.id = new ObjectId();
-    travel.origin = origin.id;
-    travel.destination = destination.id;
-    travel.distance = distance;
-    travel.startTime = startTime;
-    travel.endTime = startTime.plusSeconds(3600);
-    return travel;
-  }
-
   @Test
   public void testMonthlyStatsAndTopRoutesAndHome() {
-    Location casa = location("Casa", "B1000");
-    Location trabajo = location("Trabajo", "B2000");
-    Location gimnasio = location("Gimnasio", "B3000");
+    Location casa = aLocation().named("Casa").at("B1000").build();
+    Location trabajo = aLocation().named("Trabajo").at("B2000").build();
+    Location gimnasio = aLocation().named("Gimnasio").at("B3000").build();
 
     Instant january = Instant.parse("2026-01-15T12:00:00Z");
     Instant february = Instant.parse("2026-02-10T12:00:00Z");
 
     List<Travel> travels = List.of(
-        travel(casa, trabajo, january, 10.0),
-        travel(casa, trabajo, january, 10.0),
-        travel(casa, gimnasio, february, 5.0));
+        aTravel().from(casa).to(trabajo).startingAt(january).km(10.0).build(),
+        aTravel().from(casa).to(trabajo).startingAt(january).km(10.0).build(),
+        aTravel().from(casa).to(gimnasio).startingAt(february).km(5.0).build());
 
     when(travelRepository.findByDateRangeAndUser(any(), any(), any())).thenReturn(travels);
     when(placesService.getLocationsFromTravels(any())).thenReturn(List.of(casa, trabajo, gimnasio));
@@ -88,17 +68,17 @@ public class DashboardServiceTest {
 
   @Test
   public void testTiedRoutesAreOrderedByNameRegardlessOfTravelOrder() {
-    Location casa = location("Casa", "B1000");
-    Location trabajo = location("Trabajo", "B2000");
-    Location gimnasio = location("Gimnasio", "B3000");
+    Location casa = aLocation().named("Casa").at("B1000").build();
+    Location trabajo = aLocation().named("Trabajo").at("B2000").build();
+    Location gimnasio = aLocation().named("Gimnasio").at("B3000").build();
 
     Instant january = Instant.parse("2026-01-15T12:00:00Z");
 
     // Both routes end up with one travel each; the repository does not sort, so
     // the tie must not be decided by whichever travel Mongo happened to return first
     List<Travel> travels = List.of(
-        travel(casa, trabajo, january, 10.0),
-        travel(casa, gimnasio, january, 5.0));
+        aTravel().from(casa).to(trabajo).startingAt(january).km(10.0).build(),
+        aTravel().from(casa).to(gimnasio).startingAt(january).km(5.0).build());
     List<Travel> reversed = List.of(travels.get(1), travels.get(0));
 
     when(placesService.getLocationsFromTravels(any())).thenReturn(List.of(casa, trabajo, gimnasio));

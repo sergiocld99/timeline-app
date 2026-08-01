@@ -1,5 +1,7 @@
 package com.timeline.stats.service;
 
+import static com.timeline.stats.TestFixtures.aLocation;
+import static com.timeline.stats.TestFixtures.aTravel;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -32,22 +34,6 @@ public class PlacesServiceTest {
   @InjectMock
   LocationRepository locationRepository;
 
-  private Location locationAt(String hexId, String name, String zipcode) {
-    Location location = new Location();
-    location.id = new ObjectId(hexId);
-    location.name = name;
-    location.zipcode = zipcode;
-    return location;
-  }
-
-  private Travel travelBetween(Location origin, Location destination) {
-    Travel travel = new Travel();
-    travel.id = new ObjectId();
-    travel.origin = origin.id;
-    travel.destination = destination.id;
-    return travel;
-  }
-
   @Test
   public void testGetZipcodesWhenNoTravels() {
     Set<String> result = placesService.getZipcodesFromTravels(List.of());
@@ -57,17 +43,9 @@ public class PlacesServiceTest {
   @Test
   @SuppressWarnings("unchecked")
   public void testGetZipcodesFromTravels() {
-    Location loc1 = new Location();
-    loc1.id = new ObjectId();
-    loc1.zipcode = "B1859";
-
-    Location loc2 = new Location();
-    loc2.id = new ObjectId();
-    loc2.zipcode = "B1888";
-
-    Location loc3 = new Location();
-    loc3.id = new ObjectId();
-    loc3.zipcode = "B1888";
+    Location loc1 = aLocation().at("B1859").build();
+    Location loc2 = aLocation().at("B1888").build();
+    Location loc3 = aLocation().at("B1888").build();
 
     TravelDTO dto1 = new TravelDTO(new ObjectId(), loc1.id, loc2.id);
     TravelDTO dto2 = new TravelDTO(new ObjectId(), loc2.id, loc3.id);
@@ -85,10 +63,8 @@ public class PlacesServiceTest {
   @Test
   @SuppressWarnings("unchecked")
   public void testGetLocationsFromDTOs() {
-    Location loc1 = new Location();
-    loc1.id = new ObjectId();
-    Location loc2 = new Location();
-    loc2.id = new ObjectId();
+    Location loc1 = aLocation().build();
+    Location loc2 = aLocation().build();
 
     TravelDTO dto1 = new TravelDTO(new ObjectId(), loc1.id, loc2.id);
     TravelDTO dto2 = new TravelDTO(new ObjectId(), loc2.id, loc1.id);
@@ -105,18 +81,11 @@ public class PlacesServiceTest {
   @Test
   @SuppressWarnings("unchecked")
   public void testGetLocationsFromTravels() {
-    Location loc1 = new Location();
-    loc1.id = new ObjectId();
-    Location loc2 = new Location();
-    loc2.id = new ObjectId();
+    Location loc1 = aLocation().build();
+    Location loc2 = aLocation().build();
 
-    Travel travel1 = new Travel();
-    travel1.origin = loc1.id;
-    travel1.destination = loc2.id;
-
-    Travel travel2 = new Travel();
-    travel2.origin = loc2.id;
-    travel2.destination = loc1.id;
+    Travel travel1 = aTravel().from(loc1).to(loc2).build();
+    Travel travel2 = aTravel().from(loc2).to(loc1).build();
 
     when(locationRepository.findByIds(any(Set.class))).thenReturn(List.of(loc1, loc2));
 
@@ -129,13 +98,16 @@ public class PlacesServiceTest {
 
   @Test
   public void testPlaceInfoPicksTheMostVisitedLocationOfEachZipcode() {
-    Location home = locationAt("000000000000000000000001", "Casa", "B1000");
-    Location frequent = locationAt("000000000000000000000002", "Quilmes Centro", "B1878");
-    Location oneOff = locationAt("000000000000000000000003", "Parada casual", "B1878");
+    Location home = aLocation().withId("000000000000000000000001").named("Casa").at("B1000").build();
+    Location frequent = aLocation().withId("000000000000000000000002").named("Quilmes Centro").at("B1878").build();
+    Location oneOff = aLocation().withId("000000000000000000000003").named("Parada casual").at("B1878").build();
 
     // `oneOff` is last in the location list, so a naive "last one wins" would pick it
     StatsContextDTO context = new StatsContextDTO(
-        List.of(travelBetween(home, frequent), travelBetween(home, frequent), travelBetween(home, oneOff)),
+        List.of(
+            aTravel().from(home).to(frequent).build(),
+            aTravel().from(home).to(frequent).build(),
+            aTravel().from(home).to(oneOff).build()),
         List.of(home, frequent, oneOff));
 
     Map<String, PlaceInfoDTO> result = placesService.getPlaceInfoByZipcode(context);
@@ -147,12 +119,12 @@ public class PlacesServiceTest {
 
   @Test
   public void testPlaceInfoBreaksTiesWithTheOldestLocation() {
-    Location home = locationAt("000000000000000000000001", "Casa", "B1000");
-    Location older = locationAt("000000000000000000000002", "Plaza vieja", "B1878");
-    Location newer = locationAt("000000000000000000000003", "Plaza nueva", "B1878");
+    Location home = aLocation().withId("000000000000000000000001").named("Casa").at("B1000").build();
+    Location older = aLocation().withId("000000000000000000000002").named("Plaza vieja").at("B1878").build();
+    Location newer = aLocation().withId("000000000000000000000003").named("Plaza nueva").at("B1878").build();
 
     StatsContextDTO context = new StatsContextDTO(
-        List.of(travelBetween(home, older), travelBetween(home, newer)),
+        List.of(aTravel().from(home).to(older).build(), aTravel().from(home).to(newer).build()),
         List.of(newer, older));
 
     Map<String, PlaceInfoDTO> result = placesService.getPlaceInfoByZipcode(context);
@@ -162,10 +134,8 @@ public class PlacesServiceTest {
 
   @Test
   public void testGetZipcodesFromLocations() {
-    Location loc1 = new Location();
-    loc1.zipcode = "12345";
-    Location loc2 = new Location();
-    loc2.zipcode = "67890";
+    Location loc1 = aLocation().at("12345").build();
+    Location loc2 = aLocation().at("67890").build();
 
     Set<String> result = placesService.getZipcodesFromLocations(List.of(loc1, loc2));
 

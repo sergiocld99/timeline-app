@@ -1,5 +1,8 @@
 # CHANGELOG
-## v0.11.0
+## v0.12.0
+- COD12-004: Extract shared TestFixtures for statistics-service (#102) [463]
+
+## v0.11.0 (2026-08-01)
 - COD11-003: Location names on zipcode stats + click-to-filter on from/to pages + go-to-date action (#95) [344]
 - COD11-010: Top places by months heatmap on dashboard + empty stats handling (#97) [717]
 - COD11-019: Migrate dashboard stats to statistics-service (#100) [919]
