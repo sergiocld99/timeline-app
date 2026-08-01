@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import com.timeline.stats.domain.Location;
 import com.timeline.stats.domain.Travel;
+import com.timeline.stats.dto.TopRouteDTO;
 import com.timeline.stats.dto.TravelDTO;
 import com.timeline.stats.dto.TravelStatsDTO;
 import com.timeline.stats.repository.TravelRepository;
@@ -94,5 +95,22 @@ public class StatsServiceTest {
     TravelStatsDTO result = statsService.calculateBasicStats(Instant.now(), Instant.now(), 1);
 
     assertEquals(1, result.count);
+  }
+
+  @Test
+  public void testCalculateHomePicksMostFrequentEndpointAcrossTopTwoRoutes() {
+    List<TopRouteDTO> topRoutes = List.of(
+        new TopRouteDTO("Casa ↔ Trabajo", 10),
+        new TopRouteDTO("Casa ↔ Gimnasio", 5),
+        new TopRouteDTO("Casa ↔ Supermercado", 3));
+
+    String home = statsService.calculateHome(topRoutes);
+
+    assertEquals("Casa", home);
+  }
+
+  @Test
+  public void testCalculateHomeReturnsNullForEmptyRoutes() {
+    assertEquals(null, statsService.calculateHome(List.of()));
   }
 }

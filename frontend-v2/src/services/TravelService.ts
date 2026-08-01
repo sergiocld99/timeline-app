@@ -80,6 +80,21 @@ class TravelService {
     }
   }
 
+  static async getDashboardStats(dateFrom: string, dateTo: string, userId?: number): Promise<TravelStats> {
+    const url = new URL(`${v2BaseUrl}/stats/dashboard`);
+    url.searchParams.append("dateFrom", dateFrom);
+    url.searchParams.append("dateTo", dateTo);
+    if (userId) url.searchParams.append("userId", userId.toString());
+
+    try {
+      const response = await axios.get<TravelStats>(url.toString());
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching dashboard stats:", error);
+      throw error;
+    }
+  }
+
   static async update(id: string, travelData: Partial<Travel>) {
     try {
       const response = await axios.put<Travel>(`${baseUrl}/${id}`, travelData);
