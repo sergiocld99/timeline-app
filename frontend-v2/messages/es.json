@@ -72,11 +72,9 @@
       "placesCount": "{count, plural, =1 {# lugar} other {# lugares}}"
     },
     "summary": {
-      "placesVisited": "Lugares visitados",
-      "coordinates": "Coordenadas prom.",
-      "time": "Tiempo",
-      "mostActiveDay": "Día más activo",
-      "topRoute": "Ruta más frecuente"
+      "placesVisited": "Visitaste",
+      "coordinates": "Centro",
+      "mostActiveDay": "Día más activo"
     },
     "details": "Detalles",
     "zip": "CP",
