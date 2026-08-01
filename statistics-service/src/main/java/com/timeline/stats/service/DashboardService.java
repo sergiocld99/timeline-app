@@ -14,7 +14,8 @@ import jakarta.inject.Inject;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -45,8 +46,9 @@ public class DashboardService {
 
     TravelStatsDTO baseStats = statsService.calculateBasicStatsFromContext(context);
 
+    // TreeMap so the "YYYY-MM" keys come out chronologically for any consumer
     Map<String, MonthlyStatDTO> monthlyStats = new TreeMap<>();
-    Map<String, Integer> routeCounts = new LinkedHashMap<>();
+    Map<String, Integer> routeCounts = new HashMap<>();
 
     for (LocatedTravelDTO locatedTravel : context.locatedTravels) {
       Travel travel = locatedTravel.travel();
@@ -79,8 +81,12 @@ public class DashboardService {
       }
     }
 
+    // Ties are broken by route name on purpose: `travelRepository` does not sort,
+    // so relying on encounter order would let Mongo decide `topRoutes` — and with
+    // it `home`, which is picked from the top two routes only.
     List<TopRouteDTO> topRoutes = routeCounts.entrySet().stream()
-        .sorted((a, b) -> b.getValue() - a.getValue())
+        .sorted(Comparator.comparingInt(Map.Entry<String, Integer>::getValue).reversed()
+            .thenComparing(Map.Entry::getKey))
         .limit(TOP_ROUTES_LIMIT)
         .map(entry -> new TopRouteDTO(entry.getKey(), entry.getValue()))
         .collect(Collectors.toCollection(ArrayList::new));

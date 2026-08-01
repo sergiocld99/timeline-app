@@ -85,4 +85,34 @@ public class DashboardServiceTest {
     assertEquals(2, result.topRoutes.get(0).count);
     assertEquals("Casa ↔ Gimnasio", result.topRoutes.get(1).route);
   }
+
+  @Test
+  public void testTiedRoutesAreOrderedByNameRegardlessOfTravelOrder() {
+    Location casa = location("Casa", "B1000");
+    Location trabajo = location("Trabajo", "B2000");
+    Location gimnasio = location("Gimnasio", "B3000");
+
+    Instant january = Instant.parse("2026-01-15T12:00:00Z");
+
+    // Both routes end up with one travel each; the repository does not sort, so
+    // the tie must not be decided by whichever travel Mongo happened to return first
+    List<Travel> travels = List.of(
+        travel(casa, trabajo, january, 10.0),
+        travel(casa, gimnasio, january, 5.0));
+    List<Travel> reversed = List.of(travels.get(1), travels.get(0));
+
+    when(placesService.getLocationsFromTravels(any())).thenReturn(List.of(casa, trabajo, gimnasio));
+    when(placesService.getZipcodesFromLocations(any())).thenCallRealMethod();
+    when(placesService.getPlaceInfoByZipcode(any())).thenCallRealMethod();
+
+    when(travelRepository.findByDateRangeAndUser(any(), any(), any())).thenReturn(travels);
+    DashboardStatsDTO result = dashboardService.calculateDashboardStats(january, january, 1);
+
+    when(travelRepository.findByDateRangeAndUser(any(), any(), any())).thenReturn(reversed);
+    DashboardStatsDTO reversedResult = dashboardService.calculateDashboardStats(january, january, 1);
+
+    assertEquals("Casa ↔ Gimnasio", result.topRoutes.get(0).route);
+    assertEquals(result.topRoutes.get(0).route, reversedResult.topRoutes.get(0).route);
+    assertEquals(result.home, reversedResult.home);
+  }
 }
