@@ -39,6 +39,9 @@ public class DashboardService {
   @Inject
   StatsService statsService;
 
+  @Inject
+  RouteService routeService;
+
   public DashboardStatsDTO calculateDashboardStats(Instant dateFrom, Instant dateTo, Integer userId) {
     List<Travel> travels = travelRepository.findByDateRangeAndUser(dateFrom, dateTo, userId);
     List<Location> locations = placesService.getLocationsFromTravels(travels);
@@ -65,7 +68,7 @@ public class DashboardService {
       if (origin != null && destination != null) {
         List<String> sortedNames = new ArrayList<>(List.of(origin.name, destination.name));
         sortedNames.sort(String::compareTo);
-        String routeKey = sortedNames.get(0) + StatsService.ROUTE_SEPARATOR + sortedNames.get(1);
+        String routeKey = sortedNames.get(0) + RouteService.ROUTE_SEPARATOR + sortedNames.get(1);
         routeCounts.merge(routeKey, 1, Integer::sum);
 
         if (!monthStat.zipcodes.contains(origin.zipcode)) {
@@ -91,22 +94,11 @@ public class DashboardService {
         .map(entry -> new TopRouteDTO(entry.getKey(), entry.getValue()))
         .collect(Collectors.toCollection(ArrayList::new));
 
-    String home = statsService.calculateHome(topRoutes);
+    String home = routeService.calculateHome(topRoutes);
     if (home != null) {
-      reorderRoutesAroundHome(topRoutes, home);
+      routeService.reorderRoutesAroundHome(topRoutes, home);
     }
 
     return new DashboardStatsDTO(baseStats, monthlyStats, topRoutes, home);
-  }
-
-  private void reorderRoutesAroundHome(List<TopRouteDTO> topRoutes, String home) {
-    for (TopRouteDTO route : topRoutes) {
-      if (!route.route.contains(home)) {
-        continue;
-      }
-      String[] endpoints = route.route.split(java.util.regex.Pattern.quote(StatsService.ROUTE_SEPARATOR));
-      String other = endpoints[0].equals(home) ? endpoints[1] : endpoints[0];
-      route.route = home + StatsService.ROUTE_SEPARATOR + other;
-    }
   }
 }
