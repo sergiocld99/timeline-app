@@ -2,6 +2,7 @@
 ## v0.11.0
 - COD11-003: Location names on zipcode stats + click-to-filter on from/to pages + go-to-date action (#95) [344]
 - COD11-010: Top places by months heatmap on dashboard + empty stats handling (#97) [717]
+- COD11-019: Migrate dashboard stats to statistics-service (#100) [919]
 
 ## v0.10.0
 - COD10-001: Add offset as dashboard query param (#74) [120]

@@ -5,16 +5,20 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 
+import com.timeline.stats.dto.DashboardStatsDTO;
 import com.timeline.stats.dto.StatsRequestDTO;
+import com.timeline.stats.dto.TopRouteDTO;
 import com.timeline.stats.dto.TravelDTO;
 import com.timeline.stats.dto.TravelStatsDTO;
 import com.timeline.stats.dto.PlacesVisitedDTO;
+import com.timeline.stats.service.DashboardService;
 import com.timeline.stats.service.StatsService;
 
 import io.quarkus.test.InjectMock;
@@ -26,6 +30,9 @@ public class StatsResourceTest {
 
   @InjectMock
   StatsService statsService;
+
+  @InjectMock
+  DashboardService dashboardService;
 
   @Test
   @SuppressWarnings("unchecked")
@@ -54,6 +61,28 @@ public class StatsResourceTest {
         .body("totalMinutes", is(60.0f))
         .body("uniqueDays", is(1))
         .body("uniqueRoutes", is(1));
+  }
+
+  @Test
+  public void testGetDashboardStats() {
+    PlacesVisitedDTO placesVisitedDTO = new PlacesVisitedDTO(Set.of("12345"));
+    TravelStatsDTO baseStats = new TravelStatsDTO(2, 30.0, 120.0, 15.0, 25.0, placesVisitedDTO, 2, 1);
+    DashboardStatsDTO responseStats = new DashboardStatsDTO(baseStats, java.util.Map.of(),
+        List.of(new TopRouteDTO("Casa ↔ Trabajo", 2)), "Casa");
+
+    when(dashboardService.calculateDashboardStats(any(), any(), any())).thenReturn(responseStats);
+
+    given()
+        .queryParam("dateFrom", Instant.now().minusSeconds(3600).toString())
+        .queryParam("dateTo", Instant.now().toString())
+        .queryParam("userId", 1)
+        .when()
+        .get("/api/v2/stats/dashboard")
+        .then()
+        .statusCode(200)
+        .body("count", is(2))
+        .body("home", is("Casa"))
+        .body("topRoutes[0].route", is("Casa ↔ Trabajo"));
   }
 
   @Test

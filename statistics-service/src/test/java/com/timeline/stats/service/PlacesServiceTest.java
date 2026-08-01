@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.bson.types.ObjectId;
@@ -13,6 +14,8 @@ import org.junit.jupiter.api.Test;
 
 import com.timeline.stats.domain.Location;
 import com.timeline.stats.domain.Travel;
+import com.timeline.stats.dto.PlaceInfoDTO;
+import com.timeline.stats.dto.StatsContextDTO;
 import com.timeline.stats.dto.TravelDTO;
 import com.timeline.stats.repository.LocationRepository;
 
@@ -28,6 +31,22 @@ public class PlacesServiceTest {
 
   @InjectMock
   LocationRepository locationRepository;
+
+  private Location locationAt(String hexId, String name, String zipcode) {
+    Location location = new Location();
+    location.id = new ObjectId(hexId);
+    location.name = name;
+    location.zipcode = zipcode;
+    return location;
+  }
+
+  private Travel travelBetween(Location origin, Location destination) {
+    Travel travel = new Travel();
+    travel.id = new ObjectId();
+    travel.origin = origin.id;
+    travel.destination = destination.id;
+    return travel;
+  }
 
   @Test
   public void testGetZipcodesWhenNoTravels() {
@@ -106,6 +125,39 @@ public class PlacesServiceTest {
     assertEquals(2, result.size());
     assertTrue(result.contains(loc1));
     assertTrue(result.contains(loc2));
+  }
+
+  @Test
+  public void testPlaceInfoPicksTheMostVisitedLocationOfEachZipcode() {
+    Location home = locationAt("000000000000000000000001", "Casa", "B1000");
+    Location frequent = locationAt("000000000000000000000002", "Quilmes Centro", "B1878");
+    Location oneOff = locationAt("000000000000000000000003", "Parada casual", "B1878");
+
+    // `oneOff` is last in the location list, so a naive "last one wins" would pick it
+    StatsContextDTO context = new StatsContextDTO(
+        List.of(travelBetween(home, frequent), travelBetween(home, frequent), travelBetween(home, oneOff)),
+        List.of(home, frequent, oneOff));
+
+    Map<String, PlaceInfoDTO> result = placesService.getPlaceInfoByZipcode(context);
+
+    assertEquals("Quilmes Centro", result.get("B1878").name());
+    assertEquals(frequent.id.toString(), result.get("B1878").id());
+    assertEquals("Casa", result.get("B1000").name());
+  }
+
+  @Test
+  public void testPlaceInfoBreaksTiesWithTheOldestLocation() {
+    Location home = locationAt("000000000000000000000001", "Casa", "B1000");
+    Location older = locationAt("000000000000000000000002", "Plaza vieja", "B1878");
+    Location newer = locationAt("000000000000000000000003", "Plaza nueva", "B1878");
+
+    StatsContextDTO context = new StatsContextDTO(
+        List.of(travelBetween(home, older), travelBetween(home, newer)),
+        List.of(newer, older));
+
+    Map<String, PlaceInfoDTO> result = placesService.getPlaceInfoByZipcode(context);
+
+    assertEquals("Plaza vieja", result.get("B1878").name());
   }
 
   @Test
