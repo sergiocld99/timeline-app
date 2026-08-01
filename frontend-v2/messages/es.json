@@ -74,7 +74,9 @@
     "summary": {
       "placesVisited": "Lugares visitados",
       "coordinates": "Coordenadas prom.",
-      "time": "Tiempo"
+      "time": "Tiempo",
+      "mostActiveDay": "Día más activo",
+      "topRoute": "Ruta más frecuente"
     },
     "details": "Detalles",
     "zip": "CP",

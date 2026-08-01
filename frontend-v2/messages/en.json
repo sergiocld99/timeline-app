@@ -74,7 +74,9 @@
     "summary": {
       "placesVisited": "Places visited",
       "coordinates": "Avg. coordinates",
-      "time": "Time"
+      "time": "Time",
+      "mostActiveDay": "Most active day",
+      "topRoute": "Top route"
     },
     "details": "Details",
     "zip": "Zip",
