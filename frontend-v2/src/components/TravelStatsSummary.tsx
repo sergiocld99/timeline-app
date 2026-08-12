@@ -69,6 +69,12 @@ const TravelStatsSummary = ({ travels, initialStats }: Props) => {
 
   return (
     <div className="flex flex-wrap gap-x-8">
+      <div className="flex-1 min-w-56 flex items-baseline gap-1 flex-wrap">
+        <StatLabel>{t("summary.coordinates")}</StatLabel>
+        <span className="font-medium text-gray-900 dark:text-white">
+          <PointWithCopyBtn latitude={averageLatitude} longitude={averageLongitude} />
+        </span>
+      </div>
       <div className="flex-1 min-w-56 flex items-baseline gap-1">
         <span className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">{t("summary.placesVisited")}</span>
         <span
@@ -76,12 +82,6 @@ const TravelStatsSummary = ({ travels, initialStats }: Props) => {
           title={tooltipText}
         >
           {t("footer.placesCount", { count: placesVisited?.count || 0 })}
-        </span>
-      </div>
-      <div className="flex-1 min-w-56 flex items-baseline gap-1 flex-wrap">
-        <StatLabel>{t("summary.coordinates")}</StatLabel>
-        <span className="font-medium text-gray-900 dark:text-white">
-          <PointWithCopyBtn latitude={averageLatitude} longitude={averageLongitude} />
         </span>
       </div>
       {mostActiveDay && (
