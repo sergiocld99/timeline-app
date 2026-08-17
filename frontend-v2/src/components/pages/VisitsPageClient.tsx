@@ -75,7 +75,7 @@ const VisitsPageClient = () => {
     <main className="mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
       <div className="space-y-8">
         <div className="hidden lg:flex gap-8">
-          <GravityCenterScoreboard visitsData={visitsData} />
+          <GravityCenterScoreboard visitsData={visitsData} isFiltered={!!appliedFilter} />
           <VisitStats visits={filteredVisits} onFilter={onFilter} groupHourlyByWeekday={groupHourlyByWeekday} />
         </div>
         <VisitTable

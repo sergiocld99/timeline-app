@@ -12,10 +12,12 @@ import useNearbyCenters from "@/hooks/useNearbyCenters"
 import { shortcutName } from "@/utils/strings"
 
 import { Card, CardContent } from "./ui/card"
+import { PointWithCopyBtn } from "./render/coordinates";
 
 type Props = {
   travelsData?: TravelsData
   visitsData?: VisitsData
+  isFiltered?: boolean
 }
 
 const renderNearbyCenter = (kc: KnownCenter, index: number, travels: Travel[], visits: Visit[], t: TranslationFn) => {
@@ -48,7 +50,7 @@ const renderNearbyCenter = (kc: KnownCenter, index: number, travels: Travel[], v
   )
 }
 
-const GravityCenterScoreboard = ({ travelsData, visitsData }: Props) => {
+const GravityCenterScoreboard = ({ travelsData, visitsData, isFiltered }: Props) => {
   const t = useTranslations("Visits")
   const { averageLatitude, averageLongitude } = travelsData?.stats || visitsData?.stats || {}
   const travels = travelsData?.travels || []
@@ -57,10 +59,21 @@ const GravityCenterScoreboard = ({ travelsData, visitsData }: Props) => {
 
   const { nearbyCenters } = useNearbyCenters({ latitude: averageLatitude, longitude: averageLongitude, radiusKm: nearbyRadius })
 
+  const renderGlobalCenter = (averageLatitude?: number, averageLongitude?: number) => (
+    <div className="mb-6 last:mb-0">
+      <span className="font-medium text-gray-900 dark:text-white">
+        <PointWithCopyBtn latitude={averageLatitude} longitude={averageLongitude} />
+      </span>
+    </div>
+  )
+
   return (
     <Card className="w-2/10 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardContent className="h-[300px] flex flex-col items-start justify-center p-6">
-        {nearbyCenters.length > 0 && nearbyCenters.map((nc, index) => renderNearbyCenter(nc, index, travels, visits, t))}
+        {isFiltered ? undefined : renderGlobalCenter(averageLatitude, averageLongitude)}
+        {nearbyCenters.length > 0 && nearbyCenters.slice(0, isFiltered ? 5 : 4).map((nc, index) =>
+          renderNearbyCenter(nc, index, travels, visits, t))
+        }
       </CardContent>
     </Card>
   )
