@@ -1,13 +1,13 @@
 "use client";
 
-import type { Travel, TravelStats } from "@/types/travel";
+import type { PlacesVisited, Travel, TravelStats } from "@/types/travel";
 
 import { CalendarSearchIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 
 import { useTravelStats } from "@/hooks/useTravelStats";
-import { extractDate } from "@/utils/date";
+import { extractDate, getDaysRange } from "@/utils/date";
 
 import { PointWithCopyBtn } from "./render/coordinates";
 
@@ -73,9 +73,10 @@ const TravelStatsSummary = ({ travels, initialStats }: Props) => {
     </div>
   )
 
-  const renderPlacesCount = () => {
-    const showTooltip = !!(placesVisited && placesVisited.count <= 14 && placesVisited.zipcodes.length);
-    const tooltipText = showTooltip ? placesVisited.zipcodes.sort().join(", ") : undefined;
+  const renderPlacesCount = ({count, zipcodes}: PlacesVisited) => {
+    const showTooltip = !!(count <= 14 && zipcodes.length);
+    const tooltipText = showTooltip ? zipcodes.sort().join(", ") : undefined;
+    const daysRange = getDaysRange(travels[travels.length - 1].startTime, travels[0].endTime)
 
     return (
       <div className="flex-1 min-w-56 flex items-baseline gap-1">
@@ -84,8 +85,9 @@ const TravelStatsSummary = ({ travels, initialStats }: Props) => {
           className={`font-medium text-gray-900 dark:text-white ${showTooltip ? "cursor-help border-b border-dotted border-gray-400 dark:border-gray-500" : ""}`}
           title={tooltipText}
         >
-          {t("footer.placesCount", { count: placesVisited?.count || 0 })}
+          {t("footer.placesCount", { count })}
         </span>
+        <span className="font-normal text-gray-500 dark:text-gray-400">({t("footer.daysCount", { count: daysRange })})</span>
       </div>
     )
   }
@@ -110,7 +112,7 @@ const TravelStatsSummary = ({ travels, initialStats }: Props) => {
     <div className="flex flex-wrap gap-x-8">
       {mostActiveDay && renderMostActiveDay(mostActiveDay)}
       {stats && renderCenter(stats)}
-      {placesVisited?.count ? renderPlacesCount() : undefined}
+      {placesVisited?.count ? renderPlacesCount(placesVisited) : undefined}
     </div>
   );
 };
