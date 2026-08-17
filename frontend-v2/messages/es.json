@@ -71,6 +71,11 @@
       "daysCount": "{count, plural, =1 {# día} other {# días}}",
       "placesCount": "{count, plural, =1 {# lugar} other {# lugares}}"
     },
+    "summary": {
+      "placesVisited": "Visitaste",
+      "coordinates": "Centro",
+      "mostActiveDay": "Día más activo"
+    },
     "details": "Detalles",
     "zip": "CP",
     "to": "hasta",

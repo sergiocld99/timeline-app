@@ -1,6 +1,7 @@
 # CHANGELOG
-## v0.12.0
+## v0.12.0 (2026-08-17)
 - COD12-004: Extract shared TestFixtures for statistics-service (#102) [463]
+- COD12-043: Fe clean install + Summary Header for Travels (#105) [4317]
 
 ## v0.11.0 (2026-08-01)
 - COD11-003: Location names on zipcode stats + click-to-filter on from/to pages + go-to-date action (#95) [344]
