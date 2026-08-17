@@ -46,7 +46,7 @@ const TravelStatsSummary = ({ travels, initialStats }: Props) => {
   const t = useTranslations("Travels");
   const tRoot = useTranslations();
   const { stats } = useTravelStats(travels, initialStats);
-  const { averageLatitude, averageLongitude, placesVisited } = stats || {};
+  const { placesVisited } = stats || {};
 
   const showTooltip = !!(placesVisited && placesVisited.count <= 14 && placesVisited.zipcodes.length);
   const tooltipText = showTooltip ? placesVisited.zipcodes.sort().join(", ") : undefined;
@@ -67,38 +67,48 @@ const TravelStatsSummary = ({ travels, initialStats }: Props) => {
     return mostFrequent(entries);
   }, [travels, tRoot]);
 
+  const renderCenter = ({ averageLatitude, averageLongitude }: TravelStats) => (
+    <div className="flex-1 min-w-56 flex items-baseline gap-1 flex-wrap">
+      <StatLabel>{t("summary.coordinates")}</StatLabel>
+      <span className="font-medium text-gray-900 dark:text-white">
+        <PointWithCopyBtn latitude={averageLatitude} longitude={averageLongitude} />
+      </span>
+    </div>
+  )
+
+  const renderPlacesCount = () => (
+    <div className="flex-1 min-w-56 flex items-baseline gap-1">
+      <span className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">{t("summary.placesVisited")}</span>
+      <span
+        className={`font-medium text-gray-900 dark:text-white ${showTooltip ? "cursor-help border-b border-dotted border-gray-400 dark:border-gray-500" : ""}`}
+        title={tooltipText}
+      >
+        {t("footer.placesCount", { count: placesVisited?.count || 0 })}
+      </span>
+    </div>
+  )
+
+  const renderMostActiveDay = ({date, label, count}: DayCount) => (
+    <div className="flex-1 min-w-56 flex items-baseline gap-1">
+      <StatLabel>{t("summary.mostActiveDay")}</StatLabel>
+      <button
+        type="button"
+        onClick={() => handleGoToDate(date)}
+        title={tRoot("Actions.goToDate")}
+        className="inline-flex items-baseline gap-1 font-medium text-gray-900 dark:text-white hover:underline cursor-pointer"
+      >
+        <CalendarSearchIcon className="h-3.5 w-3.5 text-gray-500 dark:text-gray-400 self-center" />
+        {label}{" "}
+        <span className="font-normal text-gray-500 dark:text-gray-400">({t("footer.placesCount", { count })})</span>
+      </button>
+    </div>
+  )
+
   return (
     <div className="flex flex-wrap gap-x-8">
-      <div className="flex-1 min-w-56 flex items-baseline gap-1 flex-wrap">
-        <StatLabel>{t("summary.coordinates")}</StatLabel>
-        <span className="font-medium text-gray-900 dark:text-white">
-          <PointWithCopyBtn latitude={averageLatitude} longitude={averageLongitude} />
-        </span>
-      </div>
-      <div className="flex-1 min-w-56 flex items-baseline gap-1">
-        <span className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">{t("summary.placesVisited")}</span>
-        <span
-          className={`font-medium text-gray-900 dark:text-white ${showTooltip ? "cursor-help border-b border-dotted border-gray-400 dark:border-gray-500" : ""}`}
-          title={tooltipText}
-        >
-          {t("footer.placesCount", { count: placesVisited?.count || 0 })}
-        </span>
-      </div>
-      {mostActiveDay && (
-        <div className="flex-1 min-w-56 flex items-baseline gap-1">
-          <StatLabel>{t("summary.mostActiveDay")}</StatLabel>
-          <button
-            type="button"
-            onClick={() => handleGoToDate(mostActiveDay.date)}
-            title={tRoot("Actions.goToDate")}
-            className="inline-flex items-baseline gap-1 font-medium text-gray-900 dark:text-white hover:underline cursor-pointer"
-          >
-            <CalendarSearchIcon className="h-3.5 w-3.5 text-gray-500 dark:text-gray-400 self-center" />
-            {mostActiveDay.label}{" "}
-            <span className="font-normal text-gray-500 dark:text-gray-400">({t("footer.placesCount", { count: mostActiveDay.count })})</span>
-          </button>
-        </div>
-      )}
+      {mostActiveDay && renderMostActiveDay(mostActiveDay)}
+      {stats && renderCenter(stats)}
+      {placesVisited?.count ? renderPlacesCount() : undefined}
     </div>
   );
 };
