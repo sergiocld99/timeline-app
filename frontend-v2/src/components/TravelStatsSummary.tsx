@@ -10,6 +10,7 @@ import { useTravelStats } from "@/hooks/useTravelStats";
 import { extractDate, getDaysRange } from "@/utils/date";
 
 import { PointWithCopyBtn } from "./render/coordinates";
+import { StatLabel } from "./wrapper/label";
 
 type Props = {
   travels: Travel[];
@@ -37,10 +38,6 @@ const mostFrequent = <T extends LabeledCount>(entries: T[]): T | null => {
 const handleGoToDate = (date: string) => {
   window.open(`${window.location.pathname}?dateFrom=${date}&dateTo=${date}`, '_blank');
 };
-
-const StatLabel = ({ children }: { children: string }) => (
-  <span className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">{children}:</span>
-);
 
 const TravelStatsSummary = ({ travels, initialStats }: Props) => {
   const t = useTranslations("Travels");
