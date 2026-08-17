@@ -1,8 +1,16 @@
 # CHANGELOG
-## v0.11.0
+
+## v0.13.0
+- COD13-002: predict endTime on Creator + limit/skipStats params on GET /travels (#96) [284]
+
+## v0.12.0 (2026-08-17)
+- COD12-004: Extract shared TestFixtures for statistics-service (#102) [463]
+- COD12-043: Fe clean install + Summary Header for Travels (#105) [4317]
+
+## v0.11.0 (2026-08-01)
 - COD11-003: Location names on zipcode stats + click-to-filter on from/to pages + go-to-date action (#95) [344]
 - COD11-010: Top places by months heatmap on dashboard + empty stats handling (#97) [717]
-- COD11-013: predict endTime on Creator + limit/skipStats params on GET /travels (#96) [284]
+- COD11-019: Migrate dashboard stats to statistics-service (#100) [919]
 
 ## v0.10.0
 - COD10-001: Add offset as dashboard query param (#74) [120]

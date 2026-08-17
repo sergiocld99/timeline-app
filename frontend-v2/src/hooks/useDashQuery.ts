@@ -61,13 +61,8 @@ export const useDashQuery = () => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["home_stats", ranges.currentFrom, ranges.currentTo, currentUser],
     queryFn: async () => {
-      const res = await TravelService.getAll({
-        dateFrom: ranges.currentFrom,
-        dateTo: ranges.currentTo,
-        userId: currentUser?.userId,
-        statsOnly: true
-      });
-      return { ...EMPTY_TRAVEL_STATS, ...res.stats } as TravelStats;
+      const res = await TravelService.getDashboardStats(ranges.currentFrom, ranges.currentTo, currentUser?.userId);
+      return { ...EMPTY_TRAVEL_STATS, ...res } as TravelStats;
     },
     enabled: !userLoading,
   });
@@ -75,13 +70,8 @@ export const useDashQuery = () => {
   const { data: prevData, isLoading: isPrevLoading } = useQuery({
     queryKey: ["home_stats_prev", ranges.prevFrom, ranges.prevTo, currentUser],
     queryFn: async () => {
-      const res = await TravelService.getAll({
-        dateFrom: ranges.prevFrom,
-        dateTo: ranges.prevTo,
-        userId: currentUser?.userId,
-        statsOnly: true
-      });
-      return { ...EMPTY_TRAVEL_STATS, ...res.stats } as TravelStats;
+      const res = await TravelService.getDashboardStats(ranges.prevFrom, ranges.prevTo, currentUser?.userId);
+      return { ...EMPTY_TRAVEL_STATS, ...res } as TravelStats;
     },
     enabled: !userLoading,
   });

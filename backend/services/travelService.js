@@ -157,7 +157,6 @@ export const calculateTravelStats = (travels) => {
   const placesVisited = new Set()
   const uniqueDaysSet = new Set()
   const uniqueRoutesSet = new Set()
-  const monthlyStats = {};
   const routeStats = {};
   const placeDataMap = new Map();
 
@@ -184,37 +183,12 @@ export const calculateTravelStats = (travels) => {
     const date = new Date(t.startTime);
     uniqueDaysSet.add(date.toISOString().split('T')[0]);
 
-    // Monthly Stats
-    const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-    if (!monthlyStats[monthKey]) {
-      monthlyStats[monthKey] = { km: 0, minutes: 0, count: 0, zipcodes: [], kmByZipcode: {} };
-    }
-    monthlyStats[monthKey].km += distance;
-    monthlyStats[monthKey].minutes += duration;
-    monthlyStats[monthKey].count += 1;
-
-    // Route Stats
+    // Route Stats (kept to derive `home` below; per-route breakdown is served by
+    // statistics-service's /stats/dashboard, not returned here)
     if (t.origin && t.destination) {
       const sortedLocations = [t.origin.name, t.destination.name].sort()
       const routeKey = `${sortedLocations[0]}${ROUTE_SEPARATOR}${sortedLocations[1]}`;
       routeStats[routeKey] = (routeStats[routeKey] || 0) + 1;
-
-      // extra monthly stats
-      if (!monthlyStats[monthKey].zipcodes.find(cp => cp === t.origin.zipcode)) {
-        monthlyStats[monthKey].zipcodes.push(t.origin.zipcode)
-      }
-
-      if (!monthlyStats[monthKey].zipcodes.find(cp => cp === t.destination.zipcode)) {
-        monthlyStats[monthKey].zipcodes.push(t.destination.zipcode)
-      }
-
-      // `distance` is a single scalar covering the whole trip, so it is credited
-      // to the destination only ("km travelled to this place"). Splitting it or
-      // crediting both endpoints would stop these summing to the period total.
-      if (t.destination.zipcode) {
-        const kmByZipcode = monthlyStats[monthKey].kmByZipcode
-        kmByZipcode[t.destination.zipcode] = (kmByZipcode[t.destination.zipcode] || 0) + distance
-      }
 
       // Unique Routes Set (using zipcodes consistent with statistics-service)
       if (t.origin.zipcode && t.destination.zipcode) {
@@ -260,28 +234,12 @@ export const calculateTravelStats = (travels) => {
   const totalHours = totalMinutes / 60
   const averageSpeed = totalHours > 0 ? totalKm / totalHours : 0;
 
-  // Format Top Routes
-  let topRoutes = Object.entries(routeStats)
+  const topRoutes = Object.entries(routeStats)
     .sort(([, a], [, b]) => b - a)
     .slice(0, 5)
     .map(([route, count]) => ({ route, count }));
 
   const home = calculateHome(topRoutes)
-
-  // Rearrange route order
-  if (home) {
-    topRoutes = topRoutes.map(r => {
-      if (!r.route.includes(home)) {
-        return r;
-      }
-
-      const [loc1, loc2] = r.route.split(ROUTE_SEPARATOR)
-      const otherLocation = loc1 === home ? loc2 : loc1
-
-      r.route = `${home}${ROUTE_SEPARATOR}${otherLocation}`
-      return r
-    })
-  }
 
   return {
     count,
@@ -300,8 +258,6 @@ export const calculateTravelStats = (travels) => {
       zipcodes: Array.from(placesVisited.values()),
       data: Object.fromEntries(placeDataMap)
     },
-    monthlyStats,
-    topRoutes,
     home,
     records: {
       maxDistance: maxDistanceTravel ? {

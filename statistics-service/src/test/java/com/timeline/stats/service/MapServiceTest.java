@@ -1,5 +1,7 @@
 package com.timeline.stats.service;
 
+import static com.timeline.stats.TestFixtures.aLocation;
+import static com.timeline.stats.TestFixtures.aTravel;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -8,7 +10,6 @@ import static org.mockito.Mockito.when;
 import java.time.Instant;
 import java.util.List;
 
-import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 
 import com.timeline.stats.domain.Location;
@@ -36,32 +37,11 @@ public class MapServiceTest {
   @Test
   @SuppressWarnings("unchecked")
   public void testCalculateMapConfig() {
-    ObjectId travelId = new ObjectId();
-    ObjectId originId = new ObjectId();
-    ObjectId destinationId = new ObjectId();
+    Location origin = aLocation().coordinates(10.0, 20.0).at("12345").build();
+    Location destination = aLocation().coordinates(30.0, 40.0).at("67890").build();
 
-    TravelDTO dto = new TravelDTO(travelId, originId, destinationId);
-
-    Travel travel = new Travel();
-    travel.id = travelId;
-    travel.origin = originId;
-    travel.destination = destinationId;
-    travel.distance = 10.0;
-    travel.duration = 60.0;
-    travel.startTime = Instant.now();
-    travel.endTime = travel.startTime.plusSeconds(3600);
-
-    Location origin = new Location();
-    origin.id = originId;
-    origin.latitude = 10.0;
-    origin.longitude = 20.0;
-    origin.zipcode = "12345";
-
-    Location destination = new Location();
-    destination.id = destinationId;
-    destination.latitude = 30.0;
-    destination.longitude = 40.0;
-    destination.zipcode = "67890";
+    Travel travel = aTravel().from(origin).to(destination).startingAt(Instant.now()).km(10.0).build();
+    TravelDTO dto = new TravelDTO(travel.id, origin.id, destination.id);
 
     when(travelRepository.findByIds(any(List.class))).thenReturn(List.of(travel));
     when(placesService.getLocationsFromDTOs(any(List.class))).thenReturn(List.of(origin, destination));

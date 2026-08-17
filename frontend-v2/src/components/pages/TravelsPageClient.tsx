@@ -10,6 +10,7 @@ import PresentialWorkAlert from "@/components/PresentialWorkAlert";
 import TravelBarStats from "@/components/TravelBarStats";
 import TravelCalendarStats from "@/components/TravelCalendarStats";
 import TravelPieStats from "@/components/TravelPieStats";
+import TravelStatsSummary from "@/components/TravelStatsSummary";
 import TravelTable from "@/components/TravelTable";
 import useTravelFilter from "@/hooks/useTravelFilter";
 import useTravels from "@/hooks/useTravels";
@@ -43,9 +44,12 @@ const TravelsPageClient = () => {
   const { filteredTravels, appliedFilter, onFilter } = useTravelFilter(travels);
 
   return (
-    <main className="mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
-      <div className="space-y-8">
+    <main className="mx-auto px-4 sm:px-6 lg:px-8 py-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
+      <div className="space-y-6">
         <PresentialWorkAlert />
+        <div className="hidden lg:block">
+          <TravelStatsSummary travels={filteredTravels} initialStats={stats} />
+        </div>
         <div className="hidden lg:flex gap-8">
           <TravelMap travels={filteredTravels} isFiltered={!!appliedFilter} stats={stats} />
           <div className="w-8/10 relative">

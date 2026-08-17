@@ -47,7 +47,7 @@ public class StatsService {
 
   public TravelStatsDTO calculateBasicStatsFromContext(StatsContextDTO context) {
     Set<String> zipcodes = placesService.getZipcodesFromLocations(context.locations);
-    PlacesVisitedDTO placesVisited = new PlacesVisitedDTO(zipcodes);
+    PlacesVisitedDTO placesVisited = new PlacesVisitedDTO(zipcodes, placesService.getPlaceInfoByZipcode(context));
 
     Set<String> uniqueDays = new HashSet<>();
     Set<String> uniqueRoutes = new HashSet<>();
