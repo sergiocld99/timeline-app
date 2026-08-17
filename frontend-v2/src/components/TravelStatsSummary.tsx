@@ -48,9 +48,6 @@ const TravelStatsSummary = ({ travels, initialStats }: Props) => {
   const { stats } = useTravelStats(travels, initialStats);
   const { placesVisited } = stats || {};
 
-  const showTooltip = !!(placesVisited && placesVisited.count <= 14 && placesVisited.zipcodes.length);
-  const tooltipText = showTooltip ? placesVisited.zipcodes.sort().join(", ") : undefined;
-
   // Not sourced from `stats`: the from-ids endpoint that recomputes stats on filter
   // doesn't return topRoutes/records, so these are derived straight from `travels`
   // to stay in sync with chart filters the same way the totals above do.
@@ -76,19 +73,24 @@ const TravelStatsSummary = ({ travels, initialStats }: Props) => {
     </div>
   )
 
-  const renderPlacesCount = () => (
-    <div className="flex-1 min-w-56 flex items-baseline gap-1">
-      <span className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">{t("summary.placesVisited")}</span>
-      <span
-        className={`font-medium text-gray-900 dark:text-white ${showTooltip ? "cursor-help border-b border-dotted border-gray-400 dark:border-gray-500" : ""}`}
-        title={tooltipText}
-      >
-        {t("footer.placesCount", { count: placesVisited?.count || 0 })}
-      </span>
-    </div>
-  )
+  const renderPlacesCount = () => {
+    const showTooltip = !!(placesVisited && placesVisited.count <= 14 && placesVisited.zipcodes.length);
+    const tooltipText = showTooltip ? placesVisited.zipcodes.sort().join(", ") : undefined;
 
-  const renderMostActiveDay = ({date, label, count}: DayCount) => (
+    return (
+      <div className="flex-1 min-w-56 flex items-baseline gap-1">
+        <span className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">{t("summary.placesVisited")}</span>
+        <span
+          className={`font-medium text-gray-900 dark:text-white ${showTooltip ? "cursor-help border-b border-dotted border-gray-400 dark:border-gray-500" : ""}`}
+          title={tooltipText}
+        >
+          {t("footer.placesCount", { count: placesVisited?.count || 0 })}
+        </span>
+      </div>
+    )
+  }
+
+  const renderMostActiveDay = ({ date, label, count }: DayCount) => (
     <div className="flex-1 min-w-56 flex items-baseline gap-1">
       <StatLabel>{t("summary.mostActiveDay")}</StatLabel>
       <button
