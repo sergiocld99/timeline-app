@@ -35,6 +35,18 @@ export const convertToFormDate = (date: Date) => {
 }
 
 /**
+ * @param formDate date in format YYYY-MM-DDTHH:mm
+ * @param minutes minutes to add
+ * @returns resulting time in format YYYY-MM-DDTHH:mm
+ */
+export const addMinutesToFormDate = (formDate: string, minutes: number) => {
+  // Form digits are Argentina wall-clock (see CLAUDE.md), so we read/write them as UTC
+  const date = new Date(`${formDate.slice(0, 16)}:00.000Z`);
+  date.setUTCMinutes(date.getUTCMinutes() + minutes);
+  return convertToFormDate(date);
+}
+
+/**
  * @param hoursBefore hours to substract from current time
  * @returns resulting time in format YYYY-MM-DDTHH:mm
  */

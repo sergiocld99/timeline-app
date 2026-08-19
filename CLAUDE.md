@@ -32,6 +32,9 @@ npm test           # node --test (runs backend/test/*.test.js)
 node --test backend/test/travelRules.test.js   # run a single test file
 ```
 
+### Manual API calls
+`curl-examples/` has known-good curl one-liners against the running backend (`docker compose up -d` first). Check there before hand-writing a curl against `/api/*` — a request missing `userId` silently returns empty/guest data instead of erroring, which is the most common reason a manual check looks broken when it isn't.
+
 ### Frontend (Next.js)
 ```bash
 cd frontend-v2

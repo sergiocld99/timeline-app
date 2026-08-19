@@ -1,4 +1,8 @@
 # CHANGELOG
+
+## v0.13.0
+- COD13-002: predict endTime on Creator + limit/skipStats params on GET /travels (#96) [284]
+
 ## v0.12.0 (2026-08-17)
 - COD12-004: Extract shared TestFixtures for statistics-service (#102) [463]
 - COD12-043: Fe clean install + Summary Header for Travels (#105) [4317]

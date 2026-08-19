@@ -2,8 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert';
 import { calculateTravelStats, computeDestinationSuggestion } from '../services/travelService.js';
 
-const travel = (isoTime, destination) => ({
+const travel = (isoTime, destination, durationMinutes = 30) => ({
   startTime: new Date(isoTime),
+  endTime: new Date(new Date(isoTime).getTime() + durationMinutes * 60 * 1000),
   destination,
 });
 
@@ -26,7 +27,7 @@ test('travelService.computeDestinationSuggestion', async (t) => {
 
     assert.deepStrictEqual(
       computeDestinationSuggestion(travels, 9 * 60),
-      { destination: 'destA', count: 2 }
+      { destination: 'destA', count: 2, durationMinutes: 30 }
     );
   });
 
@@ -50,7 +51,7 @@ test('travelService.computeDestinationSuggestion', async (t) => {
 
     assert.deepStrictEqual(
       computeDestinationSuggestion(travels, 9 * 60),
-      { destination: 'destA', count: 3 }
+      { destination: 'destA', count: 3, durationMinutes: 30 }
     );
   });
 
@@ -64,7 +65,7 @@ test('travelService.computeDestinationSuggestion', async (t) => {
 
     assert.deepStrictEqual(
       computeDestinationSuggestion(travels, 9 * 60),
-      { destination: 'destB', count: 2 }
+      { destination: 'destB', count: 2, durationMinutes: 30 }
     );
   });
 
@@ -77,7 +78,32 @@ test('travelService.computeDestinationSuggestion', async (t) => {
     // target is 00:00, both travels are within 5 minutes across midnight
     assert.deepStrictEqual(
       computeDestinationSuggestion(travels, 0),
-      { destination: 'destA', count: 2 }
+      { destination: 'destA', count: 2, durationMinutes: 30 }
+    );
+  });
+
+  await t.test('reports the median duration of the matched travels', () => {
+    const travels = [
+      travel('2026-06-01T09:00:00.000Z', 'destA', 20),
+      travel('2026-06-08T09:00:00.000Z', 'destA', 30),
+      travel('2026-06-15T09:00:00.000Z', 'destA', 120), // outlier, ignored by the median
+    ];
+
+    assert.deepStrictEqual(
+      computeDestinationSuggestion(travels, 9 * 60),
+      { destination: 'destA', count: 3, durationMinutes: 30 }
+    );
+  });
+
+  await t.test('returns a null duration when the matched travels have no endTime', () => {
+    const travels = [
+      { startTime: new Date('2026-06-01T09:00:00.000Z'), destination: 'destA' },
+      { startTime: new Date('2026-06-08T09:00:00.000Z'), destination: 'destA' },
+    ];
+
+    assert.deepStrictEqual(
+      computeDestinationSuggestion(travels, 9 * 60),
+      { destination: 'destA', count: 2, durationMinutes: null }
     );
   });
 
@@ -89,7 +115,7 @@ test('travelService.computeDestinationSuggestion', async (t) => {
 
     assert.deepStrictEqual(
       computeDestinationSuggestion(travels, 9 * 60, { toleranceMinutes: 30, minOccurrences: 1 }),
-      { destination: 'destA', count: 2 }
+      { destination: 'destA', count: 2, durationMinutes: 30 }
     );
   });
 });

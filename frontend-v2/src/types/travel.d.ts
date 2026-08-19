@@ -111,6 +111,8 @@ export type TravelFindResult = {
 export type DestinationSuggestion = {
   destination: string
   count: number
+  /** Typical (median) duration of the matched travels, used to estimate an endTime */
+  durationMinutes: number | null
 }
 
 export type TravelsData = {

@@ -23,7 +23,7 @@ type Props = {
 const TravelForm = ({ locations, crosses }: Props) => {
   const t = useTranslations("Creator");
   const {
-    formData, handleChange, handleSubmit,
+    formData, handleChange, handleStartTimeChange, handleSubmit,
     createForAllUsers, setCreateForAllUsers,
     isSameDay, setIsSameDay
   } = useTravelCreator()
@@ -60,15 +60,27 @@ const TravelForm = ({ locations, crosses }: Props) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label htmlFor="startTime" className="text-gray-700 dark:text-gray-300">{t("startTime")}</Label>
-              <Input
-                id="startTime"
-                name="startTime"
-                type="datetime-local"
-                value={formData.startTime}
-                onChange={(e) => handleChange("startTime", e.target.value)}
-                required
-                className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
-              />
+              {/* Split in two fields so the date can be kept while the hour is left blank after creating a travel */}
+              <div className="flex gap-2">
+                <Input
+                  id="startDate"
+                  name="startDate"
+                  type="date"
+                  value={formData.startTime.split('T')[0] ?? ''}
+                  onChange={(e) => handleStartTimeChange("date", e.target.value)}
+                  required
+                  className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+                />
+                <Input
+                  id="startTime"
+                  name="startTime"
+                  type="time"
+                  value={formData.startTime.split('T')[1] ?? ''}
+                  onChange={(e) => handleStartTimeChange("time", e.target.value)}
+                  required
+                  className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+                />
+              </div>
             </div>
 
             <div className="space-y-2">
@@ -77,7 +89,7 @@ const TravelForm = ({ locations, crosses }: Props) => {
                 id="endTime"
                 name="endTime"
                 type={isSameDay ? 'time' : 'datetime-local'}
-                value={isSameDay ? formData.endTime.split('T')[1] : formData.endTime}
+                value={isSameDay ? formData.endTime.split('T')[1] ?? '' : formData.endTime}
                 onChange={(e) => handleChange("endTime", e.target.value)}
                 required
                 className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"

@@ -13,7 +13,7 @@ export const getAllTravels = (req, res) => {
   const dateFrom = getDateFrom(req)
   const dateTo = getDateTo(req)
   const crosses = req.body?.crossIds ?? []
-  const { sortingField = DEFAULT_SORTING_FIELD, userId, locFrom, locTo, statsOnly } = req.query
+  const { sortingField = DEFAULT_SORTING_FIELD, userId, locFrom, locTo, statsOnly, skipStats, limit } = req.query
 
   // Fetch all travels with populated origin and destination (Location) fields
   Travel.find({
@@ -26,11 +26,17 @@ export const getAllTravels = (req, res) => {
   }).populate('origin destination crosses').sort({ startTime: -1 }).then(travels => {
     const enrichedTravels = enrichTravels(travels);
     const weightedTravels = withWeight(enrichedTravels, sortingField);
-    const stats = calculateTravelStats(weightedTravels);
 
-    const response = { stats };
+    const response = {};
+
+    if (skipStats !== 'true') {
+      // Unlike statsOnly, this actually skips the calculateTravelStats pass, not just the payload
+      response.stats = calculateTravelStats(weightedTravels);
+    }
+
     if (statsOnly !== 'true') {
-      response.travels = weightedTravels;
+      // Only caps what's returned, stats above are always computed over the full range
+      response.travels = limit ? weightedTravels.slice(0, Number(limit)) : weightedTravels;
     }
 
     res.json(response);

@@ -221,6 +221,7 @@
       "locationAddedError": "Failed to add location. Please try again.",
       "validationOriginDestinationRequired": "Origin and destination are required.",
       "validationOriginDestinationDifferent": "Origin and destination should be different.",
+      "validationTimesRequired": "Start and end times are required.",
       "noUsersFound": "No users found.",
       "travelCreatedAllUsersSuccess": "Travel created successfully for all {count} users!",
       "travelCreatedAllUsersError": "Travel creation failed for {count} users.",
