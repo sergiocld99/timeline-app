@@ -16,7 +16,7 @@ import { calculateCenter } from "@/utils/location";
 
 import { getUniqueLocations } from "./analize/travel";
 import { defaultMarker } from "./map/icons";
-import { renderLocationMarkers } from "./render/map";
+import { renderLocationMarkers, renderSingleMarker } from "./render/map";
 
 type Props = {
   travels: Travel[];
@@ -114,6 +114,7 @@ const TravelMap = ({ travels, isFiltered, stats }: Props) => {
             }}
           />
         )}
+        {!isFiltered && renderSingleMarker(averageLatitude, averageLongitude)}
         {records?.maxDistance && (
           <Circle
           center={calculateCenter(records.maxDistance.origin, records.maxDistance.destination)}
