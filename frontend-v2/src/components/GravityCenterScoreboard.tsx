@@ -1,7 +1,7 @@
 "use client"
 
 import type { KnownCenter } from "@/types/center"
-import type { Visit, VisitsData } from "@/types/visit";
+import type { VisitsData } from "@/types/visit";
 import type { TranslationFn } from "@/types/i18n";
 
 import { useTranslations } from "next-intl"
@@ -18,14 +18,13 @@ type Props = {
   isFiltered?: boolean
 }
 
-const renderNearbyCenter = (kc: KnownCenter, index: number, visits: Visit[], t: TranslationFn) => {
+const renderNearbyCenter = (kc: KnownCenter, index: number, t: TranslationFn) => {
   const rank = index + 1
   const distanceFormatted = kc.distanceKm.toFixed(1)
-  const isActive = visits.some(v => v.location._id === kc._id)
 
   let classNames = "mb-4 last:mb-0"
 
-  if (!isActive) {
+  if (!kc.isActive) {
     classNames += " opacity-50"
   } else if (rank <= 3) {
     classNames += " text-yellow-300"
@@ -49,7 +48,7 @@ const GravityCenterScoreboard = ({ visitsData, isFiltered }: Props) => {
   const { averageLatitude, averageLongitude } = visitsData?.stats || {}
   const visits = visitsData?.visits || []
 
-  const { nearbyCenters } = useNearbyCenters({ latitude: averageLatitude, longitude: averageLongitude })
+  const { nearbyCenters } = useNearbyCenters({ latitude: averageLatitude, longitude: averageLongitude, visits })
 
   const renderGlobalCenter = (averageLatitude?: number, averageLongitude?: number) => (
     <div className="mb-6 last:mb-0">
@@ -64,7 +63,7 @@ const GravityCenterScoreboard = ({ visitsData, isFiltered }: Props) => {
       <CardContent className="h-[300px] flex flex-col items-start justify-center p-6">
         {isFiltered ? undefined : renderGlobalCenter(averageLatitude, averageLongitude)}
         {nearbyCenters.length > 0 && nearbyCenters.slice(0, isFiltered ? 5 : 4).map((nc, index) =>
-          renderNearbyCenter(nc, index, visits, t))
+          renderNearbyCenter(nc, index, t))
         }
       </CardContent>
     </Card>

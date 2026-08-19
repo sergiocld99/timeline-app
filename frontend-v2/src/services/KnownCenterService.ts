@@ -7,7 +7,7 @@ import { backendBaseUrl } from '@/constants';
 const baseUrl = `${backendBaseUrl}/known-centers`;
 
 class KnownCenterService {
-  static async getTopNKnownCenters(latitude: number, longitude: number, limit = 3, radiusKm = 10, userId?: number) {
+  static async getTopNKnownCenters(latitude: number, longitude: number, limit = 3, radiusKm = 10, userId?: number): Promise<KnownCenter[]> {
     const response = await axios.get<KnownCenter[]>(`${baseUrl}`, { params: { latitude, longitude, limit, radiusKm, userId } });
     return response.data;
   }
