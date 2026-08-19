@@ -1,4 +1,5 @@
 import Location from "../models/Location.js";
+import Travel from "../models/Travel.js";
 
 const UNITS_PER_KM = 0.0344 / 4.8;
 
@@ -11,17 +12,11 @@ const enrichLocations = (locations, targetLatitude, targetLongitude) => {
   });
 };
 
-export const getNearLocations = async ({ latitude, longitude, radiusKm, limit }) => {
-  // EXAMPLE:
-  // - B1887 is -34.8122, -58.2881
-  // - B1888 is -34.7792, -58.2785
-  // Difference is: LAT: 0.0330, LONG: 0.0096
-  // Linear distance formula: sqrt(0.0330^2 + 0.0096^2) = 0.0344
-  // By GMaps, 4.8 km = 0.0344, so 1 km = 0.0344 / 4.8 = KM_PER_UNIT
-
+const findNearLocations = async (locationFilter, { latitude, longitude, radiusKm, limit }) => {
   const radius = radiusKm * UNITS_PER_KM;
 
   const locations = await Location.find({
+    ...locationFilter,
     latitude: { $gte: latitude - radius, $lte: latitude + radius },
     longitude: { $gte: longitude - radius, $lte: longitude + radius },
   });
@@ -30,4 +25,26 @@ export const getNearLocations = async ({ latitude, longitude, radiusKm, limit })
   const sortedLocations = enrichedLocations.sort((a, b) => a.get('distanceKm') - b.get('distanceKm'));
 
   return sortedLocations.slice(0, limit);
-}
+};
+
+export const getNearLocations = async ({ latitude, longitude, radiusKm, limit }) => {
+  return findNearLocations({}, { latitude, longitude, radiusKm, limit });
+};
+
+export const getNearLocationsWithRecentTravels = async ({ latitude, longitude, radiusKm, limit }, userId) => {
+  const oneYearAgo = new Date();
+  oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+
+  const recentTravels = await Travel.find(
+    { startTime: { $gte: oneYearAgo }, ...(userId != null && { userId }) },
+    { destination: 1 }
+  ).lean();
+
+  const recentDestinationIds = [...new Set(recentTravels.map(t => t.destination.toString()))];
+
+  if (recentDestinationIds.length === 0) {
+    return [];
+  }
+
+  return findNearLocations({ _id: { $in: recentDestinationIds } }, { latitude, longitude, radiusKm, limit });
+};
