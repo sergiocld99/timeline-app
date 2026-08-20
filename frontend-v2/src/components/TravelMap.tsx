@@ -32,7 +32,7 @@ const DEFAULT_LAT = -34.6037031
 const DEFAULT_LNG = -58.3816211
 const COLOR_LIGHT_BLUE = "#3b82f6"
 const COLOR_RED = "#FF0000"
-const ANIMATION_SPEED_KM_PER_MS = 0.015
+const MS_PER_TRAVEL_MINUTE = 100
 const MAX_FRAME_MS = 1000 / 30
 
 const WEIGHT_COLOR_MAP: Record<WeightColors, string> = {
@@ -41,18 +41,6 @@ const WEIGHT_COLOR_MAP: Record<WeightColors, string> = {
   "🟠": "#f97316",
   "🟡": "#eab308",
   "🟢": "#22c55e",
-}
-
-function haversineKm(a: [number, number], b: [number, number]): number {
-  const R = 6371
-  const dLat = ((b[0] - a[0]) * Math.PI) / 180
-  const dLng = ((b[1] - a[1]) * Math.PI) / 180
-  const h =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos((a[0] * Math.PI) / 180) *
-      Math.cos((b[0] * Math.PI) / 180) *
-      Math.sin(dLng / 2) ** 2
-  return R * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1 - h))
 }
 
 function buildSegments(travels: Travel[]): AnimationSegment[] {
@@ -69,7 +57,8 @@ function buildSegments(travels: Travel[]): AnimationSegment[] {
       const from: [number, number] = [travel.origin.latitude, travel.origin.longitude]
       const to: [number, number] = [travel.destination.latitude, travel.destination.longitude]
       const color = WEIGHT_COLOR_MAP[travel.weight.color] ?? "#3b82f6"
-      return { index, from, to, travel, distanceKm: haversineKm(from, to), color }
+      const durationMs = Math.max(200, travel.duration * MS_PER_TRAVEL_MINUTE)
+      return { index, from, to, travel, durationMs, color }
     })
 }
 
@@ -232,8 +221,8 @@ const TravelMap = ({ travels, isFiltered, stats, isAnimating }: Props) => {
   }, []);
 
   const segments = useMemo(() => (isAnimating ? buildSegments(travels) : []), [travels, isAnimating])
-  const totalDistance = useMemo(
-    () => segments.reduce((sum, s) => sum + s.distanceKm, 0),
+  const totalDuration = useMemo(
+    () => segments.reduce((sum, s) => sum + s.durationMs, 0),
     [segments],
   )
 
@@ -262,7 +251,7 @@ const TravelMap = ({ travels, isFiltered, stats, isAnimating }: Props) => {
       const delta = Math.min(timestamp - lastTimeRef.current, MAX_FRAME_MS)
       lastTimeRef.current = timestamp
 
-      if (delta > 0 && totalDistance > 0) {
+      if (delta > 0 && totalDuration > 0) {
         const seg = segments[segmentIndexRef.current]
         if (!seg) {
           segmentIndexRef.current = 0
@@ -273,8 +262,7 @@ const TravelMap = ({ travels, isFiltered, stats, isAnimating }: Props) => {
           return
         }
 
-        const segDuration = seg.distanceKm / ANIMATION_SPEED_KM_PER_MS
-        const advanceFraction = segDuration > 0 ? delta / segDuration : 1
+        const advanceFraction = seg.durationMs > 0 ? delta / seg.durationMs : 1
         segmentFractionRef.current += advanceFraction
 
         while (segmentFractionRef.current >= 1 && segmentIndexRef.current < segments.length - 1) {
@@ -296,12 +284,12 @@ const TravelMap = ({ travels, isFiltered, stats, isAnimating }: Props) => {
 
         let overallProgress = 0
         for (let i = 0; i < segmentIndexRef.current && i < segments.length; i++) {
-          overallProgress += segments[i].distanceKm
+          overallProgress += segments[i].durationMs
         }
         if (segmentIndexRef.current < segments.length) {
-          overallProgress += segments[segmentIndexRef.current].distanceKm * segmentFractionRef.current
+          overallProgress += segments[segmentIndexRef.current].durationMs * segmentFractionRef.current
         }
-        overallProgress = totalDistance > 0 ? overallProgress / totalDistance : 0
+        overallProgress = totalDuration > 0 ? overallProgress / totalDuration : 0
 
         setAnimState({
           currentSegmentIndex: segmentIndexRef.current,
@@ -312,7 +300,7 @@ const TravelMap = ({ travels, isFiltered, stats, isAnimating }: Props) => {
 
       rafRef.current = requestAnimationFrame(tickRef.current)
     },
-    [segments, totalDistance],
+    [segments, totalDuration],
   )
 
   useEffect(() => {

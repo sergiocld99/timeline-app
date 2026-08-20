@@ -5,7 +5,7 @@ export type AnimationSegment = {
   from: [number, number]
   to: [number, number]
   travel: Travel
-  distanceKm: number
+  durationMs: number
   color: string
 }
 
