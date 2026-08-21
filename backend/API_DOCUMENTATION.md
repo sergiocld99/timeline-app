@@ -316,6 +316,7 @@ Centros conocidos cercanos a una ubicación.
 **Query Parameters:**
 - `latitude`, `longitude` (number, requerido)
 - `radiusKm` (por defecto: 10), `limit` (por defecto: 3)
+- `userId` (opcional) — Filtra centers que hayan sido destino de al menos 1 travel del usuario en los últimos 365 días.
 
 ---
 
