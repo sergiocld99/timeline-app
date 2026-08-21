@@ -1,8 +1,7 @@
 "use client"
 
 import type { KnownCenter } from "@/types/center"
-import type { Travel, TravelsData } from "@/types/travel";
-import type { Visit, VisitsData } from "@/types/visit";
+import type { VisitsData } from "@/types/visit";
 import type { TranslationFn } from "@/types/i18n";
 
 import { useTranslations } from "next-intl"
@@ -15,23 +14,17 @@ import { Card, CardContent } from "./ui/card"
 import { PointWithCopyBtn } from "./render/coordinates";
 
 type Props = {
-  travelsData?: TravelsData
   visitsData?: VisitsData
   isFiltered?: boolean
 }
 
-const renderNearbyCenter = (kc: KnownCenter, index: number, travels: Travel[], visits: Visit[], t: TranslationFn) => {
+const renderNearbyCenter = (kc: KnownCenter, index: number, t: TranslationFn) => {
   const rank = index + 1
   const distanceFormatted = kc.distanceKm.toFixed(1)
 
-  // Check if the location is active (present in travel table)
-  const isActive = travels.some(
-    (travel) => travel.origin._id === kc._id || travel.destination._id === kc._id
-  ) || visits.some(v => v.location._id === kc._id)
-
   let classNames = "mb-4 last:mb-0"
 
-  if (!isActive) {
+  if (!kc.isActive) {
     classNames += " opacity-50"
   } else if (rank <= 3) {
     classNames += " text-yellow-300"
@@ -50,14 +43,12 @@ const renderNearbyCenter = (kc: KnownCenter, index: number, travels: Travel[], v
   )
 }
 
-const GravityCenterScoreboard = ({ travelsData, visitsData, isFiltered }: Props) => {
+const GravityCenterScoreboard = ({ visitsData, isFiltered }: Props) => {
   const t = useTranslations("Visits")
-  const { averageLatitude, averageLongitude } = travelsData?.stats || visitsData?.stats || {}
-  const travels = travelsData?.travels || []
+  const { averageLatitude, averageLongitude } = visitsData?.stats || {}
   const visits = visitsData?.visits || []
-  const nearbyRadius = travels.length < 1 ? undefined : (travelsData!.stats!.averageDistance * 2)
 
-  const { nearbyCenters } = useNearbyCenters({ latitude: averageLatitude, longitude: averageLongitude, radiusKm: nearbyRadius })
+  const { nearbyCenters } = useNearbyCenters({ latitude: averageLatitude, longitude: averageLongitude, visits })
 
   const renderGlobalCenter = (averageLatitude?: number, averageLongitude?: number) => (
     <div className="mb-6 last:mb-0">
@@ -72,7 +63,7 @@ const GravityCenterScoreboard = ({ travelsData, visitsData, isFiltered }: Props)
       <CardContent className="h-[300px] flex flex-col items-start justify-center p-6">
         {isFiltered ? undefined : renderGlobalCenter(averageLatitude, averageLongitude)}
         {nearbyCenters.length > 0 && nearbyCenters.slice(0, isFiltered ? 5 : 4).map((nc, index) =>
-          renderNearbyCenter(nc, index, travels, visits, t))
+          renderNearbyCenter(nc, index, t))
         }
       </CardContent>
     </Card>

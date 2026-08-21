@@ -1,6 +1,7 @@
-import type { Location } from "./travel";
+import type { Location } from "./location";
 
 export type KnownCenter = Location & {
   distance: number
   distanceKm: number
+  isActive?: boolean
 }
