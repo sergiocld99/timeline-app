@@ -53,7 +53,7 @@ type AnimationSegment = {
 
 ### Animation Timing (as built)
 
-Per travel: `totalMs = max(200, travel.duration * MS_PER_TRAVEL_MINUTE)` — proportional to travel **duration** (not `distanceKm` as originally drafted). When a travel is split into legs (crosses), `totalMs` is distributed across legs proportionally to each leg's length, keeping total playback time per travel unchanged. The loop restarts automatically from segment 0 when it finishes.
+Per travel: `totalMs = max(200, travel.duration * MS_PER_TRAVEL_MINUTE)` — proportional to travel **duration** (not `distanceKm` as originally drafted). When a travel is split into legs (crosses), `totalMs` is distributed across legs proportionally to each leg's length, keeping total playback time per travel unchanged. There is no looping: once the last segment completes, the tick stops and the animation stays **paused on the final destination** until the date range changes (segments rebuild → restart) or it is toggled off/on.
 
 Within a segment, the marker interpolates linearly:
 
@@ -77,7 +77,7 @@ position = from + (to - from) * fraction
 | **Completed polylines** | ✅ One `Polyline` per finished segment (per leg), colored by travel weight, 0.7 opacity. |
 | **Active polyline** | ✅ Current segment drawn progressively up to the interpolated point. |
 | **Travel info card** | ❌ Descoped. |
-| **Progress bar** | ❌ Descoped (loop restarts automatically instead). |
+| **Progress bar** | ❌ Descoped (animation simply pauses on the final destination when it ends). |
 
 ### Controls (as built)
 

@@ -57,11 +57,6 @@ export const useTick = ({ segments, totalDuration, isAnimating, zoom }: Props) =
       if (delta > 0 && totalDuration > 0) {
         const seg = segments[segmentIndexRef.current]
         if (!seg) {
-          segmentIndexRef.current = 0
-          segmentFractionRef.current = 0
-          setAnimPosition(interpolatePosition(segments, 0, 0))
-          setAnimState({ currentSegmentIndex: 0, segmentFraction: 0, overallProgress: 0 })
-          rafRef.current = requestAnimationFrame(tickRef.current)
           return
         }
 
@@ -74,11 +69,11 @@ export const useTick = ({ segments, totalDuration, isAnimating, zoom }: Props) =
         }
 
         if (segmentIndexRef.current >= segments.length - 1 && segmentFractionRef.current >= 1) {
-          segmentIndexRef.current = 0
-          segmentFractionRef.current = 0
-          setAnimPosition(interpolatePosition(segments, 0, 0))
-          setAnimState({ currentSegmentIndex: 0, segmentFraction: 0, overallProgress: 0 })
-          rafRef.current = requestAnimationFrame(tickRef.current)
+          const lastIndex = segments.length - 1
+          segmentIndexRef.current = lastIndex
+          segmentFractionRef.current = 1
+          setAnimPosition(interpolatePosition(segments, lastIndex, 1))
+          setAnimState({ currentSegmentIndex: lastIndex, segmentFraction: 1, overallProgress: 1 })
           return
         }
 

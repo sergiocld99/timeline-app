@@ -5,7 +5,7 @@ import { Marker } from "react-leaflet"
 import CameraFollow from "./CameraFollow"
 import PolylineLayer from "./PolylineLayer"
 import { useSegments } from "./useSegments"
-import { pulsingIcon } from "./icons"
+import { pulsingGreenIcon, pulsingIcon } from "./icons"
 
 type Props = {
   travels: Travel[]
@@ -16,6 +16,8 @@ type Props = {
 const AnimatedMap = ({ travels, isAnimating, zoom }: Props) => {
   const { segments, animPosition, animState, pendingZoom } = useSegments({ travels, isAnimating, zoom })
 
+  const hasFinished = animState.overallProgress === 1
+
   return <>
     <CameraFollow position={animPosition} zoom={pendingZoom} />
     <PolylineLayer
@@ -23,7 +25,7 @@ const AnimatedMap = ({ travels, isAnimating, zoom }: Props) => {
       segmentIndex={animState.currentSegmentIndex}
       segmentFraction={animState.segmentFraction}
     />
-    <Marker position={animPosition} icon={pulsingIcon} />
+    <Marker position={animPosition} icon={hasFinished ? pulsingGreenIcon : pulsingIcon} />
   </>
 }
 
