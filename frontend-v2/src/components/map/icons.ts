@@ -59,3 +59,10 @@ export const yellowMarker = L.icon({
   popupAnchor: [1, -34],
   shadowSize: [41, 41],
 });
+
+export const pulsingIcon = L.divIcon({
+  className: "",
+  iconSize: [16, 16],
+  iconAnchor: [8, 8],
+  html: '<div style="width:16px;height:16px;border-radius:50%;background:#3b82f6;border:3px solid #fff;box-shadow:0 0 8px rgba(59,130,246,0.6);animation:pulse 1.5s ease-in-out infinite"></div>',
+})
