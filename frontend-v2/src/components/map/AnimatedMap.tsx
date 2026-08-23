@@ -10,13 +10,14 @@ import { pulsingIcon } from "./icons"
 type Props = {
   travels: Travel[]
   isAnimating: boolean
+  zoom?: number
 }
 
-const AnimatedMap = ({ travels, isAnimating }: Props) => {
-  const { segments, animPosition, animState } = useSegments({ travels, isAnimating })
+const AnimatedMap = ({ travels, isAnimating, zoom }: Props) => {
+  const { segments, animPosition, animState } = useSegments({ travels, isAnimating, zoom })
 
   return <>
-    <CameraFollow position={animPosition} />
+    <CameraFollow position={animPosition} zoom={zoom} />
     <PolylineLayer
       segments={segments}
       segmentIndex={animState.currentSegmentIndex}

@@ -9,6 +9,7 @@ import { useTick } from "./useTick"
 type Props = {
   travels: Travel[]
   isAnimating: boolean
+  zoom?: number
 }
 
 const buildSegments = (travels: Travel[]): AnimationSegment[] => {
@@ -23,14 +24,14 @@ const buildSegments = (travels: Travel[]): AnimationSegment[] => {
     })
 }
 
-export const useSegments = ({ travels, isAnimating }: Props) => {
+export const useSegments = ({ travels, isAnimating, zoom }: Props) => {
   const segments = useMemo(() => (isAnimating ? buildSegments(travels) : []), [travels, isAnimating])
   const totalDuration = useMemo(
     () => segments.reduce((sum, s) => sum + s.durationMs, 0),
     [segments],
   )
 
-  const { animPosition, animState } = useTick({ segments, totalDuration, isAnimating })
+  const { animPosition, animState } = useTick({ segments, totalDuration, isAnimating, zoom })
 
   return { segments, animPosition, animState }
 }

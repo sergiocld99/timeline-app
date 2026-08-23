@@ -2,12 +2,13 @@ import type { AnimationSegment, AnimationState } from "@/types/animated-timeline
 
 import { useCallback, useEffect, useRef, useState } from "react"
 
-import { DEFAULT_LAT, DEFAULT_LNG, MAX_FRAME_MS } from "./constants"
+import { DEFAULT_LAT, DEFAULT_LNG, MAX_FRAME_MS, ZOOM_SETTLE_DELAY_MS } from "./constants"
 
 type Props = {
   segments: AnimationSegment[]
   totalDuration: number
   isAnimating?: boolean
+  zoom?: number
 }
 
 const interpolatePosition = (
@@ -25,7 +26,7 @@ const interpolatePosition = (
   ]
 }
 
-export const useTick = ({ segments, totalDuration, isAnimating }: Props) => {
+export const useTick = ({ segments, totalDuration, isAnimating, zoom }: Props) => {
   const [animPosition, setAnimPosition] = useState<[number, number]>([DEFAULT_LAT, DEFAULT_LNG])
   const [animState, setAnimState] = useState<AnimationState>({
     currentSegmentIndex: 0,
@@ -38,6 +39,7 @@ export const useTick = ({ segments, totalDuration, isAnimating }: Props) => {
   const lastTimeRef = useRef<number>(0)
   const segmentIndexRef = useRef(0)
   const rafRef = useRef<number>(0)
+  const lastZoomRef = useRef<number | undefined>(undefined)
 
   const tick = useCallback(
     (timestamp: number) => {
@@ -109,14 +111,30 @@ export const useTick = ({ segments, totalDuration, isAnimating }: Props) => {
 
   useEffect(() => {
     if (!isAnimating) return
-    segmentIndexRef.current = 0
-    segmentFractionRef.current = 0
-    lastTimeRef.current = 0
-    setAnimPosition(interpolatePosition(segments, 0, 0))
-    setAnimState({ currentSegmentIndex: 0, segmentFraction: 0, overallProgress: 0 })
-    rafRef.current = requestAnimationFrame(tickRef.current)
+
+    const zoomChanged = zoom !== undefined && lastZoomRef.current !== undefined && lastZoomRef.current !== zoom
+    lastZoomRef.current = zoom
+
+    const start = () => {
+      segmentIndexRef.current = 0
+      segmentFractionRef.current = 0
+      lastTimeRef.current = 0
+      setAnimPosition(interpolatePosition(segments, 0, 0))
+      setAnimState({ currentSegmentIndex: 0, segmentFraction: 0, overallProgress: 0 })
+      rafRef.current = requestAnimationFrame(tickRef.current)
+    }
+
+    if (zoomChanged) {
+      const timeoutId = setTimeout(start, ZOOM_SETTLE_DELAY_MS)
+      return () => {
+        clearTimeout(timeoutId)
+        cancelAnimationFrame(rafRef.current)
+      }
+    }
+
+    start()
     return () => cancelAnimationFrame(rafRef.current)
-  }, [isAnimating, segments])
+  }, [isAnimating, segments, zoom])
 
   return { tick, animPosition, animState }
 }

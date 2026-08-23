@@ -66,7 +66,7 @@ const TravelMap = ({ travels, isFiltered, stats, isAnimating }: Props) => {
         />
 
         {isAnimating ? (
-          <AnimatedMap travels={travels} isAnimating />
+          <AnimatedMap travels={travels} isAnimating zoom={zoom} />
         ) : (
           <>
             <ChangeMapView center={mapCenter} zoom={zoom} />
