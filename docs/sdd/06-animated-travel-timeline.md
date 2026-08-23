@@ -1,25 +1,29 @@
 # SDD: Animated Travel Timeline
 
+## ✅ Status: Implemented
+
+Desktop-only animated replay of the user's travels, toggled via `AnimateTimelineBtn` in `TravelsPageClient`. While active, the static markers/circles view is swapped for the animated timeline view **inside the same Leaflet `MapContainer`** — this is the "replace static map entirely during animation" alternative from the original notes below, not a second map instance. The sections marked *(as built)* describe the final behavior, including the Cross Points optional enhancement.
+
 ## 🎯 Objective
 
 Add an animated visualization to the Travels page that replays the user's travels chronologically on the map, inspired by [google-timeline-visualizer](https://github.com/mahlernim/google-timeline-visualizer). A marker moves along straight-line segments (origin → destination for each travel), with polylines appearing behind it, creating a "watch your travels come to life" experience. Desktop-only, no export/download — purely in-browser playback using Leaflet.
 
 The existing data is sufficient: each `Travel` already carries populated `origin` and `destination` (`Location` with `latitude`/`longitude`), `startTime` for ordering, `modeOfTransport`, `distance`, and `duration`. No backend changes needed.
 
-## 🏗️ Proposed Architecture
+## 🏗️ Architecture (as built)
 
-A new `AnimatedTimeline` Client Component renders a full-width Leaflet map below the existing map+charts row in `TravelsPageClient`. It receives the current `filteredTravels` array (already sorted newest-to-oldest by the backend) and animates through them sequentially.
-
-### Component Changes
-
-| Component | Description of Changes |
+| File | Role |
 | :--- | :--- |
-| `AnimatedTimeline.tsx` | New Client Component. Full Leaflet map with play/pause, progress bar, travel info overlay, and the animation loop. |
-| `AnimatedTimelineControls.tsx` | New Client Component. Play/pause button, speed selector, progress scrubber. |
-| `TravelsPageClient.tsx` | Add a toggle button and conditionally render `AnimatedTimeline` below the stats row. |
-| `types/animated-timeline.d.ts` | New type definitions for animation state and segment data. |
-| `backend` | None. |
-| `statistics-service` | None. |
+| `components/TravelMap.tsx` | Owns the `isAnimating` toggle. Renders the classic view (+ `ChangeMapView`) or `<AnimatedMap>` inside the same `MapContainer`, passing the viewpoint `zoom`. |
+| `components/map/AnimatedMap.tsx` | Composition root: `CameraFollow` + `PolylineLayer` + pulsing `Marker`. |
+| `components/map/useSegments.tsx` | Builds flat `AnimationSegment[]` from `filteredTravels` (oldest→newest via `toReversed()`), expanding each travel into legs through its crosses. Feeds `useTick`. |
+| `components/map/useTick.tsx` | `requestAnimationFrame` loop. Interpolates position across segments sequentially, tracks `AnimationState`, orchestrates pan→zoom→resume when the viewpoint zoom changes mid-animation. |
+| `components/map/CameraFollow.tsx` | Sole camera owner while animating: throttled `panTo` follow + applies deferred zoom requests. |
+| `components/map/PolylineLayer.tsx` | One completed `Polyline` per finished segment + progressively drawn active segment. |
+| `components/buttons/AnimateTimelineBtn.tsx` | Toggle button in the stats-view button column. |
+| `types/animated-timeline.d.ts` | `AnimationSegment`, `AnimationState`. |
+
+Backend / statistics-service: unchanged, as planned.
 
 ## 🛠️ Implementation Details
 
@@ -27,91 +31,91 @@ A new `AnimatedTimeline` Client Component renders a full-width Leaflet map below
 
 ```
 filteredTravels (Travel[])
-  → buildSegments(): AnimationSegment[]
-    → [{ from: [lat,lng], to: [lat,lng], travel, index }]
-  → AnimationEngine (requestAnimationFrame loop)
-    → current position, active polylines, camera center
-  → Leaflet render: Polyline[], Marker, camera panTo
+  → buildSegments(): AnimationSegment[]   // one entry per leg, crosses expanded & ordered
+    → [{ index, from: [lat,lng], to: [lat,lng], travel, durationMs, color }]
+  → useTick (requestAnimationFrame loop)
+    → animPosition, animState { currentSegmentIndex, segmentFraction }, pendingZoom
+  → Leaflet render: PolylineLayer + Marker + CameraFollow (panTo / setZoom)
 ```
 
-### AnimationSegment type
+### AnimationSegment type (as built)
 
 ```ts
 type AnimationSegment = {
   index: number
   from: [number, number]  // [lat, lng]
-  to: [number, number]    // [lat, lng]
-  travel: Travel
-  distanceKm: number      // haversine(from, to), used for proportional timing
+  to: [number, number]
+  travel: Travel          // repeated across all legs of the same travel
+  durationMs: number
+  color: string           // WEIGHT_COLOR_MAP by travel weight, fallback light blue
 }
 ```
 
-### Animation Timing
+### Animation Timing (as built)
 
-Each segment's playback duration is proportional to `travel.distance` (km). Shorter trips animate faster, longer trips take more time. A base speed factor (configurable via the speed selector) scales all durations. The total animation time = sum of all segment durations.
+Per travel: `totalMs = max(200, travel.duration * MS_PER_TRAVEL_MINUTE)` — proportional to travel **duration** (not `distanceKm` as originally drafted). When a travel is split into legs (crosses), `totalMs` is distributed across legs proportionally to each leg's length, keeping total playback time per travel unchanged. The loop restarts automatically from segment 0 when it finishes.
 
-Within a segment, the marker interpolates linearly from `from` to `to` using `requestAnimationFrame`. The position at time `t` within segment `i`:
+Within a segment, the marker interpolates linearly:
 
 ```
 fraction = elapsed_in_segment / segment_duration
 position = from + (to - from) * fraction
 ```
 
-### Camera Behavior
+### Camera Behavior (as built)
 
-Following the simplest approach from google-timeline-visualizer: the camera pans to follow the marker with `map.panTo()` on each frame. No zoom adjustment — use the initial `mapConfig` zoom level (already computed by the stats service) and keep it fixed. This avoids zoom jank with only 2 points per segment.
+- **Follow**: `CameraFollow` pans to the interpolated marker position with `map.panTo(..., { animate: true, duration: 0.3 })`, throttled to one call every ≥80ms.
+- **Zoom sync**: the viewpoint zoom comes from `useViewPoint` (stats-service map config + strong-filter adjustment). If the date range changes mid-animation and the zoom differs, `useTick` runs: (1) snap `animPosition` to the new first segment's origin so the camera pans there (`PAN_SETTLE_DELAY_MS` = 350ms), (2) emit the deferred `pendingZoom` → `CameraFollow.setZoom` (`ZOOM_SETTLE_DELAY_MS` = 400ms settle), (3) restart the tick. Same-zoom rebuilds restart immediately.
+- **Toggle-on**: `animPosition` initializes lazily to the first segment's origin — no detour through default coordinates.
+- The initial zoom is still the `mapConfig` one; there are no manual user zoom controls during playback (`scrollWheelZoom` off).
 
-### Visual Elements
+### Visual Elements (as built)
 
-| Element | Description |
+| Element | Status |
 | :--- | :--- |
-| **Marker** (moving) | A pulsing dot at the current interpolated position. Uses a custom CSS-animated icon (pulsing circle, similar to the existing colored marker icons in `map/icons.ts`). |
-| **Completed polylines** | One `Polyline` per finished segment, drawn with the theme color (`#ff0055` or existing blue) at 60% opacity. |
-| **Active polyline** | The current segment's line drawn progressively (using `Positions` array built up to the current interpolated point). |
-| **Travel info card** | Floating overlay (top-right or bottom-left) showing: travel number, origin name → destination name, mode of transport icon, distance, date. Updates on each segment transition. |
-| **Progress bar** | Bottom of the map, thin bar showing overall progress through all segments. Draggable to seek. |
+| **Marker** (moving) | ✅ Pulsing CSS-animated icon (`pulsingIcon` in `map/icons.ts`). |
+| **Completed polylines** | ✅ One `Polyline` per finished segment (per leg), colored by travel weight, 0.7 opacity. |
+| **Active polyline** | ✅ Current segment drawn progressively up to the interpolated point. |
+| **Travel info card** | ❌ Descoped. |
+| **Progress bar** | ❌ Descoped (loop restarts automatically instead). |
 
-### Controls
+### Controls (as built)
 
-| Control | Behavior |
-| :--- | --- |
-| **Play/Pause** | Toggle animation. Starts paused. |
-| **Speed** | 0.5x, 1x, 2x, 4x — multiplies the base speed factor. |
-| **Progress scrubber** | Range input from 0 to total segments. Clicking/dragging seeks to that segment's start position. |
-| **Reset** | Jumps back to the beginning. |
+Only the on/off toggle (`AnimateTimelineBtn`) exists in `TravelsPageClient`. Play/pause, speed selector, scrubber and reset were descoped — playback is a continuous loop.
 
-### Entry Point in TravelsPageClient
+### Entry Point (as built)
 
-Add an "Animate" button (next to the existing chart view buttons). When clicked, it toggles the `AnimatedTimeline` component below the existing `hidden lg:flex` row (before `TravelTable`). The animated map gets a fixed height (e.g. `h-96` or `h-[500px]`). While animating, the existing static `TravelMap` remains visible above.
+`AnimateTimelineBtn` sits in the existing view-buttons column of the Travels page. Toggling it flips `isAnimating` on `TravelMap`, which swaps the map's children between static and animated views; layout is untouched.
 
-### Cross Points (Optional Enhancement)
+### Cross Points (implemented ✅)
 
-The `Travel.crosses` array contains intermediate waypoints (`{ latitude, longitude }`). If a travel has crosses, the segment can be split into sub-segments: `origin → cross1 → cross2 → ... → destination`. This makes the animated path follow intermediate points instead of a pure straight line. This is a natural extension since the data is already populated — the `buildSegments()` function checks `travel.crosses.length > 0` and inserts sub-waypoints when present.
+If a travel has crosses, `buildSegments` splits it into sub-segments `origin → cross1 → ... → destination`, so the animated path follows intermediate points instead of a straight line:
 
-### Key Implementation Notes
+- The backend does **not** guarantee cross order (`Travel.crosses` is stored in check-order from the Crosses page).
+- With `crosses.length <= 1` the waypoints are used as stored (nothing to sort).
+- With more than one, crosses are sorted by their projection onto the origin→destination axis: `routePosition = distToOrigin / (distToOrigin + distToDestination)`, computed with the shared `calculateDistance` util — same algorithm as `modal/CrossSection.tsx`.
+- Zero-length legs are dropped (duplicate points); if every leg is degenerate, a single placeholder leg keeps the marker moving.
+- Leg durations are proportional to leg length within the travel's existing `totalMs`.
 
-- **No `useEffect` for animation loop**: Use `useRef` for the `requestAnimationFrame` handle and a `useCallback` for the tick function. Clean up on unmount and on play/pause.
-- **No SSR**: Component is dynamically imported (same pattern as `TravelMap`).
-- **Travels are already sorted** newest-to-oldest from the backend (`travelService.js` sorts by `startTime: -1`). No re-sorting needed.
-- **Empty state**: If no travels, show a message instead of the map.
-- **Pause on unmount**: Cancel `requestAnimationFrame` in the cleanup function.
+### Key Implementation Notes (as built)
 
-## ✅ Verification Plan
+- `requestAnimationFrame` handle lives in refs inside `useTick`; the loop is cancelled on unmount, on toggle-off and between segment rebuilds.
+- **No SSR**: `TravelMap` is dynamically imported with `ssr: false`.
+- **Travels are sorted** oldest-to-newest for playback via `toReversed()` (backend ships newest-first).
+- **Empty state**: `TravelMap` already renders a "no locations" message instead of the map.
 
-- [ ] `npm run lint` passes clean.
-- [ ] Manual: load Travels page, click Animate, marker moves origin→destination for each travel sequentially.
-- [ ] Manual: polylines accumulate behind the marker as travels complete.
-- [ ] Manual: play/pause toggle works; progress bar reflects current position.
-- [ ] Manual: speed selector changes animation speed.
-- [ ] Manual: scrubber seeks to correct segment and position.
-- [ ] Manual: camera follows the marker smoothly across all segments.
-- [ ] Manual: travels with crosses show intermediate waypoints in the animated path.
-- [ ] Manual: empty travels state shows message instead of broken map.
-- [ ] `docker compose up --build -d` boots cleanly (no new backend/service changes).
+## ✅ Verification (done)
+
+- [x] `npm run lint` passes clean.
+- [x] `docker compose up --build -d` boots cleanly (no backend/service changes).
+- [x] Marker moves origin→destination per travel sequentially; polylines accumulate behind it.
+- [x] Camera follows smoothly; toggling animation on/off causes no coordinate jumps.
+- [x] Date-range change mid-animation: pan to new route start → zoom → resume, landing on an area with segments.
+- [x] Travels with multiple crosses show intermediate waypoints ordered along the route.
 
 ## 📝 Notes & Risks
 
-- **Leaflet `panTo` vs `flyTo`**: `panTo` is instant (no easing). For smoother camera movement, use `flyTo` with a short duration (e.g. 300ms) debounced so overlapping calls don't stack. Alternatively, use `panTo` since the marker moves continuously and the camera keeps up frame-by-frame — this is what google-timeline-visualizer does (no easing, just dead-zone tracking).
-- **Performance with many travels**: If the date range covers hundreds of travels, the polyline count grows. Leaflet handles hundreds of polylines well, but the `requestAnimationFrame` loop should avoid re-rendering the full polyline set every frame — only append the current active segment's growing line. Completed segments are static `Polyline` components that don't update.
-- **SSR**: Must be `next/dynamic` with `ssr: false` like the existing `TravelMap`.
-- **Map duplication**: This creates a second Leaflet map instance below the existing one. This is intentional — the static map stays as-is for reference, the animated map is a separate immersive view. Alternative: replace the static map entirely during animation (toggle), but that's more disruptive to the page layout.
+- **Leaflet `panTo` vs `flyTo`**: settled on throttled animated `panTo` (0.3s ease, ≥80ms between calls) in `CameraFollow`. `flyTo` was rejected for zoom sync because the continuous follow pans interrupt it mid-flight; zoom is applied with plain `setZoom` after the settle delay instead.
+- **Performance with many travels**: legs add more polylines; completed ones are static Leaflet layers appended once and only trimmed on restart — no full redraws per frame.
+- **Map strategy**: single shared `MapContainer` with swapped children (not the second-map variant originally proposed) — this also keeps the camera choreography (follow + zoom sync + `ChangeMapView`) within one map instance.
+- **Future work**: play/pause, speed selector, progress scrubber, travel info card remain open enhancements.
