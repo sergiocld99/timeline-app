@@ -99,10 +99,12 @@ If a travel has crosses, `buildSegments` splits it into sub-segments `origin →
 
 ### Key Implementation Notes (as built)
 
-- `requestAnimationFrame` handle lives in refs inside `useTick`; the loop is cancelled on unmount, on toggle-off and between segment rebuilds.
-- **No SSR**: `TravelMap` is dynamically imported with `ssr: false`.
-- **Travels are sorted** oldest-to-newest for playback via `toReversed()` (backend ships newest-first).
-- **Empty state**: `TravelMap` already renders a "no locations" message instead of the map.
+- **rAF loop lives in refs**: `useTick` keeps the frame handle and segment counters in refs (`rafRef`, `segmentIndexRef`, `segmentFractionRef`, `lastTimeRef`); the tick function is exposed through a ref so the start effect never resubscribes per render. Cleanup cancels the rAF and any pending zoom-sequence timeouts on unmount, toggle-off and segment rebuilds.
+- **Single camera owner**: while animating, only `CameraFollow` touches the camera (`ChangeMapView` is unmounted). Follow pans are throttled (≥80ms apart), which is what lets the deferred zoom land without being interrupted mid-flight.
+- **Deferred zoom via prop diffing**: `pendingZoom` starts as `undefined` (= no-op sentinel covering the mount); `CameraFollow` applies any defined value that differs from the last applied one. Do not add a "skip first render" guard — the first emission after mount is a genuine request (regression we hit).
+- **`MapContainer` props are initial-only**: react-leaflet ignores `center`/`zoom` prop changes after mount. Syncing the view is `ChangeMapView`'s job in static mode and `CameraFollow`'s in animated mode.
+- **Segments are generic legs**: tick, polylines and camera treat the list flatly; a travel with crosses contributes several consecutive entries sharing the same `travel` and `color`. No consumer may assume 1 segment = 1 travel.
+- **No SSR / ordering / empty state**: `TravelMap` is dynamically imported with `ssr: false`; playback order is oldest→newest via `toReversed()` (backend ships newest-first); empty travels render the "no locations" placeholder instead of the map.
 
 ## ✅ Verification (done)
 
