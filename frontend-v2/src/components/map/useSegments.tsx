@@ -31,7 +31,7 @@ export const useSegments = ({ travels, isAnimating, zoom }: Props) => {
     [segments],
   )
 
-  const { animPosition, animState } = useTick({ segments, totalDuration, isAnimating, zoom })
+  const { animPosition, animState, pendingZoom } = useTick({ segments, totalDuration, isAnimating, zoom })
 
-  return { segments, animPosition, animState }
+  return { segments, animPosition, animState, pendingZoom }
 }

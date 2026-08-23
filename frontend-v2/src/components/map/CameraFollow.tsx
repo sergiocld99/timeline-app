@@ -9,7 +9,7 @@ type Props = {
 const CameraFollow = ({ position, zoom }: Props) => {
   const map = useMap()
   const lastPanRef = useRef(0)
-  const lastZoomRef = useRef<number | null>(null)
+  const lastZoomRef = useRef<number | undefined>(undefined)
 
   useEffect(() => {
     if (!position) return
@@ -21,9 +21,7 @@ const CameraFollow = ({ position, zoom }: Props) => {
 
   useEffect(() => {
     if (zoom === undefined || lastZoomRef.current === zoom) return
-    const isInitialMount = lastZoomRef.current === null
     lastZoomRef.current = zoom
-    if (isInitialMount) return
     map.setZoom(zoom)
   }, [map, zoom])
 

@@ -14,10 +14,10 @@ type Props = {
 }
 
 const AnimatedMap = ({ travels, isAnimating, zoom }: Props) => {
-  const { segments, animPosition, animState } = useSegments({ travels, isAnimating, zoom })
+  const { segments, animPosition, animState, pendingZoom } = useSegments({ travels, isAnimating, zoom })
 
   return <>
-    <CameraFollow position={animPosition} zoom={zoom} />
+    <CameraFollow position={animPosition} zoom={pendingZoom} />
     <PolylineLayer
       segments={segments}
       segmentIndex={animState.currentSegmentIndex}
