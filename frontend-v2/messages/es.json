@@ -293,7 +293,7 @@
     "title": "Visitas",
     "loading": "Cargando visitas...",
     "errorLoading": "Error al cargar las visitas. Por favor intente actualizar la página.",
-  "noVisitsFound": "No se encontraron visitas para el rango de fechas seleccionado.",
+    "noVisitsFound": "No se encontraron visitas para el rango de fechas seleccionado.",
     "sort": {
       "by": "Ordenar por",
       "date": "Fecha",

@@ -293,7 +293,7 @@
     "title": "Visits",
     "loading": "Loading visits...",
     "errorLoading": "Error loading visits. Please try refreshing the page.",
-  "noVisitsFound": "No visits found for the selected date range.",
+    "noVisitsFound": "No visits found for the selected date range.",
     "sort": {
       "by": "Sort by",
       "date": "Date",
