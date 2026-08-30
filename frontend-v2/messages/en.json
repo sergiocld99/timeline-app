@@ -294,6 +294,11 @@
     "loading": "Loading visits...",
     "errorLoading": "Error loading visits. Please try refreshing the page.",
     "noVisitsFound": "No visits found for the selected date range.",
+    "sort": {
+      "by": "Sort by",
+      "date": "Date",
+      "duration": "Duration"
+    },
     "away": "{distance} km away",
     "visitsCount": "{count, plural, =1 {# visit} other {# visits}}",
     "tableHeaders": {
