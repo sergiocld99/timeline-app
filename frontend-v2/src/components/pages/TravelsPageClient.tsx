@@ -15,6 +15,7 @@ import TravelTable from "@/components/TravelTable";
 import useTravelFilter from "@/hooks/useTravelFilter";
 import useTravels from "@/hooks/useTravels";
 
+import AnimateTimelineBtn from "../buttons/AnimateTimelineBtn";
 import BarViewBtn from "../buttons/BarViewBtn";
 import CalendarViewBtn from "../buttons/CalendarViewBtn";
 import CircularViewBtn from "../buttons/CircularViewBtn";
@@ -41,6 +42,7 @@ const TravelsPageClient = () => {
   const { travels, stats } = travelsData;
 
   const [statsView, setStatsView] = useState<StatsView>("bar");
+  const [showAnimatedTimeline, setShowAnimatedTimeline] = useState(false);
   const { filteredTravels, appliedFilter, onFilter } = useTravelFilter(travels);
 
   return (
@@ -51,13 +53,14 @@ const TravelsPageClient = () => {
           <TravelStatsSummary travels={filteredTravels} initialStats={stats} />
         </div>
         <div className="hidden lg:flex gap-8">
-          <TravelMap travels={filteredTravels} isFiltered={!!appliedFilter} stats={stats} />
+          <TravelMap travels={filteredTravels} isFiltered={!!appliedFilter} stats={stats} isAnimating={showAnimatedTimeline} />
           <div className="w-8/10 relative">
             <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
               <BarViewBtn handleClick={() => setStatsView("bar")} isActive={statsView === "bar"} />
               <CircularViewBtn handleClick={() => setStatsView("circular")} isActive={statsView === "circular"} />
               <LineViewBtn handleClick={() => setStatsView("line")} isActive={statsView === "line"} />
               <CalendarViewBtn handleClick={() => setStatsView("calendar")} isActive={statsView === "calendar"} />
+              <AnimateTimelineBtn handleClick={() => setShowAnimatedTimeline((prev) => !prev)} isActive={showAnimatedTimeline} />
             </div>
             {statsView === "bar" && <TravelBarStats travels={filteredTravels} onFilter={onFilter} cardClassName="w-full" options={{
               backendHome: stats?.home,
