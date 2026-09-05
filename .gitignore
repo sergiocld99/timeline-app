@@ -3,5 +3,6 @@
 .cursor
 .playwright-mcp
 .vscode
+data
 mcp-screenshots
 PR_DESCRIPTION.md
