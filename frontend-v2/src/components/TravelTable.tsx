@@ -105,7 +105,7 @@ const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTra
           </Button>
           <CardTitle className="text-gray-900 dark:text-white">{t("Travels.title")}</CardTitle>
         </div>
-        <TravelTablePagination page={page} totalPages={totalPages} onPrev={handlePrev} onNext={handleNext} onGoToPage={handleGoToPage} className="col-start-2 hidden lg:flex" />
+        {!isCollapsed && <TravelTablePagination page={page} totalPages={totalPages} onPrev={handlePrev} onNext={handleNext} onGoToPage={handleGoToPage} className="col-start-2 hidden lg:flex" />}
         <div className="col-start-3 flex items-center justify-end gap-2">
           <div className="hidden lg:block">
             {onFilter && <CrossSelector onFilter={onFilter} selectedCrossId={selectedCrossId} setSelectedCrossId={setSelectedCrossId} isDisabled={isCrossSelectorDisabled} />}
@@ -143,7 +143,7 @@ const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTra
         <div className="lg:hidden">
           <TravelListContent travels={pageItems} stats={stats} isCollapsed={isCollapsed} />
         </div>
-        <TravelTablePagination page={page} totalPages={totalPages} onPrev={handlePrev} onNext={handleNext} onGoToPage={handleGoToPage} className="justify-center" />
+        {!isCollapsed && <TravelTablePagination page={page} totalPages={totalPages} onPrev={handlePrev} onNext={handleNext} onGoToPage={handleGoToPage} className="justify-center" />}
       </CardContent>
     </Card>
   );
