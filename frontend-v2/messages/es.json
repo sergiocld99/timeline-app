@@ -74,7 +74,8 @@
     "pagination": {
       "showing": "{from}–{to} de {total}",
       "previous": "Anterior",
-      "next": "Siguiente"
+      "next": "Siguiente",
+      "goToPage": "Ir a la página {page}"
     },
     "summary": {
       "placesVisited": "Visitaste",

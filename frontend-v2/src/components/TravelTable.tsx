@@ -48,7 +48,7 @@ const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTra
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isCrossSelectorDisabled, setIsCrossSelectorDisabled] = useState(false);
   const [selectedCrossId, setSelectedCrossId] = useState<string>(FILTER_ALL);
-  const { page, totalPages, pageSize, pageItems, next, prev } = usePagination(travels);
+  const { page, totalPages, pageSize, pageItems, goToPage, next, prev } = usePagination(travels);
 
   const placesCount = stats?.placesVisited?.count || 0;
   const isGold = daysRange > 0 && daysRange < 35 && placesCount >= 12;
@@ -122,7 +122,7 @@ const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTra
         <div className="lg:hidden">
           <TravelListContent travels={pageItems} stats={stats} isCollapsed={isCollapsed} />
         </div>
-        <TravelTablePagination page={page} totalPages={totalPages} totalItems={travels.length} pageSize={pageSize} onPrev={prev} onNext={next} />
+        <TravelTablePagination page={page} totalPages={totalPages} totalItems={travels.length} pageSize={pageSize} onPrev={prev} onNext={next} onGoToPage={goToPage} />
       </CardContent>
     </Card>
   );
