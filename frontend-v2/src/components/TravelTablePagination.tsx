@@ -45,6 +45,7 @@ const TravelTablePagination = ({ page, totalPages, onPrev, onNext, onGoToPage, c
         onClick={onPrev}
         disabled={page <= 1}
         aria-label={t("previous")}
+        title={t("previous")}
         className="h-8 w-8"
       >
         <ChevronLeft className="h-4 w-4" />
@@ -61,6 +62,7 @@ const TravelTablePagination = ({ page, totalPages, onPrev, onNext, onGoToPage, c
             size="icon"
             onClick={() => onGoToPage(pageNumber)}
             aria-label={t("goToPage", { page: pageNumber })}
+            title={t("goToPage", { page: pageNumber })}
             className="h-8 w-8 text-sm"
           >
             {pageNumber}
@@ -73,6 +75,7 @@ const TravelTablePagination = ({ page, totalPages, onPrev, onNext, onGoToPage, c
         onClick={onNext}
         disabled={page >= totalPages}
         aria-label={t("next")}
+        title={t("next")}
         className="h-8 w-8"
       >
         <ChevronRight className="h-4 w-4" />
