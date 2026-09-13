@@ -29,6 +29,7 @@ import CalendarBtn from './buttons/CalendarBtn';
 
 type Props = {
   travels: Travel[];
+  pageItems?: Travel[];
   stats?: TravelStats;
   onUpdate?: (id: string, updates: Partial<Travel>) => Promise<Travel>;
   onDelete?: (id: string) => Promise<void>;
@@ -41,7 +42,7 @@ type Props = {
 
 const COLUMN_KEYS = ['date', 'mode', 'from', 'to', 'schedule', 'distance', 'duration', 'weight', 'actions'];
 
-const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, onRemoveCrosses, isCollapsed, isGold = false, source }: Props) => {
+const TravelTableContent = ({ travels, pageItems = travels, stats, onUpdate, onDelete, onAddCrosses, onRemoveCrosses, isCollapsed, isGold = false, source }: Props) => {
   const t = useTranslations("Travels");
   const tMilestones = useTranslations("Milestones");
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -246,7 +247,7 @@ const TravelTableContent = ({ travels, stats, onUpdate, onDelete, onAddCrosses, 
               </TableRow>
             </TableHeader>
             <TableBody>
-              {travels.map((t) => {
+              {pageItems.map((t) => {
                 const milestones = getMilestones(t, tMilestones, stats);
                 const editProps = getEditProps(t);
 

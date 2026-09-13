@@ -14,6 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useDateRange } from '@/contexts/DateRangeContext';
 import { useUser } from '@/contexts/UserContext';
 import { useTravelStats } from '@/hooks/useTravelStats';
+import usePagination from '@/hooks/usePagination';
 import TravelService from '@/services/TravelService';
 import { translateDay } from '@/utils/date';
 import { cn } from "@/lib/utils";
@@ -22,6 +23,7 @@ import ExportButton from './buttons/ExportButton';
 import RemoveFilterBtn from './buttons/RemoveFilterBtn';
 import DateRangeSelector from './DateRangeSelector';
 import TravelTableContent from './TravelTableContent';
+import TravelTablePagination from './TravelTablePagination';
 import TravelListContent from './mobile/TravelListContent';
 import CrossSelector, { FILTER_ALL } from "./CrossSelector";
 
@@ -46,6 +48,7 @@ const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTra
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isCrossSelectorDisabled, setIsCrossSelectorDisabled] = useState(false);
   const [selectedCrossId, setSelectedCrossId] = useState<string>(FILTER_ALL);
+  const { page, totalPages, pageSize, pageItems, next, prev } = usePagination(travels);
 
   const placesCount = stats?.placesVisited?.count || 0;
   const isGold = daysRange > 0 && daysRange < 35 && placesCount >= 12;
@@ -105,6 +108,7 @@ const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTra
         <div className="hidden lg:block">
           <TravelTableContent
             travels={travels}
+            pageItems={pageItems}
             stats={stats}
             onUpdate={onUpdateTravel}
             onDelete={onDeleteTravel}
@@ -116,8 +120,9 @@ const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTra
           />
         </div>
         <div className="lg:hidden">
-          <TravelListContent travels={travels} stats={stats} isCollapsed={isCollapsed} />
+          <TravelListContent travels={pageItems} stats={stats} isCollapsed={isCollapsed} />
         </div>
+        <TravelTablePagination page={page} totalPages={totalPages} totalItems={travels.length} pageSize={pageSize} onPrev={prev} onNext={next} />
       </CardContent>
     </Card>
   );

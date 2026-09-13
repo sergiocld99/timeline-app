@@ -71,6 +71,11 @@
       "daysCount": "{count, plural, =1 {# día} other {# días}}",
       "placesCount": "{count, plural, =1 {# lugar} other {# lugares}}"
     },
+    "pagination": {
+      "showing": "{from}–{to} de {total}",
+      "previous": "Anterior",
+      "next": "Siguiente"
+    },
     "summary": {
       "placesVisited": "Visitaste",
       "coordinates": "Centro",
