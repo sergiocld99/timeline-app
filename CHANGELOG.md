@@ -4,6 +4,7 @@
 - COD13-002: predict endTime on Creator + limit/skipStats params on GET /travels (#96) [284]
 - COD13-003: Filter nearby centers by user's recent travels (#107) [125]
 - COD13-013: Animated travel timeline with crosses and synced camera (#108) [1037]
+- COD13-015: Bump sharp to 0.35.4 in /frontend-v2 (#116) [234]
 
 ## v0.12.0 (2026-08-17)
 - COD12-004: Extract shared TestFixtures for statistics-service (#102) [463]
