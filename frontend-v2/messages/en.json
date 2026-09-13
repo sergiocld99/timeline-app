@@ -72,7 +72,6 @@
       "placesCount": "{count, plural, =1 {# place} other {# places}}"
     },
     "pagination": {
-      "showing": "{from}–{to} of {total}",
       "previous": "Previous",
       "next": "Next",
       "goToPage": "Go to page {page}"

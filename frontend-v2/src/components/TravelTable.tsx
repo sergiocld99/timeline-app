@@ -5,7 +5,7 @@ import type { FilteringByCross } from "@/types/stats";
 import type { TravelTableSource } from "@/types/props";
 
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 
@@ -48,7 +48,27 @@ const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTra
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isCrossSelectorDisabled, setIsCrossSelectorDisabled] = useState(false);
   const [selectedCrossId, setSelectedCrossId] = useState<string>(FILTER_ALL);
-  const { page, totalPages, pageSize, pageItems, goToPage, next, prev } = usePagination(travels);
+  const { page, totalPages, pageItems, goToPage, next, prev } = usePagination(travels);
+  const tableRef = useRef<HTMLDivElement>(null);
+
+  const scrollToTable = () => {
+    tableRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const handleGoToPage = (target: number) => {
+    goToPage(target);
+    scrollToTable();
+  };
+
+  const handleNext = () => {
+    next();
+    scrollToTable();
+  };
+
+  const handlePrev = () => {
+    prev();
+    scrollToTable();
+  };
 
   const placesCount = stats?.placesVisited?.count || 0;
   const isGold = daysRange > 0 && daysRange < 35 && placesCount >= 12;
@@ -69,11 +89,11 @@ const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTra
   }, [appliedFilter, dateFrom, dateTo, currentUser])
 
   return (
-    <Card className={cn(
+    <Card ref={tableRef} className={cn(
       "w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 transition-all duration-300",
       isGold && "border-2 border-amber-400 dark:border-amber-400 bg-amber-50/20 dark:bg-amber-950/20 shadow-[0_0_20px_rgba(245,158,11,0.15)]"
     )}>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+      <CardHeader className="grid grid-cols-[1fr_auto_1fr] items-center space-y-0 pb-2 gap-2">
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"
@@ -85,7 +105,8 @@ const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTra
           </Button>
           <CardTitle className="text-gray-900 dark:text-white">{t("Travels.title")}</CardTitle>
         </div>
-        <div className="flex items-center gap-2">
+        <TravelTablePagination page={page} totalPages={totalPages} onPrev={handlePrev} onNext={handleNext} onGoToPage={handleGoToPage} className="hidden lg:flex" />
+        <div className="flex items-center justify-end gap-2">
           <div className="hidden lg:block">
             {onFilter && <CrossSelector onFilter={onFilter} selectedCrossId={selectedCrossId} setSelectedCrossId={setSelectedCrossId} isDisabled={isCrossSelectorDisabled} />}
           </div>
@@ -122,7 +143,7 @@ const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTra
         <div className="lg:hidden">
           <TravelListContent travels={pageItems} stats={stats} isCollapsed={isCollapsed} />
         </div>
-        <TravelTablePagination page={page} totalPages={totalPages} totalItems={travels.length} pageSize={pageSize} onPrev={prev} onNext={next} onGoToPage={goToPage} />
+        <TravelTablePagination page={page} totalPages={totalPages} onPrev={handlePrev} onNext={handleNext} onGoToPage={handleGoToPage} className="lg:hidden justify-center" />
       </CardContent>
     </Card>
   );
