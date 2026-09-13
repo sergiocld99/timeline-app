@@ -143,7 +143,7 @@ const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTra
         <div className="lg:hidden">
           <TravelListContent travels={pageItems} stats={stats} isCollapsed={isCollapsed} />
         </div>
-        <TravelTablePagination page={page} totalPages={totalPages} onPrev={handlePrev} onNext={handleNext} onGoToPage={handleGoToPage} className="lg:hidden justify-center" />
+        <TravelTablePagination page={page} totalPages={totalPages} onPrev={handlePrev} onNext={handleNext} onGoToPage={handleGoToPage} className="justify-center" />
       </CardContent>
     </Card>
   );
