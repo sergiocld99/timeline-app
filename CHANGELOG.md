@@ -1,7 +1,7 @@
 # CHANGELOG
 
 ## v0.14.0
-- COD14-023: Travels table pagination (header/footer paginator, tooltips, collapsed handling) + Vitest setup [2320]
+- COD14-023: Travels table pagination (header/footer paginator, tooltips, collapsed handling) + Vitest setup (#118) [2320]
 
 ## v0.13.0
 - COD13-002: predict endTime on Creator + limit/skipStats params on GET /travels (#96) [284]
