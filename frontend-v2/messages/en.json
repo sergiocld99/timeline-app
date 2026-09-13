@@ -144,7 +144,8 @@
     "previousMonth": "Previous month",
     "viewDetails": "View Details",
     "goBack": "Go back",
-    "copyCoordinates": "Copy coordinates"
+    "copyCoordinates": "Copy coordinates",
+    "copiedCoordinates": "Coordinates copied!"
   },
   "Modal": {
     "addNote": "Add Note",
