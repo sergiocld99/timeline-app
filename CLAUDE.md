@@ -40,6 +40,7 @@ node --test backend/test/travelRules.test.js   # run a single test file
 cd frontend-v2
 npm install
 npm run dev         # Turbopack dev server, http://localhost:3002
+npm test            # vitest (tests live in frontend-v2/tests/)
 npm run build
 npm run lint         # MANDATORY before finishing any frontend task
 ```
