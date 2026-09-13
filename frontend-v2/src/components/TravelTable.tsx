@@ -94,7 +94,7 @@ const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTra
       isGold && "border-2 border-amber-400 dark:border-amber-400 bg-amber-50/20 dark:bg-amber-950/20 shadow-[0_0_20px_rgba(245,158,11,0.15)]"
     )}>
       <CardHeader className="grid grid-cols-[1fr_auto_1fr] items-center space-y-0 pb-2 gap-2">
-        <div className="flex items-center gap-2">
+        <div className="col-start-1 flex items-center gap-2">
           <Button
             variant="ghost"
             size="sm"
@@ -105,8 +105,8 @@ const TravelTable = ({ travels, stats: initialStats, onUpdateTravel, onDeleteTra
           </Button>
           <CardTitle className="text-gray-900 dark:text-white">{t("Travels.title")}</CardTitle>
         </div>
-        <TravelTablePagination page={page} totalPages={totalPages} onPrev={handlePrev} onNext={handleNext} onGoToPage={handleGoToPage} className="hidden lg:flex" />
-        <div className="flex items-center justify-end gap-2">
+        <TravelTablePagination page={page} totalPages={totalPages} onPrev={handlePrev} onNext={handleNext} onGoToPage={handleGoToPage} className="col-start-2 hidden lg:flex" />
+        <div className="col-start-3 flex items-center justify-end gap-2">
           <div className="hidden lg:block">
             {onFilter && <CrossSelector onFilter={onFilter} selectedCrossId={selectedCrossId} setSelectedCrossId={setSelectedCrossId} isDisabled={isCrossSelectorDisabled} />}
           </div>
