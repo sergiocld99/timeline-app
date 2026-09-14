@@ -39,9 +39,14 @@ test('can create and delete travel', async ({ page }) => {
   // Dropdown auto-selects and closes
   await expect(page.locator('button[role="combobox"]').filter({ hasText: 'B1888 - Varela Centro' })).toBeVisible();
 
-  // Set time and distance with explicit value checking to handle React state sync
+  // Set date, time, and distance with explicit value checking to handle React state sync
+  // The creator form splits startTime into two inputs: startDate (type=date) and startTime (type=time)
+  const startDate = page.locator('#startDate');
+  await startDate.fill('2099-08-18');
+  await startDate.blur();
+
   const startTime = page.locator('#startTime');
-  await startTime.fill('2099-08-18T16:20');
+  await startTime.fill('16:20');
   await startTime.blur();
 
   const endTime = page.locator('#endTime');
@@ -53,7 +58,8 @@ test('can create and delete travel', async ({ page }) => {
   await distance.blur();
 
   // Verify inputs before submitting to avoid issues with Playwright speed
-  await expect(page.locator('#startTime')).toHaveValue('2099-08-18T16:20');
+  await expect(page.locator('#startDate')).toHaveValue('2099-08-18');
+  await expect(page.locator('#startTime')).toHaveValue('16:20');
   await expect(page.locator('#endTime')).toHaveValue('18:00');
   await expect(page.locator('#distance')).toHaveValue('30');
 
