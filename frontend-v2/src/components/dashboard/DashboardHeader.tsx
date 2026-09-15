@@ -4,6 +4,8 @@ import { useTranslations } from "next-intl";
 
 import { formatDayMonthYear } from "@/utils/date";
 
+import DashboardRangePicker from "./DashboardRangePicker";
+
 type Props = {
   count: number;
   totalDistance: number;
@@ -28,19 +30,23 @@ const DashboardHeader = ({ count, totalDistance, totalHours, currentFrom, curren
         )}
       </div>
 
-      <div className="flex gap-8 mt-8 md:mt-0">
-        <div className="text-right">
-          <div className="text-3xl font-extrabold text-[#e8ff47] leading-none">{count || 0}</div>
-          <div className="font-['Space_Mono'] text-[0.6rem] text-[#fff] uppercase tracking-[2px]">{t("travels")}</div>
+      <div className="flex flex-col lg:flex-row items-start lg:items-end gap-6 mt-8 md:mt-0">
+        <div className="flex gap-8">
+          <div className="text-right">
+            <div className="text-3xl font-extrabold text-[#e8ff47] leading-none">{count || 0}</div>
+            <div className="font-['Space_Mono'] text-[0.6rem] text-[#fff] uppercase tracking-[2px]">{t("travels")}</div>
+          </div>
+          <div className="text-right">
+            <div className="text-3xl font-extrabold text-[#47d4ff] leading-none">{Math.round(totalDistance || 0)}</div>
+            <div className="font-['Space_Mono'] text-[0.6rem] text-[#fff] uppercase tracking-[2px]">{t("totalKm")}</div>
+          </div>
+          <div className="text-right">
+            <div className="text-3xl font-extrabold text-[#ff6b47] leading-none">{Math.round(totalHours || 0)}</div>
+            <div className="font-['Space_Mono'] text-[0.6rem] text-[#fff] uppercase tracking-[2px]">{t("totalHours")}</div>
+          </div>
         </div>
-        <div className="text-right">
-          <div className="text-3xl font-extrabold text-[#47d4ff] leading-none">{Math.round(totalDistance || 0)}</div>
-          <div className="font-['Space_Mono'] text-[0.6rem] text-[#fff] uppercase tracking-[2px]">{t("totalKm")}</div>
-        </div>
-        <div className="text-right">
-          <div className="text-3xl font-extrabold text-[#ff6b47] leading-none">{Math.round(totalHours || 0)}</div>
-          <div className="font-['Space_Mono'] text-[0.6rem] text-[#fff] uppercase tracking-[2px]">{t("totalHours")}</div>
-        </div>
+
+        <DashboardRangePicker defaultFrom={currentFrom} defaultTo={currentTo} />
       </div>
     </header>
   );

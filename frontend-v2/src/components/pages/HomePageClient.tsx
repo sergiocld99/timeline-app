@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { useDashQuery } from "@/hooks/useDashQuery";
 import { formatDayMonthYear } from "@/utils/date";
 import TravelDashboard from "@/components/TravelDashboard";
+import DashboardRangePicker from "@/components/dashboard/DashboardRangePicker";
 import Header from "@/components/Header";
 
 const HomePageClient = () => {
@@ -26,10 +27,11 @@ const HomePageClient = () => {
         </div>
       )}
       {data?.count === 0 && (
-        <div className="bg-[#0a0a0f] min-h-screen flex items-center justify-center px-6">
+        <div className="bg-[#0a0a0f] min-h-screen flex flex-col items-center justify-center gap-8 px-6">
           <p className="text-[#8a8a9e] font-['Space_Mono'] text-sm md:text-base text-center text-balance max-w-xl leading-relaxed">
             {t("noDataMessage", { from: formatDayMonthYear(currentFrom), to: formatDayMonthYear(currentTo) })}
           </p>
+          <DashboardRangePicker defaultFrom={currentFrom} defaultTo={currentTo} />
         </div>
       )}
       {data && data.count > 0 && (
