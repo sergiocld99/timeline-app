@@ -19,6 +19,20 @@ const addMonths = (date: Date, months: number): Date => {
   return result;
 };
 
+const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+
+// from/to params may be date-only ("2026-04-01", the format the picker writes)
+// or legacy full ISO strings. Date-only values are Argentina wall-clock digits
+// (see CLAUDE.md) and are expanded to the baked start-of-day / end-of-day
+// boundaries the stats query and the display already consume.
+const toBakedBoundary = (param: string, endOfDay: boolean): Date | null => {
+  const normalized = DATE_PATTERN.test(param)
+    ? `${param}T${endOfDay ? "23:59:59.999" : "00:00:00.000"}Z`
+    : param;
+  if (isNaN(Date.parse(normalized))) return null;
+  return new Date(normalized);
+};
+
 export const useDashQuery = () => {
   const { currentUser, loading: userLoading } = useUser();
   const searchParams = useSearchParams();
@@ -31,17 +45,17 @@ export const useDashQuery = () => {
     return isNaN(parsed) ? 0 : parsed;
   }, [searchParams]);
 
-  // Read explicit from/to (ISO strings). When both parse and from <= to, they
-  // define the current range verbatim; otherwise the rolling 11-month window
-  // (with ?offset= paging) below applies.
+  // Read explicit from/to. When both parse and from <= to, they define the
+  // current range verbatim; otherwise the rolling 11-month window (with
+  // ?offset= paging) below applies.
   const explicitRange = useMemo(() => {
     const fromParam = searchParams.get("from");
     const toParam = searchParams.get("to");
     if (!fromParam || !toParam) return null;
-    if (isNaN(Date.parse(fromParam)) || isNaN(Date.parse(toParam))) return null;
 
-    const fromDate = new Date(fromParam);
-    const toDate = new Date(toParam);
+    const fromDate = toBakedBoundary(fromParam, false);
+    const toDate = toBakedBoundary(toParam, true);
+    if (!fromDate || !toDate) return null;
     if (fromDate > toDate) return null;
 
     return { from: fromDate, to: toDate };

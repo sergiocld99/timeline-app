@@ -123,13 +123,13 @@ describe("useDashQuery", () => {
     expect(result.current.currentTo).toBe(toParam);
   });
 
-  it("accepts date-only from/to params for hand-written URLs", () => {
+  it("expands date-only from/to params to baked start/end-of-day boundaries", () => {
     useSearchParamsMock.mockReturnValue(new URLSearchParams("from=2026-03-01&to=2026-06-30"));
 
     const { result } = renderHook(() => useDashQuery());
 
     expect(result.current.currentFrom).toBe("2026-03-01T00:00:00.000Z");
-    expect(result.current.currentTo).toBe("2026-06-30T00:00:00.000Z");
+    expect(result.current.currentTo).toBe("2026-06-30T23:59:59.999Z");
   });
 
   it("caps an explicit range wider than 11 months at from + 11 months", () => {

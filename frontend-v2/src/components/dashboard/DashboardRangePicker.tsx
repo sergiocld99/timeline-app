@@ -17,12 +17,6 @@ import { usePathname, useRouter } from "@/i18n/routing";
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
-// Picker digits are Argentina wall-clock (see CLAUDE.md): they are serialized
-// straight into the ISO string (never through new Date().toISOString()), so the
-// stored value's date/track digits ARE the local ones consumers read.
-const toIsoStartOfDay = (datePart: string) => `${datePart}T00:00:00.000Z`;
-const toIsoEndOfDay = (datePart: string) => `${datePart}T23:59:59.999Z`;
-
 type Props = {
   // The range the dashboard is currently showing, used to prefill the inputs
   // when the URL has no explicit from/to yet (i.e. the rolling 11-month window).
@@ -76,8 +70,8 @@ const DashboardRangePicker = ({ defaultFrom, defaultTo }: Props) => {
     }
     setHint(null);
     const params = new URLSearchParams(searchParams.toString());
-    params.set("from", toIsoStartOfDay(fromInput));
-    params.set("to", toIsoEndOfDay(toInput));
+    params.set("from", fromInput);
+    params.set("to", toInput);
     router.replace(`${pathname}?${params.toString()}`);
   };
 
