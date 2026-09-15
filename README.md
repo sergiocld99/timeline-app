@@ -25,30 +25,39 @@ A full-stack application for tracking travels, visits, and locations with intera
 
 ```
 timeline-app/
-├── backend/          # Express API server
-│   ├── controllers/  # Request handlers
-│   ├── models/       # Mongoose schemas
-│   ├── routes/       # API routes
-│   └── services/     # Business logic
+├── backend/             # Express API server
+│   ├── controller/      # Request handlers
+│   ├── domain/          # Pure business rules & value objects
+│   ├── events/          # In-process event emitter (publisher/subscriber)
+│   ├── error/           # Custom error types (BusinessRuleError)
+│   ├── models/          # Mongoose schemas
+│   ├── routes/          # API routes
+│   ├── services/        # Business logic
+│   └── test/            # Node test runner tests
 │
-├── statistics-service/ # Quarkus Stats microservice (Java)
-│   ├── src/          # Source code
-│   └── pom.xml       # Maven dependencies
+├── statistics-service/  # Quarkus Stats microservice (Java 21)
+│   ├── src/             # Source code
+│   └── pom.xml          # Maven dependencies
 │
-└── frontend-v2/      # Next.js application
-    └── src/
-        ├── app/      # Next.js pages (Server Components)
-        ├── components/ # React components
-        ├── hooks/     # Custom React hooks
-        ├── services/  # API client services
-        └── contexts/  # React contexts
+├── frontend-v2/         # Next.js application
+│   └── src/
+│       ├── app/         # Routes under [locale] (Server Components)
+│       ├── components/  # React components
+│       ├── hooks/       # Custom React hooks
+│       ├── services/    # API client services
+│       └── contexts/    # React contexts
+│
+├── e2e/                 # Playwright test suite (runs against the full stack)
+├── docs/                # ADRs, software design docs
+├── curl-examples/       # Known-good curl one-liners for the API
+└── postman/             # Postman collections
 ```
 
 ## 🛠️ Getting Started
 
 ### Prerequisites
 - Docker and Docker Compose
-- Node.js 20.9+ (for local frontend development)
+- Node.js 22+ (for local backend/frontend/tooling development)
 
 ### Quick Start with Docker
 
@@ -87,7 +96,7 @@ This will start:
 > ```
 > This ensures Next.js recompiles with your latest changes.
 
-4. Open your browser:
+5. Open your browser:
 ```
 http://localhost:3002
 ```
@@ -116,6 +125,21 @@ npm run dev
 ```
 The frontend will run on `http://localhost:3002` (Next.js default).
 
+#### E2E tests (Playwright)
+```bash
+cd e2e
+npm install
+npm test          # run the full suite against the running stack
+npm run test:ui   # interactive UI mode
+npm run codegen   # record new tests
+```
+The full stack must be running locally (see Docker Quick Start above) before running E2E tests.
+
+#### Frontend Unit Tests (Vitest)
+```bash
+cd frontend-v2
+npm test
+```
 
 ## ✨ Features
 
@@ -155,6 +179,15 @@ npm run dev      # Development server (Turbopack by default)
 npm run build    # Production build
 npm run start    # Start production server
 npm run lint     # Run ESLint
+npm test         # Run Vitest tests
+```
+
+### E2E Scripts
+```bash
+cd e2e
+npm test         # Run Playwright tests
+npm run test:ui  # Interactive UI mode
+npm run codegen  # Record new tests
 ```
 
 ## 📖 Documentation
