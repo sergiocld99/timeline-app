@@ -155,58 +155,33 @@ npm test
 
 ## 📚 API Endpoints
 
-The backend provides RESTful endpoints for:
+The full endpoint reference (query params, request/response shapes) lives in [`backend/API_DOCUMENTATION.md`](backend/API_DOCUMENTATION.md). Quick map:
+
 - `/locations` - Location CRUD operations
 - `/travels` - Travel management
 - `/visits` - Visit tracking
 - `/crosses` - Cross management
 - `/users` - User management
-- `/stats` - Basic statistics (Node.js)
-- `/api/v2/stats` - Advanced analytics (Quarkus - port 8081)
+- `/api/v2/stats` - Statistics & map geometry (Quarkus service, port 8081)
 
 ## 🔧 Development
 
-### Backend Scripts
-```bash
-cd backend
-npm start        # Start the server
-```
+Quick command reference (all local dev workflows are in [Getting Started](#getting-started)):
 
-### Frontend Scripts
-```bash
-cd frontend-v2
-npm run dev      # Development server (Turbopack by default)
-npm run build    # Production build
-npm run start    # Start production server
-npm run lint     # Run ESLint
-npm test         # Run Vitest tests
-```
-
-### E2E Scripts
-```bash
-cd e2e
-npm test         # Run Playwright tests
-npm run test:ui  # Interactive UI mode
-npm run codegen  # Record new tests
-```
+| Package | Command | Description |
+| --- | --- | --- |
+| `backend` | `npm test` | Run backend tests (`node:test`) |
+| `frontend-v2` | `npm test` | Run Vitest unit tests |
+| `frontend-v2` | `npm run lint` | Run ESLint |
+| `frontend-v2` | `npm run build` | Production build / typecheck |
+| `e2e` | `npm test` | Run Playwright E2E suite |
 
 ## 📖 Documentation
 
-- See `DOCS.md` for detailed documentation
-- See `CHANGELOG.md` for version history
-
-## 🐳 Docker Services
-
-- **mongo**: MongoDB database
-- **backend**: Express API server
-- **stats**: Quarkus Statistics microservice
-- **frontend-v2**: Next.js application
-
-## 📝 Notes
-
-- The frontend uses **Server Components** by default for optimal performance
-- Client-side interactivity is isolated to specific components
-- User data migration is available for transitioning from guest mode
+- See [`DOCS.md`](DOCS.md) for detailed documentation
+- See [`CHANGELOG.md`](CHANGELOG.md) for version history
+- See [`docs/ADR.md`](docs/ADR.md) for architecture decisions
+- See [`CLAUDE.md`](CLAUDE.md) for repo-wide conventions
 
 ## 🤝 Contributing
 
