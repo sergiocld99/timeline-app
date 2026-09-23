@@ -2,6 +2,10 @@
 
 A full-stack application for tracking travels, visits, and locations with interactive maps, statistics, and user management.
 
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/c1f03cff-fbf1-4637-a2a6-534b5c4e625c" alt="Travel map with crosses">
+</p>
+
 ## 🚀 Tech Stack
 
 ### Backend
@@ -150,6 +154,15 @@ npm test
 - **User Management**: Multi-user support with data isolation
 - **Date Range Filtering**: Filter data by custom date ranges
 - **Cross Management**: Manage travel crosses and intersections
+
+## 📸 Screenshots
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/467005d8-867a-4295-a4f3-a574a28c190b" alt="Statistics dashboard">
+  <img src="https://github.com/user-attachments/assets/02397248-80da-4018-95ad-7ba79886992e" alt="Pick map on creator page">
+  <img src="https://github.com/user-attachments/assets/dc9d2b31-0af9-46b0-9665-548c9d6f1372" alt="Locations page">
+  <img src="https://github.com/user-attachments/assets/553674d0-4862-471d-8a89-85e8e3ed1595" alt="Travels table">
+</p>
 
 ## 📚 API Endpoints
 
