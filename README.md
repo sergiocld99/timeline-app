@@ -2,6 +2,10 @@
 
 A full-stack application for tracking travels, visits, and locations with interactive maps, statistics, and user management.
 
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/<REPLACE-ME-HERO>" alt="Travel map with crosses" width="600">
+</p>
+
 ## 🚀 Tech Stack
 
 ### Backend
@@ -150,6 +154,15 @@ npm test
 - **User Management**: Multi-user support with data isolation
 - **Date Range Filtering**: Filter data by custom date ranges
 - **Cross Management**: Manage travel crosses and intersections
+
+## 📸 Screenshots
+
+*Replace the `<UUID>` placeholders with the asset IDs from the GitHub attachment URLs (or your own hosted images).*
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/<REPLACE-ME-DASHBOARD>" alt="Statistics dashboard" width="400">
+  <img src="https://github.com/user-attachments/assets/<REPLACE-ME-TABLE>" alt="Travels table" width="400">
+</p>
 
 ## 📚 API Endpoints
 
