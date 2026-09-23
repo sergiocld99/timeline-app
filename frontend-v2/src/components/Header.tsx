@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import { Link, usePathname } from "@/i18n/routing";
 
 import NavItem from "./client/NavItem";
-import ThemeToggle from "./client/ThemeToggle";
 import LanguageToggle from "./client/LanguageToggle";
 import UserDropdown from "./client/UserDropdown";
 import { Button } from "./ui/button";
@@ -55,7 +54,6 @@ const Header = () => {
             </nav>
             <div className="flex items-center space-x-2">
               <UserDropdown />
-              <ThemeToggle />
               <LanguageToggle />
             </div>
           </div>

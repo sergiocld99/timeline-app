@@ -19,11 +19,9 @@ test('get started link', async ({ page }) => {
   await page.screenshot({ path: 'test-results/homepage.png' });
 });
 
-test('can switch to dark mode', async ({ page }) => {
+test('is dark mode by default', async ({ page }) => {
   await page.goto('/');
 
-  await page.getByRole('button', { name: 'Toggle theme' }).click();
-  await page.getByRole('menuitem', { name: 'Dark' }).click();
   await expect(page.locator('html')).toHaveClass(/dark/);
 
   await page.screenshot({ path: 'test-results/darkmode.png' });
