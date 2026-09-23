@@ -18,7 +18,13 @@
     "errorLoadingStats": "Error loading statistics.",
     "noDataMessage": "We can't show you a travel summary because there are none between {from} and {to}",
     "loadingMap": "Loading map...",
-    "others": "Others"
+    "others": "Others",
+    "fromLabel": "From",
+    "toLabel": "To",
+    "applyRange": "Apply",
+    "resetRange": "Reset",
+    "emptyRange": "Pick a start and an end date",
+    "maxRangeMessage": "The range can't be longer than 11 months"
   },
   "PresentialAlert": {
     "lastTravel": "The last travel to work was {days} days ago. You visited {destination} on {date}",

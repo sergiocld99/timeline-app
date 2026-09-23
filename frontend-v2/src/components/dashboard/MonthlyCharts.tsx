@@ -36,6 +36,11 @@ const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }
   const tMonths = useTranslations("MonthsShort");
 
   const [activeZipcode, setActiveZipcode] = useState<string | null>(null);
+
+  // The previous-year overlay only makes sense across a multi-bucket window;
+  // a 1-month range would otherwise render a single degenerate comparison.
+  const showYearOverYear = Object.keys(monthlyStats).length >= 2;
+
   const chartData = useMemo(() => {
     const mainData = Object.entries(monthlyStats)
       .sort(([a], [b]) => a.localeCompare(b))
@@ -46,7 +51,7 @@ const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }
         // Key format is YYYY-MM
         const currentYear = parseInt(key.split('-')[0]);
         const prevKey = `${currentYear - 1}-${month}`;
-        const prevData = prevStats?.monthlyStats?.[prevKey];
+        const prevData = showYearOverYear ? prevStats?.monthlyStats?.[prevKey] : undefined;
 
         return {
           month: tMonths(toShortMonthKey(key)),
@@ -59,23 +64,23 @@ const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }
         };
       });
     return mainData;
-  }, [monthlyStats, prevStats, tMonths]);
+  }, [monthlyStats, prevStats, showYearOverYear, tMonths]);
 
   const maxPlaces = useMemo(() => 
     Math.max(...chartData.map(d => d.places), 1),
   [chartData]);
 
   const prevAverage = useMemo(() => {
-    if (!prevStats) return null;
+    if (!showYearOverYear || !prevStats) return null;
     const prevMonthlyStats = prevStats.monthlyStats || {};
     const monthsCount = Object.keys(prevMonthlyStats).length;
     if (monthsCount === 0) return null;
     return Math.round(prevStats.totalDistance / monthsCount);
-  }, [prevStats]);
+  }, [prevStats, showYearOverYear]);
 
   // Guard as a number, not a truthiness check: a 0 count would render a stray "0"
   // next to the current count (e.g. "27" + "0" reading as "270").
-  const prevPlacesCount = prevStats?.placesVisited?.count ?? 0;
+  const prevPlacesCount = showYearOverYear ? (prevStats?.placesVisited?.count ?? 0) : 0;
 
   return (
     <>
@@ -86,7 +91,7 @@ const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }
             <span className="text-[0.65rem] font-['Space_Mono'] uppercase tracking-[3px] text-[#fff]">{t("placesVisited")}</span>
             <ZipcodeTicker 
               monthlyStats={monthlyStats} 
-              previousPlaces={prevStats?.placesVisited} 
+              previousPlaces={showYearOverYear ? prevStats?.placesVisited : undefined} 
               currentPlaces={placesVisited} 
               onActiveZipcodeChange={setActiveZipcode}
             />

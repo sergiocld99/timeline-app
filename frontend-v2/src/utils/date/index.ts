@@ -44,16 +44,25 @@ export const translateDay = (day: string, t: TranslationFn) => {
 // "2026-03" -> "3", the key `MonthsShort` translations are indexed by.
 export const toShortMonthKey = (monthKey: string) => String(parseInt(monthKey.split("-")[1], 10));
 
-// dd/mm/yyyy for date-range boundaries, which are built client-side from local
-// Dates (see useDashQuery), so reading local parts back round-trips correctly.
+// dd/mm/yyyy for date-range boundaries. Two flavours reach this function:
+// - Boundaries built from the date-only picker carry Argentina wall-clock digits
+//   baked into the ISO string (midnight start / 23:59:59.999 end, see CLAUDE.md);
+//   reading them with local getters in UTC-3 would render April 1 00:00Z as
+//   March 31 21:00, so those are read literally (offset 0).
+// - Default rolling window values are real instants and round-trip via local getters.
+const isBakedBoundary = (isoString: string) =>
+  isoString.endsWith("T00:00:00.000Z") || isoString.endsWith("T23:59:59.999Z");
+
 export const formatDayMonthYear = (isoString?: string) => {
   if (!isoString) return "";
 
   const date = new Date(isoString);
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(isBakedBoundary(isoString) ? date.getUTCDate() : date.getDate()).padStart(2, "0");
+  const month = String(
+    isBakedBoundary(isoString) ? date.getUTCMonth() + 1 : date.getMonth() + 1
+  ).padStart(2, "0");
 
-  return `${day}/${month}/${date.getFullYear()}`;
+  return `${day}/${month}/${isBakedBoundary(isoString) ? date.getUTCFullYear() : date.getFullYear()}`;
 };
 
 export const getDaysRange = (dateFrom: string, dateTo: string) => {
