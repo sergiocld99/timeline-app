@@ -3,7 +3,7 @@
 A full-stack application for tracking travels, visits, and locations with interactive maps, statistics, and user management.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/<REPLACE-ME-HERO>" alt="Travel map with crosses" width="600">
+  <img src="https://github.com/user-attachments/assets/669c7f69-1c23-46fe-8dbf-5c34cb6bee0e" alt="Travel map with crosses">
 </p>
 
 ## 🚀 Tech Stack
