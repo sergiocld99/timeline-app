@@ -67,10 +67,9 @@ git clone <repository-url>
 cd timeline-app
 ```
 
-2. Create a `.env` file in the root directory:
-```env
-# Add your environment variables here
-MONGO_URI="mongodb://mongo:27017/timeline_db"
+2. Create a `.env` file in the root directory from the template:
+```bash
+cp .env.example .env
 ```
 
 3. (Optional) Create a `frontend-v2/.env.local` for user defaults:
