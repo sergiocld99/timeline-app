@@ -150,7 +150,6 @@ npm test
 - **User Management**: Multi-user support with data isolation
 - **Date Range Filtering**: Filter data by custom date ranges
 - **Cross Management**: Manage travel crosses and intersections
-- **Dark Mode**: Always-on dark theme (no toggle)
 
 ## 📚 API Endpoints
 
