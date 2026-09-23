@@ -157,11 +157,11 @@ npm test
 
 ## 📸 Screenshots
 
-*Replace the `<UUID>` placeholders with the asset IDs from the GitHub attachment URLs (or your own hosted images).*
-
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/<REPLACE-ME-DASHBOARD>" alt="Statistics dashboard" width="400">
-  <img src="https://github.com/user-attachments/assets/<REPLACE-ME-TABLE>" alt="Travels table" width="400">
+  <img src="https://github.com/user-attachments/assets/467005d8-867a-4295-a4f3-a574a28c190b" alt="Statistics dashboard">
+  <img src="https://github.com/user-attachments/assets/02397248-80da-4018-95ad-7ba79886992e" alt="Pick map on creator page">
+  <img src="https://github.com/user-attachments/assets/dc9d2b31-0af9-46b0-9665-548c9d6f1372" alt="Locations page">
+  <img src="https://github.com/user-attachments/assets/553674d0-4862-471d-8a89-85e8e3ed1595" alt="Travels table">
 </p>
 
 ## 📚 API Endpoints
