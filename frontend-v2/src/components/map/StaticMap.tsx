@@ -6,7 +6,7 @@ import { useMemo } from "react"
 import useNearbyCenters from "@/hooks/useNearbyCenters"
 
 import { renderLocationMarkers, renderSingleMarker } from "../render/map"
-import { getUniqueLocations } from "../analize/travel"
+import { getUniqueLocations } from "../analysis/travel"
 
 import AverageCircle from "./AverageCircle"
 import RecordCircle from "./RecordCircle"

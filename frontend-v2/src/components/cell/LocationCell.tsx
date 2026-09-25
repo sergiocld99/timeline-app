@@ -1,7 +1,7 @@
 import type { TravelEditProps } from "@/types/travel"
 import type { Location } from "@/types/location"
 
-import { Selector } from "../common/Selector"
+import { Selector } from "../selectors/Selector"
 
 type Props = {
   editProps: TravelEditProps,

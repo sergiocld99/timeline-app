@@ -8,7 +8,7 @@ import { notFound } from "next/navigation";
 import { Geist, Geist_Mono, Space_Mono, Syne } from "next/font/google";
 
 import { routing } from "@/i18n/routing";
-import { ThemeProvider } from "@/components/ThemeProvider";
+import { ThemeProvider } from "@/providers/ThemeProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { DateRangeProvider } from "@/contexts/DateRangeContext";
 import { UserProvider } from "@/contexts/UserContext";

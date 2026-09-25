@@ -5,9 +5,9 @@ import { useTranslations } from "next-intl";
 
 import { useDashQuery } from "@/hooks/useDashQuery";
 import { formatDayMonthYear } from "@/utils/date";
-import TravelDashboard from "@/components/TravelDashboard";
+import TravelDashboard from "@/components/dashboard/TravelDashboard";
 import DashboardRangePicker from "@/components/dashboard/DashboardRangePicker";
-import Header from "@/components/Header";
+import Header from "@/components/layout/Header";
 
 const HomePageClient = () => {
   const { data, prevData, isLoading, error, currentFrom, currentTo } = useDashQuery();

@@ -1,4 +1,4 @@
-import Header from "@/components/Header";
+import Header from "@/components/layout/Header";
 import TravelsPageClient from "@/components/pages/TravelsPageClient";
 
 const TravelsPage = () => {

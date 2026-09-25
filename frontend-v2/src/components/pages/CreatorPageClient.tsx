@@ -1,7 +1,7 @@
 "use client";
 
-import LocationForm from "@/components/LocationForm";
-import TravelForm from "@/components/TravelForm";
+import LocationForm from "@/components/forms/LocationForm";
+import TravelForm from "@/components/forms/TravelForm";
 import useLocations from "@/hooks/useLocations";
 import useCrosses from "@/hooks/useCrosses";
 
