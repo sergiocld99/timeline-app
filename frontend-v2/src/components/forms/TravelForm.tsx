@@ -5,10 +5,10 @@ import type { Cross } from "@/types/cross";
 
 import { useTranslations } from "next-intl";
 
-import { AutocompleteLocation } from "@/components/AutocompleteLocation";
-import { AutocompleteCrosses } from "@/components/AutocompleteCrosses";
-import { StateCheckbox } from "@/components/StateCheckbox";
-import TransportModeSelect from "@/components/TransportModeSelect";
+import { AutocompleteLocation } from "@/components/autocomplete/AutocompleteLocation";
+import { AutocompleteCrosses } from "@/components/autocomplete/AutocompleteCrosses";
+import { StateCheckbox } from "@/components/widgets/StateCheckbox";
+import TransportModeSelect from "@/components/selectors/TransportModeSelect";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";

@@ -6,8 +6,8 @@ import { getHoursAndMinutes } from "@/utils";
 import { renderTotalWeightsCell } from "@/utils/weight";
 import { cn } from "@/lib/utils";
 
-import { PointWithCopyBtn } from "./render/coordinates";
-import { TableCell, TableFooter, TableRow } from "./ui/table";
+import { PointWithCopyBtn } from "../render/coordinates";
+import { TableCell, TableFooter, TableRow } from "../ui/table";
 
 type Props = {
   travels: Travel[];

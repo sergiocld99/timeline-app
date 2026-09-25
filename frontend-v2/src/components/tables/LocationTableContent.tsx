@@ -16,11 +16,11 @@ import { SUBDIVISIONS, getSubdivisionConfig } from "@/constants/subdivisions";
 import { cn } from "@/lib/utils";
 import { roundDecimals } from "@/utils/numbers";
 
-import ArrivalsAction from "./buttons/ArrivalsAction";
-import DeleteAction from "./buttons/DeleteAction";
-import DeparturesAction from "./buttons/DeparturesAction";
-import { SubdivisionCell } from "./cell/SubdivisionCell";
-import EditAction from "./buttons/EditAction";
+import ArrivalsAction from "../buttons/ArrivalsAction";
+import DeleteAction from "../buttons/DeleteAction";
+import DeparturesAction from "../buttons/DeparturesAction";
+import { SubdivisionCell } from "../cell/SubdivisionCell";
+import EditAction from "../buttons/EditAction";
 
 type Props = {
   locations: Location[];

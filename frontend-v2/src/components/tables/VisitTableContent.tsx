@@ -14,8 +14,8 @@ import { extractTime, getHoursAndMinutes } from '@/utils';
 import { extractDate } from "@/utils/date";
 import { renderTotalWeightsCell, renderWeight } from '@/utils/weight';
 
-import { PointWithCopyBtn } from './render/coordinates';
-import { renderLocationWithZipcode } from './render/location';
+import { PointWithCopyBtn } from '../render/coordinates';
+import { renderLocationWithZipcode } from '../render/location';
 
 type Props = {
   visits: Visit[];

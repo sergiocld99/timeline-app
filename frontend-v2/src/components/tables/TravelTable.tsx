@@ -19,13 +19,14 @@ import TravelService from '@/services/TravelService';
 import { translateDay } from '@/utils/date';
 import { cn } from "@/lib/utils";
 
-import ExportButton from './buttons/ExportButton';
-import RemoveFilterBtn from './buttons/RemoveFilterBtn';
-import DateRangeSelector from './DateRangeSelector';
+import ExportButton from '../buttons/ExportButton';
+import RemoveFilterBtn from '../buttons/RemoveFilterBtn';
+import DateRangeSelector from '../selectors/DateRangeSelector';
+import TravelListContent from '../mobile/TravelListContent';
+import CrossSelector, { FILTER_ALL } from "../selectors/CrossSelector";
+
 import TravelTableContent from './TravelTableContent';
 import TravelTablePagination from './TravelTablePagination';
-import TravelListContent from './mobile/TravelListContent';
-import CrossSelector, { FILTER_ALL } from "./CrossSelector";
 
 type Props = {
   travels: Travel[];

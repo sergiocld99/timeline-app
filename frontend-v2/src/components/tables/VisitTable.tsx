@@ -8,11 +8,12 @@ import { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { translateDay } from "@/utils/date";
 
-import VisitSortSelector, { sortVisits, type SortOption } from './selectors/VisitSortSelector';
-import DateRangeSelector from './DateRangeSelector';
-import RemoveFilterBtn from './buttons/RemoveFilterBtn';
+import VisitSortSelector, { sortVisits, type SortOption } from '../selectors/VisitSortSelector';
+import DateRangeSelector from '../selectors/DateRangeSelector';
+import RemoveFilterBtn from '../buttons/RemoveFilterBtn';
+import VisitListContent from '../mobile/VisitListContent';
+
 import VisitTableContent from './VisitTableContent';
-import VisitListContent from './mobile/VisitListContent';
 
 type Props = {
   visits: Visit[];
