@@ -1,10 +1,12 @@
 # CHANGELOG
 
+## v0.15.0
+- COD15-009: Reorganize component folders into typed structure (#126) [928]
+
 ## v0.14.0
 - COD14-023: Travels table pagination (header/footer paginator, tooltips, collapsed handling) + Vitest setup (#118) [2320]
 - COD14-029: Migrate tooling to Node 22 with vitest@5 and @types/node@^22 (#122) [616]
 - COD14-033: Arbitrary date range dashboard via from/to params with range picker (#123) [472]
-- COD14-042: Reorganize component folders into typed structure (#126) [928]
 
 ## v0.13.0
 - COD13-002: predict endTime on Creator + limit/skipStats params on GET /travels (#96) [284]
