@@ -11,10 +11,11 @@ import { daysOfWeek } from "@/constants";
 import { buildChartConfig, cleanUnusedBorders, getCellOpacity } from "@/utils/chart";
 import { translateDay } from "@/utils/date";
 
-import { buildZipcodeLabels, calculateHome, enrichWithFarthestPoint } from "./analize/travel";
-import { buildCalendarChartData, calculateBestLocationsByCellDominance, COLOR_KEYS } from "./builders/travelCalendar";
+import { buildZipcodeLabels, calculateHome, enrichWithFarthestPoint } from "../analysis/travel";
+import { buildCalendarChartData, calculateBestLocationsByCellDominance, COLOR_KEYS } from "../builders/travelCalendar";
+import { Card, CardContent } from "../ui/card";
+
 import CalendarLegend from "./CalendarLegend";
-import { Card, CardContent } from "./ui/card";
 
 type Props = {
   travels: Travel[],

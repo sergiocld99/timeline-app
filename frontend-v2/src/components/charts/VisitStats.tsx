@@ -3,7 +3,7 @@
 import type { ChartData, ChartSource } from "@/types/chart";
 import type { Visit } from "@/types/visit";;
 import type { FilteringData } from "@/types/stats";
-import type { ChartConfig } from "./ui/chart";
+import type { ChartConfig } from "../ui/chart";
 
 import { BarChart } from "recharts";
 import { Bar, CartesianGrid, Cell, XAxis } from "recharts";
@@ -14,9 +14,9 @@ import { convertToArgentineTime } from "@/utils";
 import { buildChartConfig, cleanUnusedBorders, getChartHours, roundChartValue, useChartValue, useDefaultValues } from "@/utils/chart";
 import { translateDay } from "@/utils/date";
 
-import { calculateBestLocations } from "./analize/visit";
-import { Card, CardContent } from "./ui/card";
-import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "./ui/chart";
+import { calculateBestLocations } from "../analysis/visit";
+import { Card, CardContent } from "../ui/card";
+import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "../ui/chart";
 
 type Props = {
   visits: Visit[];

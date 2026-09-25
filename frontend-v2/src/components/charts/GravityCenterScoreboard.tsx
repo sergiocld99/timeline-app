@@ -10,8 +10,8 @@ import { Link } from "@/i18n/routing"
 import useNearbyCenters from "@/hooks/useNearbyCenters"
 import { shortcutName } from "@/utils/strings"
 
-import { Card, CardContent } from "./ui/card"
-import { PointWithCopyBtn } from "./render/coordinates";
+import { Card, CardContent } from "../ui/card"
+import { PointWithCopyBtn } from "../render/coordinates";
 
 type Props = {
   visitsData?: VisitsData

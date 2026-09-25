@@ -4,10 +4,10 @@ import type { TravelStats } from "@/types/travel";
 
 import { ACCENT1 } from "@/constants/colors";
 
-import DashboardHeader from "./dashboard/DashboardHeader";
-import MonthlyCharts from "./dashboard/MonthlyCharts";
-import FrequentRoutes from "./dashboard/FrequentRoutes";
-import TopPlacesByMonths from "./dashboard/TopPlacesByMonths";
+import DashboardHeader from "./DashboardHeader";
+import MonthlyCharts from "./MonthlyCharts";
+import FrequentRoutes from "./FrequentRoutes";
+import TopPlacesByMonths from "./TopPlacesByMonths";
 
 type Props = {
   stats: TravelStats;
