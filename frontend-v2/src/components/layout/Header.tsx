@@ -6,17 +6,18 @@ import { useEffect, useState } from "react";
 
 import { Link, usePathname } from "@/i18n/routing";
 
-import NavItem from "./client/NavItem";
-import LanguageToggle from "./client/LanguageToggle";
-import UserDropdown from "./client/UserDropdown";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "./ui/sheet";
+} from "../ui/sheet";
+
+import NavItem from "./NavItem";
+import LanguageToggle from "./LanguageToggle";
+import UserDropdown from "./UserDropdown";
 
 const NAV_ITEMS: { path: string; labelKey: string }[] = [
   { path: "/creator", labelKey: "creator" },
