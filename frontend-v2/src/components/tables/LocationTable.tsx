@@ -6,8 +6,9 @@ import { useTranslations } from "next-intl";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+import LocationListContent from "../mobile/LocationListContent";
+
 import LocationTableContent from "./LocationTableContent";
-import LocationListContent from "./mobile/LocationListContent";
 
 type Props = {
   locations: Location[];

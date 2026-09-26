@@ -2,7 +2,7 @@ import type { Travel, TravelChangeFn, TravelEditProps, TravelEditValues } from "
 
 import { getEmojiForMode } from "@/utils"
 
-import { Selector } from "../common/Selector"
+import { Selector } from "../selectors/Selector"
 import { Input } from "../ui/input"
 
 const ELIGIBLE_MODES = ['car', 'taxi', 'bus', 'train', 'subway', 'ferry', 'mixed', 'walking']

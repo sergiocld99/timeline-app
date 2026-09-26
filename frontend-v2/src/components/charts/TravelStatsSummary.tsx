@@ -9,8 +9,8 @@ import { useMemo } from "react";
 import { useTravelStats } from "@/hooks/useTravelStats";
 import { extractDate, getDaysRange } from "@/utils/date";
 
-import { PointWithCopyBtn } from "./render/coordinates";
-import { StatLabel } from "./wrapper/label";
+import { PointWithCopyBtn } from "../render/coordinates";
+import { StatLabel } from "../widgets/label";
 
 type Props = {
   travels: Travel[];

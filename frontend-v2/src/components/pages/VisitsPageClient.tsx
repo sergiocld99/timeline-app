@@ -6,9 +6,9 @@ import type { Visit } from "@/types/visit";;
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 
-import GravityCenterScoreboard from "@/components/GravityCenterScoreboard";
-import VisitStats from "@/components/VisitStats";
-import VisitTable from "@/components/VisitTable";
+import GravityCenterScoreboard from "@/components/charts/GravityCenterScoreboard";
+import VisitStats from "@/components/charts/VisitStats";
+import VisitTable from "@/components/tables/VisitTable";
 import useVisits from "@/hooks/useVisits";
 import { extractDate } from "@/utils/date";
 

@@ -1,4 +1,4 @@
-import Header from "@/components/Header";
+import Header from "@/components/layout/Header";
 import LocationViewerPageClient from "@/components/pages/LocationViewerPageClient";
 
 type Props = {

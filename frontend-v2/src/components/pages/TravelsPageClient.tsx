@@ -6,12 +6,12 @@ import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-import PresentialWorkAlert from "@/components/PresentialWorkAlert";
-import TravelBarStats from "@/components/TravelBarStats";
-import TravelCalendarStats from "@/components/TravelCalendarStats";
-import TravelPieStats from "@/components/TravelPieStats";
-import TravelStatsSummary from "@/components/TravelStatsSummary";
-import TravelTable from "@/components/TravelTable";
+import PresentialWorkAlert from "@/components/widgets/PresentialWorkAlert";
+import TravelBarStats from "@/components/charts/TravelBarStats";
+import TravelCalendarStats from "@/components/charts/TravelCalendarStats";
+import TravelPieStats from "@/components/charts/TravelPieStats";
+import TravelStatsSummary from "@/components/charts/TravelStatsSummary";
+import TravelTable from "@/components/tables/TravelTable";
 import useTravelFilter from "@/hooks/useTravelFilter";
 import useTravels from "@/hooks/useTravels";
 
@@ -20,7 +20,7 @@ import BarViewBtn from "../buttons/BarViewBtn";
 import CalendarViewBtn from "../buttons/CalendarViewBtn";
 import CircularViewBtn from "../buttons/CircularViewBtn";
 import LineViewBtn from "../buttons/LineViewBtn";
-import TravelLineStats from "../TravelLineStats";
+import TravelLineStats from "../charts/TravelLineStats";
 
 const MapLoading = () => {
   const t = useTranslations("Dashboard");
@@ -32,7 +32,7 @@ const MapLoading = () => {
 };
 
 // Importar el mapa dinámicamente para evitar problemas de SSR con Leaflet
-const TravelMap = dynamic(() => import("@/components/TravelMap"), {
+const TravelMap = dynamic(() => import("@/components/map/TravelMap"), {
   ssr: false,
   loading: () => <MapLoading />,
 });

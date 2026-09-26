@@ -4,7 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 
-import Header from "@/components/Header";
+import Header from "@/components/layout/Header";
 import { Button } from "@/components/ui/button";
 import {
   Card,

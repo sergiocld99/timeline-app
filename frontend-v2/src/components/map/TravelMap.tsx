@@ -9,11 +9,11 @@ import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 
-import { defaultMarker } from "./map/icons";
-import { useViewPoint } from "./map/useViewPoint";
-import AnimatedMap from "./map/AnimatedMap";
-import ChangeMapView from "./map/ChangeMapView";
-import StaticMap from "./map/StaticMap";
+import { defaultMarker } from "./icons";
+import { useViewPoint } from "./useViewPoint";
+import AnimatedMap from "./AnimatedMap";
+import ChangeMapView from "./ChangeMapView";
+import StaticMap from "./StaticMap";
 
 type Props = {
   travels: Travel[];

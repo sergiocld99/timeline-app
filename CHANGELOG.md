@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v0.15.0
+- COD15-009: Reorganize component folders into typed structure (#126) [928]
+
 ## v0.14.0
 - COD14-023: Travels table pagination (header/footer paginator, tooltips, collapsed handling) + Vitest setup (#118) [2320]
 - COD14-029: Migrate tooling to Node 22 with vitest@5 and @types/node@^22 (#122) [616]

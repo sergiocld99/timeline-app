@@ -4,9 +4,9 @@ import { useState, useMemo } from "react";
 import { Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-import QuickFilters from "@/components/QuickFilters";
-import LocationCategoryCards from "@/components/LocationCategoryCards";
-import LocationTable from "@/components/LocationTable";
+import QuickFilters from "@/components/widgets/QuickFilters";
+import LocationCategoryCards from "@/components/widgets/LocationCategoryCards";
+import LocationTable from "@/components/tables/LocationTable";
 import useLocations from "@/hooks/useLocations";
 import { Input } from "@/components/ui/input";
 import { getSortedSubdivisions } from "@/utils/subdivisions";

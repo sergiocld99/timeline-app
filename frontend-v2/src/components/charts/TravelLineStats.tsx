@@ -1,5 +1,5 @@
 import type { Travel } from "@/types/travel";
-import type { ChartConfig } from "./ui/chart";
+import type { ChartConfig } from "../ui/chart";
 import type { FilteringData } from "@/types/stats";
 
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
@@ -8,8 +8,8 @@ import { useTranslations } from "next-intl";
 import { cleanUnusedBorders, getChartHours } from "@/utils/chart";
 import { roundDecimals } from "@/utils/numbers";
 
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "./ui/chart"
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../ui/chart"
 
 type Props = {
   travels: Travel[]

@@ -8,9 +8,9 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 
-import CrossForm from "@/components/CrossForm";
-import CrossTable from "@/components/CrossTable";
-import TravelTable from "@/components/TravelTable";
+import CrossForm from "@/components/forms/CrossForm";
+import CrossTable from "@/components/tables/CrossTable";
+import TravelTable from "@/components/tables/TravelTable";
 import useCrosses from "@/hooks/useCrosses";
 import useTravels from "@/hooks/useTravels";
 

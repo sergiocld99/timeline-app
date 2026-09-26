@@ -1,9 +1,9 @@
 "use client";
 
 import type { CalendarCell, ColorKey } from "@/types/chart";
-import type { ChartConfig } from "./ui/chart";
+import type { ChartConfig } from "../ui/chart";
 
-import { buildCellCountByColorKey, buildLegendKeys } from "./builders/travelCalendar";
+import { buildCellCountByColorKey, buildLegendKeys } from "../builders/travelCalendar";
 
 type Props = {
   cells: CalendarCell[],

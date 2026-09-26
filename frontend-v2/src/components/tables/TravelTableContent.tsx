@@ -17,15 +17,16 @@ import { extractTime } from '@/utils';
 import { renderWeight } from '@/utils/weight';
 import { cn } from '@/lib/utils';
 
-import { TravelActionDropdown } from './TravelActionDropdown';
+import { TravelActionDropdown } from '../widgets/TravelActionDropdown';
+import MilestoneIcons, { getMilestones } from '../charts/TravelMilestones';
+import DateCell from '../cell/DateCell';
+import TransportModeCell from '../cell/TransportModeCell';
+import LocationCell from '../cell/LocationCell';
+import NoteModal from '../modal/NoteModal';
+import DetailsModal from '../modal/DetailsModal';
+import CalendarBtn from '../buttons/CalendarBtn';
+
 import TravelTableFooter from './TravelTableFooter';
-import MilestoneIcons, { getMilestones } from './TravelMilestones';
-import DateCell from './cell/DateCell';
-import TransportModeCell from './cell/TransportModeCell';
-import LocationCell from './cell/LocationCell';
-import NoteModal from './modal/NoteModal';
-import DetailsModal from './modal/DetailsModal';
-import CalendarBtn from './buttons/CalendarBtn';
 
 type Props = {
   travels: Travel[];

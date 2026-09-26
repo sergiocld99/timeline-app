@@ -1,79 +1,62 @@
 "use client";
 
+import type { Cross } from "@/types/cross";
+import type { AxiosErrorResponse } from "@/types/commons";
+
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import { MapPin } from "lucide-react";
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import LocationService from "@/services/LocationService";
-import { getSortedSubdivisions } from "@/utils/subdivisions";
-import { getSubdivisionConfig } from "@/constants/subdivisions";
-import useLocations from "@/hooks/useLocations";
+import CrossService from "@/services/CrossService";
 
-import { BaseSelector } from "./selectors/BaseSelector";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 
 const MapLoading = () => {
-  const t = useTranslations("Common");
+  const tCommon = useTranslations("Common");
   return (
     <div className="h-[400px] w-full bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
-      <p className="text-gray-500 dark:text-gray-400">{t("loading")}</p>
+      <p className="text-gray-500 dark:text-gray-400">{tCommon("loading")}</p>
     </div>
   );
 };
 
 // Import MapPicker dynamically to avoid SSR issues with Leaflet
-const MapPicker = dynamic(() => import("@/components/MapPicker"), {
+const MapPicker = dynamic(() => import("@/components/map/MapPicker"), {
   ssr: false,
   loading: MapLoading,
 });
 
-const LocationForm = () => {
-  const t = useTranslations("Creator");
+const CrossForm = () => {
+  const t = useTranslations("Crosses");
   const queryClient = useQueryClient();
-  const { locations } = useLocations();
-
   const [formData, setFormData] = useState({
     name: "",
     latitude: "",
     longitude: "",
-    zipcode: "",
-    notes: "",
-    partido: "",
   });
   const [isMapOpen, setIsMapOpen] = useState(false);
 
-  const subdivisionConfig = getSubdivisionConfig(formData.zipcode);
-  const sortedSubdivisions = useMemo(
-    () => (subdivisionConfig ? getSortedSubdivisions(locations, subdivisionConfig.prefix).all : []),
-    [locations, subdivisionConfig]
-  );
-
-  const mutation = useMutation({
-    mutationFn: (newLocation: typeof formData) => LocationService.create(newLocation),
+  const mutation = useMutation<Cross, AxiosErrorResponse, typeof formData>({
+    mutationFn: (newCross: typeof formData) => CrossService.create(newCross),
     onSuccess: (data) => {
-      toast.success(t("messages.locationAddedSuccess", { name: data.name }));
+      toast.success(t("messages.crossAddedSuccess", { name: data.name }));
       setFormData({
         name: "",
         latitude: "",
         longitude: "",
-        zipcode: "",
-        notes: "",
-        partido: "",
       });
-      queryClient.invalidateQueries({ queryKey: ['locations'] });
+      queryClient.invalidateQueries({ queryKey: ["crosses"] });
     },
-    onError: (error) => {
-      console.error("There was an error adding the location!", error);
-      toast.error(t("messages.locationAddedError"));
-    }
+    onError: (err) => {
+      toast.error(t("messages.crossAddedError", { error: err.response?.data?.message || err.message || "Unknown error" }));
+    },
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -83,10 +66,11 @@ const LocationForm = () => {
     });
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     mutation.mutate(formData);
   };
+
   const handleMapSelect = (lat: number, lng: number) => {
     setFormData({
       ...formData,
@@ -97,18 +81,18 @@ const LocationForm = () => {
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+    <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardHeader>
-        <CardTitle className="text-gray-900 dark:text-white">{t("addLocation")}</CardTitle>
+        <CardTitle className="text-gray-900 dark:text-white">{t("addCross")}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name" className="text-gray-700 dark:text-gray-300">{t("locationName")}</Label>
+            <Label htmlFor="name" className="text-gray-700 dark:text-gray-300">{t("name")}</Label>
             <Input
               id="name"
               name="name"
-              autoComplete="location"
+              autoComplete="cross"
               value={formData.name}
               onChange={handleChange}
               required
@@ -162,49 +146,15 @@ const LocationForm = () => {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="zipcode" className="text-gray-700 dark:text-gray-300">{t("zipcode")}</Label>
-            <Input
-              id="zipcode"
-              name="zipcode"
-              value={formData.zipcode}
-              onChange={handleChange}
-              className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
-            />
-          </div>
-
-          {subdivisionConfig && (
-            <div className="space-y-2">
-              <Label htmlFor="partido" className="text-gray-700 dark:text-gray-300">{t(subdivisionConfig.labelKey)}</Label>
-              <BaseSelector
-                value={formData.partido}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, partido: value }))}
-                options={sortedSubdivisions}
-              />
-            </div>
-          )}
-
-          <div className="space-y-2">
-            <Label htmlFor="notes" className="text-gray-700 dark:text-gray-300">{t("notes")}</Label>
-            <Textarea
-              id="notes"
-              name="notes"
-              value={formData.notes}
-              onChange={handleChange}
-              rows={3}
-              className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
-            />
-          </div>
-
           <Button type="submit" className="w-full">
-            {t("saveLocation")}
+            {t("addCross")}
           </Button>
         </form>
 
         <Dialog open={isMapOpen} onOpenChange={setIsMapOpen}>
           <DialogContent className="sm:max-w-[600px]">
             <DialogHeader>
-              <DialogTitle>{t("pickLocationOnMap")}</DialogTitle>
+              <DialogTitle>{t("addCross")}</DialogTitle>
             </DialogHeader>
             <div className="py-4">
               <MapPicker
@@ -220,4 +170,4 @@ const LocationForm = () => {
   );
 };
 
-export default LocationForm;
+export default CrossForm;

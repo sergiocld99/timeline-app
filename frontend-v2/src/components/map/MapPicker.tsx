@@ -4,7 +4,7 @@ import L from "leaflet";
 import { useEffect, useState } from "react";
 import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
 
-import { defaultMarker } from "./map/icons";
+import { defaultMarker } from "./icons";
 
 import "leaflet/dist/leaflet.css";
 
