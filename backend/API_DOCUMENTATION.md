@@ -306,6 +306,10 @@ Elimina un cruce.
 
 **Response:** 204 No Content
 
+**Errores:**
+- 400 si el cruce está referenciado por al menos un viaje (de cualquier usuario), con `{ message, name: 'BusinessRuleError' }`
+- 404 si el cruce no existe
+
 ---
 
 ## Known Centers (`/api/known-centers`)

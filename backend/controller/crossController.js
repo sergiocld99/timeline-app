@@ -1,4 +1,7 @@
+import { CrossRules } from "../domain/crossRules.js";
+import { BusinessRuleError } from "../error/businessRuleError.js";
 import Cross from "../models/Cross.js";
+import Travel from "../models/Travel.js";
 
 export const getAll = (req, res) => {
   Cross.find().sort({ name: 1 }).then(items => {
@@ -41,18 +44,26 @@ export const update = (req, res) => {
     );
 }
 
-export const remove = (req, res) => {
+export const remove = async (req, res) => {
   const { id } = req.params;
 
-  Cross.findByIdAndDelete(id)
-    .then(removed => {
-      if (!removed) {
-        return res.status(404).json({ message: 'Not found by id' });
-      }
-      res.status(204).send();
-    })
-    .catch(err => {
-      res.status(400).json({ message: 'Failed to remove', error: err.message });
+  try {
+    const travelsCount = await Travel.countDocuments({ crosses: id });
+
+    CrossRules.validateDeletable(travelsCount);
+
+    const removed = await Cross.findByIdAndDelete(id);
+
+    if (!removed) {
+      return res.status(404).json({ message: 'Not found by id' });
     }
-    );
+
+    res.status(204).send();
+  } catch (error) {
+    if (error instanceof BusinessRuleError) {
+      return res.status(400).json({ message: error.message, name: error.name });
+    }
+
+    res.status(400).json({ message: 'Failed to remove', error: error.message });
+  }
 }
