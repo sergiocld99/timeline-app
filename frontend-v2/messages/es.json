@@ -260,6 +260,8 @@
       "deleteConfirm": "¿Estás seguro de que quieres eliminar \"{name}\"?",
       "deleteSuccess": "Cruce eliminado con éxito",
       "deleteError": "Error al eliminar el cruce",
+      "crossHasAssociatedTravel": "No se puede eliminar \"{name}\": su único viaje asociado es del {date}",
+      "crossHasAssociatedTravels": "No se puede eliminar \"{name}\": tiene {count} viajes asociados",
       "noAdditionNeeded": "No se necesita adición para este viaje",
       "addedCrossesSuccess": "Después de la adición, el viaje tiene {count} cruces, se querían {wanted}",
       "addedCrossesError": "Error al agregar cruces: {error}",

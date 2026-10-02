@@ -65,6 +65,15 @@ export const formatDayMonthYear = (isoString?: string) => {
   return `${day}/${month}/${isBakedBoundary(isoString) ? date.getUTCFullYear() : date.getFullYear()}`;
 };
 
+// dd/mm/yyyy for bare "YYYY-MM-DD" values that already carry Argentina wall-clock
+// digits (see CLAUDE.md). The digits are read literally: parsing the value as a
+// date and using local getters would shift it back a day in UTC-3.
+export const formatWallClockDate = (wallClockDate: string) => {
+  const [year, month, day] = wallClockDate.split("-");
+
+  return `${day}/${month}/${year}`;
+};
+
 export const getDaysRange = (dateFrom: string, dateTo: string) => {
   if (!dateFrom || !dateTo) return 0;
   const from = new Date(dateFrom.split('T')[0]);

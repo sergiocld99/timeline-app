@@ -18,6 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { getApiErrorMessage } from "@/utils/apiError";
 
 type Props = {
   data: Cross[];
@@ -47,10 +48,7 @@ const CrossTable = ({ data, onCheckOR, onCheckEdit, deleteFn, isMobile = false }
     if (window.confirm(t("messages.deleteConfirm", { name: item.name }))) {
       deleteFn(item._id)
         .then(() => toast.success(t("messages.deleteSuccess")))
-        .catch((err) => {
-          const message = err.response?.data?.message || err.message || t("messages.deleteError");
-          toast.error(message);
-        });
+        .catch((err) => toast.error(getApiErrorMessage(err, t, "messages.deleteError", { name: item.name })));
     }
   };
 
