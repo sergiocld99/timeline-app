@@ -1,17 +1,9 @@
 import type { AxiosErrorResponse } from "@/types/commons";
 import type { TranslationFn } from "@/types/i18n";
 
-import { formatWallClockDate } from "@/utils/date";
-
-type ErrorMessageResolver = (params: Record<string, unknown>, t: TranslationFn) => string;
-
-const API_ERROR_MESSAGES: Record<string, ErrorMessageResolver> = {
-  cross_has_associated_travel: (params, t) =>
-    t("messages.crossHasAssociatedTravel", {
-      ...params,
-      date: params.date ? formatWallClockDate(String(params.date)) : params.date,
-    }),
-  cross_has_associated_travels: (params, t) => t("messages.crossHasAssociatedTravels", params),
+const API_ERROR_MESSAGE_KEYS: Record<string, string> = {
+  cross_has_associated_travel: "messages.crossHasAssociatedTravel",
+  cross_has_associated_travels: "messages.crossHasAssociatedTravels",
 };
 
 export const getApiErrorMessage = (
@@ -22,10 +14,10 @@ export const getApiErrorMessage = (
 ) => {
   const { message, response } = (error ?? {}) as AxiosErrorResponse;
   const data = response?.data;
-  const resolveMessage = data?.code ? API_ERROR_MESSAGES[data.code] : undefined;
+  const messageKey = data?.code ? API_ERROR_MESSAGE_KEYS[data.code] : undefined;
 
-  if (resolveMessage) {
-    return resolveMessage({ ...data?.params, ...extraParams }, t);
+  if (messageKey) {
+    return t(messageKey, { ...data?.params, ...extraParams });
   }
 
   return data?.message || message || t(fallbackKey);

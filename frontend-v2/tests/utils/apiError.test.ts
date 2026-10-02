@@ -6,7 +6,7 @@ const t = (key: string, values?: Record<string, unknown>) =>
   `${key}${values ? `:${JSON.stringify(values)}` : ""}`;
 
 describe("getApiErrorMessage", () => {
-  it("translates the singular code formatting the blocking travel date", () => {
+  it("translates the singular code passing the blocking travel date through", () => {
     const error = {
       response: {
         data: {
@@ -19,7 +19,7 @@ describe("getApiErrorMessage", () => {
     };
 
     expect(getApiErrorMessage(error, t, "messages.deleteError", { name: "UADE" })).toBe(
-      'messages.crossHasAssociatedTravel:{"count":1,"date":"24/02/2026","name":"UADE"}'
+      'messages.crossHasAssociatedTravel:{"count":1,"date":"2026-02-24","name":"UADE"}'
     );
   });
 
