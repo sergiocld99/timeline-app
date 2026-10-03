@@ -306,6 +306,12 @@ Elimina un cruce.
 
 **Response:** 204 No Content
 
+**Errores:**
+- 400 si el cruce está referenciado por al menos un viaje (de cualquier usuario). `{ message, name: 'BusinessRuleError', code, params }`; el `code` + `params` permiten que el cliente localize el mensaje:
+  - un solo viaje bloqueante → `code: 'cross_has_associated_travel'`, `params: { count: 1, date: 'YYYY-MM-DD' }` (la fecha es el día Argentina del `startTime`)
+  - varios → `code: 'cross_has_associated_travels'`, `params: { count: N }`
+- 404 si el cruce no existe
+
 ---
 
 ## Known Centers (`/api/known-centers`)

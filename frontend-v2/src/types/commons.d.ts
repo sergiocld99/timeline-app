@@ -17,6 +17,8 @@ export type AxiosErrorResponse = {
     data?: {
       message?: string;
       error?: string;
+      code?: string;
+      params?: Record<string, unknown>;
     };
   };
 };
