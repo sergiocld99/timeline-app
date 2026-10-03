@@ -1,4 +1,4 @@
-import { test, expect, type APIRequestContext } from '@playwright/test';
+import { test, expect, type APIRequestContext, type Page } from '@playwright/test';
 
 const backendUrl = 'http://localhost:3000/api';
 const fixturePrefix = 'E2E Cross Delete';
@@ -50,6 +50,10 @@ const createTravelWithCross = async (request: APIRequestContext, crossId: string
   return (await response.json())._id;
 };
 
+// Desktop and mobile render the same crosses in two tables and only one is visible per
+// viewport, so row assertions must ignore the hidden one.
+const crossRow = (page: Page, name: string) => page.locator('tr', { hasText: name }).filter({ visible: true });
+
 test.describe('Crosses Page Delete', () => {
   // Fixtures are wiped before/after each test, so they must not overlap: run this file serially.
   test.describe.configure({ mode: 'serial' });
@@ -65,11 +69,10 @@ test.describe('Crosses Page Delete', () => {
     await page.goto('/crosses');
     page.on('dialog', (dialog) => dialog.accept());
 
-    // Desktop and mobile tables render the same rows, so target the first match only.
-    await page.locator('tr', { hasText: name }).first().locator('button[title="Delete"]').click();
+    await crossRow(page, name).locator('button[title="Delete"]').click();
 
     await expect(page.getByText('Cross deleted successfully')).toBeVisible();
-    await expect(page.locator('tr', { hasText: name })).toHaveCount(0);
+    await expect(crossRow(page, name)).toHaveCount(0);
   });
 
   test('reports the date of the travel blocking the deletion', async ({ page, request }) => {
@@ -80,12 +83,12 @@ test.describe('Crosses Page Delete', () => {
     await page.goto('/crosses');
     page.on('dialog', (dialog) => dialog.accept());
 
-    await page.locator('tr', { hasText: name }).first().locator('button[title="Delete"]').click();
+    await crossRow(page, name).locator('button[title="Delete"]').click();
 
     await expect(
       page.getByText(`Cannot delete "${name}": its only associated travel is dated 2099-09-15`)
     ).toBeVisible();
-    await expect(page.locator('tr', { hasText: name })).toHaveCount(2);
+    await expect(crossRow(page, name)).toHaveCount(1);
   });
 
   test('reports how many travels block the deletion', async ({ page, request }) => {
@@ -97,11 +100,11 @@ test.describe('Crosses Page Delete', () => {
     await page.goto('/crosses');
     page.on('dialog', (dialog) => dialog.accept());
 
-    await page.locator('tr', { hasText: name }).first().locator('button[title="Delete"]').click();
+    await crossRow(page, name).locator('button[title="Delete"]').click();
 
     await expect(
       page.getByText(`Cannot delete "${name}": it has 2 associated travels`)
     ).toBeVisible();
-    await expect(page.locator('tr', { hasText: name })).toHaveCount(2);
+    await expect(crossRow(page, name)).toHaveCount(1);
   });
 });
