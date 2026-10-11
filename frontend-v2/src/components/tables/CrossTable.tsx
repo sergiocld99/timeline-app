@@ -5,7 +5,9 @@ import type { Cross } from "@/types/cross";
 import type { ReactNode } from "react";
 
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 
+import DeleteAction from "@/components/buttons/DeleteAction";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox"
 import {
@@ -16,11 +18,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { getApiErrorMessage } from "@/utils/apiError";
 
 type Props = {
   data: Cross[];
   onCheckOR: (checked: CheckedState, item: Cross) => void;
   onCheckEdit?: (checked: CheckedState, item: Cross) => void;
+  deleteFn: (id: string) => Promise<void>;
   isMobile?: boolean;
 };
 
@@ -34,9 +38,19 @@ const renderCheckbox = (id: string, onCheckedChange: (checked: CheckedState) => 
   </TableCell>
 )
 
-const CrossTable = ({ data, onCheckOR, onCheckEdit, isMobile = false }: Props) => {
+const CrossTable = ({ data, onCheckOR, onCheckEdit, deleteFn, isMobile = false }: Props) => {
   const t = useTranslations("Crosses");
-  const columnHeaders = !isMobile ? [t('name'), t('latitude'), t('longitude'), 'OR', 'EDIT'] : [t('name'), 'OR'];
+  const columnHeaders = !isMobile
+    ? [t('name'), t('latitude'), t('longitude'), 'OR', 'EDIT', t('actions')]
+    : [t('name'), 'OR', t('actions')];
+
+  const handleDelete = (item: Cross) => {
+    if (window.confirm(t("messages.deleteConfirm", { name: item.name }))) {
+      deleteFn(item._id)
+        .then(() => toast.success(t("messages.deleteSuccess")))
+        .catch((err) => toast.error(getApiErrorMessage(err, t, "messages.deleteError", { name: item.name })));
+    }
+  };
 
   const renderColumnHeaders = () => (
     columnHeaders.map((header) => (
@@ -64,6 +78,9 @@ const CrossTable = ({ data, onCheckOR, onCheckEdit, isMobile = false }: Props) =
                 {!isMobile && renderCell(item.longitude.toFixed(4))}
                 {renderCheckbox(item._id, (checked) => onCheckOR(checked, item))}
                 {onCheckEdit && renderCheckbox(item._id, (checked) => onCheckEdit(checked, item))}
+                <TableCell>
+                  <DeleteAction handleClick={() => handleDelete(item)} />
+                </TableCell>
               </TableRow>)
             )}
           </TableBody>

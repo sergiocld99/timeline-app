@@ -25,6 +25,15 @@ class CrossService {
       throw error;
     }
   }
+
+  static async delete(id: string) {
+    try {
+      const response = await axios.delete(`${baseUrl}/${id}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default CrossService;

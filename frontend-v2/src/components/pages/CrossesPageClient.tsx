@@ -16,7 +16,7 @@ import useTravels from "@/hooks/useTravels";
 
 const CrossesPageClient = () => {
   const t = useTranslations("Crosses");
-  const { crosses } = useCrosses();
+  const { crosses, remove } = useCrosses();
   const { travels: travelsData, refetch: refetchTravels, updateTravel } = useTravels();
   const [orCrosses, setOrCrosses] = useState<Cross[]>([]);
   const [editCrosses, setEditCrosses] = useState<Cross[]>([]);
@@ -29,6 +29,12 @@ const CrossesPageClient = () => {
     } else {
       setFn(prev => prev.filter(c => c._id !== item._id));
     }
+  };
+
+  const onDeleteCross = async (id: string) => {
+    await remove(id);
+    setOrCrosses(prev => prev.filter(c => c._id !== id));
+    setEditCrosses(prev => prev.filter(c => c._id !== id));
   };
 
   useEffect(() => {
@@ -88,10 +94,10 @@ const CrossesPageClient = () => {
           <CrossForm />
         </div>
         <div className="hidden lg:block w-2/3">
-          <CrossTable data={crosses} onCheckOR={onCheckOR} onCheckEdit={onCheckEdit} />
+          <CrossTable data={crosses} onCheckOR={onCheckOR} onCheckEdit={onCheckEdit} deleteFn={onDeleteCross} />
         </div>
         <div className="lg:hidden w-full">
-          <CrossTable data={crosses} onCheckOR={onCheckOR} isMobile />
+          <CrossTable data={crosses} onCheckOR={onCheckOR} deleteFn={onDeleteCross} isMobile />
         </div>
       </div>
       <div className="py-8 space-y-8">
