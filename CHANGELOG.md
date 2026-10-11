@@ -3,6 +3,7 @@
 ## v0.15.0
 - COD15-009: Reorganize component folders into typed structure (#126) [928]
 - COD15-012: Delete cross with a travels-blocking guard and localized errors (#127) [365]
+- COD15-028: Refresh backend and frontend-v2 lockfiles via clean install (#129) [1677]
 
 ## v0.14.0
 - COD14-023: Travels table pagination (header/footer paginator, tooltips, collapsed handling) + Vitest setup (#118) [2320]
