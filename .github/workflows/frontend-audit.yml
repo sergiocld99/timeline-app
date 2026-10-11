@@ -2,6 +2,7 @@ name: Frontend npm audit
 
 on:
   push:
+    branches: [main]
     paths:
       - "frontend-v2/**"
       - ".github/workflows/frontend-audit.yml"
@@ -9,6 +10,10 @@ on:
     paths:
       - "frontend-v2/**"
       - ".github/workflows/frontend-audit.yml"
+
+concurrency:
+  group: frontend-audit-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   audit:

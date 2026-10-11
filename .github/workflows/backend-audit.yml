@@ -2,6 +2,7 @@ name: Backend npm audit
 
 on:
   push:
+    branches: [main]
     paths:
       - "backend/**"
       - ".github/workflows/backend-audit.yml"
@@ -9,6 +10,10 @@ on:
     paths:
       - "backend/**"
       - ".github/workflows/backend-audit.yml"
+
+concurrency:
+  group: backend-audit-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   audit:

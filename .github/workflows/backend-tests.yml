@@ -2,6 +2,7 @@ name: Backend tests
 
 on:
   push:
+    branches: [main]
     paths:
       - "backend/**"
       - ".github/workflows/backend-tests.yml"
@@ -9,6 +10,10 @@ on:
     paths:
       - "backend/**"
       - ".github/workflows/backend-tests.yml"
+
+concurrency:
+  group: backend-tests-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   test:
