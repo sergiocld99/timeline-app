@@ -41,12 +41,22 @@ compute for that PR.
    increment = floor(SIZE / 100)   # bash: $(( SIZE / 100 )), integer division truncates already
    ```
 
-4. **Target milestone section** — in `CHANGELOG.md`, milestone headings look like `## v0.10.0`
+4. **E2E gate** — if `increment > 10`, the change is big enough that it must be certified against
+   the Playwright E2E suite before the entry is considered done (`increment == 10` — i.e. SIZE
+   between 1000 and 1099 — does **not** trigger it):
+   ```bash
+   cd e2e && npm test
+   ```
+   The stack must already be running (e.g. `docker compose up --build -d` from the repo root).
+   If any test fails, report it to the user immediately and do **not** treat the changelog entry as
+   complete until the suite passes or the user explicitly accepts the failure.
+
+5. **Target milestone section** — in `CHANGELOG.md`, milestone headings look like `## v0.10.0`
    (in progress / current — no date) or `## v0.8.0 (2026-04-17)` (already released — has a date).
    The **current** milestone is the first (topmost) `## vX.Y.Z` heading with **no trailing date**.
    Its COD prefix is the version's minor number: `v0.10.0` → `COD10`, `v0.9.0` → `COD9`.
 
-5. **Next COD number** — within that milestone's section (from its heading down to the next
+6. **Next COD number** — within that milestone's section (from its heading down to the next
    `## ` heading), find every `CODn-XXX` line and take the max `XXX`. The new entry's number is:
    ```
    new_num = max_existing_XXX + increment
@@ -54,7 +64,7 @@ compute for that PR.
    Zero-pad to match the existing width (3 digits today, e.g. `009`, `042`; widen only if a
    number would overflow it).
 
-6. **Entry text** — via `gh pr view --json title,number` on the current branch (fall back to
+7. **Entry text** — via `gh pr view --json title,number` on the current branch (fall back to
    asking the user only if there's no open PR to read from). Strip a leading conventional-commit
    type (`feat: `, `fix: `, `chore: `, etc.) from the title to match the existing style — entries
    read as a plain capitalized description, not a conventional-commit subject. Format:
@@ -62,7 +72,7 @@ compute for that PR.
    - CODn-XXX: <Description> (#<PR number>) [<SIZE>]
    ```
 
-7. **Insert** the new line as the **last** entry in that milestone's list (right before the next
+8. **Insert** the new line as the **last** entry in that milestone's list (right before the next
    blank line, subsection heading like `### Internationalization`, or the next `## ` milestone
    heading — whichever comes first). Don't reorder or touch any other line.
 
@@ -75,12 +85,15 @@ compute for that PR.
 4. If `SIZE < 100`: tell the user the size and that no changelog entry is needed. Stop here.
 5. Compute `increment`, read `CHANGELOG.md`, locate the current (undated) milestone section and
    its COD prefix, find `max_existing_XXX`, compute `new_num`.
-6. Get the PR title/number with `gh pr view --json title,number` (current branch). If that fails
+6. **If `increment > 10`**: run the Playwright E2E suite (stack already up) before finishing —
+   `cd e2e && npm test`. Treat a failure as blocking (report it and stop) unless the user accepts
+   it. When it passes, note it in the summary so the user knows the E2E gate ran.
+7. Get the PR title/number with `gh pr view --json title,number` (current branch). If that fails
    (no PR yet, detached HEAD, etc.), ask the user for the description and PR number instead of
    guessing.
-7. Edit `CHANGELOG.md`: insert the new `- CODn-XXX: ... (#N) [SIZE]` line at the end of the
+8. Edit `CHANGELOG.md`: insert the new `- CODn-XXX: ... (#N) [SIZE]` line at the end of the
    current milestone's entries.
-8. Show the user the resulting diff (`git diff CHANGELOG.md`) and a one-line summary: size,
+9. Show the user the resulting diff (`git diff CHANGELOG.md`) and a one-line summary: size,
    increment, and the new COD number assigned.
 
 ## Notes / edge cases
