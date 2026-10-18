@@ -29,7 +29,7 @@ vi.mock("@tanstack/react-query", () => ({
   },
 }));
 
-vi.mock("@/services/TravelService", () => ({
+vi.mock("@/services/StatsService", () => ({
   default: { getDashboardStats: travelStatsMock.getDashboardStats },
 }));
 
