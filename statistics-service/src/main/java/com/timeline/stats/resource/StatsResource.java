@@ -3,6 +3,7 @@ package com.timeline.stats.resource;
 import com.timeline.stats.dto.TravelStatsDTO;
 import com.timeline.stats.dto.StatsRequestDTO;
 import com.timeline.stats.dto.MapConfigDTO;
+import com.timeline.stats.dto.MonthlyPlacesDTO;
 import com.timeline.stats.dto.DashboardStatsDTO;
 import com.timeline.stats.service.StatsService;
 import com.timeline.stats.service.MapService;
@@ -58,9 +59,20 @@ public class StatsResource {
   @Path("/dashboard")
   @Operation(summary = "Get dashboard statistics (monthly breakdown, top routes, home) for a date range")
   public DashboardStatsDTO getDashboardStats(
-      @QueryParam("dateFrom") String dateFrom,
-      @QueryParam("dateTo") String dateTo,
-      @QueryParam("userId") Integer userId) {
+    @QueryParam("dateFrom") String dateFrom,
+    @QueryParam("dateTo") String dateTo,
+    @QueryParam("userId") Integer userId
+  ) {
     return dashboardService.calculateDashboardStats(Instant.parse(dateFrom), Instant.parse(dateTo), userId);
+  }
+
+  @GET 
+  @Path("/monthly-places")
+  public MonthlyPlacesDTO getMonthlyPlaces(
+    @QueryParam("dateFrom") String dateFrom,
+    @QueryParam("dateTo") String dateTo,
+    @QueryParam("userId") Integer userId
+  ) {
+    return dashboardService.calculateMonthlyPlaces(Instant.parse(dateFrom), Instant.parse(dateTo), userId);
   }
 }

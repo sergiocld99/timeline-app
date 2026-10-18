@@ -1,10 +1,14 @@
 package com.timeline.stats.service;
 
 import com.timeline.stats.domain.Location;
+import com.timeline.stats.domain.MonthMap;
 import com.timeline.stats.domain.Travel;
+import com.timeline.stats.domain.ZipcodeList;
 import com.timeline.stats.dto.DashboardStatsDTO;
 import com.timeline.stats.dto.LocatedTravelDTO;
+import com.timeline.stats.dto.MonthlyPlacesDTO;
 import com.timeline.stats.dto.MonthlyStatDTO;
+import com.timeline.stats.dto.PlacesVisitedDTO;
 import com.timeline.stats.dto.StatsContextDTO;
 import com.timeline.stats.dto.TopRouteDTO;
 import com.timeline.stats.dto.TravelStatsDTO;
@@ -18,7 +22,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -42,6 +46,14 @@ public class DashboardService {
   @Inject
   RouteService routeService;
 
+  /**
+   * 1. Obtiene los viajes de userId entre dateFrom y dateTo.
+   * 2. Obtiene las locations a partir de esos viajes.
+   * 3. Puebla cada viaje con datos completos de origen y destino.
+   * 4. Calcula zipcodes visitados, totales, días y rutas únicas.
+   * 5. Calcula los km y zipcodes de cada mes.
+   * 6. Calcula las rutas más frecuentes.
+   */
   public DashboardStatsDTO calculateDashboardStats(Instant dateFrom, Instant dateTo, Integer userId) {
     List<Travel> travels = travelRepository.findByDateRangeAndUser(dateFrom, dateTo, userId);
     List<Location> locations = placesService.getLocationsFromTravels(travels);
@@ -50,7 +62,7 @@ public class DashboardService {
     TravelStatsDTO baseStats = statsService.calculateBasicStatsFromContext(context);
 
     // TreeMap so the "YYYY-MM" keys come out chronologically for any consumer
-    Map<String, MonthlyStatDTO> monthlyStats = new TreeMap<>();
+    MonthMap<MonthlyStatDTO> monthlyStats = new MonthMap<>();
     Map<String, Integer> routeCounts = new HashMap<>();
 
     for (LocatedTravelDTO locatedTravel : context.locatedTravels) {
@@ -71,12 +83,8 @@ public class DashboardService {
         String routeKey = sortedNames.get(0) + RouteService.ROUTE_SEPARATOR + sortedNames.get(1);
         routeCounts.merge(routeKey, 1, Integer::sum);
 
-        if (!monthStat.zipcodes.contains(origin.zipcode)) {
-          monthStat.zipcodes.add(origin.zipcode);
-        }
-        if (!monthStat.zipcodes.contains(destination.zipcode)) {
-          monthStat.zipcodes.add(destination.zipcode);
-        }
+        monthStat.zipcodes.put(origin.zipcode);
+        monthStat.zipcodes.put(destination.zipcode);
 
         if (destination.zipcode != null) {
           monthStat.kmByZipcode.merge(destination.zipcode, travel.distance, Double::sum);
@@ -100,5 +108,38 @@ public class DashboardService {
     }
 
     return new DashboardStatsDTO(baseStats, monthlyStats, topRoutes, home);
+  }
+
+  public MonthlyPlacesDTO calculateMonthlyPlaces(Instant dateFrom, Instant dateTo, Integer userId) {
+    List<Travel> travels = travelRepository.findByDateRangeAndUser(dateFrom, dateTo, userId);
+    List<Location> locations = placesService.getLocationsFromTravels(travels);
+    StatsContextDTO context = new StatsContextDTO(travels, locations);
+    
+    Set<String> zipcodes = placesService.getZipcodesFromLocations(context.locations);
+    PlacesVisitedDTO placesVisited = new PlacesVisitedDTO(zipcodes, placesService.getPlaceInfoByZipcode(context));
+    MonthMap<ZipcodeList> zipcodesByMonth = getZipcodesByMonth(context);
+
+    return new MonthlyPlacesDTO(placesVisited, zipcodesByMonth);
+  } 
+
+  private MonthMap<ZipcodeList> getZipcodesByMonth(StatsContextDTO context) {
+    MonthMap<ZipcodeList> zipcodesByMonth = new MonthMap<>();
+
+    for (LocatedTravelDTO locatedTravel : context.locatedTravels) {
+      Travel travel = locatedTravel.travel();
+      Location origin = locatedTravel.origin();
+      Location destination = locatedTravel.destination();
+
+      travel.enrich();
+      String monthKey = travel.date.substring(0, 7);
+      ZipcodeList monthStat = zipcodesByMonth.computeIfAbsent(monthKey, key -> new ZipcodeList());
+
+      if (origin != null && destination != null) {
+        monthStat.put(origin.zipcode);
+        monthStat.put(destination.zipcode);
+      }
+    }
+
+    return zipcodesByMonth;
   }
 }

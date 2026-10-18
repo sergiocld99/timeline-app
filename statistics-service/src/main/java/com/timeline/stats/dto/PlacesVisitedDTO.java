@@ -4,6 +4,9 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Lista ordenada de zipcodes, cada uno con id y nombre de location asociado
+ */
 public class PlacesVisitedDTO {
   public int count;
   public String[] zipcodes;
