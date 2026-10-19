@@ -5,6 +5,12 @@ export type PlaceData = NonNullable<PlacesVisited["data"]>;
 export const MONTHS_PER_YEAR = 12;
 
 export type PlaceGroup = "notVisited" | "decreasing" | "frequent" | "new";
+export const getPlaceGroupForZipcode = (
+  zipcode: string,
+  data?: PlaceData,
+  prevData?: PlaceData
+): PlaceGroup => getPlaceGroup(getVisitedMonthsSet(data, zipcode), getVisitedMonthsSet(prevData, zipcode));
+
 export type Centroid = {
   group: PlaceGroup;
   count: number;

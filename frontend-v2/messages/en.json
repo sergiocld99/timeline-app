@@ -374,11 +374,14 @@
   },
   "MonthlyPlaces": {
     "summaryTitle": "Weighted coordinates",
-    "notVisited": "Not-Visited Center",
+    "notVisited": "Not Visited",
     "decreasing": "Decreasing",
     "frequent": "Frequent",
     "new": "New",
     "placesCount": "{count, plural, =0 {No places} one {1 place} other {# places}}",
+    "filterHint": "Filter rows of this colour",
+    "clearFilter": "Clear filter",
+    "noPlacesInGroup": "No places for this group.",
     "noData": "—"
   },
   "Themes": {
