@@ -372,6 +372,15 @@
       "updateError": "Error al actualizar el usuario"
     }
   },
+  "MonthlyPlaces": {
+    "summaryTitle": "Coordenadas ponderadas",
+    "notVisited": "Centro por No Visitados",
+    "decreasing": "En Decremento",
+    "frequent": "Frecuentes",
+    "new": "Nuevos",
+    "placesCount": "{count, plural, =0 {Sin lugares} one {1 lugar} other {# lugares}}",
+    "noData": "—"
+  },
   "Themes": {
     "light": "Claro",
     "dark": "Oscuro",

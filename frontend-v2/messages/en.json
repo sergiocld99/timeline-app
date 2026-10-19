@@ -372,6 +372,15 @@
       "updateError": "Error updating user"
     }
   },
+  "MonthlyPlaces": {
+    "summaryTitle": "Weighted coordinates",
+    "notVisited": "Not-Visited Center",
+    "decreasing": "Decreasing",
+    "frequent": "Frequent",
+    "new": "New",
+    "placesCount": "{count, plural, =0 {No places} one {1 place} other {# places}}",
+    "noData": "—"
+  },
   "Themes": {
     "light": "Light",
     "dark": "Dark",
