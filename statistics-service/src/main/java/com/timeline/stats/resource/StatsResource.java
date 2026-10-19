@@ -3,7 +3,7 @@ package com.timeline.stats.resource;
 import com.timeline.stats.dto.TravelStatsDTO;
 import com.timeline.stats.dto.StatsRequestDTO;
 import com.timeline.stats.dto.MapConfigDTO;
-import com.timeline.stats.dto.MonthlyPlacesDTO;
+import com.timeline.stats.dto.PlacesVisitedDTO;
 import com.timeline.stats.dto.DashboardStatsDTO;
 import com.timeline.stats.service.StatsService;
 import com.timeline.stats.service.MapService;
@@ -68,7 +68,7 @@ public class StatsResource {
 
   @GET 
   @Path("/monthly-places")
-  public MonthlyPlacesDTO getMonthlyPlaces(
+  public PlacesVisitedDTO getMonthlyPlaces(
     @QueryParam("dateFrom") String dateFrom,
     @QueryParam("dateTo") String dateTo,
     @QueryParam("userId") Integer userId

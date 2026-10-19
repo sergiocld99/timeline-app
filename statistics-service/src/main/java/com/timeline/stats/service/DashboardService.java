@@ -3,10 +3,8 @@ package com.timeline.stats.service;
 import com.timeline.stats.domain.Location;
 import com.timeline.stats.domain.MonthMap;
 import com.timeline.stats.domain.Travel;
-import com.timeline.stats.domain.ZipcodeList;
 import com.timeline.stats.dto.DashboardStatsDTO;
 import com.timeline.stats.dto.LocatedTravelDTO;
-import com.timeline.stats.dto.MonthlyPlacesDTO;
 import com.timeline.stats.dto.MonthlyStatDTO;
 import com.timeline.stats.dto.PlacesVisitedDTO;
 import com.timeline.stats.dto.StatsContextDTO;
@@ -110,36 +108,12 @@ public class DashboardService {
     return new DashboardStatsDTO(baseStats, monthlyStats, topRoutes, home);
   }
 
-  public MonthlyPlacesDTO calculateMonthlyPlaces(Instant dateFrom, Instant dateTo, Integer userId) {
+  public PlacesVisitedDTO calculateMonthlyPlaces(Instant dateFrom, Instant dateTo, Integer userId) {
     List<Travel> travels = travelRepository.findByDateRangeAndUser(dateFrom, dateTo, userId);
     List<Location> locations = placesService.getLocationsFromTravels(travels);
     StatsContextDTO context = new StatsContextDTO(travels, locations);
     
     Set<String> zipcodes = placesService.getZipcodesFromLocations(context.locations);
-    PlacesVisitedDTO placesVisited = new PlacesVisitedDTO(zipcodes, placesService.getPlaceInfoByZipcode(context));
-    MonthMap<ZipcodeList> zipcodesByMonth = getZipcodesByMonth(context);
-
-    return new MonthlyPlacesDTO(placesVisited, zipcodesByMonth);
-  } 
-
-  private MonthMap<ZipcodeList> getZipcodesByMonth(StatsContextDTO context) {
-    MonthMap<ZipcodeList> zipcodesByMonth = new MonthMap<>();
-
-    for (LocatedTravelDTO locatedTravel : context.locatedTravels) {
-      Travel travel = locatedTravel.travel();
-      Location origin = locatedTravel.origin();
-      Location destination = locatedTravel.destination();
-
-      travel.enrich();
-      String monthKey = travel.date.substring(0, 7);
-      ZipcodeList monthStat = zipcodesByMonth.computeIfAbsent(monthKey, key -> new ZipcodeList());
-
-      if (origin != null && destination != null) {
-        monthStat.put(origin.zipcode);
-        monthStat.put(destination.zipcode);
-      }
-    }
-
-    return zipcodesByMonth;
+    return new PlacesVisitedDTO(zipcodes, placesService.getPlaceInfoByZipcode(context));
   }
 }
