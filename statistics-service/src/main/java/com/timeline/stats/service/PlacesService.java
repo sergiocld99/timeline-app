@@ -109,7 +109,8 @@ public class PlacesService {
 
     Map<String, PlaceInfoDTO> data = new HashMap<>();
     bestByZipcode.forEach((zipcode, location) -> data.put(zipcode,
-        new PlaceInfoDTO(location.name, location.id.toString(), monthsByZipcode.get(zipcode))));
+        new PlaceInfoDTO(location.name, location.id.toString(), monthsByZipcode.get(zipcode),
+            location.latitude, location.longitude)));
 
     return data;
   }

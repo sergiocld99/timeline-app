@@ -29,7 +29,7 @@ public class PlacesVisitedDTOTest {
 
   @Test
   public void testDataIsExposedAsGiven() {
-    Map<String, PlaceInfoDTO> data = Map.of("B1888", new PlaceInfoDTO("Casa", new ObjectId().toString(), new LinkedList<>()));
+    Map<String, PlaceInfoDTO> data = Map.of("B1888", new PlaceInfoDTO("Casa", new ObjectId().toString(), new LinkedList<>(), -34.6, -58.4));
 
     PlacesVisitedDTO dto = new PlacesVisitedDTO(Set.of("B1888"), data);
 

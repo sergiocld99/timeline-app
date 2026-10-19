@@ -99,7 +99,8 @@ public class PlacesServiceTest {
   @Test
   public void testPlaceInfoPicksTheMostVisitedLocationOfEachZipcode() {
     Location home = aLocation().withId("000000000000000000000001").named("Casa").at("B1000").build();
-    Location frequent = aLocation().withId("000000000000000000000002").named("Quilmes Centro").at("B1878").build();
+    Location frequent = aLocation().withId("000000000000000000000002").named("Quilmes Centro").at("B1878")
+        .coordinates(-34.7206, -58.2545).build();
     Location oneOff = aLocation().withId("000000000000000000000003").named("Parada casual").at("B1878").build();
 
     // `oneOff` is last in the location list, so a naive "last one wins" would pick it
@@ -114,6 +115,8 @@ public class PlacesServiceTest {
 
     assertEquals("Quilmes Centro", result.get("B1878").name());
     assertEquals(frequent.id.toString(), result.get("B1878").id());
+    assertEquals(-34.7206, result.get("B1878").latitude());
+    assertEquals(-58.2545, result.get("B1878").longitude());
     assertEquals("Casa", result.get("B1000").name());
   }
 
