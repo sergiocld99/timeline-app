@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,7 +29,7 @@ public class PlacesVisitedDTOTest {
 
   @Test
   public void testDataIsExposedAsGiven() {
-    Map<String, PlaceInfoDTO> data = Map.of("B1888", new PlaceInfoDTO("Casa", new ObjectId().toString()));
+    Map<String, PlaceInfoDTO> data = Map.of("B1888", new PlaceInfoDTO("Casa", new ObjectId().toString(), new LinkedList<>()));
 
     PlacesVisitedDTO dto = new PlacesVisitedDTO(Set.of("B1888"), data);
 

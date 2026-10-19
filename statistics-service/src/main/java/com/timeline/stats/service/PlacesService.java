@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.bson.types.ObjectId;
 
 import com.timeline.stats.domain.Location;
+import com.timeline.stats.domain.OrderedSet;
 import com.timeline.stats.domain.Travel;
 import com.timeline.stats.dto.LocatedTravelDTO;
 import com.timeline.stats.dto.PlaceInfoDTO;
@@ -67,10 +68,30 @@ public class PlacesService {
    */
   public Map<String, PlaceInfoDTO> getPlaceInfoByZipcode(StatsContextDTO context) {
     Map<ObjectId, Integer> visitsByLocation = new HashMap<>();
+    Map<String, OrderedSet> monthsByZipcode = new HashMap<>();
 
     for (LocatedTravelDTO locatedTravel : context.locatedTravels) {
       countVisit(visitsByLocation, locatedTravel.origin());
       countVisit(visitsByLocation, locatedTravel.destination());
+
+      Travel travel = locatedTravel.travel();
+      Location origin = locatedTravel.origin();
+      Location destination = locatedTravel.destination();
+
+      if (origin != null && destination != null) {
+        // Create zipcode with 0 months if missing in map
+        if (!monthsByZipcode.containsKey(origin.zipcode)) {
+          monthsByZipcode.put(origin.zipcode, new OrderedSet());
+        }
+        if (!monthsByZipcode.containsKey(destination.zipcode)) {
+          monthsByZipcode.put(destination.zipcode, new OrderedSet());
+        }
+
+        // Put month to the end of the zipcode set
+        String month = travel.extractMonthKey();
+        monthsByZipcode.get(origin.zipcode).put(month);
+        monthsByZipcode.get(destination.zipcode).put(month);
+      }
     }
 
     Map<String, Location> bestByZipcode = new HashMap<>();
@@ -88,7 +109,7 @@ public class PlacesService {
 
     Map<String, PlaceInfoDTO> data = new HashMap<>();
     bestByZipcode.forEach((zipcode, location) -> data.put(zipcode,
-        new PlaceInfoDTO(location.name, location.id.toString())));
+        new PlaceInfoDTO(location.name, location.id.toString(), monthsByZipcode.get(zipcode))));
 
     return data;
   }
