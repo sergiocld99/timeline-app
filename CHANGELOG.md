@@ -1,10 +1,13 @@
 # CHANGELOG
 
+## v0.16.0
+- COD15-013: Clean install (#137) [1324]
+- COD15-024: Add monthly places page and endpoint (#136) [1266]
+
 ## v0.15.0
 - COD15-009: Reorganize component folders into typed structure (#126) [928]
 - COD15-012: Delete cross with a travels-blocking guard and localized errors (#127) [365]
 - COD15-035: Refresh lockfiles and add E2E gate to changelog-cod skill (#129) [2399]
-- COD15-047: Add monthly places page and endpoint (#136) [1266]
 
 ## v0.14.0
 - COD14-023: Travels table pagination (header/footer paginator, tooltips, collapsed handling) + Vitest setup (#118) [2320]

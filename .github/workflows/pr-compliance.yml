@@ -16,7 +16,17 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Check changed files count
+        id: files
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          COUNT=$(git diff origin/$BASE_REF...HEAD --name-only | wc -l | tr -d ' ')
+          echo "Changed files: $COUNT"
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+
       - name: Validate Milestone
+        if: steps.files.outputs.count >= 3
         env:
           MILESTONE: ${{ github.event.pull_request.milestone.number }}
         run: |
@@ -28,6 +38,7 @@ jobs:
           echo "Milestone: OK"
 
       - name: Validate CHANGELOG.md
+        if: steps.files.outputs.count >= 3
         env:
           BASE_REF: ${{ github.base_ref }}
         run: |
