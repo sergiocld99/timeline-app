@@ -45,6 +45,13 @@ public class StatsService {
     return calculateBasicStatsFromContext(context);
   }
 
+  /**
+   * 1. Obtiene los zipcodes únicos a partir de las locations provistas.
+   * 2. Los ordena y arma un mapa con el id y nombre de location asociada de cada uno.
+   * 3. Calcula km y minutos totales, junto a días y rutas únicas.
+   * 
+   * @param context Viajes con datos poblados de origen y destino.
+   */
   public TravelStatsDTO calculateBasicStatsFromContext(StatsContextDTO context) {
     Set<String> zipcodes = placesService.getZipcodesFromLocations(context.locations);
     PlacesVisitedDTO placesVisited = new PlacesVisitedDTO(zipcodes, placesService.getPlaceInfoByZipcode(context));

@@ -2,6 +2,7 @@
 
 import type { MonthlyStats, PlacesVisited, TravelStats } from "@/types/travel";
 
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import {
@@ -46,7 +47,7 @@ const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([key, data]) => {
         const month = key.split('-')[1];
-        
+
         // Find corresponding data in prevMonthlyStats
         // Key format is YYYY-MM
         const currentYear = parseInt(key.split('-')[0]);
@@ -66,9 +67,9 @@ const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }
     return mainData;
   }, [monthlyStats, prevStats, showYearOverYear, tMonths]);
 
-  const maxPlaces = useMemo(() => 
+  const maxPlaces = useMemo(() =>
     Math.max(...chartData.map(d => d.places), 1),
-  [chartData]);
+    [chartData]);
 
   const prevAverage = useMemo(() => {
     if (!showYearOverYear || !prevStats) return null;
@@ -88,11 +89,13 @@ const MonthlyCharts = ({ monthlyStats, prevStats, totalDistance, placesVisited }
       <div className="bg-[#111118] border border-[#2a2a3a] rounded-sm p-7 relative overflow-hidden before:absolute before:top-0 before:left-0 before:w-[3px] before:h-full before:bg-[#e8ff47] animate-in duration-700 delay-200">
         <div className="flex justify-between items-start mb-6">
           <div className="flex flex-col gap-1.5">
-            <span className="text-[0.65rem] font-['Space_Mono'] uppercase tracking-[3px] text-[#fff]">{t("placesVisited")}</span>
-            <ZipcodeTicker 
-              monthlyStats={monthlyStats} 
-              previousPlaces={showYearOverYear ? prevStats?.placesVisited : undefined} 
-              currentPlaces={placesVisited} 
+            <Link href={'/monthly-places'} className="text-[0.65rem] font-['Space_Mono'] uppercase tracking-[3px] text-[#fff]">
+              {t("placesVisited")}
+            </Link>
+            <ZipcodeTicker
+              monthlyStats={monthlyStats}
+              previousPlaces={showYearOverYear ? prevStats?.placesVisited : undefined}
+              currentPlaces={placesVisited}
               onActiveZipcodeChange={setActiveZipcode}
             />
           </div>

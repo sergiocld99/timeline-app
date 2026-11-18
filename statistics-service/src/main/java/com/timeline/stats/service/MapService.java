@@ -113,6 +113,6 @@ public class MapService {
     double distanceKm = GeoUtils.calculateDistanceKm(pointA.latitude, pointB.latitude, pointA.longitude, pointB.longitude);
     int zoom = GeoUtils.getZoomByDistance(distanceKm);
 
-    return new MapConfigDTO(Arrays.asList(centerLat, centerLng), zoom);
+    return new MapConfigDTO(Arrays.asList(centerLat, centerLng), zoom, distanceKm);
   }
 }

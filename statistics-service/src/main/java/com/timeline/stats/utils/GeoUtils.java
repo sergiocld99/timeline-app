@@ -30,7 +30,7 @@ public class GeoUtils {
   public static int getZoomByDistance(double km) {
     if (km > 140)
       return 7;
-    if (km > 100)
+    if (km > 80)
       return 8;
     if (km > 50)
       return 9;
