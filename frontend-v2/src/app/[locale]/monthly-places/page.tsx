@@ -1,6 +1,5 @@
 "use client"
 
-import type { PlacesVisited } from "@/types/travel";
 import type { PlaceGroup } from "@/utils/monthlyPlaces";
 
 import { useTranslations } from "next-intl";
@@ -25,26 +24,9 @@ const MonthlyPlacesPage = () => {
   const t = useTranslations("Dashboard");
   const [activeGroup, setActiveGroup] = useState<PlaceGroup | null>(null);
 
-  const currentYear = useMemo(() => {
-    const getLastYearFromData = (d?: PlacesVisited) => {
-      if (!d?.data) return 0;
-      let lastYear = 0;
-      for (const v of Object.values(d.data)) {
-        const months = v.months || [];
-        if (months.length > 0) {
-          const last = months[months.length - 1];
-          const y = Number(String(last).slice(0, 4));
-          if (!isNaN(y) && y > lastYear) lastYear = y;
-        }
-      }
-      return lastYear;
-    };
-    const y = getLastYearFromData(data) || getLastYearFromData(prevData);
-    if (y) return y;
-    if (currentFrom) return new Date(currentFrom).getFullYear();
-    return new Date().getFullYear();
-  }, [data, prevData, currentFrom]);
-
+  const currentYear = currentTo
+    ? new Date(currentTo).getUTCFullYear()
+    : new Date().getUTCFullYear();
   const prevYear = currentYear - 1;
 
   const zipcodes = useMemo(() => {
