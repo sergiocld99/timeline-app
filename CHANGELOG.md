@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## v0.16.0
+- COD16-005: Add bus lines explorer with opt-in by-line stats (#140) [584]
+
 ## v0.15.0
 - COD15-009: Reorganize component folders into typed structure (#126) [928]
 - COD15-012: Delete cross with a travels-blocking guard and localized errors (#127) [365]
