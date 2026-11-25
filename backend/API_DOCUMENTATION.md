@@ -72,12 +72,14 @@ Obtiene todos los viajes con filtros opcionales.
 - `dateFrom`, `dateTo` (string, opcional): Rango de fechas ISO. Por defecto: últimos 30 días
 - `userId` (string, opcional): ID del usuario (null = guest data)
 - `locFrom`, `locTo` (string, opcional): IDs de ubicaciones origen/destino
+- `modeOfTransport` (string, opcional): Filtra por medio de transporte (ej. `bus`). El filtro se aplica antes de calcular `stats`, por lo que ambos nodes reflejan el mismo subconjunto.
+- `includeByLine` (boolean, opcional): Si es `true`, agrega `stats.byLine` con el ranking de líneas de colectivo. Por defecto no se calcula ni se devuelve, para no afectar a los demás consumidores.
 - `sortingField` (string, opcional): Campo para ordenar. Por defecto: `duration`
 - `statsOnly` (boolean, opcional): Si es `true`, la respuesta omitirá la lista completa de viajes (`travels`) y devolverá únicamente el objeto `stats`. Ideal para optimizar el dashboard. No evita el cálculo de `stats`, solo el payload de `travels`.
 - `skipStats` (boolean, opcional): Si es `true`, la respuesta omitirá `stats` y devolverá únicamente `travels`. A diferencia de `statsOnly`, esto sí evita el cálculo (`calculateTravelStats` no se ejecuta).
 - `limit` (number, opcional): Recorta la cantidad de viajes devueltos en `travels` (los primeros N según `sortingField`/orden de fecha desc). No afecta `stats`, que siempre se calcula sobre el rango completo salvo que `skipStats=true`.
 
-**Response:** `{ travels: [...], stats: {...} }` (Si `statsOnly=true`, el nodo `travels` se omite)
+**Response:** `{ travels: [...], stats: {...} }` (Si `statsOnly=true`, el nodo `travels` se omite). Cuando se usa `includeByLine=true`, `stats.byLine` contiene `{ line, count, totalKm, totalMinutes, averageSpeed }` por cada línea de colectivo con viajes en el rango (`averageSpeed` = `totalKm / (totalMinutes / 60)`, redondeado a 2 decimales y `0` si no hay duración), ordenada por cantidad de viajes, luego minutos totales y número de línea.
 
 ---
 

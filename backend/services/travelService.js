@@ -149,6 +149,47 @@ export const enrichTravel = (travel) => {
  * @param {Array} travels - Array of enriched travel documents
  * @returns {Object} - Object containing aggregated statistics
  */
+/**
+ * Bus-line ranking, kept out of calculateTravelStats so generic /api/travels
+ * consumers neither compute nor receive it unless they ask for includeByLine.
+ */
+export const calculateByLineStats = (travels) => {
+  if (!travels || travels.length === 0) return [];
+
+  const lineStats = {};
+
+  travels.forEach(t => {
+    const mode = t.get ? t.get('modeOfTransport') : t.modeOfTransport;
+    const rawLine = t.get ? t.get('line') : t.line;
+    const line = typeof rawLine === 'string' ? rawLine.trim() : '';
+    if (mode !== 'bus' || !line) return;
+
+    const distance = t.distance || 0;
+    const duration = t.get ? t.get('duration') : t.duration || 0;
+    const entry = lineStats[line] ?? { line, count: 0, totalKm: 0, totalMinutes: 0 };
+    entry.count += 1;
+    entry.totalKm += distance;
+    entry.totalMinutes += duration;
+    lineStats[line] = entry;
+  });
+
+  return Object.values(lineStats)
+    .sort((a, b) =>
+      b.count - a.count ||
+      b.totalMinutes - a.totalMinutes ||
+      a.line.localeCompare(b.line, undefined, { numeric: true })
+    )
+    .map(entry => ({
+      ...entry,
+      totalKm: Math.round(entry.totalKm * 100) / 100,
+      // Aggregate speed, not the mean of each travel's speed, and guarded
+      // against zero duration (same convention as the page-wide averageSpeed).
+      averageSpeed: entry.totalMinutes > 0
+        ? Math.round((entry.totalKm / (entry.totalMinutes / 60)) * 100) / 100
+        : 0,
+    }));
+};
+
 export const calculateTravelStats = (travels) => {
   if (!travels || travels.length === 0) {
     return {};
