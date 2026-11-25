@@ -74,19 +74,19 @@ const LinesExplorer = () => {
             </div>
 
             <LineRanking stats={byLine} selectedLine={appliedFilter} onSelect={handleSelectLine} />
-
-            <div ref={tableRef} className="scroll-mt-6">
-              <TravelTable
-                travels={filteredTravels}
-                stats={travelsData.stats}
-                onUpdateTravel={updateTravel}
-                onDeleteTravel={deleteTravel}
-                onRemoveFilter={handleRemoveFilter}
-                appliedFilter={appliedFilter}
-              />
-            </div>
           </>
         )}
+
+        <div ref={tableRef} className="scroll-mt-6">
+          <TravelTable
+            travels={filteredTravels}
+            stats={travelsData.stats}
+            onUpdateTravel={updateTravel}
+            onDeleteTravel={deleteTravel}
+            onRemoveFilter={handleRemoveFilter}
+            appliedFilter={appliedFilter}
+          />
+        </div>
       </div>
     </main>
   );

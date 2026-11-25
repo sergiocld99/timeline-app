@@ -344,7 +344,12 @@
     "loading": "Loading bus lines...",
     "error": "Couldn't load your travels.",
     "empty": "No bus lines found in this period.",
-    "rankingTitle": "Lines by number of rides",
+    "rankingTitle": {
+      "rides": "Lines by number of rides",
+      "speed": "Lines by speed",
+      "duration": "Lines by duration",
+      "km": "Lines by km"
+    },
     "rides": "{count} rides",
     "minutes": "{minutes} min",
     "speed": "{speed} km/h",

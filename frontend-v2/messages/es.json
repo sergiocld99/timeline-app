@@ -344,7 +344,12 @@
     "loading": "Cargando líneas...",
     "error": "No se pudieron cargar tus viajes.",
     "empty": "No se encontraron líneas en este período.",
-    "rankingTitle": "Líneas por cantidad de viajes",
+    "rankingTitle": {
+      "rides": "Líneas por cantidad de viajes",
+      "speed": "Líneas por velocidad",
+      "duration": "Líneas por duración",
+      "km": "Líneas por km"
+    },
     "rides": "{count} viajes",
     "minutes": "{minutes} min",
     "speed": "{speed} km/h",
