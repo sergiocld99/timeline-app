@@ -186,6 +186,7 @@
     "creator": "Crear",
     "crosses": "Cruces",
     "locations": "Lugares",
+    "lines": "Líneas",
     "travels": "Viajes",
     "visits": "Visitas",
     "menu": "Menú"
@@ -337,6 +338,27 @@
       "deleteError": "Error al eliminar la visita",
       "updateSuccess": "¡Visita actualizada con éxito!",
       "updateError": "Error al actualizar la visita"
+    }
+  },
+  "Lines": {
+    "loading": "Cargando líneas...",
+    "error": "No se pudieron cargar tus viajes.",
+    "empty": "No se encontraron líneas en este período.",
+    "rankingTitle": "Líneas por cantidad de viajes",
+    "rides": "{count} viajes",
+    "minutes": "{minutes} min",
+    "speed": "{speed} km/h",
+    "sort": {
+      "by": "Ordenar por",
+      "rides": "Viajes",
+      "speed": "Velocidad",
+      "duration": "Duración",
+      "km": "Km"
+    },
+    "summary": {
+      "lines": "Líneas",
+      "rides": "Viajes",
+      "km": "Km"
     }
   },
   "Profile": {

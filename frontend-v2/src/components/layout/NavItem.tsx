@@ -1,14 +1,17 @@
 "use client"
 
+import type { LucideIcon } from "lucide-react"
+
 import { Link, usePathname } from "@/i18n/routing"
 import { Button } from "@/components/ui/button"
 
 type Props = {
   path: string,
-  label: string
+  label: string,
+  icon: LucideIcon,
 }
 
-const NavItem = ({ path, label }: Props) => {
+const NavItem = ({ path, label, icon: Icon }: Props) => {
   const pathname = usePathname();
   
   const isActive = (path: string) => path === pathname
@@ -19,6 +22,7 @@ const NavItem = ({ path, label }: Props) => {
         variant={isActive(path) ? "default" : "ghost"}
         className={isActive(path) ? "!bg-blue-600 !text-white hover:!bg-blue-700" : ""}
       >
+        <Icon aria-hidden="true" />
         {label}
       </Button>
     </Link>
