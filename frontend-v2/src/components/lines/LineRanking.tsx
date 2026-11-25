@@ -16,6 +16,8 @@ type Props = {
   onSelect: (line: string) => void;
 };
 
+const HIGH_RIDES_THRESHOLD = 6;
+
 const LineRanking = ({ stats, selectedLine, onSelect }: Props) => {
   const t = useTranslations("Lines");
   const [sortBy, setSortBy] = useState<LineSortOption>("rides");
@@ -40,6 +42,7 @@ const LineRanking = ({ stats, selectedLine, onSelect }: Props) => {
       <CardContent className="flex flex-col gap-2">
         {sortedStats.map((stat, index) => {
           const isSelected = selectedLine === stat.line;
+          const isHighRides = stat.count >= HIGH_RIDES_THRESHOLD;
 
           return (
             <button
@@ -48,16 +51,21 @@ const LineRanking = ({ stats, selectedLine, onSelect }: Props) => {
               aria-pressed={isSelected}
               onClick={() => onSelect(stat.line)}
               className={cn(
-                "w-full rounded-md border p-3 text-left transition-colors",
-                isSelected
-                  ? "border-blue-600 bg-blue-50 dark:bg-blue-950/40"
-                  : "border-transparent hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                "w-full rounded-md border border-transparent p-3 text-left transition-colors",
+                !isSelected && "hover:bg-gray-50 dark:hover:bg-gray-700/50",
+                isSelected && "ring-2 ring-blue-600"
               )}
             >
               <div className="flex items-center justify-between gap-3">
                 <span className="flex items-center gap-2 font-semibold text-gray-900 dark:text-white">
                   <span className="w-5 text-xs font-normal text-gray-400">{index + 1}</span>
-                  <BusFront className="h-4 w-4 text-blue-600 dark:text-blue-400" aria-hidden="true" />
+                  <BusFront
+                    className={cn(
+                      "h-4 w-4",
+                      isHighRides ? "text-green-600 dark:text-green-400" : "text-blue-600 dark:text-blue-400"
+                    )}
+                    aria-hidden="true"
+                  />
                   {stat.line}
                 </span>
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
@@ -70,7 +78,10 @@ const LineRanking = ({ stats, selectedLine, onSelect }: Props) => {
               </div>
               <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-gray-700">
                 <div
-                  className="h-full rounded-full bg-blue-600 transition-all duration-500"
+                  className={cn(
+                    "h-full rounded-full transition-all duration-500",
+                    isHighRides ? "bg-green-600" : "bg-blue-600"
+                  )}
                   style={{ width: `${(getLineSortValue(stat, sortBy) / maxValue) * 100}%` }}
                 />
               </div>
