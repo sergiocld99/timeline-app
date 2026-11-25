@@ -1,4 +1,5 @@
 import type { HourPart } from "./chart"
+import type { StatByLine } from "./stats"
 import type { Weighted } from "./commons"
 import type { Cross } from "./cross"
 import type { Location } from "./location"
@@ -100,6 +101,7 @@ export type TravelStats = {
   monthlyStats?: MonthlyStats
   topRoutes?: TopRoute[]
   home?: string
+  byLine?: StatByLine[]
   records?: TravelRecords
 }
 

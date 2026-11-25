@@ -50,6 +50,12 @@ const useTravelFilter = (travels: Travel[]) => {
       return;
     }
 
+    if (type === 'line' && value) {
+      setFilteredTravels(travels.filter(t => t.modeOfTransport === 'bus' && t.line === value));
+      setAppliedFilter(value);
+      return;
+    }
+
     if (type === 'dayHour' && value) {
       setFilteredTravels(travels.filter(tr =>
         tr.extractedDate.slice(0, 3) === value.day && tr.hourParts.completeParts.some(p => p.hour === value.hour)

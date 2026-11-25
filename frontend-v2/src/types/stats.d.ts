@@ -10,6 +10,14 @@ export type StatByModeChartData = StatByMode & {
   fill: string
 }
 
+export type StatByLine = {
+  line: string
+  count: number
+  totalKm: number
+  totalMinutes: number
+  averageSpeed: number
+}
+
 export type StatsView = "bar" | "circular" | "line" | "calendar"
 
 export type TopKeysResult = {
@@ -43,9 +51,14 @@ type FilteringByMode = {
   value: string
 }
 
+type FilteringByLine = {
+  type: 'line'
+  value: string
+}
+
 type FilteringByDayHour = {
   type: 'dayHour'
   value: { day: string, hour: string }
 }
 
-export type FilteringData = FilteringByZipcode | FilteringByLocation | FilteringByTime | FilteringByCross | FilteringByMode | FilteringByDayHour
+export type FilteringData = FilteringByZipcode | FilteringByLocation | FilteringByTime | FilteringByCross | FilteringByMode | FilteringByLine | FilteringByDayHour
