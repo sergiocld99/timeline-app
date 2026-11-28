@@ -26,17 +26,10 @@ const LineRanking = ({ stats, selectedLine, onSelect }: Props) => {
     () => Math.max(...stats.map(stat => getLineSortValue(stat, sortBy)), 1),
     [stats, sortBy]
   );
-  const rankingTitles: Record<LineSortOption, string> = {
-    rides: t("rankingTitle.rides"),
-    speed: t("rankingTitle.speed"),
-    duration: t("rankingTitle.duration"),
-    km: t("rankingTitle.km"),
-  };
-
   return (
     <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
       <CardHeader className="flex flex-row items-center justify-between gap-2 pb-2">
-        <CardTitle className="text-gray-900 dark:text-white">{rankingTitles[sortBy]}</CardTitle>
+        <CardTitle className="text-gray-900 dark:text-white">{t("rankingTitle")}</CardTitle>
         <LineSortSelector value={sortBy} onValueChange={setSortBy} />
       </CardHeader>
       <CardContent className="flex flex-col gap-2">
