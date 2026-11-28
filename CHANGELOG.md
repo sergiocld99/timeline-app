@@ -2,6 +2,7 @@
 
 ## v0.16.0
 - COD16-005: Add bus lines explorer with opt-in by-line stats (#140) [584]
+- COD16-017: Add monthly places page and endpoint (#136) [1266]
 
 ## v0.15.0
 - COD15-009: Reorganize component folders into typed structure (#126) [928]
@@ -69,7 +70,7 @@
 ## v0.7.0 (2026-03-20)
 - COD7-001: Provide Visit Hour Parts from Backend to enable filtering (#26) [105]
 - COD7-002: Add Search to Locations Page (#27) [64]
-- COD7-003: Add Collision Control on Travel Creation (#29) [101]
+- COD7-003: Collision Control on Travel Creation (#29) [101]
 - COD7-004: Allow bus line for bus type travels (#30) [101]
 - COD7-008: Migrate Zoom y Map Center to Statistics Backend (#28) [469]
 - COD7-012: Locations Responsive Page (#33) [664]

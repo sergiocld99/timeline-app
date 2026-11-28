@@ -2,7 +2,7 @@ import type { Travel, TravelStats } from "@/types/travel";;
 
 import { useQuery } from '@tanstack/react-query';
 
-import TravelService from '@/services/TravelService';
+import StatsService from "@/services/StatsService";
 import { EMPTY_TRAVEL_STATS as EMPTY_STATS } from '@/constants';
 
 export const useTravelStats = (travels: Travel[], initialStats?: TravelStats) => {
@@ -22,7 +22,7 @@ export const useTravelStats = (travels: Travel[], initialStats?: TravelStats) =>
         destination: t.destination._id
       }));
 
-      return await TravelService.getStats(payload);
+      return await StatsService.getStats(payload);
     },
     // Si tenemos stats iniciales que coinciden con la cantidad de viajes, los usamos como data inicial
     initialData: (initialStats && travels.length === initialStats.count) ? initialStats : undefined,

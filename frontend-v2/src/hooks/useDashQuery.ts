@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 
-import TravelService from "@/services/TravelService";
+import StatsService from "@/services/StatsService";
 import { EMPTY_TRAVEL_STATS } from "@/constants";
 import { useUser } from "@/contexts/UserContext";
 
@@ -114,7 +114,7 @@ export const useDashQuery = () => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["home_stats", ranges.currentFrom, ranges.currentTo, currentUser],
     queryFn: async () => {
-      const res = await TravelService.getDashboardStats(ranges.currentFrom, ranges.currentTo, currentUser?.userId);
+      const res = await StatsService.getDashboardStats(ranges.currentFrom, ranges.currentTo, currentUser?.userId);
       return { ...EMPTY_TRAVEL_STATS, ...res } as TravelStats;
     },
     enabled: !userLoading,
@@ -123,7 +123,7 @@ export const useDashQuery = () => {
   const { data: prevData, isLoading: isPrevLoading } = useQuery({
     queryKey: ["home_stats_prev", ranges.prevFrom, ranges.prevTo, currentUser],
     queryFn: async () => {
-      const res = await TravelService.getDashboardStats(ranges.prevFrom, ranges.prevTo, currentUser?.userId);
+      const res = await StatsService.getDashboardStats(ranges.prevFrom, ranges.prevTo, currentUser?.userId);
       return { ...EMPTY_TRAVEL_STATS, ...res } as TravelStats;
     },
     enabled: !userLoading,

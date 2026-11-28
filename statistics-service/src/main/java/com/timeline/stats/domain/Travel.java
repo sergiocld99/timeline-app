@@ -69,4 +69,13 @@ public class Travel {
     this.date = startTime.toString().split("T")[0];
     return this;
   }
+
+  public String extractMonthKey() {
+    if (startTime == null) {
+      return null;
+    }
+
+    this.date = startTime.toString().split("T")[0];
+    return date.substring(0, 7);
+  }
 }
