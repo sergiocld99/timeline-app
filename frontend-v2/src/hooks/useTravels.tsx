@@ -7,7 +7,7 @@ import { useDateRange } from "@/contexts/DateRangeContext";
 import { useUser } from "@/contexts/UserContext";
 import TravelService from "@/services/TravelService";
 
-const useTravels = (sortingField = 'duration', locFrom = '', locTo = '') => {
+const useTravels = (sortingField = 'duration', locFrom = '', locTo = '', modeOfTransport = '', includeByLine = false) => {
   const { dateFrom, dateTo } = useDateRange();
   const { currentUser, loading: userLoading } = useUser();
   const [travels, setTravels] = useState<TravelsData>({ travels: [] });
@@ -19,7 +19,7 @@ const useTravels = (sortingField = 'duration', locFrom = '', locTo = '') => {
     setLoading(true);
     const userId = currentUser?.userId;
 
-    TravelService.getAll({ dateFrom, dateTo, crossIds, sortingField, userId, locFrom, locTo }).then(data => {
+    TravelService.getAll({ dateFrom, dateTo, crossIds, sortingField, userId, locFrom, locTo, modeOfTransport, includeByLine }).then(data => {
       setTravels({ ...data, dateFrom, dateTo })
       setError(null)
       setLoading(false)
@@ -27,7 +27,7 @@ const useTravels = (sortingField = 'duration', locFrom = '', locTo = '') => {
       setError(err)
       setLoading(false)
     })
-  }, [dateFrom, dateTo, sortingField, currentUser, locFrom, locTo]);
+  }, [dateFrom, dateTo, sortingField, currentUser, locFrom, locTo, modeOfTransport, includeByLine]);
 
   const updateTravel = async (id: string, updates: Partial<Travel>) => {
     try {
