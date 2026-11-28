@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert';
-import { calculateTravelStats, computeDestinationSuggestion } from '../services/travelService.js';
+import { calculateByLineStats, calculateTravelStats, computeDestinationSuggestion } from '../services/travelService.js';
 
 const travel = (isoTime, destination, durationMinutes = 30) => ({
   startTime: new Date(isoTime),
@@ -142,5 +142,70 @@ test('travelService.calculateTravelStats home', async (t) => {
     ]);
 
     assert.strictEqual(home, 'name-B1000');
+  });
+});
+
+const lineTravel = (line, modeOfTransport = 'bus', distance = 10, duration = 20) => ({
+  startTime: new Date('2026-04-01T12:00:00.000Z'),
+  endTime: new Date('2026-04-01T12:20:00.000Z'),
+  distance,
+  duration,
+  speed: 30,
+  weight: { percentage: 1 },
+  origin: place('B1000', 'name-B1000'),
+  destination: place('C1400', 'name-C1400'),
+  modeOfTransport,
+  line,
+});
+
+test('travelService.calculateByLineStats', async (t) => {
+  await t.test('groups bus rides by line, totals distance and duration, and sorts by rides', () => {
+    const byLine = calculateByLineStats([
+      lineTravel('152', 'bus', 10, 20),
+      lineTravel('152', 'bus', 12.5, 25),
+      lineTravel('60', 'bus', 5, 10),
+      lineTravel('60', 'bus', 5, 10),
+      lineTravel('99', 'car', 100, 60), // line on a non-bus travel is ignored
+      lineTravel('', 'bus'), // blank lines are ignored
+      lineTravel('   ', 'bus'),
+    ]);
+
+    assert.deepStrictEqual(byLine, [
+      { line: '152', count: 2, totalKm: 22.5, totalMinutes: 45, averageSpeed: 30 },
+      { line: '60', count: 2, totalKm: 10, totalMinutes: 20, averageSpeed: 30 },
+    ]);
+  });
+
+  await t.test('computes a rounded aggregate speed and guards zero duration', () => {
+    const byLine = calculateByLineStats([
+      lineTravel('10', 'bus', 10, 7),
+      lineTravel('11', 'bus', 10, 0),
+    ]);
+
+    assert.deepStrictEqual(byLine.map(({ line, averageSpeed }) => ({ line, averageSpeed })), [
+      { line: '10', averageSpeed: 85.71 },
+      { line: '11', averageSpeed: 0 },
+    ]);
+  });
+
+  await t.test('falls back to the numeric line order when rides and minutes tie', () => {
+    const byLine = calculateByLineStats([
+      lineTravel('152', 'bus', 10, 20),
+      lineTravel('60', 'bus', 5, 20),
+    ]);
+
+    assert.deepStrictEqual(byLine.map(stat => stat.line), ['60', '152']);
+  });
+
+  await t.test('is not part of the generic calculateTravelStats payload', () => {
+    const stats = calculateTravelStats([lineTravel('152', 'bus', 10, 20)]);
+
+    assert.strictEqual('byLine' in stats, false);
+  });
+
+  await t.test('returns an empty ranking when no bus travel has a line', () => {
+    const byLine = calculateByLineStats([lineTravel('99', 'car')]);
+
+    assert.deepStrictEqual(byLine, []);
   });
 });

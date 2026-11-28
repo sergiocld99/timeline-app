@@ -1,6 +1,6 @@
 import Travel from "../models/Travel.js";
 import { getDateFrom, getDateTo, withWeight } from "../utils/index.js";
-import { enrichTravels, calculateTravelStats } from "../services/travelService.js";
+import { calculateByLineStats, calculateTravelStats, enrichTravels } from "../services/travelService.js";
 import { useCorrectUser } from "../helpers/useCorrectUser.js";
 import { TravelRules } from "../domain/travelRules.js";
 import { Money } from "../domain/value-objects/Money.js";
@@ -13,7 +13,7 @@ export const getAllTravels = (req, res) => {
   const dateFrom = getDateFrom(req)
   const dateTo = getDateTo(req)
   const crosses = req.body?.crossIds ?? []
-  const { sortingField = DEFAULT_SORTING_FIELD, userId, locFrom, locTo, statsOnly, skipStats, limit } = req.query
+  const { sortingField = DEFAULT_SORTING_FIELD, userId, locFrom, locTo, modeOfTransport, statsOnly, skipStats, includeByLine, limit } = req.query
 
   // Fetch all travels with populated origin and destination (Location) fields
   Travel.find({
@@ -22,7 +22,8 @@ export const getAllTravels = (req, res) => {
     endTime: { $lte: dateTo },
     ...(crosses.length > 0 && { crosses: { $in: crosses } }),
     ...(locFrom && { origin: locFrom }),
-    ...(locTo && { destination: locTo })
+    ...(locTo && { destination: locTo }),
+    ...(modeOfTransport && { modeOfTransport })
   }).populate('origin destination crosses').sort({ startTime: -1 }).then(travels => {
     const enrichedTravels = enrichTravels(travels);
     const weightedTravels = withWeight(enrichedTravels, sortingField);
@@ -32,6 +33,11 @@ export const getAllTravels = (req, res) => {
     if (skipStats !== 'true') {
       // Unlike statsOnly, this actually skips the calculateTravelStats pass, not just the payload
       response.stats = calculateTravelStats(weightedTravels);
+    }
+
+    if (includeByLine === 'true') {
+      // Opt-in ranking: generic consumers neither compute nor receive it.
+      response.stats = { ...(response.stats ?? {}), byLine: calculateByLineStats(weightedTravels) };
     }
 
     if (statsOnly !== 'true') {

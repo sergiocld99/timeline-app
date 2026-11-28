@@ -1,6 +1,15 @@
 "use client";
 
-import { Menu } from "lucide-react";
+import {
+  BusFront,
+  CalendarDays,
+  MapPin,
+  Menu,
+  Route,
+  SquarePen,
+  Waypoints,
+  type LucideIcon,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
@@ -19,12 +28,13 @@ import NavItem from "./NavItem";
 import LanguageToggle from "./LanguageToggle";
 import UserDropdown from "./UserDropdown";
 
-const NAV_ITEMS: { path: string; labelKey: string }[] = [
-  { path: "/creator", labelKey: "creator" },
-  { path: "/crosses", labelKey: "crosses" },
-  { path: "/locations", labelKey: "locations" },
-  { path: "/travels", labelKey: "travels" },
-  { path: "/visits", labelKey: "visits" },
+const NAV_ITEMS: { path: string; labelKey: string; icon: LucideIcon }[] = [
+  { path: "/creator", labelKey: "creator", icon: SquarePen },
+  { path: "/crosses", labelKey: "crosses", icon: Waypoints },
+  { path: "/locations", labelKey: "locations", icon: MapPin },
+  { path: "/lines", labelKey: "lines", icon: BusFront },
+  { path: "/travels", labelKey: "travels", icon: Route },
+  { path: "/visits", labelKey: "visits", icon: CalendarDays },
 ];
 
 const Header = () => {
@@ -49,8 +59,8 @@ const Header = () => {
           {/* Desktop: nav + user + theme */}
           <div className="hidden lg:flex items-center space-x-4">
             <nav className="flex space-x-4">
-              {NAV_ITEMS.map(({ path, labelKey }) => (
-                <NavItem key={path} path={path} label={t(labelKey)} />
+              {NAV_ITEMS.map(({ path, labelKey, icon }) => (
+                <NavItem key={path} path={path} label={t(labelKey)} icon={icon} />
               ))}
             </nav>
             <div className="flex items-center space-x-2">
@@ -77,9 +87,9 @@ const Header = () => {
                   <SheetTitle>{t("menu")}</SheetTitle>
                 </SheetHeader>
                 <nav className="flex flex-col gap-1 pt-4 [&_a]:w-full [&_button]:w-full [&_button]:justify-start">
-                  {NAV_ITEMS.map(({ path, labelKey }) => (
+                  {NAV_ITEMS.map(({ path, labelKey, icon }) => (
                     <div key={path} onClick={() => setOpen(false)}>
-                      <NavItem path={path} label={t(labelKey)} />
+                      <NavItem path={path} label={t(labelKey)} icon={icon} />
                     </div>
                   ))}
                 </nav>

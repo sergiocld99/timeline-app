@@ -186,6 +186,7 @@
     "creator": "Creator",
     "crosses": "Crosses",
     "locations": "Locations",
+    "lines": "Lines",
     "travels": "Travels",
     "visits": "Visits",
     "menu": "Menu"
@@ -337,6 +338,27 @@
       "deleteError": "Failed to delete visit",
       "updateSuccess": "Visit updated successfully!",
       "updateError": "Failed to update visit"
+    }
+  },
+  "Lines": {
+    "loading": "Loading bus lines...",
+    "error": "Couldn't load your travels.",
+    "empty": "No bus lines found in this period.",
+    "rankingTitle": "Lines Ranking",
+    "rides": "{count} rides",
+    "minutes": "{minutes} min",
+    "speed": "{speed} km/h",
+    "sort": {
+      "by": "Sort by",
+      "rides": "Rides",
+      "speed": "Speed",
+      "duration": "Duration",
+      "km": "Km"
+    },
+    "summary": {
+      "lines": "Lines",
+      "rides": "Rides",
+      "km": "Km"
     }
   },
   "Profile": {
